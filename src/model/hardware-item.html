@@ -1,0 +1,233 @@
+<dom-module id="hardware-item">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+
+            .item {
+                @apply --layout-vertical;
+                padding: 20px;
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+
+            .item .item-column {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+            .item .item-column-rowler {
+                @apply --layout-vertical;
+                margin-top: 20px;
+                border-top: 1.5px solid black;
+                font-weight: 400;
+                width: 100%;
+            }
+
+            .item .item-column .benchmark {
+                background: #E65100;
+                border-radius: 40%;
+                padding: 10px;
+                margin-right: 10px;
+                color: white;
+            }
+
+            .item .item-column-invisible {
+                display: none;
+                opacity: 0;
+                transition: opacity 1s linear;
+            }
+
+            .avatar {
+                height: 40px;
+                width: 40px;
+                border-radius: 20px;
+                box-sizing: border-box;
+                background-color: #DDD;
+            }
+
+            .pad {
+                padding: 0 16px;
+                @apply --layout-flex;
+                @apply --layout-vertical;
+            }
+
+            .primary {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .shortText,
+            .longText {
+                font-size: 14px;
+            }
+
+            .item.expanded .item-column-invisible {
+                opacity: 1;
+                display: flex !important;
+            }
+
+            .spacer {
+                @apply --layout-flex;
+            }
+        </style>
+
+
+        <template is="dom-if" if={{isCpu}}>
+            <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
+                    <div class="item-column">
+                        <iron-image itemprop="image" class="avatar" sizing="contain" src="{{_remakeBrandImage(item.brand)}}"></iron-image>
+                        <div class="pad">
+                            <div class="primary" itemprop="name">[[item.name]]</div>
+                            <div class="shortText">İşlemci Sınıfı:
+                                <b>[[item.cpuClass]]</b>
+                            </div>
+                            <meta itemprop="position" content="[[index]]" />
+                            <meta itemprop="url" content="http://www.google.com/search?q= [[item.name]]" />
+                        </div>
+                        <div class="benchmark" itemprop="description">[[item.benchmarkscore]]</div>
+                        <iron-icon icon$="[[getIconForItem(selected)]]"></iron-icon>
+                    </div>
+                    <div class="item-column item-column-invisible">
+                        <div class="item-column-rowler">
+                            <p>Core: [[item.cores]] Çekirdekli</p>
+                            <p>Socket: [[item.socket]]</p>
+                            <p>Clock Speed: [[item.clockSpeed]]</p>
+                            <p>Maximum TDP: [[item.maxTDP]]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
+        <template is="dom-if" if={{!isCpu}}>
+            <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
+                    <div class="item-column">
+                        <iron-image itemprop="image" class="avatar" sizing="contain" src="{{_remakeGraphicCardBrand(item.name)}}"></iron-image>
+                        <div class="pad">
+                            <div class="primary" itemprop="name">[[item.name]]</div>
+                            <div class="shortText">Ekran Kartı Sınıfı:
+                                <b>[[item.gpuClass]]</b>
+                            </div>
+                            <meta itemprop="position" content="[[index]]" />
+                            <meta itemprop="url" content="http://www.google.com/search?q= [[item.name]]" />
+                        </div>
+                        <div class="benchmark" itemprop="description">[[item.benchmarkscore]]</div>
+                        <iron-icon icon$="[[getIconForItem(selected)]]"></iron-icon>
+                    </div>
+                    <div class="item-column item-column-invisible">
+                        <div class="item-column-rowler">
+                            <p>Memory Size: [[item.memorySize]] MB</p>
+                            <p>DirectX: [[item.directx]]</p>
+                            <p>OpenGL: [[item.openGL]]</p>
+                            <p>Core Clock: [[item.coreClock]]</p>
+                            <p>Memory Clock: [[item.memoryClock]]</p>
+                            <p>Bus Interface: [[item.busInterface]]</p>
+                            <p>Maximum TDP: [[item.maxTDP]]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
+    </template>
+
+    <script>
+        /**
+         * `hardware-item` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class HardwareItem extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'hardware-item';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    hardware: String,
+                    isCpu: Boolean,
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    item: Object,
+                };
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                if (this.hardware == "cpu") this.isCpu = true;
+                else this.isCpu = false;
+
+            }
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _remakeBrandImage(brand) {
+                if (brand == 'AMD') {
+                    return '/assets/img/amd-icon.png'
+                } else {
+                    return '/assets/img/intel-icon.png'
+                }
+            }
+            _remakeGraphicCardBrand(name) {
+                if (name.toLowerCase().includes('geforce') || name.toLowerCase().includes('nvs')) return '/assets/img/nvidia-icon.png';
+                else if (name.toLowerCase().includes('radeon') || name.toLowerCase().includes('firepro')) return '/assets/img/amd-icon.png';
+                else if (name.toLowerCase().includes('ıntel') || name.toLowerCase().includes('intel') || name.toLowerCase()
+                    .includes('quadro')) return '/assets/img/intel-icon.png';
+                else {
+                    return '/assets/img/nvidia-icon.png';
+                }
+            }
+            getClassForItem(item, selected) {
+                return selected ? 'item expanded' : 'item';
+            }
+            getIconForItem(selected) {
+                return selected ? 'icons:expand-less' : 'icons:expand-more';
+            }
+
+        }
+
+        window.customElements.define(HardwareItem.is, HardwareItem);
+    </script>
+</dom-module>

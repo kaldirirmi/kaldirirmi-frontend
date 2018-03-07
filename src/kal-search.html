@@ -1,0 +1,352 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="kal-search">
+  <template>
+    <style include="shared-styles">
+
+        :host {
+        display: block;
+      }
+          ::-webkit-scrollbar {
+                  width: 10px !important;
+              }
+
+              ::-webkit-scrollbar-thumb {
+                  background-color: #222;
+                  border-radius: 5px;
+                  border: 2px solid #000;
+                  min-height: 50px;
+              }
+
+              ::-webkit-scrollbar-track {
+                  background-color: rgb(66, 63, 63);
+              }
+
+
+   
+
+      .header-search {
+                  width: 100%;
+                  max-width: 620px;
+                  position: relative;
+                  -ms-flex: 1 1 0.000000001px;
+                  -webkit-flex: 1;
+                  flex: 1;
+                  -webkit-flex-basis: 0.000000001px;
+                  flex-basis: 0.000000001px;
+              }
+
+                .header-search .search {
+                      width: 20px;
+                      height: 20px;
+                      position: absolute;
+                      left: 20px;
+                      top: 45%;
+                      opacity: 1;
+                      -webkit-transform: translateY(-50%);
+                      transform: translateY(-50%);
+                      -webkit-transition: .3s;
+                      transition: .3s;
+                      opacity: 0;
+                  }
+
+                   .header-search input {
+                      width: 85%;
+                      height: 100%;
+                      background: rgba(255, 120, 0, 0.5) !important;
+                      padding: 12px 0;
+                      border-radius: 2px;
+                      color: inherit;
+                      text-align: center;
+                      font-size: 16px;
+                      background: transparent;
+                      border: none;
+                      outline: none;
+                      font-weight: 100;
+                      font-size: calc(0.3em + 1vmin);
+
+                  }
+
+                  /* input[type=search]::-ms-clear {
+                    color: red; 
+                 }
+                 input::-ms-reveal{
+                     display: none;
+                     width: 0;
+                     height: 0;
+                 }
+                 
+                 input::-webkit-search-cancel-button{
+                     color: red;
+                 }
+
+                  .header-search input::-ms-clear{
+                    display: none !important;
+                  } */
+
+                 input[type="search"]::-webkit-search-decoration,
+                input[type="search"]::-webkit-search-cancel-button,
+                input[type="search"]::-webkit-search-results-button,
+                input[type="search"]::-webkit-search-results-decoration { display: none;}
+
+
+                     .header-search input::-webkit-input-placeholder {
+                          color: rgba(255,255,255,0.7);
+                      }
+
+                      .header-search input::-webkit-search-cancel-button {
+                          /*-webkit-appearance: none;*/
+                      }
+
+                      .header-search input:focus {
+                          /*padding: 12px 0 12px 45px;
+                  text-align:left;*/
+                      }
+
+                          .header-search input:focus ~ .search {
+                              opacity: 1;
+                          }
+
+                           .header-search input:focus::-webkit-input-placeholder {
+                              text-align: center;
+                          }
+                          #searchlayer #searching {
+                  --paper-spinner-color: #ff7800;
+              }
+
+                #searchlayer {
+                  position: absolute;
+                  top: 64px;
+                  left: 0;
+                  right: 0;
+                  min-height: calc(100vh - 64px);
+                  background: rgba(0,0,0,.7);
+                  z-index: 2000;
+                  overflow: hidden;
+                  height: 500px !important;
+                  overflow-y: scroll !important;
+              }
+              #searchlayermobileconstructor{
+                  background: #222;
+                    min-height: calc(100vh);
+                    overflow: hidden !important;
+                    overflow-y: auto !important;
+                    height: 300px;
+              }
+              #searchlayermobile {
+                  min-height: calc(100vh - 64px);
+                  z-index: 3;
+                  height: 500px !important;
+                  overflow: scroll;
+                  overflow-x: hidden;
+                    position: relative;
+                    width: 100%;
+              }
+
+                  #searchlayer #searching, #searchlayermobile #searchingmobile {
+                      display: flex;
+                      flex-direction: row;
+                      margin: 10px auto;
+                  }
+
+              #searchlayer #searchresults {
+                  display: flex;
+                  flex-direction: column;
+                  background-color: #222;
+                  padding: 5px 0;
+                  margin: 0px 15px;
+                  max-width: 527px;
+                  box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+              }
+
+              #searchlayermobile #searchresultsmobile {
+                  display: flex;
+                  flex-direction: column;
+                  background-color: #222;
+                  margin: 5px 0px;
+                  padding-left: 10px;
+              }
+
+              #searchlayer #searchresults .game:hover {
+                  background: #121212;
+              }
+
+              #searchlayermobile #searchresultsmobile .game:hover {
+                  background: #ddd;
+              }
+
+              #searchlayer #searchresults .game {
+                  display: -ms-flexbox;
+                  display: -webkit-flex;
+                  display: flex;
+                  -ms-flex-direction: row;
+                  -webkit-flex-direction: row;
+                  flex-direction: row;
+                  -ms-flex-align: center;
+                  -webkit-align-items: center;
+                  align-items: center;
+                  padding: calc(0.1em + 1vmin) calc(0.3em + 1vmin);
+                  cursor: pointer;
+                  border-left: 4px solid #ff7800;
+                  box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.4);
+                  margin-bottom: 10px;
+                  
+              }
+
+              #searchlayermobile #searchresultsmobile .game {
+                  display: -ms-flexbox;
+                  display: -webkit-flex;
+                  display: flex;
+                  -ms-flex-direction: row;
+                  -webkit-flex-direction: row;
+                  flex-direction: row;
+                  -ms-flex-align: center;
+                  -webkit-align-items: center;
+                  align-items: center;
+                  cursor: pointer;
+                  border-left: 4px solid #ff7800;
+                  box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+                  margin-bottom: 10px;
+              }
+
+                  #searchlayermobile #searchresultsmobile .game .picture {
+                      margin-right: 20px;
+                      max-width: calc(4.5em + 1vmin);
+                      width: 50%;
+                      box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+                      margin-left: 5px;
+                  }
+
+              #searchlayer #searchresults .game .picture {
+                  margin-right: 20px;
+                  max-width: calc(4.5em + 1vmin);
+                  width: 50%;
+                  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+              }
+
+                  #searchlayer #searchresults .game .picture img, #searchlayermobile #searchresultsmobile .game .picture img {
+                      width: 100%;
+                      height: auto;
+                  }
+
+              #searchlayermobile #searchresultsmobile .game .title span {
+                  font-size: calc(0.6em + 1vmin);
+              }
+
+              #searchlayer #searchresults .game .picture {
+                  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+              }
+
+              #searchlayer #searchresults .game .title {
+                  font-size: 16px !important;
+              }
+
+
+              #searchlayer #defaultsearch {
+                  margin: 0px 15px;
+                  padding: 0px 0px 5px 0px;
+                  background-color: #222;
+                  max-width: 527px;
+              }
+
+                  #searchlayer #defaultsearch a {
+                      display: -ms-flexbox;
+                      display: -webkit-flex;
+                      display: flex;
+                      -ms-flex-direction: row;
+                      -webkit-flex-direction: row;
+                      flex-direction: row;
+                      -ms-flex-align: center;
+                      -webkit-align-items: center;
+                      align-items: center;
+                      width: calc(100% - 40px);
+                      text-decoration: none;
+                      padding: 15px 20px;
+                      color: white;
+                      border-left: 4px solid #ff7800;
+                  }
+
+                      #searchlayer #defaultsearch a iron-icon {
+                          margin-right: 10px;
+                      }
+
+                      #searchlayer #defaultsearch a .title {
+                          font-size: 14px;
+                      }
+
+
+              #searchlayermobile #defaultsearchmobile a {
+                  background-color: #222 !important;
+                  color: white;
+                  display: -ms-flexbox;
+                  display: -webkit-flex;
+                  display: flex;
+                  -ms-flex-direction: row;
+                  -webkit-flex-direction: row;
+                  flex-direction: row;
+                  -ms-flex-align: center;
+                  -webkit-align-items: center;
+                  align-items: center;
+                  width: calc(100% - 40px);
+                  text-decoration: none;
+                  color: white;
+                  border-left: 4px solid #ff7800;
+                  margin-left: 10px;
+                  margin-bottom: 20px;
+                  padding: 5px;
+              }
+
+              #searchlayer #defaultsearch:hover a {
+                  background: #121212;
+              }
+
+              #searchlayermobile #defaultsearchmobile:hover a {
+                  background: #121212;
+              }
+
+              #searchlayermobile #defaultsearchmobile a iron-icon {
+                  margin-right: 10px;
+              }
+
+              #searchlayermobile #defaultsearchmobile .title {
+                  font-size: calc(0.6em + 1vmin);
+              }
+
+
+                #searchlayer{
+                    display: none;
+                }
+
+    </style>
+
+    <div class="header-search">
+        <form action="/ara" method="get" enctype="application/x-www-form-urlencoded" onsubmit="load();">
+            <input id="searchgame" type="search" placeholder="Oyun Ara" autocomplete="off" name="query" required="" data-step="2" data-intro="Oyun Aramak Hiç Bu Kadar Kolay Olmamıştı!">
+            <iron-ajax id="gamesearcher" url="/h/main" handle-as="json" debounce-duration="1000" hidden=""></iron-ajax>
+            <iron-icon icon="search" class="search x-scope iron-icon-0"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" class="style-scope iron-icon"></path></g></svg> </iron-icon>
+        </form>
+    </div>
+
+
+    <div id="searchlayer">
+            <ul id="searchresults"><li class="game active" onclick="location.href='/oyun/planescape--torment--enhanced-edition'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/planescape-torment-enhanced-edition-logo.jpg"></div><div class="title"><span>Planescape: Torment: Enhanced Edition</span></div></li><li class="game" onclick="location.href='/oyun/car-mechanic-simulator-2018'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/car-mechanic-simulator-2018-logo.jpg"></div><div class="title"><span>Car Mechanic Simulator 2018</span></div></li><li class="game" onclick="location.href='/oyun/quake-champions'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/quake-champions-logo.jpg"></div><div class="title"><span>Quake Champions</span></div></li><li class="game" onclick="location.href='/oyun/warhammer-40-000--inquisitor-martyr'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/warhammer-40000-inquisitor-martyr-logo.jpg"></div><div class="title"><span>Warhammer 40,000: Inquisitor Martyr</span></div></li><li class="game" onclick="location.href='/oyun/warhammer-40-000--space-wolf'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/warhammer-40000-space-wolf-logo.jpg"></div><div class="title"><span>Warhammer 40,000: Space Wolf</span></div></li></ul>
+            <div id="defaultsearch">
+                <a id="defaultsearchlink" href="/ara?query=ha">
+                    <iron-icon icon="search" class="x-scope iron-icon-0"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" class="style-scope iron-icon"></path></g></svg> </iron-icon>
+                    <div class="title" id="defaultsearchtext">ha ile tüm ilgili sonuçları gör</div>
+                </a>
+            </div>
+            <paper-spinner-lite id="searching" class="x-scope paper-spinner-lite-0" aria-hidden="true"><div id="spinnerContainer" class="  style-scope paper-spinner-lite"><div class="spinner-layer style-scope paper-spinner-lite"><div class="circle-clipper left style-scope paper-spinner-lite"></div><div class="circle-clipper right style-scope paper-spinner-lite"></div></div></div></paper-spinner-lite>
+        </div>
+
+
+  </template>
+
+  <script>
+    class KalSearch extends Polymer.Element {
+      static get is() { return 'kal-search'; }
+    }
+
+    window.customElements.define(KalSearch.is, KalSearch);
+  </script>
+</dom-module>

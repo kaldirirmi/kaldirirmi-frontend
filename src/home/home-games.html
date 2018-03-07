@@ -1,0 +1,136 @@
+<dom-module id="home-games">
+    <template>
+        <style>
+            :host{
+                display: block
+            }
+            
+            /*mobile configuration */
+            :host([is-mobile]) #game-list game-item{
+                @apply --layout-horizontal;
+                /* @apply --layout-flex-1; */
+                width: 50%;
+            }
+            
+            /* GAMELIST */
+
+            #game-list {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                margin: 10px 0px;
+                flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+            }
+
+            #game-list game-item {
+                @apply --layout-vertical;
+            }
+
+             /* Smartphones (portrait and landscape) ----------- */
+             /* @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+                #game-list game-item {
+                    width: 50%;
+                }
+            } */
+
+            @media only screen  and (min-width : 769px) {
+                #game-list game-item {
+                    @apply --layout-flex-3;
+                }
+            }
+            
+        </style>
+
+        <!-- Oyunlar -->
+        <div id="game-list">
+            <template is="dom-repeat" items="{{gamelist}}">
+                <game-item item="[[item]]" is-mobile=[[isMobile]] extended></game-item>
+            </template>
+        </div>
+    </template>
+    <script>
+        class HomeGames extends Polymer.Element {
+            static get is() {
+                return 'home-games'
+            }
+
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    gamelist: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    }
+                };
+            }
+            /**
+              * Called every time the element is inserted into the DOM. Useful for 
+              * running setup code, such as fetching resources or rendering.
+              * Generally, you should try to delay work until this time.
+              */
+            connectedCallback() {
+                super.connectedCallback();
+                /////////////////////////////
+                const games = [
+                    {
+                        "name": "Tannenberg",
+                        "picture": "tannenberg-logo.jpg",
+                        "url": "tannenberg",
+                        "releasedate": "16.11.2017 00:00:00",
+                        "background": null,
+                        "genres": "Action,Shooter",
+                        "developer": null,
+                        "publisher": "M2H, Blackmill Games"
+                    },
+                    {
+                        "name": "Crackdown 3",
+                        "picture": "crackdown-3-logo.jpg",
+                        "url": "crackdown-3",
+                        "releasedate": "7.11.2017 00:00:00",
+                        "background": null,
+                        "genres": "Action,Adventure,Shooter",
+                        "developer": null,
+                        "publisher": "Microsoft Studios"
+                    },
+                    {
+                        "name": "Call of Duty: WWII",
+                        "picture": "call-of-duty-WWII-logo.jpg",
+                        "url": "call-of-duty--wwii",
+                        "releasedate": "3.11.2017 00:00:00",
+                        "background": null,
+                        "genres": "Action,Online,Role Playing,Shooter",
+                        "developer": null,
+                        "publisher": "Activision\t"
+                    },
+                    {
+                        "name": "Wolfenstein II: The New Colossus",
+                        "picture": "wolfenstein-2-logo.jpg",
+                        "url": "wolfenstein-ii--the-new-colossus",
+                        "releasedate": "27.10.2017 00:00:00",
+                        "background": null,
+                        "genres": "Action,Shooter",
+                        "developer": null,
+                        "publisher": "Bethesda Softworks\t"
+                    }
+                ];
+
+                games.forEach((game) => {
+                    let current = {
+                        "title": game.name,
+                        "href": "game/" + game.url,
+                        "src": "https://cdn.kaldirirmi.com/images/games/" + game.picture
+                    };
+                    this.push('gamelist', current);
+                });
+
+            }
+        }
+
+        window.customElements.define(HomeGames.is, HomeGames);
+    </script>
+</dom-module>

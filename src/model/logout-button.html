@@ -1,0 +1,158 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="logout-button">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+
+            paper-fab{
+                --paper-fab-background	: #ff7800;
+            }
+        </style>
+
+        <!-- <iron-form id="logoutform"  on-iron-form-response="_logoutFormResponse">
+                <form action="/h/main" method="post">
+                    <input type="hidden" name="fm" value="logout" />
+                    <input type="hidden" name="loggedin" value="[[storedUser.loggedin]]">
+                    <input type="hidden" name="uid" value="[[storedUser.uid]]">
+                    <paper-fab class="main-color" icon="icons:exit-to-app" title="Çıkış" on-tap="_logoutButton"></paper-fab>
+                </form>
+            </iron-form> -->
+
+        <paper-fab class="main-color" icon="icons:exit-to-app" title="Çıkış" on-tap="_logoutButton" disabled={{disabled}}></paper-fab>
+
+
+        <paper-toast id="logouttoast" text="[[notification]]"></paper-toast>
+
+    </template>
+
+    <script>
+        /**
+         * `logout-button` Description
+         *
+         * @summary logout fab button of kaldirirmi.com .
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class LogoutButton extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'logout-button';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    storedUser: Object,
+                    notification: String,
+                    disabled: Boolean
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+
+            _logoutButton() {
+
+                this.disabled = !this.disabled;
+
+                if(this.storedUser.loggedin != false && this.storedUser.uid != 0)
+                {
+                    this.notification = 'Güle güle! Hemen Geri Dön :)';
+                    this.$.logouttoast.open();
+
+                    this._SetCookie('_KaldirirmiActionHandler', this.storedUser.uid, 1);
+
+                    location.reload();
+                }
+
+                // // console.log('_logoutButton', this.storedUser);
+                // // var _storedUser = this.storedUser;
+                // // if(this.storedUser.loggedin != false && 
+                // //     this.storedUser.uid != 0)
+                // // {
+                // //     this.notification = 'Güle güle! Hemen Geri Dön :)';
+                // //     this.$.logoutform.submit();
+                // // }
+                // // else{
+                // //     this.notification = 'Zaten çıkmışsın dostum!';
+                // // }
+
+                // // this.logouttoast.open();
+
+               
+            }
+
+            _SetCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+ d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+
+                console.log(document.cookie);
+            }
+
+            _loginFormResponse(a) {
+                console.log('logout response');
+                console.log(a.detail.response);
+                if (a.detail.response.success) {
+                    this.$.loginmessage.innerHTML = a.detail.response.message;
+                    this.$.loginmessage.style.color = "green";
+
+                    //id: hakan pwd: hakan123
+                    
+                    // location.reload();
+                    console.log(a.detail.response);
+                    this.storedUser = {
+                        loggedin: true
+                    }
+
+                    this.set('route.path', '/home');
+                    
+                    location.reload();
+
+                    // this.error = '';
+                    // this.storedUser = {
+                    //     name: this.formData.username,
+                    //     id_token: response.id_token,
+                    //     access_token: response.access_token,
+                    //     loggedin: true
+                    // };
+
+                } else {
+                    this.$.loginform.reset();
+                    this.$.loginmessage.innerHTML = a.detail.response.message;
+                    this.$.loginmessage.style.color = "#D50000";
+                }
+            }
+
+        }
+
+        window.customElements.define(LogoutButton.is, LogoutButton);
+    </script>
+</dom-module>

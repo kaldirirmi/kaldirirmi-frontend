@@ -1,0 +1,478 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../bower_components/iron-icons/places-icons.html">
+
+
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/all-imports.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+
+<!-- Neon Animations -->
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+
+<link rel="import" href="../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+
+<!-- Custom Imports -->
+<link rel="import" href="../bower_components/animated-content-placeholder/animated-content-placeholder.html">
+<link rel="import" href="./thirdparty/jquery.html">
+<link rel="import" href="./splash-screen.html">
+
+<link rel="import" href="./kal-global-variable.html">
+<link rel="import" href="./kal-icons.html">
+<link rel="import" href="./kal-search.html">
+<link rel="import" href="./kal-drawer-item.html">
+<link rel="import" href="./shared-styles.html">
+<link rel="import" href="./model/logout-button.html">
+
+<link rel="lazy-import" href="./pages/kal-home-page.html">
+<link rel="lazy-import" href="./pages/kal-game-page.html">
+<link rel="lazy-import" href="./pages/kal-news-page.html">
+<link rel="lazy-import" href="./pages/kal-reviews-page.html">
+<link rel="lazy-import" href="./pages/kal-gallery-page.html">
+<link rel="lazy-import" href="./pages/kal-playground-page.html">
+<link rel="lazy-import" href="./pages/kal-hardware-page.html">
+<link rel="lazy-import" href="./pages/kal-challenge-page.html">
+<link rel="lazy-import" href="./pages/kal-twitch-page.html">
+<link rel="lazy-import" href="./pages/kal-view404-page.html">
+<link rel="lazy-import" href="./pages/kal-login-page.html">
+
+
+<dom-module id="kal-app">
+    <template>
+        <custom-style>
+            <style>
+                :host {
+                    --app-primary-color: #4285f4;
+                    --app-secondary-color: #eee;
+                    --app-theme-color: #ff7600;
+                    --app-drawer-width: 200px;
+
+                    display: block;
+                }
+
+                a {
+                    text-decoration: none;
+                }
+
+                app-header-layout {
+                    background: #222;
+                    color: #fff;
+                }
+
+                app-drawer-layout:not([narrow]) [drawer-toggle] {
+                    display: none;
+                }
+
+                app-drawer {
+                    /* --app-drawer-width: 200px; */
+                    --app-drawer-content-container: {
+                        background-color: #222;
+                        color: #fff;
+                    }
+                }
+
+                /****************************** APP DRAWER ****************************************/
+
+                app-drawer {
+                    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+                    display: -ms-flexbox;
+                    display: -webkit-flex;
+                    display: flex;
+                    -ms-flex-direction: column;
+                    -webkit-flex-direction: column;
+                    flex-direction: column;
+                }
+
+                app-drawer div[main-logo] {
+                    background-color: #ff7800;
+                    height: 64px;
+                    @apply --layout-horizontal;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                }
+
+                app-drawer div[main-logo] div[main-image] {
+                    /* @apply --layout-flex);       */
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+
+                }
+
+                app-drawer div[main-logo] div[main-image] a {
+                    cursor: pointer;
+                }
+
+                app-drawer div[main-logo] div[main-image] iron-image {
+                    width: 34px;
+                    height: 50px;
+
+                }
+
+                .drawer-list {
+                    margin: 0 20px;
+                }
+
+                /* ******************* */
+
+                div[title] {
+                    font-size: 2em;
+                }
+
+                div[empty-content] {
+                    height: 1000px;
+                }
+
+                /****************************** APP HEADER ****************************************/
+
+                app-header {
+                    color: #fff;
+                    background-color: #222;
+                    --app-header-background-front-layer: {
+                        background-image: url("../images/nouseradded.jpg");
+                        background-position: 50% 10%;
+                    };
+                    
+                }
+
+                app-header div[header-content] {
+                    width: 100%;
+                    /* padding-bottom: 1rem; */
+                    @apply --layout-horizontal;
+                    @apply --layout-center;
+                    @apply --layout-justified-center;
+                }
+
+                app-header div[header-content] kal-search {
+                    @apply --layout-flex;
+                }
+
+                app-header div[header-content] paper-button {
+                    height: 3rem;
+                    font-size: 1rem;
+                    color: #eee;
+                    background-color: #222;
+                    text-transform: capitalize
+                }
+            </style>
+        </custom-style>
+
+        <!--<div class="loadingIndicator" hidden$="[[!loading]]">
+            <paper-spinner-lite active$="[[loading]]" class="orange"></paper-spinner-lite>
+        </div>-->
+
+
+        <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="500" icon-size="200" spinner-sub="-5"></splash-screen>
+
+        <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
+        </app-location>
+
+        <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
+        </app-route>
+
+        <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
+        <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
+
+        <!-- IronMediaQuery -->
+        <iron-media-query query="(min-width: 768px)" query-matches="{{appHeaderConfig}}"></iron-media-query>
+        <iron-media-query query="(max-width: 768px)" query-matches="{{isMobile}}"></iron-media-query>
+
+        <app-drawer-layout fullbleed narrow="{{narrow}}">
+            <!-- Drawer content -->
+            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
+                <div main-logo>
+                    <div main-image>
+                        <a href="[[rootPath]]">
+                            <iron-image sizing="cover" preload fade src="./frontend/images/kallogowhite.png">
+                            </iron-image>
+                        </a>
+                    </div>
+                    <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                </div>
+
+                <!-- <div main-title>Logo</div> -->
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                    <kal-drawer-item name="home" href="[[rootPath]]home" icon="icons:home" title="Anasayfa"></kal-drawer-item>
+                    <kal-drawer-item name="playground" href="[[rootPath]]playground" icon="places:casino" title="KalPlay"></kal-drawer-item>
+                    <kal-drawer-item name="game" href="[[rootPath]]game" icon="hardware:videogame-asset" title="Oyun"></kal-drawer-item>
+                    <kal-drawer-item name="news" href="[[rootPath]]news" icon="image:collections-bookmark" title="Haber"></kal-drawer-item>
+                    <kal-drawer-item name="reviews" href="[[rootPath]]reviews" icon="image:collections-bookmark" title="İnceleme"></kal-drawer-item>
+                    <kal-drawer-item name="gallery" href="[[rootPath]]gallery" icon="icons:perm-media" title="Galeri"></kal-drawer-item>
+                    <kal-drawer-item name="hardware" href="[[rootPath]]hardware" icon="hardware:memory" title="Donanım"></kal-drawer-item>
+                    <kal-drawer-item name="challenge" href="[[rootPath]]challenge" icon="places:all-inclusive" title="Challenge"></kal-drawer-item>
+                    <kal-drawer-item name="twitch" href="[[rootPath]]twitch" icon="kaldirirmi:twitch" title="Twitch"></kal-drawer-item>
+                </iron-selector>
+            </app-drawer>
+
+            <!-- Main content -->
+            <app-header-layout has-scrolling-region>
+                <app-header slot="header" condenses fixed effects="waterfall blend-background parallax-background">
+                    <template is="dom-if" if="[[isDesktop]]">
+                        <app-toolbar></app-toolbar>
+                        <app-toolbar></app-toolbar>
+                    </template>
+                    <app-toolbar>
+                        <div header-content>
+                            <kal-search></kal-search>
+                            <a name="login" href="[[rootPath]]login" hidden$="[[storedUser.loggedin]]">
+                                <paper-button raised>Giriş Yap</paper-button>
+                            </a>
+                            <div hidden$="[[!storedUser.loggedin]]">
+                                <!--<span class="greeting">Hi [[storedUser.name]]!</span>-->
+                                <logout-button stored-user=[[storedUser]]></logout-button>
+
+                            </div>
+                        </div>
+                    </app-toolbar>
+                </app-header>
+
+                <!-- <kal-header is-desktop="[[isDesktop]]"></kal-header> -->
+                <!--   POLYMER DECLARED PROPERTIES *********************
+                     is-desktop maps to isDesktop
+                    isDesktop maps to isdesktop -->
+
+
+                <iron-pages id="ironpages" selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                    <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
+                    <kal-playground-page name="playground" is-mobile=[[isMobile]] route="{{subroute}}"></kal-playground-page>
+                    <kal-game-page name="game" is-mobile=[[isMobile]] route="{{subroute}}"></kal-game-page>
+                    <kal-news-page name="news" is-mobile=[[isMobile]] route="{{subroute}}"></kal-news-page>
+                    <kal-reviews-page name="reviews" is-mobile=[[isMobile]] route="{{subroute}}"></kal-reviews-page>
+                    <kal-gallery-page name="gallery" is-mobile=[[isMobile]] route="{{subroute}}"></kal-gallery-page>
+                    <kal-hardware-page name="hardware" is-mobile=[[isMobile]] route="{{subroute}}"></kal-hardware-page>
+                    <kal-challenge-page name="challenge" is-mobile=[[isMobile]] route="{{subroute}}"></kal-challenge-page>
+                    <kal-twitch-page name="twitch" is-mobile=[[isMobile]] route="{{subroute}}"></kal-twitch-page>
+                    <kal-login-page name="login" is-mobile=[[isMobile]] route="{{route}}"></kal-login-page>
+                    <kal-view404-page name="view404"></kal-view404-page>
+                </iron-pages>
+
+                <!-- <div empty-content></div> -->
+            </app-header-layout>
+        </app-drawer-layout>
+
+        <paper-toast id="toaster" text=""></paper-toast>
+
+    </template>
+
+    <script>
+        class KalApp extends Polymer.Element {
+            static get is() {
+                return 'kal-app';
+            }
+
+            static get properties() {
+                return {
+                    page: {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged',
+                    },
+                    isMobile: Boolean,
+                    routeData: Object,
+                    subroute: String,
+                    // This shouldn't be neccessary, but the Analyzer isn't picking up
+                    // Polymer.Element#rootPath
+                    rootPath: String,
+                    appHeaderConfig: {
+                        type: String,
+                        notify: true,
+                        observer: '_queryMatchesChanged'
+                    },
+                    isDesktop: String,
+                    appHeaderEffects: {
+                        type: String,
+                        nofity: true,
+                        value: 'waterfall blend-background parallax-background'
+                    },
+                    storedUser: Object,
+                    uid: {
+                        type: Number,
+                        notify: true,
+                        observer: '_uidChanged'
+                    }
+                };
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+
+                console.log('connectedCallback kal-app');
+
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is
+             * initialized.
+             */
+            ready() {
+                this.addEventListener('toaster', this._toasterFire);
+                super.ready();
+                console.log('ready kal-app');
+
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    let uid = this.uid;
+                    let user = null;
+                    if (uid != 0) {
+                        user = {
+                            loggedin: true,
+                            uid: uid
+                        }
+                    } else {
+                        user = {
+                            loggedin: false,
+                            uid: 0
+                        }
+                    }
+                    this.storedUser = user;
+                    // console.log(this.storedUser);
+                });
+            }
+            
+            //How to fire?
+            /*
+                var message = "Message Here!";
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                    text: message
+                    }
+                });
+                this.dispatchEvent(event);
+
+            */
+            _toasterFire(e) {
+                var scope = this;
+                if (e.detail) {
+                    scope.$.toaster.text = e.detail.text;
+                    scope.$.toaster.open();
+                }
+            }
+
+            _queryMatchesChanged(isDesktop) {
+                // if(isDesktop){
+                //   this.set('appHeaderEffects', 'waterfall blend-background parallax-background');
+                // }
+                // else{
+                //   this.set('appHeaderEffects', 'waterfall blend-background parallax-background');
+                // }
+                this.set('isDesktop', isDesktop);
+                // console.log('this.isDesktop: ', this.isDesktop);
+            }
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
+
+            _routePageChanged(page) {
+                // If no page was found in the route data, page will be an empty string.
+                // Default to 'view1' in that case.
+                this.page = page || 'home';
+
+                // console.log(this.page);
+
+                // Close a non-persistent drawer when the page & route are changed.
+                if (!this.$.drawer.persistent) {
+                    this.$.drawer.close();
+                }
+            }
+
+            _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('pages/kal-' + page + '-page.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true);
+            }
+
+            _showPage404() {
+                this.page = 'view404';
+            }
+            _uidChanged(uid, oldVal) {
+                // console.log('uidChanged: ', uid, oldVal);
+                var user = null;
+
+                if (uid != 0) {
+                    user = {
+                        loggedin: true,
+                        uid: uid
+                    }
+                } else {
+                    user = {
+                        loggedin: false,
+                        uid: 0
+                    }
+                }
+
+                this.storedUser = user;
+
+                // console.log('storedUser: ', this.storedUser);
+
+            }
+        }
+
+        window.customElements.define(KalApp.is, KalApp);
+    </script>
+</dom-module>

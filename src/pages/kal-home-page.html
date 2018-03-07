@@ -1,0 +1,181 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-request.html">
+
+<link rel="import" href="../shared-styles.html">
+
+<!-- Home Subpages Imports -->
+<link rel="import" href="../home/home-news.html">
+<link rel="import" href="../home/home-games.html">
+<link rel="import" href="../home/home-extras.html">
+<link rel="import" href="../home/home-gpm-slider.html">
+
+<!-- Model Imports --> 
+<link rel="import" href="../model/news-item.html">
+<link rel="import" href="../model/game-item.html">
+
+
+<dom-module id="kal-home-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+        /* height: 100vh; */
+        /* overflow-y: scroll !important; */
+        font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
+        line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+
+      }
+
+      figure {
+        margin: 10px;
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+        0 1px 10px 0 rgba(0, 0, 0, 0.12),
+        0 2px 4px -1px rgba(0, 0, 0, 0.4);
+      }
+
+      figcaption {
+        margin-left: 10px;
+        margin-bottom: 10px;
+        color: #fff;
+        padding-right: 20px;
+      }
+
+      iron-image {
+        max-width: 100%;
+        width: 100%;
+        /* height: 12.5em; */
+      }
+
+
+      /* Desktops and laptops ----------- */
+
+      @media only screen and (min-width: 1224px) {
+        /* 
+        #items .item{
+          padding: 10px;
+          line-height: 15px;
+        }
+        .item iron-image{
+          width: 130px;
+          height: 80px;
+          box-sizing: border-box;
+          background-color: #DDD;
+        }
+
+        .item .pad .primary{
+          font-size: 12px;
+        }
+        .item .pad .shortText{
+          font-size: 10px;
+        } */
+      }
+
+      /* Desktops and laptops ----------- */
+
+      @media only screen and (min-width: 1366px) {}
+
+      /* Desktops and laptops ----------- */
+
+      @media only screen and (min-width: 1620px) {
+
+        /* .item iron-image{
+          width: 170px;
+          height: 92px;
+          box-sizing: border-box;
+          background-color: #DDD;
+        }
+        .item .pad .primary{
+          font-size: 16px;
+        }
+        .item .pad .shortText{
+          font-size: 14px;
+        } */
+      }
+
+      /* Large screens ----------- */
+
+      @media only screen and (min-width: 1824px) {}
+
+      .content-container {
+        @apply --layout-flex-8;
+      }
+
+      .other-container {
+        @apply --layout-flex-4;
+      }
+
+      iron-image {
+        /* width: calc(12.5em + 1vmin); */
+      }
+    </style>
+    <!-- 
+    <iron-ajax
+      id="ajax"
+      url="http://localhost:8081/data.json"
+      handle-as="json"
+      on-response="_handleNewsResponse"
+      loading="{{loading}}"
+      debounce-duration="300"></iron-ajax> -->
+
+
+ 
+    <home-news is-mobile=[[isMobile]]></home-news>
+    
+    <home-gpm-slider></home-gpm-slider>
+
+
+
+    <home-games is-mobile=[[isMobile]]></home-games>
+
+    <home-extras is-mobile=[[isMobile]]></home-extras>
+
+
+
+
+  </template>
+
+  <script>
+    class KalHomePage extends Polymer.Element {
+      static get is() { return 'kal-home-page'; }
+
+      /**
+        * Object describing property-related metadata used by Polymer features
+        */
+      static get properties() {
+        return {
+          isMobile: Boolean
+        };
+      }
+
+
+      /**
+        * Called every time the element is inserted into the DOM. Useful for 
+        * running setup code, such as fetching resources or rendering.
+        * Generally, you should try to delay work until this time.
+        */
+      connectedCallback() {
+        super.connectedCallback();
+
+        
+
+      }
+      _handleNewsResponse(a) {
+        console.log("data", a.detail.response.length);
+      }
+
+    }
+
+    window.customElements.define(KalHomePage.is, KalHomePage);
+  </script>
+</dom-module>

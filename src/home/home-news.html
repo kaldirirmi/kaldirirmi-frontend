@@ -1,0 +1,462 @@
+<dom-module id="home-news">
+    <template>
+        <style include="shared-styles">
+            figure {
+                margin: 10px;
+                box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+            }
+
+            figcaption {
+                margin-left: 10px;
+                margin-bottom: 10px;
+                color: #fff;
+                padding-right: 20px;
+            }
+
+            iron-image {
+                max-width: 100%;
+                width: 100%;
+                /* height: 12.5em; */
+            }
+
+            /***************** NEWS CONTAINER ***************************/
+
+            #news-container {
+                @apply --layout-horizontal;
+                margin: 10px 0px;
+                @apply --shadow-elevation-2dp;
+                margin-top: 0px;
+            }
+
+                #news-container .main-catalog {
+                    @apply --layout-flex-9;
+                    @apply --layout-vertical;
+                }
+
+            .main-catalog .advert-catalog {
+                @apply --layout-flex-3;
+                background: blue;
+                padding: 10px;
+            }
+
+            .main-catalog .news-catalog {
+                @apply --layout-flex-8;
+                @apply --layout-horizontal;
+                padding: 10px;
+            }
+
+                .main-catalog .news-catalog .big-news-catalog {
+                    @apply --layout-flex-8;
+                    @apply --layout-vertical;
+                }
+
+                .main-catalog .news-catalog .small-news-catalog {
+                    @apply --layout-vertical;
+                    @apply --layout-flex-4;
+                    padding: 0px 10px;
+                }
+
+            #news-container .side-catalog {
+                @apply --layout-flex-4;
+                padding: 10px;
+            }
+
+            .side-catalog #items {
+                @apply --layout-vertical;
+            }
+
+            .continue-item {
+                @apply --layout-vertical;
+                padding-top: 5px;
+            }
+
+            /* Smartphones (portrait and landscape) ----------- */
+
+            /* @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+                #news-container, #news-container .news-catalog{
+                    @apply --layout-vertical;
+                    margin-left: -5px;
+                }
+                #news-container,
+                #news-container .news-catalog .small-news-catalog {
+                    padding: 0px;
+                }
+            } */
+
+            :host([is-mobile]) #news-container, :host([is-mobile]) #news-container .news-catalog {
+                @apply --layout-vertical;
+                margin-left: -5px;
+            }
+
+
+                :host([is-mobile]) #news-container,
+                :host([is-mobile]) #news-container .news-catalog .small-news-catalog {
+                    padding: 0px;
+                }
+
+
+            /* Ipad Pro */
+            @media only screen and (min-width: 769px) and (max-width: 1224px) {
+                #news-container {
+                    @apply --layout-vertical;
+                }
+                    #news-container news-item[basic] {
+                        min-height: 175px;
+                    }
+            }
+
+
+            @media only screen and (min-width: 1400px){
+                #news-container {
+                      min-height: 500px;
+                }
+            }
+
+        </style>
+
+
+        <iron-ajax auto id="getpopulercontent" url="/h/main?fm=get-populer-content-default&a=[[datatable]]&b=[[itemsize]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
+        <!--<iron-ajax auto="{{go}}" id="getlastcontent" url="/h/main?fm=get-last-content-default&a=[[datatable]]&b=[[lastitemsize]]" handle-as="json" on-response="_responseLast" loading="{{loadinglast}}"></iron-ajax>-->
+
+        <div id="news-container">
+            <paper-material elevation="4" class="main-catalog">
+                <div class="news-catalog">
+                    <div class="big-news-catalog">
+                        <animated-content-placeholder class="image-placeholder big-news">
+                            <div class="background-masker figure-top"></div>
+                            <div class="background-masker figure-left"></div>
+                            <div class="background-masker figure-right"></div>
+                            <div class="background-masker figure-bottom"></div>
+                            <div class="background-masker figcaption-bottom"></div>
+                        </animated-content-placeholder>
+                        <news-item item="[[news.first]]" basic type="nondeclared" is-mobile=[[isMobile]]></news-item>
+                    </div>
+                    <div class="small-news-catalog">
+                        <animated-content-placeholder class="image-placeholder small-news">
+                            <div class="background-masker figure-top"></div>
+                            <div class="background-masker figure-left"></div>
+                            <div class="background-masker figure-right"></div>
+                            <div class="background-masker figure-bottom"></div>
+                            <div class="background-masker figcaption-bottom"></div>
+                        </animated-content-placeholder>
+                        <animated-content-placeholder class="image-placeholder small-news">
+                            <div class="background-masker figure-top"></div>
+                            <div class="background-masker figure-left"></div>
+                            <div class="background-masker figure-right"></div>
+                            <div class="background-masker figure-bottom"></div>
+                            <div class="background-masker figcaption-bottom"></div>
+                        </animated-content-placeholder>
+                        <template is="dom-repeat" items={{news.center}} as=item>
+                            <news-item item="[[item]]" basic is-mobile=[[isMobile]]></news-item>
+                        </template>
+                    </div>
+                </div>
+                <div class="advert-catalog"></div>
+            </paper-material>
+            <paper-material elevation="1" class="side-catalog">
+                <animated-content-placeholder class="image-placeholder small-news">
+                    <div class="background-masker figure-top"></div>
+                    <div class="background-masker figure-left"></div>
+                    <div class="background-masker figure-right"></div>
+                    <div class="background-masker figure-bottom"></div>
+                    <div class="background-masker figcaption-bottom"></div>
+                </animated-content-placeholder>
+                <animated-content-placeholder class="image-placeholder small-news">
+                    <div class="background-masker figure-top"></div>
+                    <div class="background-masker figure-left"></div>
+                    <div class="background-masker figure-right"></div>
+                    <div class="background-masker figure-bottom"></div>
+                    <div class="background-masker figcaption-bottom"></div>
+                </animated-content-placeholder>
+                <animated-content-placeholder class="image-placeholder extended-news">
+                    <div class="background-masker figure-top"></div>
+                    <div class="background-masker figure-left"></div>
+                    <div class="background-masker figure-right"></div>
+                    <div class="background-masker figure-bottom"></div>
+                    <div class="background-masker figcaption-bottom"></div>
+                </animated-content-placeholder>
+
+                <div id="items">
+                    <template is="dom-repeat" items={{news.right}} as=item>
+                        <news-item item="[[item]]" extended is-mobile=[[isMobile]]></news-item>
+                    </template>
+                </div>
+                <div class="continue-item">
+                    <paper-button raised>Devamı</paper-button>
+                </div>
+            </paper-material>
+        </div>
+    </template>
+    <script>
+        class HomeNews extends Polymer.Element {
+            static get is() {
+                return 'home-news'
+            }
+
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        notify: true,
+                        reflectToAttribute: true
+                    },
+                    cdn: {
+                        type: String,
+                        value: 'https://cdn.kaldirirmi.com/images/news/',
+                    },
+                    content: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    datatable: {
+                        type: String,
+                        value: 'kalnews',
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    itemsize: {
+                        type: Number,
+                        value: 8
+                    },
+                    news: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                first: null,
+                                second: null,
+                                third: null,
+                                center: [],
+                                right: []
+                            }
+                        }
+                    },
+                };
+            }
+            /**
+              * Called every time the element is inserted into the DOM. Useful for
+              * running setup code, such as fetching resources or rendering.
+              * Generally, you should try to delay work until this time.
+              */
+            connectedCallback() {
+                super.connectedCallback();
+
+                //test data
+               
+
+            }
+
+
+            /**
+              * Use for one-time configuration of your component after local DOM is
+              * initialized.
+              */
+            ready() {
+                super.ready();
+
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    //setTimeout(() => {
+                    //    this.set('go', true);
+                    //}, 2222);
+                });
+
+            }
+
+            _onResponse(a) {
+                let index = 0;
+                this.shadowRoot.querySelectorAll('.image-placeholder').forEach(function(placeholder){
+                    placeholder.remove();
+                });
+
+                //console.log(a.detail.response);
+
+                if (a.detail.response === null) {
+                    this.demoInit();
+                }
+                else {
+                    //console.log(a.detail.response);
+
+                    if (a.detail.response.length > 0) {
+                        a.detail.response.forEach(function (element) {
+                            //console.log(element);
+                            if (index == 0) {
+                                this.set('news.first', element);
+                            }
+                                //else if (index == 1) {
+                                //    this.set('news.second', element);
+                                //}
+                                //else if (index == 2) {
+                                //    this.set('news.third', element);
+                                //}
+                            else if (index >= 1 && index <= 2) {
+                                this.push('news.center', element);
+                            }
+                            else {
+                                this.push('news.right', element);
+                            }
+                            index++;
+                        }, this);
+                    }
+                }
+
+
+             
+            }
+
+            demoInit() {
+                const news = [
+                   {
+                       "id": 1000094,
+                       "title": "Yükselme Ligi 2017 Yaz Mevsimi Maçları Sona Erdi",
+                       "url": "yukselme-ligi-2017-yaz-mevsimi-maclari-sona-erdi",
+                       "picture": "yukselme-ligi-final.jpg",
+                       "details": "",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 126,
+                       "subtitle": "Sürpriz sonuçlar geldi, Galatasaray elindeki fırsatı değerlendiremedi.",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000093,
+                       "title": "Playerunknown’s Battlegrounds’un Haftalık Güncellemesi Yayınlanacak",
+                       "url": "playerunknown’s-battlegrounds’un-haftalik-guncellemesi-yayinlanacak",
+                       "picture": "pubg-16-hafta-update.jpg",
+                       "details": "",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 148,
+                       "subtitle": "16.hafta güncellemesinde birçok sorun düzeltiliyor",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000092,
+                       "title": "Steam’de Köklü Değişiklikler Bizi Bekliyor",
+                       "url": "steam’de-koklu-degisiklikler-bizi-bekliyor",
+                       "picture": "steam-logo.jpg",
+                       "details": "",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 114,
+                       "subtitle": "İşte değişiklikler…",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000091,
+                       "title": "Playerunknown’s Battlegrounds’un Tam Sürümü Ertelendi",
+                       "url": "playerunknown’s-battlegrounds’un-tam-surumu-ertelendi",
+                       "picture": "pubg-haber.jpg",
+                       "details": "",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 132,
+                       "subtitle": "Tam sürüme 2017 yılının sonunda geçilmesi planlanıyor!",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000090,
+                       "title": "Assassin’s Creed Origins ne kadar büyük olacak?",
+                       "url": "assassin’s-creed-origins-ne-kadar-buyuk-olacak-",
+                       "picture": "assassisns-creed-origins-haber.jpg",
+                       "details": "",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 117,
+                       "subtitle": "Yönetmeni Ashraf Ismail röportajında açıkladı",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000089,
+                       "title": "LOL Evinde",
+                       "url": "lol-evinde",
+                       "picture": "server-relocation-final-merged-fullsize.jpg",
+                       "details": "",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 136,
+                       "subtitle": "Şimdi Faker Düşünsün !",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000042,
+                       "title": "Mass Effect Andromeda Korsana Yenik Düştü",
+                       "url": "mass-effect-andromeda-korsana-yenik-dustu",
+                       "picture": "masseffectandromeda.jpg",
+                       "details": "\u003cp style=\"background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;\"\u003eElectronic\r\nArts\u0026nbsp;ve\u0026nbsp;Bioware\u0026nbsp;işbirliği ile geliştirilen\u0026nbsp;Mass Effect\r\nAndromeda\u0026nbsp;yaklaşık 2 hafta önce, PC, Playstation 4 ve Xbox One’da eş\r\nzamanlı olarak satışa sunuldu. Hikaye tabanlı bir oyun olan Mass Efffect\r\nAndromeda, maalesef PC platformunda pek de parlak bir grafik çizemedi. PC\r\noyuncularının genel itibariyle, hikaye tabanlı oyunları korsan olarak oynamayı\r\ntercih etmesi, en büyük neden olarak gösterilebilir.Bioware,\u0026nbsp;Mass Effect\r\nAndromeda’da\u0026nbsp;Denuvo\u0026nbsp;isimli DRM koruma sistemini kullanıyordu. Bu\r\nsistem Resident Evil 7’de de kullanılmış ve onda da oyuncular 1 haftadan kısa\r\nbir sürede kırmayı becermişlerdi. Kendilerinin başına da aynı şeyin gelmesinden\r\nkorkan geliştiriciler pek de haksız çıkmadı.Mass Effect Andromeda\u0026nbsp;da bu\r\nduruma yalnızca 13 gün dayanabildi. Yapımcı, Denuvo kalkanlarının devre dışı\r\nbırakıldığını ve Mass Effect Andromeda’nın “crack” dosyasının büyük bir\r\nbölümünün tamamlandığını açıkladı.İşin aslına bakarsak, korsanları etkisiz\r\nbırakmanın yolu, oyunu kıran topluluklara bir nevi rüşvet vermekten geçiyor. Bu\r\nyolun yadsınamaz bir gerçek olduğunu kabul eden EA daha önceleri FIFA serisinde\r\nkorsanlarla anlaşmış ve oyunun kırılmasını uzun zaman boyunca engellemişti.\r\nBunu söylemek her ne kadar üzücü olsa da, maalesef bu tip korsan gruplara\r\nharaçlarını vermeden, oyunları koruma altına almak mümkün değil.\u003cfont face=\"Arial, sans-serif\"\u003e\u003cspan style=\"background-color: rgb(34, 34, 34);\"\u003e\u003co:p\u003e\u003c/o:p\u003e\u003c/span\u003e\u003c/font\u003e\u003c/p\u003e",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 116,
+                       "subtitle": "Korsanlar karşısında yapımcıların eli kolu bağlı!",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   },
+                   {
+                       "id": 1000040,
+                       "title": "Saran Medya ve Riot Games Türkiye\u0027den Dev İşbirliği",
+                       "url": "saran-medya-ve-riot-games-turkiye-den-dev-isbirligi",
+                       "picture": "league-of-legends.jpg",
+                       "details": "\u003cp\u003eRiot Games Türkiye ile spor yayıncılığı pazarlamasında dünya şirketleri sıralamasında 5. olan ve yeni spor kanalı \"S Sport\" ile yayın hayatına da merhaba diyen \u0026nbsp;Saran Medya, League of Legends Türkiye Şampiyonluk Ligi’nin televizyon yayınları ile ilgili bir anlaşma imzaladılar.Yapılan anlaşmayla, Türkiye\u0027nin Premier spor kanalı S Sport, Türkiye’nin ilk profesyonel Espor Ligi League of Legends Türkiye Şampiyonluk Ligi’nin yayın haklarını satın aldı. S Sport\u0027un ayrıca 2017 yılı içinde Çin\u0027de düzenlenecek League of Legends Dünya Şampiyonası\u0027nın da \u0026nbsp;Espor tutkunlarıyla buluşturulacağı bildirildi.Saran Medya ve Riot Games Türkiye arasında yapılan iş birliği \u0026nbsp;sadece maçların yayınlanmasıyla sınırlı kalmayacak, ayrıca \u0026nbsp;haftalık karşılaşmalarda yaşanan en önemli anlar ve özetler de S Sport ekranlarında hayranlarıyla buluşacak. Bunların yanında League of Legends tüm lig karşılaşmalarıyla ilgili yorumların yapılacağı, izleyicilerin en güncel gelişmeleri takip edilebileceği özel stüdyo programları da yayınlanacak.\u003c/p\u003e\u003cp\u003e",
+                       "category": null,
+                       "publisher": null,
+                       "releasedate": null,
+                       "viewcount": 109,
+                       "subtitle": "League of Legends artık Televizyonda",
+                       "searchkeywords": null,
+                       "publisheravatar": null,
+                       "relatedgames": null
+                   }
+
+                ];
+
+                let index = 0;
+                news.forEach(element => {
+                    element.picture = 'https://cdn.kaldirirmi.com/images/news/' + element.picture;
+                    //console.log(element);
+                    if (index == 0) {
+                        this.set('news.first', element);
+                    }
+                    else if (index >= 1 && index <= 2) {
+                        this.push('news.center', element);
+                    }
+                    else {
+                        this.push('news.right', element);
+                    }
+                    index++;
+                });
+            }
+        }
+
+        window.customElements.define(HomeNews.is, HomeNews);
+    </script>
+</dom-module>

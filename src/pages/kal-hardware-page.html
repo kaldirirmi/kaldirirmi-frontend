@@ -1,0 +1,171 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-from-right-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="../hardware/kal-hardware-list.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="kal-hardware-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+
+        display: block;
+        padding: 10px;
+        font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
+        line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+
+      }
+    
+      #hardware-container {
+        width: 100%;
+        height: 100%;
+      }
+
+      #hardware-container #navigation-tabs {
+        border-top: 3px solid #ff7800;
+        margin-bottom: 1.5em;
+        z-index: 3;
+        width: 100%;
+        background: #222;
+        border-bottom: 10px solid #222;
+        box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.4);
+        top: 64px;
+        --paper-tabs-selection-bar-color: #222;
+
+        /*--paper-tabs-selection-bar:{
+                                    height: 100%;
+                                    background: #ff7800;
+                                }*/
+      }
+
+      #hardware-container #navigation-tabs .iron-selected {
+        color: #ff7800 !important;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+
+      #hardware-container #navigation-tabs paper-tab[iron-selected] {
+        color: blue !important;
+      }
+
+
+
+      #hardware-container #navigation-tabs paper-tab {
+        font-weight: 100;
+        font-size: 1.1em;
+        color: white;
+      }
+
+      #hardware-container #hardwarepages {
+        margin-top: 0px;
+      }
+
+      /* #hardware-container #navigation-tabs {
+        position: fixed;
+      } */
+
+      /* #hardware-container #hardwarepages {
+        margin-top: 75px;
+      } */
+
+      @media only screen and (min-width: 768px) {
+        #hardware-container {
+          width: 90% !important;
+        }
+
+        #hardware-container #navigation-tabs {
+          width: 79.5%;
+        }
+      }
+
+      @media only screen and (min-width: 1111px) {
+        #hardware-container {
+          width: 80% !important;
+        }
+        #hardware-container #navigation-tabs {
+          width: 75%;
+        }
+      }
+
+      @media only screen and (min-width: 1620px) {
+        #hardware-container #navigation-tabs {
+          width: 76.3%;
+        }
+      }
+    </style>
+
+    <paper-material elevation="2" id="hardware-container">
+      <paper-material elevation="5">
+        <paper-tabs id="navigation-tabs" selected="{{selected}}" on-iron-select="_ironSelect">
+          <paper-tab>İşlemciler</paper-tab>
+          <paper-tab>Ekran Kartları</paper-tab>
+        </paper-tabs>
+      </paper-material>
+
+      <neon-animated-pages id="hardwarepages" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
+        <neon-animatable>
+          <kal-hardware-list hardware="cpu"></kal-hardware-list>
+        </neon-animatable>
+        <neon-animatable>
+          <kal-hardware-list hardware="gpu"></kal-hardware-list>
+        </neon-animatable>
+      </neon-animated-pages>
+    </paper-material>
+  </template>
+
+  <script>
+    class KalHardwarePage extends Polymer.Element {
+      static get is() {
+        return 'kal-hardware-page';
+      }
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          isMobile: {
+            type: Boolean,
+            reflectToAttribute: true
+          },
+          route: {
+            type: Object,
+          },
+          selected: {
+            type: Number,
+            value: 0,
+            notify: true
+          },
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+      }
+
+      _ironSelect(event) {
+          var selected = event.target.selected;
+
+          //if (selected == 1) {
+          //    if (!this._isAlreadyInstance(this.$.ipGpus)) {
+          //        Polymer.Base.importHref('assets/components/kaldirirmi/hardware/kaldirirmi-gpus.html');
+          //    }
+          //}
+
+          this.$.hardwarepages.select(selected);
+        }
+
+        _isAlreadyInstance(element) {
+          if (Polymer.isInstance(element)) {
+            return true;
+          }
+          return false;
+        }
+
+    }
+    window.customElements.define(KalHardwarePage.is, KalHardwarePage);
+  </script>
+</dom-module>

@@ -1,0 +1,1281 @@
+<dom-module id="kal-all-games">
+    <template>
+        <style>
+            :host {
+                /* display: block; */
+                width: 100%;
+                color: white;
+                --kal-tabs-height: 192px;
+                --kal-gamepage-height: calc(100vh - 300px);
+                height: var(--kal-gamepage-height);
+                /* this.updateStyles({'--my-dynamic-property': 'red'}); */
+            }
+            iron-scroll-threshold {
+                height: calc(100vh - 280px);
+                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+                /* padding: 15px; */
+
+
+            }
+            #navButtons .paper-tabs-games {
+                border-top: 3px solid #ff7800;
+                margin-bottom: 1.5em;
+                top: 64px;
+                z-index: 3;
+                width: 100%;
+                background: #222;
+                border-bottom: 12px solid #222;
+                box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.4);
+                font-size: 13px;
+                --paper-tabs-selection-bar-color: #222;
+            }
+
+            #navButtons .paper-tabs-games .iron-selected {
+                color: #ff7800 !important;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+
+            #navButtons .paper-tabs-games {
+                /* position: fixed; */
+                margin-bottom: 1.5em;
+                top: var(--kal-tabs-height);
+                z-index: 3;
+                width: 100%;
+                background: #222;
+                border-bottom: 12px solid #222;
+                box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.4);
+            }
+
+            #cd-timeline {
+                margin-top: 0px !important;
+            }
+
+            @media only screen and (min-width: 1024px) {}
+
+            #navButtons .paper-tabs-games paper-tab {
+                color: white;
+                font-weight: 100;
+                font-size: calc(0.5em + 1vmin);
+                min-width: 4em;
+            }
+
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            .release-date-title {
+                color: white;
+                font-family: inherit;
+                text-decoration: solid;
+                margin: 0 auto;
+                display: block;
+                background-color: inherit;
+                width: 40%;
+                font-size: 22px;
+                border-style: solid;
+                border-width: 1px;
+            }
+
+            .cd-container {
+                margin: 0 auto;
+            }
+
+
+            #cd-timeline {
+                position: relative;
+                margin-bottom: 2em;
+                margin-top: -25px;
+            }
+
+
+            .cd-timeline-block {
+                position: relative;
+                @apply --layout-vertical;
+                
+                margin: 4em 2em;
+                margin-top: 40px;
+                @apply --layout-center;
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14),
+                0 4px 22px 3px rgba(0, 0, 0, 0.12),
+                0 6px 7px -4px rgba(0, 0, 0, 0.4);
+            }
+
+            .cd-timeline-block:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            .cd-timeline-block:first-child {
+                margin-top: 0;
+            }
+
+            .cd-timeline-block:last-child {
+                margin-bottom: 0;
+            }
+
+
+            .cd-timeline-block .cd-timeline-img {
+                border-bottom: 2px solid white;
+                width: 100%;
+                height: 55px;
+                margin-left: 0;
+                border-radius: 50%;
+                -webkit-transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+            }
+
+            .cd-timeline-block .cd-timeline-img div h3 {
+                color: white;
+                margin: 0;
+                font-size: calc(1.3em + 1vmin);
+            }
+
+            #gamelist {
+                @apply --layout-horizontal;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                margin-left: 100px;
+                background: #222;
+                justify-content: center;
+                margin: 10px 0px;
+            }
+
+            #gamelist .game {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                position: relative;
+                text-decoration: none;
+                width: 180px;
+                height: 260px;
+                box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12),
+                0 5px 5px -3px rgba(0, 0, 0, 0.4);
+            }
+
+            #gamelist .game iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            #gamelist .game .game-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                background: #222;
+                width: 100%;
+                height: 20%;
+            }
+
+            #gamelist .game .game-title span {
+                width: 100%;
+                text-align: center;
+                font-size: calc(0.8em + 1vmin);
+            }
+
+            #gamelist .game:hover iron-image[background] {
+                opacity: 1;
+            }
+
+
+            .cd-timeline-content {
+                position: relative;
+                margin-left: 60px;
+                background: white;
+                border-radius: 0.25em;
+                padding: 1em;
+                box-shadow: 0 3px 0 #d7e4ed;
+            }
+
+            .cd-timeline-content:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            .cd-timeline-content h2 {
+                color: #303e49;
+            }
+
+            .cd-timeline-content::before {
+                content: '';
+                position: absolute;
+                top: 16px;
+                right: 100%;
+                height: 0;
+                width: 0;
+                border: 7px solid transparent;
+                border-right: 7px solid white;
+            }
+
+            @media only screen and (max-width: 1023px) {
+                #navButtons .paper-tabs-games paper-tab {
+                    font-size: calc(1em + 1vmin) !important;
+
+                }
+                #navButtons .paper-tabs-games paper-icon-button {
+                    width: 70px !important;
+                    height: 70px !important;
+                }
+
+            }
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #cd-timeline .cd-timeline-block {
+                    flex-direction: row;
+                    align-items: flex-start;
+                }
+                #cd-timeline .cd-timeline-block .cd-timeline-img {
+                    width: 60px;
+                    margin: 0px 10px;
+                    border-bottom: 0;
+                    box-shadow: 0 0 0 4px white, inset 0 2px 0 rgba(0, 0, 0, 0.08), 0 3px 0 4px rgba(0, 0, 0, 0.05);
+
+                }
+                #cd-timeline .cd-timeline-block .cd-timeline-img h3 {
+                    font-size: calc(0.6em + 1vmin);
+                }
+                #cd-timeline .cd-timeline-block #gamelist {
+                    justify-content: flex-start;
+                    margin-left: 70px;
+                }
+
+                #navButtons .paper-tabs-games paper-tab {
+                    width: 17%;
+                    margin: 0 auto;
+                }
+
+                .game .game-title span {
+                    font-size: calc(0.38em + 1vmin) !important;
+                }
+
+                .cd-timeline-img:after {
+                    content: '';
+                    width: 0;
+                    height: 100%;
+                    position: absolute;
+                    border: 1px solid white;
+                    top: 0;
+                    left: 100px;
+                }
+
+                .cd-timeline-img {
+                    width: 49px;
+                    height: 49px;
+                    margin-left: -30px;
+                }
+                #gamelist .game {
+                    width: 151px;
+                    height: 240px;
+                }
+
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                .cd-timeline-img {
+                    width: 52px;
+                    height: 52px;
+                    margin-left: -30px;
+                }
+
+                #gamelist .game {
+                    width: 163px;
+                    height: 260px;
+                }
+
+                #gamelist .game .game-title {
+                    height: 12%;
+                }
+
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #navButtons .paper-tabs-games paper-tab {
+                    width: 18%;
+                    margin: 0 auto;
+                }
+
+                .cd-timeline-img {
+                    width: 55px;
+                    height: 55px;
+                    margin-left: -30px;
+                }
+
+                #gamelist .game {
+                    width: 183px;
+                    height: 300px;
+                }
+
+                #gamelist .game .game-title {
+                    height: 13%;
+                }
+
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                .cd-timeline-img {
+                    width: 57px;
+                    height: 57px;
+                    margin-left: -30px;
+                }
+
+                #gamelist .game {
+                    width: 173px;
+                    height: 280px;
+                }
+
+                #gamelist .game .game-title {
+                    height: 14%;
+                }
+
+            }
+
+            @media only screen and (min-width: 1824px) {
+                .cd-timeline-img {
+                    width: 60px;
+                    height: 60px;
+                    margin-left: -30px;
+                }
+
+                #gamelist .game {
+                    width: 183px;
+                    height: 300px;
+                }
+
+                #gamelist .game .game-title {
+                    height: 20%;
+                }
+
+            }
+        </style>
+        <div id="navButtons">
+            <paper-tabs scrollable fit-container class="paper-tabs-games" selected="{{mySelection}}">
+                <paper-tab on-tap="handleAction">Aksiyon</paper-tab>
+                <paper-tab on-tap="handleShooter">FPS</paper-tab>
+                <paper-tab on-tap="handleOnline">Online</paper-tab>
+                <paper-tab on-tap="handleStrategy">Strateji</paper-tab>
+                <paper-tab on-tap="handleAdventure">Macera</paper-tab>
+            </paper-tabs>
+        </div>
+        <iron-ajax id="getgames" timeout="500" url="/h/main?fm=get-games-via-category-and-release&a=[[start]]&b=[[end]]&c=[[mySelection]]"
+            handle-as="json" on-response="_response" loading="{{loadinggames}}"></iron-ajax>
+        <div id="region"> 
+                <div class="loadingIndicator" hidden$="[[!loadinggames]]">
+                        <paper-spinner-lite active$="[[loadinggames]]"></paper-spinner-lite> Yükleniyor
+                    </div>
+            <iron-scroll-threshold on-lower-threshold="_loadmoregame" id="threshold" lower-threshold="500">
+                <!-- <iron-scroll-threshold auto lower-threshold="25" on-lower-threshold="_loadmoregame" id="threshold"> -->
+                <section id="cd-timeline" class="cd-container" scroll-target="threshold">
+                    <template is="dom-if" if="[[eighteen]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2018</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist" itemscope itemtype="http://schema.org/VideoGame">
+                                <template is="dom-repeat" items="{{games18}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();" itemprop="url">
+                                        <iron-image itemprop="image" background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title" itemprop="name">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                        <meta itemprop="applicationCategory" content="Game" />
+                                        <meta itemprop="genre" content="[[item.genres]]" />
+                                        <meta itemprop="publisher" content="[[item.publisher]]" />
+                                        <meta itemprop="operatingSystem" content="Windows 10 64 bit" />
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[seventeen]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2017</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist" itemscope itemtype="http://schema.org/VideoGame">
+                                <template is="dom-repeat" items="{{games17}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();" itemprop="url">
+                                        <iron-image itemprop="image" background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title" itemprop="name">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                        <meta itemprop="applicationCategory" content="Game" />
+                                        <meta itemprop="genre" content="[[item.genres]]" />
+                                        <meta itemprop="publisher" content="[[item.publisher]]" />
+                                        <meta itemprop="operatingSystem" content="Windows 10 64 bit" />
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[sixteen]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2016</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games16}}" as="item" itemscope itemtype="http://schema.org/VideoGame">
+                                    <a itemprop="url" class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image itemprop="image" background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title" itemprop="name">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                        <meta itemprop="applicationCategory" content="Game" />
+                                        <meta itemprop="genre" content="[[item.genres]]" />
+                                        <meta itemprop="publisher" content="[[item.publisher]]" />
+                                        <meta itemprop="operatingSystem" content="Windows 10 64 bit" />
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+
+                    </template>
+                    <template is="dom-if" if="[[fifteen]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2015</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games15}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+
+                    </template>
+                    <template is="dom-if" if="[[fourteen]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2014</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games14}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+
+                    </template>
+                    <template is="dom-if" if="[[thirteen]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2013</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games13}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[twelve]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2012</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games12}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[eleven]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2011</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games11}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[ten]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2010</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games10}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[nine]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2009</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games9}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[eight]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2008</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games8}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[seven]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2007</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games7}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[six]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2006</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games6}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[five]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2005</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games5}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[four]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2004</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games4}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[three]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2003</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games3}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[two]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2002</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games2}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[one]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div>
+                                    <h3 class="titleReleaseDate">2001</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games1}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[zero]]">
+                        <div class="cd-timeline-block">
+                            <div class="cd-timeline-img cd-picture">
+                                <div id="div2000">
+                                    <h3 class="titleReleaseDate">2000</h3>
+                                </div>
+                            </div>
+                            <div id="gamelist">
+                                <template is="dom-repeat" items="{{games0}}" as="item">
+                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                            preload fade></iron-image>
+                                        <div class="game-title">
+                                            <span>[[item.name]]</span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </section>
+            </iron-scroll-threshold>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * `kal-all-games` Description
+         *
+         * @summary getting all games for /game page.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalAllGames extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-all-games';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    selectedTab: {
+                        type: String,
+                        value: 'action',
+                    },
+                    mySelection: {
+                        type: Number,
+                        value: 0
+                    },
+                    categoryTitle: {
+                        type: String,
+                        value: 'ACTION'
+                    },
+                    page: {
+                        type: Number,
+                        value: 0
+                    },
+                    itemperpage: {
+                        type: Number,
+                        value: 36
+                    },
+                    query: {
+                        type: String,
+                        value: ''
+                    },
+                    loadinggames: {
+                        type: Boolean,
+                        value: true
+                    },
+                    games: {
+                        type: Array,
+                        value: []
+                    },
+
+                    //games part
+                    games0: {
+                        type: Array,
+                        value: []
+                    },
+                    games1: {
+                        type: Array,
+                        value: []
+                    },
+                    games2: {
+                        type: Array,
+                        value: []
+                    },
+                    games3: {
+                        type: Array,
+                        value: []
+                    },
+                    games4: {
+                        type: Array,
+                        value: []
+                    },
+                    games5: {
+                        type: Array,
+                        value: []
+                    },
+                    games6: {
+                        type: Array,
+                        value: []
+                    },
+                    games7: {
+                        type: Array,
+                        value: []
+                    },
+                    games8: {
+                        type: Array,
+                        value: []
+                    },
+                    games9: {
+                        type: Array,
+                        value: []
+                    },
+                    games10: {
+                        type: Array,
+                        value: []
+                    },
+                    games11: {
+                        type: Array,
+                        value: []
+                    },
+                    games12: {
+                        type: Array,
+                        value: []
+                    },
+                    games13: {
+                        type: Array,
+                        value: []
+                    },
+                    games14: {
+                        type: Array,
+                        value: []
+                    },
+                    games15: {
+                        type: Array,
+                        value: []
+                    },
+                    games16: {
+                        type: Array,
+                        value: []
+                    },
+                    games17: {
+                        type: Array,
+                        value: []
+                    },
+                    games18: {
+                        type: Array,
+                        value: []
+                    }, //boolean date types
+                    zero: {
+                        type: Boolean,
+                        value: false
+                    },
+                    one: {
+                        type: Boolean,
+                        value: false
+                    },
+                    two: {
+                        type: Boolean,
+                        value: false
+                    },
+                    three: {
+                        type: Boolean,
+                        value: false
+                    },
+                    four: {
+                        type: Boolean,
+                        value: false
+                    },
+                    five: {
+                        type: Boolean,
+                        value: false
+                    },
+                    six: {
+                        type: Boolean,
+                        value: false
+                    },
+                    seven: {
+                        type: Boolean,
+                        value: false
+                    },
+                    eight: {
+                        type: Boolean,
+                        value: false
+                    },
+                    nine: {
+                        type: Boolean,
+                        value: false
+                    },
+                    ten: {
+                        type: Boolean,
+                        value: false
+                    },
+                    eleven: {
+                        type: Boolean,
+                        value: false
+                    },
+                    twelve: {
+                        type: Boolean,
+                        value: false
+                    },
+                    thirteen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fourteen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fifteen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    sixteen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    seventeen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    eighteen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    start: {
+                        type: Number,
+                        value: 2018
+                    },
+                    end: {
+                        type: Number,
+                        type: Number,
+                        value: 2019
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+            }
+            
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    //this.updateStyles({'--my-dynamic-property': 'red'});
+                });
+            }
+
+            _response(a) {
+
+                // this.loadinggames = !this.loadinggames;
+
+                console.log('response');
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (game) {
+
+                        if (this._getyearofrelease(game.releasedate) == 2018) {
+                            this.push('games18', game);
+                            this.eighteen = true;
+                        } else if (this._getyearofrelease(game.releasedate) == 2017) {
+                            this.push('games17', game);
+                            this.seventeen = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2016) {
+                            this.push('games16', game);
+                            this.sixteen = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2015) {
+                            this.push('games15', game);
+                            this.fifteen = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2014) {
+                            this.push('games14', game);
+                            this.fourteen = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2013) {
+                            this.push('games13', game);
+                            this.thirteen = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2012) {
+                            this.push('games12', game);
+                            this.twelve = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2011) {
+                            this.push('games11', game);
+                            this.eleven = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2010) {
+                            this.push('games10', game);
+                            this.ten = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2009) {
+                            this.push('games9', game);
+                            this.nine = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2008) {
+                            this.push('games8', game);
+                            this.eigth = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2007) {
+                            this.push('games7', game);
+                            this.seven = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2006) {
+                            this.push('games6', game);
+                            this.six = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2005) {
+                            this.push('games5', game);
+                            this.five = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2004) {
+                            this.push('games4', game);
+                            this.four = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2003) {
+                            this.push('games3', game);
+                            this.three = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2002) {
+                            this.push('games2', game);
+                            this.two = true
+                        } else if (this._getyearofrelease(game.releasedate) == 2001) {
+                            this.push('games1', game);
+                            this.one = true
+                        } else if (this._getyearofrelease(game.releasedate) <= 2000) {
+                            this.push('games0', game);
+                            this.zero = true
+                        }
+                    }, this);
+                    this.$.threshold.clearTriggers();
+
+                }
+            }
+
+            _debounceWork() {
+                console.log('_debounceWork');
+                //Polymer.Async.timeOut.after(400)
+                this._debounceJob = Polymer.Debouncer.debounce(
+                    this._debounceJob,
+                    Polymer.Async.microTask,
+                    () => {
+                        this.$.getgames.generateRequest();
+                    });
+            }
+
+
+            _loadmoregame() {
+
+               console.log('_loadMoreData');
+                if (this.$.getgames.lastRequest) {
+                    //console.log("loadmoregame abort...");
+                    this.$.getgames.lastRequest.abort();
+                }
+                this.start = this.start - 2;
+                this.end = this.end - 2;
+                
+                this._debounceWork();
+
+                // this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
+                // Polymer.Async.timeOut.after(250),
+                // () => { 
+                //     this.$.getgames.generateRequest();
+                //  });
+                // //this.page++;
+                // this.$.getgames.generateRequest();
+            }
+            handleAction() {
+                if (this.$.getgames.lastRequest) {
+                    //console.log("handleAction...");
+                    this.$.getgames.lastRequest.abort();
+                }
+                this.categoryTitle = 'Action'
+                this.$.getgames.lastRequest.abort();
+                this.mySelection = 0;
+                this._dodefaultprops();
+
+                this._resetAll();
+                this.$.getgames.generateRequest();
+            }
+            handleShooter(e) {
+                console.log(e);
+
+                if (this.$.getgames.lastRequest) {
+                    //console.log("handleShooter...");
+                    this.$.getgames.lastRequest.abort();
+                }
+                this.categoryTitle = 'Shooter';
+                this.mySelection = 1;
+                this._dodefaultprops();
+                this._resetAll();
+                this.$.getgames.generateRequest();
+            }
+            handleOnline() {
+                if (this.$.getgames.lastRequest) {
+                    //console.log("handleOnline...");
+                    this.$.getgames.lastRequest.abort();
+                }
+                this.categoryTitle = 'Online';
+                this.mySelection = 2;
+                this._dodefaultprops();
+                this._resetAll();
+                this.$.getgames.generateRequest();
+            }
+            handleStrategy() {
+                if (this.$.getgames.lastRequest) {
+                    //console.log("handleStrategy...");
+                    this.$.getgames.lastRequest.abort();
+                }
+                this.categoryTitle = 'Strategy';
+                this.mySelection = 3;
+                this._dodefaultprops();
+                this._resetAll();
+                this.$.getgames.generateRequest();
+            }
+            handleAdventure() {
+                if (this.$.getgames.lastRequest) {
+                    //console.log("handleAdventure...");
+                    this.$.getgames.lastRequest.abort();
+                }
+                this.categoryTitle = 'Adventure';
+                this.mySelection = 4;
+                this._dodefaultprops();
+                this._resetAll();
+                this.$.getgames.generateRequest();
+            }
+            _resetAll() {
+
+                this.games18 = [];
+                this.games17 = [];
+                this.games16 = [];
+                this.games15 = [];
+                this.games14 = [];
+                this.games13 = [];
+                this.games12 = [];
+                this.games11 = [];
+                this.games10 = [];
+                this.games9 = [];
+                this.games8 = [];
+                this.games7 = [];
+                this.games6 = [];
+                this.games5 = [];
+                this.games4 = [];
+                this.games3 = [];
+                this.games2 = [];
+                this.games1 = [];
+                this.games0 = [];
+
+                this.eighteen = false;
+                this.seventeen = false;
+                this.sixteen = false;
+                this.fifteen = false;
+                this.fourteen = false;
+                this.thirteen = false;
+                this.twelve = false;
+                this.eleven = false;
+                this.ten = false;
+                this.nine = false;
+                this.eigth = false;
+                this.seven = false;
+                this.six = false;
+                this.five = false;
+                this.four = false;
+                this.three = false;
+                this.two = false;
+                this.one = false;
+                this.zero = false;
+            }
+
+            _getyearofrelease(release) {
+                return release.split('/')[2].split(' ')[0];
+            }
+
+            _dodefaultprops() {
+                this.start = 2016;
+                this.end = 2017;
+            }
+            _onTabSelect(event) {
+                console.log('onTabSelected ' + event.target.selected);
+            }
+
+        }
+
+        window.customElements.define(KalAllGames.is, KalAllGames);
+
+
+        window.addEventListener('WebComponentsReady', function (e) {
+            // imports are loaded and elements have been registered
+            console.log('Components are ready');
+        });
+    </script>
+</dom-module>

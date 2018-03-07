@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="kal-challenge-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+        font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
+        line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+      }
+    </style>
+
+    
+    <h1>CHALLENGE</h1>
+
+  </template>
+
+  <script>
+    class KalChallengePage extends Polymer.Element {
+      static get is() { return 'kal-challenge-page'; }
+      /**
+        * Object describing property-related metadata used by Polymer features
+        */
+      static get properties() {
+        return {
+          isMobile: {
+            type: Boolean,
+            reflectToAttribute: true
+          },
+          route: {
+            type: Object,
+          },
+        };
+      }
+
+
+      connectedCallback() {
+        super.connectedCallback();
+
+      }
+
+    }
+    window.customElements.define(KalChallengePage.is, KalChallengePage);
+  </script>
+</dom-module>

@@ -1,0 +1,115 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+
+<link rel="import" href="kal-search.html">
+
+<dom-module id="kal-header">
+  <template>
+    <style include="shared-styles">
+      
+         /* :host([is-desktop]) {
+            background-color: red;
+          }
+
+        app-header {
+            color: #fff;
+            background-color: var(--app-primary-color);
+        }
+
+        app-header paper-icon-button {
+            --paper-icon-button-ink-color: white;
+        }
+          /****************************** APP HEADER ****************************************/
+          app-header {
+          color: #fff;
+          background-color: #222;
+          --app-header-background-front-layer: {
+            background-image: url("/images/nouseradded.jpg");
+            background-position: 50% 10%;
+          };
+        }
+
+        app-header div[header-content]{
+          width:100%;
+          /* padding-bottom: 1rem; */
+          
+          @apply --layout-horizontal;
+          @apply --layout-center;
+          @apply --layout-justified-center;
+          
+        }
+
+        app-header div[header-content] kal-search{
+          @apply --layout-flex;
+        }
+
+        app-header div[header-content] paper-button{
+          height: 3rem;
+          font-size: 1rem;
+          color: #eee;
+          background-color: #222;
+          text-transform: capitalize
+        }
+
+    </style>
+
+    <app-header slot="header" condenses fixed effects="waterfall blend-background parallax-background">
+        <template is="dom-if" if="[[isDesktop]]">        
+            <app-toolbar></app-toolbar>
+            <app-toolbar></app-toolbar>
+        </template>
+        <app-toolbar>
+          <div header-content>
+            <kal-search></kal-search>
+            <paper-button raised>Giriş Yap</paper-button>
+          </div>
+           
+        </app-toolbar>
+      </app-header>
+
+      <!--  OLD
+      <app-header slot="header" condenses reveals effects="waterfall">
+        <app-toolbar>
+          <paper-icon-button icon="kal-icons:menu" drawer-toggle></paper-icon-button>
+          <div main-title>My App</div>
+        </app-toolbar>
+      </app-header>
+    -->
+
+  </template>
+
+  <script>
+    class KalHeader extends Polymer.Element {
+      static get is() { return 'kal-header'; }
+
+      /**
+        * Object describing property-related metadata used by Polymer features
+        */
+      static get properties() {
+          return {
+            isDesktop:{
+                  type: String,
+                  notify: true
+              }
+          };
+      }
+
+      /**
+       * Use for one-time configuration of your component after local DOM is
+       * initialized.
+       */
+      ready() {
+          super.ready();
+      
+          // When possible, use afterNextRender to defer non-critical
+          // work until after first paint.
+          Polymer.RenderStatus.afterNextRender(this, function() {
+              console.log('data', this.isDesktop);
+          });
+      
+      }
+    }
+
+    window.customElements.define(KalHeader.is, KalHeader);
+  </script>
+</dom-module>

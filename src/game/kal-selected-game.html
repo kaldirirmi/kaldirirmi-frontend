@@ -1,0 +1,1511 @@
+﻿<!--<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components//iron-ajax/iron-ajax.html">
+-->
+
+<link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../../bower_components/watsonlogic-parallax/watsonlogic-parallax.html">
+
+
+<dom-module id="kal-selected-game">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            app-toolbar {
+                background-color: #E65100;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+            }
+
+            app-toolbar a {
+                color: #fff;
+            }
+
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            /* z-index problem due to parallax-element*/
+
+            iron-overlay-backdrop {
+                z-index: -5 !important;
+            }
+
+            #loader {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                z-index: 1;
+            }
+
+
+            parallax-layers {
+                position: relative;
+                width: 100%;
+                min-height: 50%;
+                z-index: -1;
+            }
+
+            parallax-layers iron-image {
+                width: 100%;
+                height: 100%;
+                background-color: #222;
+            }
+
+            parallax-element::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            parallax-element::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            parallax-element::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
+            #gamecontent {
+                width: 94%;
+                margin-left: 15px;
+                position: relative;
+                box-sizing: border-box;
+                min-height: 500px;
+                background: #222;
+            }
+
+            #gamecontent #panel {
+                position: relative;
+                background: #ff7800;
+                color: white;
+            }
+
+            #gamecontent #panel-contents {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            #gamecontent #options {
+                /*@apply(--layout-horizontal);
+                @apply(--layout-end-justified);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-pack: end;
+                -webkit-justify-content: flex-end;
+                justify-content: flex-end;
+                background: rgba(0, 0, 0, 0.5);
+                position: absolute;
+                left: 0;
+                right: 0;
+                padding: 0 10px;
+                height: auto;
+                align-items: center;
+            }
+
+            #gamecontent #poster {
+                /*@apply(--layout-flex-none);*/
+                -ms-flex: none;
+                -webkit-flex: none;
+                flex: none;
+                align-self: center;
+                -ms-align-self: center;
+                -webkit-align-self: center;
+                /*border: 16px solid #ff7800;*/
+                width: 160px;
+                height: 224px;
+                transition: all ease-in .2s;
+                position: relative;
+            }
+
+            #gamecontent #poster .side-corner-tag iron-image {
+                width: 100%;
+                height: auto;
+                min-height: 100%;
+                background-color: #ff7800;
+                z-index: 5;
+            }
+
+            #gamecontent #metadata {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                flex-grow: 2 !important;
+                margin-left: 0.5em;
+            }
+
+            #gamecontent #metadata h1 {
+                overflow: hidden;
+                margin: 0 0 4px;
+                font-weight: normal;
+                pointer-events: none;
+                /*@apply(--paper-font-common-base);
+                       @apply(--paper-font-common-nowrap);
+                       width: 300px;*/
+            }
+
+            #gamecontent #metadata h4 {
+                margin: 0;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            #gamecontent #metadata h6 {
+                margin: 5px 0 0 0;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            #similargames {
+                /*@apply(--layout-horizontal);
+            @apply(--layout-justify-center);*/
+                flex-direction: row;
+                align-items: center;
+                display: none;
+            }
+
+
+            #gamecontent div[requirements] {
+                /*@apply(--layout-horizontal);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                position: relative;
+                width: 100%;
+                height: auto;
+                color: white;
+                justify-content: space-between;
+                flex-flow: column wrap;
+            }
+
+            #gamecontent div[requirements] div[role="listbox"] {
+                padding: 10px 0px;
+            }
+
+            #gamecontent div[requirements] div[minimum] {
+                min-width: calc(50% - 10px);
+                width: 100%;
+            }
+
+            #gamecontent div[requirements] div[suggested] {
+                min-width: calc(50% - 10px);
+            }
+
+
+
+            #gamecontent div[requirements] div[role="listbox"] paper-item[heading] {
+                background: rgba(255, 120, 0, .8);
+                padding: 10px 15px;
+                font-size: 20px;
+                font-weight: 100 !important;
+            }
+
+            #gamecontent div[requirements] div[role="listbox"] paper-item:not([heading]) {
+                /*@apply(--layout-vertical);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                justify-content: flex-start;
+                flex-flow: column wrap;
+                background: rgba(255, 120, 0, .7);
+                padding: 15px 20px;
+                align-items: flex-start;
+            }
+
+            #gamecontent div[requirements] div[role="listbox"] paper-item:not([heading]) div:first-child {
+                font-size: 22px;
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+                border-bottom: 4px solid rgba(255, 255, 255, .2);
+            }
+
+            #videoholder {
+                /*@apply(--layout-vertical);
+            @apply(--layout-center-center);*/
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                background-color: #000;
+                color: white;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+                -ms-flex-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                perspective: 2px;
+
+            }
+
+
+
+            #videoholder #closevideo {
+                width: calc(100% - 20px);
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-pack: end;
+                -webkit-justify-content: flex-end;
+                justify-content: flex-end;
+                /*@apply(--layout-horizontal);
+                @apply(--layout-end-justified);*/
+            }
+
+            #videoholder #closevideo paper-icon-button {
+                --paper-icon-button-ink-color: white;
+                color: white;
+            }
+
+            #videoholder #gamevideo {
+                width: calc(100% - 48px);
+                height: calc(100% - 108px);
+            }
+
+            #videoholder #gamevideo google-youtube {
+                height: 100%;
+            }
+
+            #embedholder {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+                -ms-flex-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                /*@apply(--layout-vertical);
+            @apply(--layout-center-center);*/
+            }
+
+            #embedholder #closeembed {
+                width: calc(100% - 20px);
+                /*@apply(--layout-horizontal);
+                @apply(--layout-end-justified);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-pack: end;
+                -webkit-justify-content: flex-end;
+                justify-content: flex-end;
+            }
+
+            #embedholder paper-dialog-scrollable {
+                width: calc(100% - 48px);
+                height: calc(100% - 108px);
+            }
+
+            #embedholder #embed .title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            #embedholder #embed .description {
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+
+            #embedholder #embed .code {
+                padding: 5px 10px;
+                font-size: 15px;
+            }
+
+            /* Poster arkasından çıkan Reklam Card Ayarları*/
+
+            #poster-ad {
+                display: none;
+                background-color: #ff7800;
+                position: absolute;
+                width: 290px;
+                visibility: hidden;
+            }
+
+            paper-card.advertisement {
+                width: 100%;
+                height: 100%;
+                /*@apply(--layout-horizontal);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                background-color: inherit;
+            }
+
+            paper-card.advertisement .card-actions {
+                padding: 0 1em !important;
+                width: 120%;
+                margin-top: 3px;
+            }
+
+            paper-card.advertisement .card-actions paper-button {
+                font-size: calc(0.45em +1vmin) !important;
+            }
+
+            .advertisement-image {
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+            }
+
+            .rate-content {
+                /*@apply(--layout-flex);*/
+                -ms-flex: 1 1 0.000000001px;
+                -webkit-flex: 1;
+                flex: 1;
+                -webkit-flex-basis: 0.000000001px;
+                flex-basis: 0.000000001px;
+                float: left;
+            }
+
+            .rate-content .card-content {
+                padding: 8px !important;
+            }
+
+            .rate-content div {
+                padding-bottom: 5px;
+            }
+
+            .rate-content .reklam-header {
+                border-bottom: 1px solid white;
+                padding-top: 5px;
+                font-size: calc(0.7em + 1vmin);
+            }
+
+            .rate-content .reklam-content {
+                font-size: calc(1.2em + 1vmin);
+            }
+
+            .rate-content .reklam-cupone img {
+                width: 100%;
+            }
+
+            .user-like-part {
+                position: absolute;
+                right: 4%;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons {
+                min-width: 115px;
+                margin-bottom: 10px;
+                margin-top: 10px;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button {
+                justify-content: center;
+            }
+
+            #usersysteminfo paper-item[heading] {
+                /*@apply(--layout-vertical);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+            }
+
+            /* All content font sizes */
+
+            p,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-weight: normal;
+            }
+
+            h1 {
+                font-size: calc(1.2em + 1vmin) !important;
+            }
+
+            h2 {
+                font-size: calc(0.75em + 1vmin) !important;
+            }
+
+            h3 {
+                font-size: calc(0.65em + 1vmin) !important;
+            }
+
+            h4 {
+                font-size: calc(0.50em + 1vmin) !important;
+            }
+
+            h5 {
+                font-size: calc(0.35em + 1vmin) !important;
+            }
+
+            h6 {
+                font-size: calc(0.25em + 1vmin) !important;
+            }
+
+            /*neon animated pages */
+
+            #usersystem {
+                margin-top: 25px;
+                margin-bottom: 560px;
+                margin-top: 20px;
+            }
+
+            neon-animated-pages {
+                height: 400px;
+            }
+
+
+            /* Metadata font costumizations */
+
+            #panel-contents #metadata h1 {
+                font-size: calc(1.2em + 1vmin) !important;
+            }
+
+            #panel-contents #metadata h4 {
+                font-size: calc(0.8em + 1vmin) !important;
+            }
+
+            #panel-contents #metadata h6 {
+                font-size: calc(0.6em + 1vmin) !important;
+            }
+
+            #usersysteminfo paper-item[heading] div h2 {
+                text-align: center;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button {
+                background-color: #ff7800;
+                padding: 0 10px;
+                z-index: 10;
+                min-height: 4em;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button h3 {
+                font-size: calc(1em + 1vmin) !important;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button iron-icon {
+                padding: 0 !important;
+            }
+
+            #usersysteminfo paper-item[empty-info] div {
+                text-align: center;
+            }
+
+
+            #panel #options {
+                justify-content: center !important;
+            }
+
+            #panel #options .anchors {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                justify-content: flex-start;
+            }
+
+            #panel #options .anchors .anchors-link {
+                text-decoration: none;
+                margin: 5px;
+                width: 100%;
+                /*margin: 0px 5px;*/
+            }
+
+            #panel #options .anchors .anchors-link paper-button {
+                background: #E65100 !important;
+                padding: 9px;
+                margin: 0;
+                text-transform: capitalize;
+                color: #222;
+                font-weight: bold;
+                opacity: 0.7;
+                transition: all ease-in-out 0.2s;
+                width: 100%;
+            }
+
+            #panel #options .anchors .anchors-link paper-button:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+
+
+
+            @media only screen and (min-width: 320px) {
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 70%;
+                    height: 300px;
+                    border-width: 2px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 400px;
+                }
+
+                #gamecontent #options {
+                    bottom: 400px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+
+
+                #gamecontent div[requirements] div[role="listbox"] {
+                    width: calc(100%);
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 250px;
+                }
+            }
+
+            /* Custom, Galaxy S5 */
+
+            @media only screen and (min-width: 360px) {
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 60%;
+                    height: 340px;
+                    border-width: 2px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 440px;
+                }
+
+                #gamecontent #options {
+                    bottom: 440px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 280px;
+                }
+            }
+
+            /* Iphone 6s plus */
+
+            @media only screen and (min-width: 412px) {
+                #panel-contents #metadata h1 {
+                    font-size: calc(1.1em + 1vmin) !important;
+                }
+
+                #panel-contents #metadata h4 {
+                    font-size: calc(0.8em + 1vmin) !important;
+                }
+
+                #panel-contents #metadata h6 {
+                    font-size: calc(0.6em + 1vmin) !important;
+                }
+
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 57%;
+                    height: 350px;
+                    border-width: 2px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 445px;
+                }
+
+                #gamecontent #options {
+                    bottom: 460px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 330px;
+                }
+            }
+
+            /* Extra Small Devices, Phones */
+
+            @media only screen and (min-width: 480px) {
+
+
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 50%;
+                    height: 350px;
+                    border-width: 2px;
+
+                }
+
+                #gamecontent #panel-contents {
+                    height: 460px;
+                }
+
+                #gamecontent #options {
+                    bottom: 480px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 380px;
+                }
+            }
+
+            /* Small Devices, Tablets */
+
+            @media only screen and (min-width: 768px) {
+                #navButtons {
+                    display: flex !important;
+                }
+
+                #gamecontent #panel-contents {
+                    flex-direction: row !important;
+                }
+
+                #gamecontent #metadata {
+                    align-items: flex-start;
+                    -webkit-align-items: flex-start;
+                }
+
+
+                #gamecontent #poster {
+                    width: 150px;
+                    height: 240px;
+                    border-width: 8px;
+                    align-self: flex-end !important;
+                    -ms-align-self: flex-end !important;
+                    -webkit-align-self: flex-end !important;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 90px;
+                }
+
+                #gamecontent #options {
+                    height: 33px;
+                    bottom: 90px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 38px;
+                    height: 38px;
+                }
+
+
+                /*#gamecontent div[role="listbox"]:nth-last-child(2),
+            #gamecontent div[role="listbox"]:nth-last-child(2) ~ div {
+                width: calc(50% - 20px);
+            }*/
+                /* user like button */
+                #panel-contents .user-like-part {
+                    margin: 8px;
+                    margin-top: 8px;
+                    right: 2%;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 450px;
+                }
+                /* anchors */
+                #panel #options .anchors {
+                    flex-direction: row !important;
+                }
+                #panel #options .anchors .anchors-link paper-button {
+                    padding: 5px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                #usersysteminfo paper-item[heading] .buttons paper-button h3 {
+                    font-size: calc(0.65em + 1vmin) !important;
+                }
+                #usersysteminfo paper-item[heading] div h2 {
+                    text-align: left;
+                }
+                #panel-contents #metadata h1 {
+                    /*font-size: calc(1.1em + 1vmin) !important;*/
+                    font-size: calc(0.5em + 1vmin) !important;
+                }
+
+                #panel-contents #metadata h4 {
+                    font-size: calc(0.7em + 1vmin) !important;
+                }
+
+                #panel-contents #metadata h6 {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+
+                #usersysteminfo paper-item[heading] {
+                    -ms-flex-direction: row;
+                    -webkit-flex-direction: row;
+                    flex-direction: row;
+                }
+
+                #gamecontent {
+                    width: 75%;
+                }
+
+                #gamecontent #poster {
+                    width: 155px;
+                    height: 250px;
+                    border-width: 10px;
+                    border-width: 10px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 75px;
+                }
+
+                #gamecontent #options {
+                    height: 37px;
+                    bottom: 75px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                #gamecontent div[role="listbox"]:nth-last-child(2),
+                #gamecontent div[role="listbox"]:nth-last-child(2)~div {
+                    width: calc(50% - 20px);
+                }
+
+
+                #similargames {
+                    display: flex !important;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 38.5%;
+                    margin-top: 15px !important;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 115px;
+                }
+
+                #usersystem {
+                    margin-bottom: 70px !important;
+                }
+
+                #gamecontent div[requirements] {
+                    flex-flow: row;
+                }
+
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                parallax-layers {
+                    min-height: 82%;
+                }
+
+                #gamecontent #poster {
+                    /*width: 150px;
+                height: 216px;*/
+                    border-width: 12px;
+                    width: 165px;
+                    height: 270px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 75px;
+                }
+
+                #gamecontent #options {
+                    height: 37px;
+                    bottom: 75px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                #gamecontent div[role="listbox"]:nth-last-child(2),
+                #gamecontent div[role="listbox"]:nth-last-child(2)~div {
+                    width: calc(50% - 20px);
+                }
+
+                #gamecontent div[role="listbox"]:nth-last-child(1),
+                #gamecontent div[role="listbox"]:nth-last-child(1)~div {
+                    width: calc(100% - 20px);
+                }
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 128px;
+                    top: -165px;
+                    left: -21px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 13px;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 46%;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                parallax-layers {
+                    min-height: 90%;
+                }
+
+                #gamecontent #poster {
+                    width: 175px;
+                    height: 270px;
+                    border-width: 14px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 85px;
+                }
+
+                #gamecontent #options {
+                    height: 41px;
+                    bottom: 85px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 43px;
+                    height: 43px;
+                }
+
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 136px;
+                    top: -177px;
+                    /*left: 213px !important;*/
+                    left: -2px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 15px;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 48%;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                parallax-layers {
+                    min-height: 95%;
+                }
+
+                #gamecontent #poster {
+                    width: 175px;
+                    height: 270px;
+                    border-width: 15px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 90px;
+                }
+
+                #gamecontent #options {
+                    height: 43px;
+                    bottom: 90px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 45px;
+                    height: 45px;
+                }
+
+
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 136px;
+                    top: -179px;
+                    left: 8px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 15px;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 57%;
+                }
+            }
+
+            @media only screen and (min-width: 1824px) {
+                parallax-layers {
+                    min-height: 100%;
+                }
+
+                #gamecontent #poster {
+                    width: 196px;
+                    height: 290px;
+                    border-width: 16px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 100px;
+                }
+
+                #gamecontent #options {
+                    height: 45px;
+                    bottom: 100px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 45px;
+                    height: 45px;
+                }
+
+
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 143px;
+                    top: -188px;
+                    left: 20px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 16px;
+                }
+            }
+
+            #gamecontent #options paper-icon-button {
+                color: white;
+                --paper-icon-button-ink-color: white;
+            }
+
+            #gamecontent #poster {
+                @apply --layout-vertical;
+            }
+
+            #gamecontent #poster .interaction {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                -webkit-justify-content: space-between;
+                justify-content: space-between;
+                height: 20% !important;
+                padding: 0px 6px 6px 6px;
+            }
+
+            /*#gamecontent #poster iron-image{
+            min-height: 80% !important;
+
+        }*/
+
+            #gamecontent #poster .interaction paper-button {
+                color: #222;
+                background-color: #ff7800;
+                text-transform: capitalize;
+                font-weight: 500;
+                flex-grow: 2;
+                border-radius: 0 !important;
+                margin-left: 0 !important;
+                transition: all .5s;
+                z-index: 10;
+                opacity: 0.8;
+            }
+
+            #gamecontent #poster .interaction paper-button a {
+                text-decoration: none;
+                color: #222;
+            }
+
+
+            @media only screen and (min-width: 1000px) {
+                #gamecontent #poster .interaction paper-button:hover {
+                    position: absolute;
+                    opacity: 1;
+                    width: 93%;
+                }
+                #gamecontent #poster .interaction paper-button:hover~.like-part {
+                    opacity: 0;
+                }
+            }
+
+            #gamecontent #poster .interaction .like-part {
+                flex-grow: 1;
+                transition: .3s ease-in-out;
+                z-index: 1;
+            }
+
+            #poster .side-corner-tag {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                color: #fff;
+                display: inline-block;
+                padding: 5px;
+                overflow: hidden;
+                font-family: Arial, sans-serif;
+                font-weight: 900;
+            }
+
+            #poster .side-corner-tag p {
+                display: inline;
+            }
+
+            #poster .side-corner-tag p span {
+                font-size: 12px;
+                height: 35px;
+                position: absolute;
+                display: inline-block;
+                right: -27px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2), inset 0px 5px 30px rgba(255, 255, 255, 0.2);
+                text-align: center;
+                text-transform: uppercase;
+                top: 6px;
+                background: #d93131;
+                width: 100px;
+                padding: 4px 28px;
+                -webkit-transform: rotate(45deg);
+                -moz-transform: rotate(45deg);
+                -o-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                z-index: 6;
+            }
+
+            #poster .side-corner-tag p:before {
+                content: "";
+                z-index: 4;
+                width: 0;
+                height: 0;
+                position: absolute;
+                top: -17px;
+                right: 55px;
+                border: 17px solid;
+                border-color: transparent transparent #662121 transparent;
+            }
+
+            #poster .side-corner-tag p:after {
+                z-index: 4;
+                content: "";
+                width: 0;
+                height: 0;
+                position: absolute;
+                top: 61px;
+                right: -10px;
+                border: 18px solid;
+                border-color: #662121 transparent transparent transparent;
+            }
+
+            paper-tooltip.nav-tooltip {
+                /*--paper-tooltip-background: #ff7800;*/
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+
+            #navButtons {
+                @apply --layout-vertical;
+                position: fixed;
+                top: 222px;
+                right: 10px;
+                z-index: 111;
+                border-top-left-radius: 50%;
+                border-bottom-left-radius: 50%;
+                padding-left: 20px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                background: rgb(60, 51, 36);
+                border-right: 3px solid;
+                z-index: 9;
+                display: none;
+            }
+
+            #navButtons paper-icon-button {
+                /*color: #E65100 !important;*/
+                height: 60px;
+                width: 60px;
+                transition: all ease-in-out .4s;
+            }
+
+            #navButtons paper-icon-button:hover {
+                transform: scale(1.3);
+            }
+
+            #kalstepper paper-item[heading] {
+                padding: 10px 15px;
+                font-size: 20px;
+                font-weight: 100 !important;
+            }
+
+            #stepperheading {
+                padding: 10px 15px;
+                font-size: 20px;
+                font-weight: 100 !important;
+            }
+
+            #gamegallerylink {
+                text-decoration: none;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #gamegallerylink paper-button {
+                text-transform: capitalize;
+                padding: 20px;
+                margin: 5px;
+                font-weight: bold;
+            }
+        </style>
+
+        <iron-ajax id="getselectedgame" url="/h/main?fm=get-game-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
+
+        <app-toolbar>
+            <!-- <paper-icon-button icon="arrow-back" on-tap="_onBackToAllGames"></paper-icon-button> -->
+            <a id="back" href="/game">
+                <paper-icon-button icon="icons:arrow-back" on-tap="_onBackToAllGames"></paper-icon-button>
+            </a>
+            <span>Geri Dön</span>
+        </app-toolbar>
+
+        <div hidden$=[[!loading]] class="loader-pac-content">
+            <loader-pac></loader-pac>
+        </div>
+        <div hidden$="[[loading]]">
+            <template is="dom-if" if={{isGame}}>
+                <!-- <parallax-element id="parallaxGamePage"> -->
+                <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
+                <paper-dialog id="videoholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+                    <div id="closevideo">
+                        <paper-icon-button id="videoclose" icon="close" dialog-dismiss></paper-icon-button>
+                    </div>
+                    <div id="gamevideo">
+                        <google-youtube id="gamevideoframe" video-id="[[_remakeVideo(gameinfo.video)]]" modestbranding="0" rel="0" showinfo="0" playsinline="0"
+                            iv_load_policy="3" hl="tr" cc_load_policy="0" autoplay="0" fs="0" fluid></google-youtube>
+                    </div>
+                </paper-dialog>
+                <paper-dialog id="embedholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+                    <div id="closeembed">
+                        <paper-icon-button id="embedclose" icon="close" dialog-dismiss></paper-icon-button>
+                    </div>
+                    <paper-dialog-scrollable>
+                        <div id="embed">
+                            <div class="title">
+                                Sitenize Ekleyin
+                            </div>
+                            <div class="description">
+                                Aşağıdaki kodu kullanarak [[gameinfo.name]] oyununun sistem gereksinimlerini sitenize ekleyebilirsiniz.
+                            </div>
+                            <div class="code">
+                                <paper-input id="embedvalue" value$="<iframe src='http://localhost:56920/embed/[[gameinfo.url]]' width='320' height='516' frameborder='0'></iframe>"></paper-input>
+                            </div>
+                        </div>
+                        <paper-toast id="copied" text="Kod kopyalandı" duration="3000" class="fit-bottom"></paper-toast>
+                    </paper-dialog-scrollable>
+                </paper-dialog>
+                <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+                <!-- <iron-image id="game_background_image" src="[[gameinfo.background]]" sizing="cover" preload fade></iron-image> -->
+
+                <watsonlogic-parallax parallax-image-height="400" parallax-text="You can pass text content into the <watsonlogic-parallax> component."
+                    parallax-image="[[gameinfo.background]]">
+                </watsonlogic-parallax>
+                <!-- <parallax-layers>
+                        <div depth="-0.5" class="fullbleed">
+                            <iron-image id="game_background_image" src="[[gameinfo.background]]" sizing="cover" preload fade></iron-image>
+                        </div>
+                    </parallax-layers> -->
+                <div id="gamecontent" itemscope itemtype="http://schema.org/VideoGame">
+                    <div id="panel" style="">
+                        <div id="options">
+                            <game-steam-price gameappid="[[gameinfo.steamappid]]"></game-steam-price>
+                        </div>
+                        <div id="panel-contents">
+                            <div id="poster-ad">
+                                <paper-card class="advertisement">
+                                    <div class="rate-content">
+                                        <div class="card-content">
+                                            <div class="reklam-header">OyunSatinAl.com</div>
+                                            <div class="reklam-content">%3 indirim</div>
+                                            <div class="reklam-cupone">
+                                            </div>
+                                        </div>
+                                        <div class="card-actions">
+                                            <paper-button raised>Kuponu Kullan</paper-button>
+                                        </div>
+                                    </div>
+                                    <div class="advertisement-image"></div>
+                                </paper-card>
+                            </div>
+                            <div id="poster">
+                                <div class="side-corner-tag">
+                                    <iron-image id="game_poster_image" src="[[gameinfo.picture]]" sizing="cover" alt="[[gameinfo.name]]" preload fade></iron-image>
+
+                                    <div hidden$="[[_checkGameStatus(gameinfo.status)]]">
+                                        <p>
+                                            <span>[[gameinfo.status]]</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="interaction">
+                                    <user-buy-game userid="[[userid]]" gamename="[[gameinfo.name]]"></user-buy-game>
+                                    <div class="like-part">
+                                        <user-like-game bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" gid="[[gameinfo.id]]" username="hakke"></user-like-game>
+                                    </div>
+                                </div>
+
+                                <div hidden$="[[_hasGameGallery(gameinfo.galleryurl)]]">
+                                    <a href="/galeri/[[gameinfo.galleryurl]]" target="_blank" id="gamegallerylink">
+                                        <paper-button raised>Galeriye Git</paper-button>
+                                    </a>
+                                </div>
+
+                            </div>
+                            <div id="metadata">
+                                <h1 class="metagametitle" itemprop="name">[[gameinfo.name]]</h1>
+                                <h4 itemprop="genre">[[_remakeGenres(gameinfo.genres)]]</h4>
+
+
+                            </div>
+                            <div id="similargames">
+                                <kaldirirmi-similar-games genre="[[gameinfo.genres]]"></kaldirirmi-similar-games>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- </parallax-element> -->
+
+
+
+
+            </template>
+            <template is="dom-if" if={{!isGame}}>
+                <span>Böyle bir haber bulunmamaktadır!</span>
+            </template>
+        </div>
+    </template>
+    <script>
+        class KalSelectedGame extends Polymer.Element {
+            static get is() {
+                return 'kal-selected-game';
+            }
+
+            static get properties() {
+                return {
+                    url: {
+                        type: String,
+                        notify: true
+                    },
+                    isGame: Boolean,
+                    gameinfo: {
+                        type: Object,
+                        value: null,
+                    },
+
+                };
+            }
+
+
+            static get observers() {
+                return [
+                    '_selectedGameChanged(url)'
+                ]
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is
+             * initialized.
+             */
+            ready() {
+                super.ready();
+
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    console.log('ready', this.url)
+
+                });
+
+            }
+
+            /**
+             * An attribute was added, removed, updated, or replaced. Also called for
+             * initial values when an element is created by the parser, or upgraded.
+             * Note: only attributes listed in the observedAttributes property will
+             * receive this callback. 
+             */
+            attributeChangedCallback(attrName, oldVal, newVal) {
+                console.log('attributeChangedCallback', attrName);
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                console.log('connectedCallback', this.url)
+
+
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Useful for initializing
+             * state, set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+                console.log('constructor', this.url)
+            }
+
+            _selectedGameChanged(newVal, oldVal) {
+
+                // we are starting here..
+                this._clearState();
+                this._debounceWork();
+                console.log('CurrentUrl: ', newVal, oldVal);
+            }
+
+            _onResponse(event) {
+                var response = event.detail.response;
+
+                console.log('kal-selected-game response: ', response);
+
+                if (response !== null) {
+                    this.set('isGame', true);
+
+                    var gameinfo = { ...response,
+                        background: 'https:' + response.background,
+                        picture: 'https:' + response.picture
+                    };
+                    this.set('gameinfo', gameinfo);
+
+                } else
+                    this.set('isGame', false);
+
+            }
+
+            _debounceWork() {
+                //Polymer.Async.timeOut.after(400)
+                this._debounceJob = Polymer.Debouncer.debounce(
+                    this._debounceJob,
+                    Polymer.Async.microTask,
+                    () => {
+                        this._generateRequest();
+                    });
+            }
+
+            _clearState() {
+                this.set('gameinfo', null);
+            }
+
+            _generateRequest() {
+                if (this.$.getselectedgame.lastRequest) {
+                    this.$.getselectedgame.lastRequest.abort();
+                }
+                this.$.getselectedgame.generateRequest();
+            }
+
+            _onBackToAllGames(e) {
+                console.log('e', e);
+                this.dispatchEvent(new CustomEvent('backall', e.model));
+            }
+
+            _remakeVideo(video) {
+                //gameinfo.video.Replace(" https://www.youtube.com/watch?v=", " ")
+                //console.log(video);
+
+                return video.split('=')[1];
+            }
+
+            _remakeGenres(genres) {
+                return genres.replace(',', '/');
+            }
+
+            _checkGameStatus(status) {
+                if (status != 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            _hasGameGallery(gallery) {
+                console.log('fsafafas', !(gallery == null || gallery.length === 0));
+                return !(gallery == null || gallery.length === 0);
+            }
+        }
+        window.customElements.define(KalSelectedGame.is, KalSelectedGame);
+    </script>
+</dom-module>

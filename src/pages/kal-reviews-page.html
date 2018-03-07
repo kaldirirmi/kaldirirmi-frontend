@@ -1,0 +1,91 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<!-- SubElement Imports -->
+<link rel="import" href="../review/kal-all-reviews.html">
+<link rel="import" href="../review/kal-selected-review.html">
+
+
+<dom-module id="kal-reviews-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                overflow: hidden !important;
+                height: calc(100vh - 192px);
+            }
+
+            :host([is-mobile]) {
+                height: auto !important;
+            }
+
+            
+        </style>
+
+        <app-route route="{{route}}" pattern="/:reviewUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
+
+        <!-- Selected Review Page -->
+        <template is="dom-if" if={{selectedActive}}>
+            <kal-selected-review url="[[data.reviewUrl]]"></kal-selected-review>
+        </template>
+        <!-- All Reviews Page -->
+        <template is="dom-if" if={{!selectedActive}}>
+            <kal-all-reviews is-mobile=[[isMobile]]></kal-all-reviews>
+        </template>
+
+    </template>
+    <script>
+        class KalReviewsPage extends Polymer.Element {
+            static get is() {
+                return 'kal-reviews-page';
+            }
+
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    route: {
+                        type: Object,
+                    },
+                    data: {
+                        type: Object,
+                        observer: '_selectedReviewsChanged'
+                    },
+                    selectedActive: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        observer: '_selectedActiveChanged'
+                    },
+                }
+            }
+
+            _selectedActiveChanged(selectedActive, previousValue) {
+                // console.log('selectedActive: ', selectedActive);
+                // console.log('previousValue: ', previousValue);
+            }
+
+            _selectedReviewsChanged(selectedReviews, previousValue) {
+                if (Object.keys(selectedReviews).length !== 0) {
+                    //Error Fix for /reviews/ subroute
+                    if (selectedReviews.reviewUrl.length === 0)
+                        this.selectedActive = false;
+                }
+                //console.log('selectedReviews: ', selectedReviews);
+                //console.log('previousValue: ', previousValue);
+            }
+        }
+
+        window.customElements.define(KalReviewsPage.is, KalReviewsPage);
+    </script>
+</dom-module>

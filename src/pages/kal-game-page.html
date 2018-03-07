@@ -1,0 +1,346 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../model/game-item.html">
+<link rel="import" href="../game/kal-selected-game.html">
+<link rel="import" href="../game/kal-all-games.html">
+
+<dom-module id="kal-game-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        /* @apply --layout-vertical;
+        width: 100%;
+        height: 100%; */
+        display: block;
+        /* padding: 10px; */
+        font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
+        line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+
+        overflow: hidden !important;
+        height: calc(100vh - 192px);
+      }
+
+      :host([is-mobile]) #allgames {
+        @apply --layout-vertical;
+      }
+
+      :host([selected-game-active]) {
+        /* background: red; */
+      }
+
+      #allgames {
+        @apply --layout-horizontal;
+        width: 100%;
+        height: 100%;
+      }
+
+
+      #allgames .main {
+        background: red;
+        @apply --layout-flex-8;
+
+        @apply --layout-horizontal;
+        flex-flow: row wrap;
+        -ms-flex-flow: row wrap;
+        width: 100%;
+        height: auto;
+        margin-left: 100px;
+        background: #222;
+        justify-content: center;
+        margin: 10px 0px;
+
+      }
+
+      #allgames .sidebar {
+        background: green;
+
+        @apply --layout-vertical;
+        @apply --layout-flex-4;
+      }
+
+
+      /* Toolbar Settings */
+
+      app-toolbar {
+        background-color: #E65100;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+        color: white;
+        font-size: 18px;
+        z-index: 1;
+      }
+
+      app-toolbar paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+
+      .item {
+        @apply --layout-vertical;
+        padding: 20px;
+        background-color: white;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      .item .item-column {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+      }
+
+      .item .item-column-rowler {
+        @apply --layout-vertical;
+        margin-top: 20px;
+        border-top: 1.5px solid black;
+        font-weight: 400;
+        width: 100%;
+      }
+
+      .item .item-column .benchmark {
+        background: #E65100;
+        border-radius: 40%;
+        padding: 10px;
+        margin-right: 10px;
+        color: white;
+      }
+
+      .item .item-column-invisible {
+        display: none;
+        opacity: 0;
+        transition: opacity 1s linear;
+      }
+
+      .avatar {
+        height: 106px;
+        width: 190px;
+        box-sizing: border-box;
+        background-color: #DDD;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply --layout-flex;
+        @apply --layout-vertical;
+      }
+
+      .primary {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .shortText,
+      .longText {
+        font-size: 14px;
+      }
+
+      .item.expanded .item-column-invisible {
+        opacity: 1;
+        display: flex !important;
+      }
+
+      .spacer {
+        @apply --layout-flex;
+      }
+
+      @media (max-width: 460px) {
+        paper-toolbar .bottom.title {
+          font-size: 14px;
+        }
+      }
+
+      .loadingIndicator {
+        left: 0;
+        right: 0;
+        position: relative;
+        top: 6em;
+      }
+
+      #hardware-list-container {
+        min-height: 400px;
+        box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+        padding: 15px;
+      }
+
+      paper-dropdown-menu {
+        line-height: 0 !important;
+        --paper-input-container-label: {
+          color: white;
+          text-align: center;
+          font-weight: bold;
+          font-size: calc(0.45em + 1vmin);
+        };
+        
+        --paper-input-container-input: {
+          color: white;
+          text-align: center;
+          text-transform: uppercase;
+          font-size: calc(0.45em + 1vmin);
+
+        };
+        
+
+        --paper-input-container-focus-color: white;
+        --paper-input-container-underline: {
+          display: none;
+        };
+      }
+
+
+      .searchInput {
+        z-index: 111;
+        /* width: 85%; */
+        -ms-flex: 1 1 0.000000001px;
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-basis: 0.000000001px;
+        flex-basis: 0.000000001px;
+        font-size: 18px;
+        padding: 16px 10px;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        -webkit-appearance: none;
+        border-radius: 0px;
+        position: absolute;
+        top: 5px;
+        background: #E65100;
+        left: 55px;
+      }
+
+      .searchInput:focus {
+        background-color: white;
+        outline: none;
+        color: black;
+      }
+
+
+      #mobileSearchIcon {
+        margin-right: 15px;
+      }
+
+      @media only screen and (min-width: 768px) {
+        .searchInputOld {
+          display: block;
+        }
+        #mobileSearchIcon {
+          display: none;
+        }
+      }
+
+      .inputOpened {
+        display: block !important;
+      }
+
+      .newscastOpened {
+        display: block !important;
+      }
+
+
+      paper-button[continue] {
+        background: #222;
+        width: 15%;
+        transition: all ease-in-out .3s;
+      }
+
+      paper-button[continue]:hover {
+        transform: scale(1.1);
+      }
+
+      a[continueurl] {
+        text-decoration: none;
+        color: #fff;
+      }
+      paper-dropdown-menu {
+        width: 200px;
+        margin-right: 20px;
+      }
+
+    </style>
+
+    <app-route route="{{route}}" pattern="/:gameUrl" data="{{data}}" active="{{selectedGameActive}}"></app-route>
+
+    <!-- Selected Game Page -->
+    <template is="dom-if" if={{selectedGameActive}}>
+      <kal-selected-game url="[[data.gameUrl]]" on-backall="_handleBackButton"></kal-selected-game>
+    </template>
+
+    <!-- All Game Page -->
+    <template is="dom-if" if={{!selectedGameActive}}>
+      <kal-all-games is-mobile=[[isMobile]]></kal-all-games>
+      </div>
+    </template>
+
+
+  </template>
+
+  <script>
+    class KalGamePage extends Polymer.Element {
+      static get is() {
+        return 'kal-game-page';
+      }
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          isMobile: {
+            type: Boolean,
+            reflectToAttribute: true
+          },
+          gamelist: {
+            type: Array,
+            value: [],
+            notify: true
+          },
+          route: {
+            type: Object,
+          },
+          data: {
+            type: Object,
+            observer: '_selectedGameChanged'
+          },
+          selectedGameActive: {
+            type: Boolean,
+            reflectToAttribute: true,
+            observer: '_selectedGameActiveChanged'
+          },
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+      }
+
+      _selectedGameActiveChanged(selectedGameActive, previousValue) {
+        // console.log('selectedGameActive: ', selectedGameActive);
+        // console.log('previousValue: ', previousValue);
+
+      }
+
+      _selectedGameChanged(selectedGame, previousValue) {
+        if (Object.keys(selectedGame).length !== 0) {
+          //Error Fix for /game/ subroute
+          if (selectedGame.gameUrl.length === 0)
+            this.selectedGameActive = false;
+        }
+
+        //   console.log('selectedGame: ', selectedGame);
+        //   console.log('previousValue: ', previousValue);
+
+      }
+
+      _toBoolean(searchValue) {
+        console.log('searchValue:', searchValue);
+        return searchValue ? true : false;
+      }
+
+      _handleBackButton(e) {
+
+        //
+
+      }
+    }
+    window.customElements.define(KalGamePage.is, KalGamePage);
+  </script>
+</dom-module>

@@ -1,0 +1,104 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<!-- SubElement Imports -->
+<link rel="import" href="../news/kal-all-news.html">
+<link rel="import" href="../news/kal-selected-news.html">
+
+
+
+<dom-module id="kal-news-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                /* @apply --layout-vertical;
+                width: 100%;
+                height: 100%; */
+                display: block;
+                /*height: calc(100vh - 290px);*/
+                /*padding: 10px;*/
+                /*font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));*/
+                /*line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));*/
+                overflow: hidden !important;
+                height: calc(100vh - 192px);
+                /*height: 100vh;*/
+            }
+
+            :host([is-mobile]) {
+                height: auto !important;
+            }
+
+            :host([selected-game-active]) {
+                background: red;
+            }
+            
+        </style>
+
+        <app-route route="{{route}}" pattern="/:newsUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
+
+        <!-- Selected News Page -->
+        <template is="dom-if" if={{selectedActive}}>
+            <kal-selected-news url="[[data.newsUrl]]"></kal-selected-news>
+        </template>
+        <!-- All News Page -->
+        <template is="dom-if" if={{!selectedActive}}>
+            <kal-all-news is-mobile=[[isMobile]]></kal-all-news>
+        </template>
+    </template>
+    <script>
+        class KalNewsPage extends Polymer.Element {
+            static get is() {
+                return 'kal-news-page';
+            }
+
+            static get properties() {
+                return {
+                   
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    route: {
+                        type: Object,
+                    },
+                    data: {
+                        type: Object,
+                        observer: '_selectedNewsChanged'
+                    },
+                    selectedActive: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        observer: '_selectedActiveChanged'
+                    },
+                }
+            }
+
+           
+            _selectedActiveChanged(selectedActive, previousValue) {
+                // console.log('selectedActive: ', selectedActive);
+                // console.log('previousValue: ', previousValue);
+            }
+
+            _selectedNewsChanged(selectedNews, previousValue) {
+                if (Object.keys(selectedNews).length !== 0) {
+                    //Error Fix for /game/ subroute
+                    if (selectedNews.gameUrl.length === 0)
+                        this.selectedActive = false;
+                }
+                //console.log('selectedNews: ', selectedNews);
+                //console.log('previousValue: ', previousValue);
+            }
+        }
+
+        window.customElements.define(KalNewsPage.is, KalNewsPage);
+    </script>
+</dom-module>

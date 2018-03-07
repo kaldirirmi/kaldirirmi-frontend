@@ -1,0 +1,166 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="kal-home-gameitem">
+    <template>
+        <style>
+            :host {
+                display: block;
+                @apply  --shadow-elevation-8dp;
+
+            }
+
+            .game{
+                @apply --layout-vertical;
+                @apply --layout-center;
+                /* margin: 5px; */
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                position: relative;
+                text-decoration: none;
+                width: 100%;
+                height: 20em;
+
+                -webkit-box-shadow: inset 0px -6px 69px -12px rgba(255,255,255,1);
+                -moz-box-shadow: inset 0px -6px 69px -12px rgba(255,255,255,1);
+                box-shadow: inset 0px -6px 69px -12px rgba(255,255,255,1);
+            }
+            
+            .game iron-image{
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .game:hover iron-image{
+                opacity: 1;
+            }
+
+
+            .game .center-button{
+                position: absolute;
+                background: #e65100;
+                color: #222;
+                text-transform: uppercase;
+                color: #222;
+                letter-spacing: 3px;
+                margin: 0;
+                font-weight: 600;
+                top: 38%;
+                font-size: 0.88rem;
+            }
+
+            .game-detail{
+                @apply --layout-vertical;
+                color: #fff;
+                position: absolute;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.3);
+                padding-left:2%;
+                padding-top:5%;
+                height:33%;
+                border-top:1px solid #4a4a4aee;
+            }
+
+            .game-detail .game-detail-header{
+                @apply --layout-horizontal;
+                margin:0px 10px;
+            }
+
+            .game-detail .game-detail-header .game-detail-header-left{
+                @apply --layout-vertical;
+                @apply --layout-flex-3;
+                /* @apply --layout-center-center); */
+            }
+
+            .game-title{
+                font-weight: 600;
+                letter-spacing: .5px;
+            }
+
+            .game-detail .game-detail-header .game-detail-header-right{
+                @apply --layout-flex-1;
+            }
+
+            .game-score{
+                background: #222;
+                color: #ff7800;
+                border: 1px solid #ff7800;
+                border-radius: 33px;
+                padding: 10px;
+                font-size: 20px;
+                font-style: italic;
+                font-family: cursive;
+                font-weight: 700;
+                margin: 0 auto;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+
+            /* Desktops and laptops ----------- */
+            @media only screen  and (min-width : 1224px) {
+                .game{
+                    height: 25em;
+                }
+            }
+
+            @media only screen  and (min-width : 1366px) {
+      
+            }
+
+            /* Desktops and laptops ----------- */
+            @media only screen  and (min-width : 1620px) {
+                .game{
+                    height: 30em;
+                }
+            }
+        </style>
+
+
+        <a class="game" onclick="load();" itemprop="url" href="[[game.href]]">
+            <iron-image sizing="cover" preload fade src="[[game.src]]"></iron-image>
+            <paper-button raised class="center-button">Kaldırır mı? Öğren</paper-button>
+            <div class="game-detail">
+                <div class="game-detail-header">
+                    <div class="game-detail-header-left">
+                        <span class="game-title">[[game.title]]</span>
+                        <span class="game-releasedate">2018</span>
+                    </div>
+                    <div class="game-detail-header-right">
+                        <div raised class="game-score">8.7</div>
+                    </div>
+                </div>
+                <div class="game-detail-header-body">
+                    <p>
+                            Yaygın inancın tersine, Lorem Ipsum rastgele sözcüklerden oluşmaz.
+                    </p>
+                </div>
+            </div>
+
+            <!-- <div class="game-title"><span>[[game.title]]</span></div> -->
+        </a>
+
+    </template>
+
+    <script>
+      
+        class KalHomeGameItem extends Polymer.Element {
+            
+            static get is() {
+                return 'kal-home-gameitem';
+            }
+           
+            static get properties() {
+                return {
+                    game: Object
+                };
+            }
+        }
+
+        window.customElements.define(KalHomeGameItem.is, KalHomeGameItem);
+    </script>
+</dom-module>

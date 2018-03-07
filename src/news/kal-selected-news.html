@@ -1,0 +1,171 @@
+<dom-module id="kal-selected-news">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+<iron-ajax id="getselectednews" url="/h/main?fm=get-news-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
+
+<app-toolbar>
+    <!-- <paper-icon-button icon="arrow-back" on-tap="onBackToAll"></paper-icon-button> -->
+    <a id="back" href="/news">
+        <paper-icon-button icon="icons:arrow-back" on-tap="onBackToAll"></paper-icon-button>
+    </a>
+    <span>Geri Dön</span>
+</app-toolbar>
+
+<div hidden$=[[!loading]] class="loader-pac-content">
+    <loader-pac></loader-pac>
+</div>
+<div hidden$="[[loading]]">
+    <template is="dom-if" if={{isNews}}>
+
+    </template>
+    <template is="dom-if" if={{!isNews}}>
+        <span>Böyle bir oyun bulunmamaktadır!</span>
+    </template>
+</div>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-selected-news` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalSelectedNews extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-selected-news';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    url: {
+                        type: String,
+                        notify: true
+                    },
+                    isNews: Boolean,
+                    newsinfo: {
+                        type: Object,
+                        value: null,
+                    },
+                };
+            }
+
+            
+
+            static get observers() {
+                return [
+                    '_selectedNewsChanged(url)'
+                ]
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is
+             * initialized.
+             */
+            ready() {
+                super.ready();
+
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    // console.log('ready', this.url)
+
+                });
+
+            }
+
+            /**
+             * An attribute was added, removed, updated, or replaced. Also called for
+             * initial values when an element is created by the parser, or upgraded.
+             * Note: only attributes listed in the observedAttributes property will
+             * receive this callback. 
+             */
+            attributeChangedCallback(attrName, oldVal, newVal) {
+                // console.log('attributeChangedCallback', attrName);
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                // console.log('connectedCallback', this.url)
+
+
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Useful for initializing
+             * state, set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+                // console.log('constructor', this.url)
+            }
+
+            _selectedNewsChanged(newVal, oldVal) {
+
+                // we are starting here..
+                this._clearState();
+                this._debounceWork();
+                // console.log('CurrentUrl: ', newVal, oldVal);
+            }
+
+            _onResponse(event) {
+                var response = event.detail.response;
+
+                console.log('kal-selected-news response: ', response);
+
+                if (response !== null) {
+                    this.set('isNews', true);
+                  
+                    this.set('newsinfo', response);
+
+                } else
+                    this.set('isNews', false);
+
+            }
+
+            _debounceWork() {
+                //Polymer.Async.timeOut.after(400)
+                this._debounceJob = Polymer.Debouncer.debounce(
+                    this._debounceJob,
+                    Polymer.Async.microTask,
+                    () => {
+                        this._generateRequest();
+                    });
+            }
+
+            _clearState() {
+                this.set('newsinfo', null);
+            }
+
+            _generateRequest() {
+                if (this.$.getselectednews.lastRequest) {
+                    this.$.getselectednews.lastRequest.abort();
+                }
+                this.$.getselectednews.generateRequest();
+            }
+        }
+
+        window.customElements.define(KalSelectedNews.is, KalSelectedNews);
+    </script>
+</dom-module>

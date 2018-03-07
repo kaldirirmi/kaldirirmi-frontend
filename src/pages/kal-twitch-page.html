@@ -1,0 +1,204 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete-suggestions.html">
+<link rel="import" href="../../bower_components/streaming-list/streaming-list.html">
+
+<dom-module id="kal-twitch-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+        font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
+        line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+      }
+
+      :host {
+        display: block;
+        @apply --paper-font-common-base;
+      }
+
+      app-toolbar {
+        background-color: #6441A4;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+        color: white;
+        font-size: 18px;
+        z-index: 1;
+      }
+
+      paper-autocomplete#allgames {
+        --paper-input-container-label: {
+          color: #fff;
+        };
+
+        --paper-input-container-color: #fff;
+        --paper-input-container-focus-color: #fff;
+        --paper-input-container-invalid-color: green;
+        --paper-input-container-input-color: #fff;
+
+        --paper-autocomplete-suggestions-wrapper: {
+          background-color: #6441A4;
+          color: #fff;
+        };
+        
+
+      }
+
+      paper-autocomplete#allgames #suggestionsWrapper {
+        background: Red !important;
+      }
+
+      paper-autocomplete#allgames #suggestionsWrapper paper-item {
+        background-color: aliceblue;
+      }
+
+      paper-dropdown-menu.pdm {
+        line-height: 0 !important;
+
+        --paper-input-container-label: {
+          color: white;
+          text-align: center;
+          font-weight: bold;
+          font-size: calc(0.45em + 1vmin);
+        };
+        --paper-input-container-input: {
+          color: white;
+          text-align: center;
+          text-transform: uppercase;
+          font-size: calc(0.45em + 1vmin);
+
+        };
+
+        --paper-input-container-focus-color: white;
+        --paper-input-container-underline: {
+          display: none;
+        };
+      }
+
+      app-toolbar .toolbarautocomplete {
+        color: black !important;
+        @apply --layout-flex;
+      }
+
+      app-toolbar .toolbarimage {
+        margin-top: 10px;
+        font-weight: 100;
+      }
+
+      app-toolbar .toolbarimage iron-icon {
+        padding: 0px 10px;
+      }
+    </style>
+
+    <iron-ajax auto id="getallgames" debounce-duration="300" url="/h/main?fm=get-allgames" handle-as="json" last-response="{{allgames}}"></iron-ajax>
+    <app-toolbar>
+      <div class="layout horizontal center toolbarimage">
+        <iron-icon icon="kaldirirmi:twitch"></iron-icon>
+      </div>
+
+      <div class="flex toolbarautocomplete">
+          <paper-autocomplete
+                            label="Oyun Adı"
+                            placeholder="Oyun Adı Girerek Filtreleme Yapabilirsin"
+                            id="allgames"
+                            min-length="2"
+                            source="[[allgames]]"
+                            on-autocomplete-selected="_selectedGame"
+                            on-autocomplete-reset-blur="_resetSelection">
+        </paper-autocomplete>
+      </div>
+      <paper-dropdown-menu class="pdm" label="Dil Seçeneği">
+          <paper-listbox slot="dropdown-content"
+                         class="dropdown-content"
+                         attr-for-selected="value"
+                         selected="{{language}}">
+                         <paper-item value="tr">Türkçe</paper-item>
+                         <paper-item value="en">İngilizce</paper-item>
+                         <paper-item value="fr">Fransızca</paper-item>
+          </paper-listbox>
+      </paper-dropdown-menu>
+      <paper-button on-tap="_resetSettings">
+        Sıfırla
+      </paper-button>
+    </app-toolbar>
+    <streaming-list lang="{{language}}" width="{{size}}" service="twitch" client-id="{{clientId}}" key="{{key}}" game="{{game}}">
+    </streaming-list>
+
+  </template>
+
+  <script>
+    class KalTwitchPage extends Polymer.Element {
+      static get is() {
+        return 'kal-twitch-page';
+      }
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          isMobile: {
+            type: Boolean,
+            reflectToAttribute: true
+          },
+          route: {
+            type: Object,
+          },
+          game: {
+            type: String,
+            value: "",
+            notify: true
+          },
+          language: {
+            type: String,
+            value: "tr"
+          },
+          size: {
+            type: Number,
+            value: 260
+          },
+          clientId: {
+            type: String,
+            value: "573me5izesw34qm13u7j1h8km5fnpwz"
+          },
+          key: {
+            type: String,
+            value: "AIzaSyDMAAk08_eOgNAj12gQ3wb3liY0KJgb5kI"
+          }
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+      }
+
+      _pucChange(event) {
+        // console.log('_pucChange');
+      }
+
+      _pucSelection(event) {
+        // console.log('_pucSelection');
+      }
+
+      _selectedGame(event) {
+        // console.log('_selectedGame');
+        this.game = event.detail.option.text;
+      }
+      
+
+      _resetSelection(event) {
+        this.game = '';
+      }
+
+      _resetSettings() {
+        this.game = '';
+        this.language = 'tr';
+        this.root.querySelector('paper-autocomplete paper-input').value = '';
+        // document.querySelector('paper-autocomplete paper-input').value = '';
+      }
+
+    }
+    window.customElements.define(KalTwitchPage.is, KalTwitchPage);
+  </script>
+</dom-module>

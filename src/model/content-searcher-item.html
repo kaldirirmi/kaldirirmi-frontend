@@ -1,0 +1,551 @@
+<dom-module id="content-searcher-item">
+    <template>
+
+        <style>
+            :host {
+                display: block;
+                @apply --paper-font-common-base;
+            }
+
+            app-toolbar {
+                background-color: #E65100;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+            }
+
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            .item {
+                @apply --layout-vertical;
+                padding: 20px;
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+
+            .item .item-column {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+            .item .item-column-rowler {
+                @apply --layout-vertical;
+                margin-top: 20px;
+                border-top: 1.5px solid black;
+                font-weight: 400;
+                width: 100%;
+            }
+
+            .item .item-column .benchmark {
+                background: #E65100;
+                border-radius: 40%;
+                padding: 10px;
+                margin-right: 10px;
+                color: white;
+            }
+
+            .item .item-column-invisible {
+                display: none;
+                opacity: 0;
+                transition: opacity 1s linear;
+            }
+
+            .avatar {
+                height: 106px;
+                width: 190px;
+                box-sizing: border-box;
+                background-color: #DDD;
+            }
+
+            .pad {
+                padding: 0 16px;
+                @apply --layout-flex;
+                @apply --layout-vertical;
+            }
+
+            .primary {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .shortText,
+            .longText {
+                font-size: 14px;
+            }
+
+            .item.expanded .item-column-invisible {
+                opacity: 1;
+                display: flex !important;
+            }
+
+            .spacer {
+                @apply --layout-flex;
+            }
+
+            @media (max-width: 460px) {
+                paper-toolbar .bottom.title {
+                    font-size: 14px;
+                }
+            }
+
+            .loadingIndicator {
+                left: 0;
+                right: 0;
+                position: relative;
+                top: 6em;
+            }
+
+            #hardware-list-container {
+                min-height: 400px;
+                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+                padding: 15px;
+            }
+
+            paper-dropdown-menu {
+                line-height: 0 !important;
+                --paper-input-container-label: {
+                    color: white;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: calc(0.45em + 1vmin);
+                }
+                ;
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                    font-size: calc(0.45em + 1vmin);
+
+                }
+                ;
+                --paper-input-container-focus-color: white;
+                --paper-input-container-underline: {
+                    display: none;
+                }
+                ;
+
+            }
+
+            .searchInput {
+                @apply --layout-flex;
+                font-size: 18px;
+                padding: 10px 20px;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                -webkit-appearance: none;
+                border-radius: 0px;
+            }
+
+            .searchInput::-webkit-input-placeholder {
+                color: white;
+            }
+
+            .searchInput:-moz-placeholder {
+                /* Firefox 18- */
+                color: white;
+            }
+
+            .searchInput::-moz-placeholder {
+                /* Firefox 19+ */
+                color: white;
+            }
+
+            .searchInput:-ms-input-placeholder {
+                color: white;
+            }
+
+            .searchInput:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+            .searchInput:focus {
+                background-color: white;
+                outline: none;
+                color: black;
+            }
+
+            .empty-message {
+                color: #ff7800;
+                text-align: center;
+                font-size: 1.2em;
+            }
+
+
+            .searchInput,
+            #mobileSearchInput {
+                outline: none !important;
+                display: none;
+            }
+
+            #mobileSearchInput {
+                z-index: 111;
+                width: 80%;
+                -ms-flex: 1 1 0.000000001px;
+                -webkit-flex: 1;
+                flex: 1;
+                -webkit-flex-basis: 0.000000001px;
+                flex-basis: 0.000000001px;
+                font-size: 18px;
+                padding: 10px 20px;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                -webkit-appearance: none;
+                border-radius: 0px;
+                position: absolute;
+                top: 10px;
+                background: #E65100;
+                left: 60px;
+            }
+
+            #newscastSearchInput,
+            #reviewcastSearchInput {
+                display: none;
+                z-index: 111;
+                width: 85%;
+                -ms-flex: 1 1 0.000000001px;
+                -webkit-flex: 1;
+                flex: 1;
+                -webkit-flex-basis: 0.000000001px;
+                flex-basis: 0.000000001px;
+                font-size: 18px;
+                padding: 16px 10px;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                -webkit-appearance: none;
+                border-radius: 0px;
+                position: absolute;
+                top: 5px;
+                background: #E65100;
+                left: 55px;
+            }
+
+            #newscastSearchInput:focus,
+            #reviewcastSearchInput:focus {
+                background-color: white;
+                outline: none;
+                color: black;
+            }
+
+
+            #mobileSearchIcon {
+                margin-right: 15px;
+            }
+
+            @media only screen and (min-width: 768px) {
+                .searchInput {
+                    display: block;
+                }
+                #mobileSearchIcon {
+                    display: none;
+                }
+            }
+
+            .inputOpened {
+                display: block !important;
+            }
+
+            .newscastOpened {
+                display: block !important;
+            }
+
+
+            paper-button[continue] {
+                background: #222;
+                width: 15%;
+                transition: all ease-in-out .3s;
+            }
+
+            paper-button[continue]:hover {
+                transform: scale(1.1);
+            }
+
+            a[continueurl] {
+                text-decoration: none;
+                color: #fff;
+
+
+
+            }
+        </style>
+
+
+        <iron-ajax id="getnewslist" debounce="3000" url="/h/main?fm=get-newsreviews-list&a=[[tablename]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]"
+            handle-as="json" on-response="_response"></iron-ajax>
+
+        <app-toolbar>
+            <!-- newscast page -->
+            <template is="dom-if" if="[[castpage]]">
+                <div class="mobileSearchHardware" id="cpuMobileSearch">
+                    <paper-icon-button id="newscastSearchIcon" on-tap="_mobileSearchIcon" icon="[[mobileSearchIcon]]"></paper-icon-button>
+                    <input id="newscastSearchInput" type="search" placeholder="Haber Ara" value="{{query::input}}" />
+                </div>
+                <paper-dropdown-menu class="pdmHeader" label="Sıralama">
+                    <paper-listbox style="background-color:#E65100; color:white" class="dropdown-content" attr-for-selected="value" selected="{{order}}">
+                        <paper-item value="releasedate">Eklenme Tarihi</paper-item>
+                        <paper-item value="title">Haber Başlığı</paper-item>
+                        <paper-item value="viewcount">Görüntülenme Sayısı</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu class="pdmHeader" label="Kriter">
+                    <paper-listbox style="background-color:#E65100; color:white" class="dropdown-content" attr-for-selected="value" selected="{{criter}}">
+                        <paper-item value="desc">Azalan</paper-item>
+                        <paper-item value="asc">Artan</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+            </template>
+            <!-- allnewsreviews page-->
+            <template is="dom-if" if="[[!castpage]]">
+                <input class="searchInput" type="search" placeholder="Haber Ara" value="{{query::input}}">
+                <div class="mobileSearchHardware" id="cpuMobileSearch">
+                    <paper-icon-button id="mobileSearchIcon" on-tap="_mobileSearchIcon" icon="[[mobileSearchIcon]]"></paper-icon-button>
+                    <input id="mobileSearchInput" type="search" placeholder="Haber Ara" value="{{query::input}}" />
+                </div>
+                <paper-dropdown-menu class="pdmHeader" label="Sıralama">
+                    <paper-listbox style="background-color:#E65100; color:white" class="dropdown-content" attr-for-selected="value" selected="{{order}}">
+                        <paper-item value="releasedate">Eklenme Tarihi</paper-item>
+                        <paper-item value="title">Haber Başlığı</paper-item>
+                        <paper-item value="viewcount">Görüntülenme Sayısı</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu class="pdmHeader" label="Kriter">
+                    <paper-listbox style="background-color:#E65100; color:white" class="dropdown-content" attr-for-selected="value" selected="{{criter}}">
+                        <paper-item value="desc">Azalan</paper-item>
+                        <paper-item value="asc">Artan</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+            </template>
+        </app-toolbar>
+        <div id="hardware-list-container" itemscope itemtype="http://schema.org/ItemList">
+            <iron-scroll-threshold lower-threshold="60" on-lower-threshold="_loadMore" id="newsThreshold">
+                <link itemprop="itemListOrder" href="http://schema.org/ItemListOrderAscending" />
+                <iron-list id="ironListCpus" items="[[response]]" as="item" scroll-target="newsThreshold" selection-enabled multi-selection>
+                    <template>
+                        <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
+                                <div class="item-column">
+                                    <iron-image itemprop="image" class="avatar" sizing="cover" src$="https://cdn.kaldirirmi.com/images/news/[[item.picture]]"></iron-image>
+                                    <div class="pad">
+                                        <div class="primary" itemprop="name">[[item.title]]</div>
+                                        <div class="shortText">[[item.subtitle]]</div>
+                                        <meta itemprop="position" content="[[index]]" />
+                                    </div>
+                                    <div class="benchmark" itemprop="description">[[item.viewcount]]</div>
+                                    <iron-icon icon$="[[getIconForItem(selected)]]"></iron-icon>
+                                </div>
+                                <div class="item-column item-column-invisible">
+                                    <div class="item-column-rowler">
+                                        <html-echo html="[[item.details]]"></html-echo>
+
+                                        <a href="/haber/[[item.url]]" continueurl>
+                                            <paper-button continue>
+                                                Devamı
+                                            </paper-button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </iron-list>
+                <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loading]]">
+                    <loader-pac></loader-pac>
+                </div>
+                <div class="empty-message" hidden$="[[!empty]]">
+                    Şimdilik Bu Kadar!
+                </div>
+            </iron-scroll-threshold>
+        </div>
+    </template>
+
+    <script>
+        class ContentSearcherItem extends Polymer.Element {
+            static get is() {
+                return 'content-searcher-item'
+            }
+            /**
+              * Object describing property-related metadata used by Polymer features
+              */
+            static get properties() {
+                return {
+                    tablename: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    query: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    order: {
+                        type: String,
+                        value: 'releasedate',
+                        notify: true,
+                        observer: '_orderChanged'
+                    },
+                    criter: {
+                        type: String,
+                        value: 'desc',
+                        notify: true,
+                        observer: '_criterChanged'
+                    },
+                    page: {
+                        type: Number,
+                        value: 0,
+                    },
+                    itemperpage: {
+                        type: Number,
+                        value: 20
+                    },
+                    response: {
+                        type: Array,
+                        notify: true,
+                        value: []
+                    },
+                    timeout: {
+                        type: Number,
+                        value: 1111,
+                        notify: true
+                    },
+
+                    mobileSearchIcon: {
+                        type: String,
+                        value: 'search'
+                    },
+                    castpage: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
+
+                };
+            }
+            /**
+             * Use for one-time configuration of your component after local DOM is
+             * initialized.
+             */
+            ready() {
+                super.ready();
+
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+
+            }
+
+            /**
+              * Called every time the element is inserted into the DOM. Useful for 
+              * running setup code, such as fetching resources or rendering.
+              * Generally, you should try to delay work until this time.
+              */
+            connectedCallback() {
+                super.connectedCallback();
+
+            }
+            /**
+              * Array of strings describing multi-property observer methods and their
+              * dependant properties
+              */
+            static get observers() {
+                return [
+                    '_resetListForQuery(query)'
+                ];
+            }
+
+            _loadMore() {
+                this.loading = true;
+                if (this.$.getnewslist.lastRequest) {
+                    this.$.getnewslist.lastRequest.abort();
+                }
+                this.page++;
+                this.async(function () {
+                    this.$.getnewslist.generateRequest();
+                }, this.timeout);
+                this.timeout = 1111;
+
+            }
+            _response(event) {
+                var response = event.detail.response;
+                //console.log('kaldirirmi-all-news response');
+                //console.log(response);
+                if (response.length > 0) {
+                    response.forEach(function (item) {
+                        this.push('response', item);
+                    }, this);
+                    this.$.newsThreshold.clearTriggers();
+                }
+                else {
+                    this.empty = true;
+                }
+                this.loading = false;
+            }
+            _orderChanged(newVal, oldVal) {
+                this._clearState();
+                this.debounce('_generateNewDataRequest', this._generateRequest, 400);
+            }
+            _resetListForQuery(query) {
+                if (query.trim().length >= 2 || query.trim() === '') {
+                    this._clearState();
+                    this.debounce('_generateNewDataRequest', this._generateRequest, 400);
+                }
+
+            }
+            _criterChanged(newVal, oldVal) {
+                this._clearState();
+                this.debounce('_generateNewDataRequest', this._generateRequest, 400);
+            }
+            _clearState() {
+                this.page = 0;
+                this.empty = false;
+                this.loading = true;
+                this.set('response', []);
+            }
+            _generateRequest() {
+                if (this.$.getnewslist.lastRequest) {
+                    this.$.getnewslist.lastRequest.abort();
+                }
+                this.page = 1;
+                this.$.getnewslist.generateRequest();
+
+
+            }
+            getClassForItem(item, selected) {
+                return selected ? 'item expanded' : 'item';
+            }
+            getIconForItem(selected) {
+                return selected ? 'icons:expand-less' : 'icons:expand-more';
+            }
+            _mobileSearchIcon(event) {
+                $('#cpuMobileSearch #mobileSearchInput').toggleClass('inputOpened');
+                $('#newscastSearchInput').toggleClass('newscastOpened');
+
+                if (this.mobileSearchIcon == 'search') this.mobileSearchIcon = 'close';
+                else if (this.mobileSearchIcon == 'close') this.mobileSearchIcon = 'search';
+            }
+
+        }
+
+        window.customElements.define(ContentSearcherItem.is, ContentSearcherItem);
+    </script>
+</dom-module>

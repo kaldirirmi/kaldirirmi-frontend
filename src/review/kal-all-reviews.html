@@ -1,0 +1,198 @@
+<!-- Model Imports -->
+<link rel="import" href="../model/review-item.html">
+<link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../model/content-searcher.html">
+
+<dom-module id="kal-all-reviews">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+            :host([is-mobile]) #allreviews {
+                @apply --layout-vertical;
+            }
+
+            :host([is-mobile]) #allreviews .main .item {
+                width: 90%;
+                max-height: 320px;
+            }
+
+            :host([selected-game-active]) {
+                background: red;
+            }
+
+            #allreviews {
+                @apply --layout-horizontal;
+                width: 100%;
+                height: 100%;
+                margin: 10px 0px;
+                @apply --shadow-elevation-2dp;
+                margin-top: 0px;
+            }
+
+
+            #allreviews .main {
+                background: red;
+                @apply --layout-flex-8;
+
+                @apply --layout-horizontal;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                margin-left: 100px;
+                background: #222;
+                justify-content: center;
+                /*margin: 10px 0px;*/
+                margin: 0;
+            }
+
+            #allreviews .main .item {
+                /*@apply --layout-vertical;*/
+                /*@apply --layout-flex-4;*/
+                margin: 5px;
+                /*height: 22vh;*/
+                /*padding: 20px;*/
+                /*background-color: white;*/
+                /*border: 1px solid #ddd;*/
+                cursor: pointer;
+                /*margin-bottom: 10px;*/
+            }
+
+
+            #allreviews .sidebar {
+                @apply --layout-vertical;
+                @apply --layout-flex-4;
+            }
+
+            @media only screen and (min-width: 760px) and (max-width: 800px) {
+                #allreviews .main .item {
+                    width: 48% !important;
+                }
+            }
+
+            @media only screen and (min-width: 1000px) and (max-width: 1100px) {
+                #allreviews {
+                    @apply --layout-vertical;
+                }
+
+                #allreviews .main .item {
+                    width: 45% !important;
+                    min-height: 220px;
+
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                #allreviews .main .item {
+                    width: 31%;
+                    /*min-height: 150px;*/
+                    min-height: calc((100vh - (192px + 25px)) / 3);
+                    max-height: calc((100vh - (192px + 25px)) / 3);
+
+                    /*max-height: 200px;*/
+                }
+            }
+        </style>
+
+        <iron-ajax auto id="getreviews" url="/h/main?fm=get-populer-content-default&a=[[datatable]]&b=[[itemsize]]" method="get"
+            handle-as="json" on-response="_responseNews" loading="{{loading}}"></iron-ajax>
+
+        <div id="allreviews">
+            <div class="loadingindicator" hidden$="[[!loading]]">
+                <paper-spinner-lite active$="[[loading]]" class="orange"></paper-spinner-lite>
+            </div>
+            <div class="main">
+                <template is="dom-repeat" items={{items}}>
+                    <div class="item">
+                        <review-item item="[[item]]" basic is-mobile=[[isMobile]]></review-item>
+                    </div>
+                </template>
+            </div>
+            <div class="sidebar">
+                <content-searcher tablename="[[datatable]]" is-mobile="[[isMobile]]"></content-searcher>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * `kal-all-reviews` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalAllNews extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-all-reviews';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    itemsize: {
+                        type: Number,
+                        value: 9,
+                    },
+                    datatable: {
+                        type: String,
+                        value: 'kalreviews'
+                    },
+                    items: {
+                        type: Array,
+                        value: []
+                    },
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _responseNews(a) {
+
+                if (this.items.length > 0)
+                    this.set('items', []);
+
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (reviews) {
+                        reviews.title = reviews.title.toString().substring(0, 45) + '...';
+                        //reviews.subtitle = reviews.subtitle.toString().substring(0, 45) + "...";
+                        this.push('items', reviews);
+                    }, this);
+                }
+            }
+
+        }
+
+        window.customElements.define(KalAllNews.is, KalAllNews);
+    </script>
+</dom-module>

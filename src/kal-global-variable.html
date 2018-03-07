@@ -1,0 +1,90 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="kal-global-variable">
+  <script>
+   
+    var globalVariable = globalVariable || {};
+
+
+    class KalGlobalVariable extends Polymer.Element{
+        static get is(){
+            return 'kal-global-variable'
+        }
+      
+        static get properties() {
+            return {
+                key: String,
+                value:{
+                    type: Object,
+                    notify: true,
+                    observer: '_valueChanged'
+                },
+                readonly: {
+                    type: Boolean,
+                    value: false
+                }
+            };
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+        
+            if(this.key){
+                if(globalVariable[this.key]){
+                    if(this.value != globalVariable[this.key].value){
+                        this.value = globalVariable[this.key].value;
+                    }
+                } else{
+                    globalVariable[this.key] = {
+                        value: this.value,
+                        observers: [this],
+                        isChanging: false,
+                    };
+                }
+                this._setObserver(this.key);
+            } else{
+                throw new Error('Invalid Argument: The `key` property must be defined.');
+            }
+        }
+       
+        disconnectedCallback() {
+            super.disconnectedCallback();
+            var index = globalVariable[this.key].observers.indexOf(this);
+            if (index !== -1) {
+                globalVariable[this.key].observers.splice(index, 1);
+            }
+        }
+
+        _setObserver(key){
+            var index = globalVariable[key].observers.indexOf(this);
+            if(index === -1){
+                globalVariable[key].observers.push(this);
+            }
+        }
+
+        _valueChanged(value, oldValue){
+            if (!this.readonly && value != oldValue &&
+                globalVariable[this.key] &&
+                value != globalVariable[this.key].value &&
+                !globalVariable[this.key].isChanging) {
+                this._setValue(this.key, value);
+            }
+        }
+
+        _setValue(key, value){
+            globalVariable[key].isChanging = true;
+            globalVariable[key].value = value;
+            for (var i in globalVariable[key].observers) {
+            if (globalVariable[key].observers[i] != this) {
+                globalVariable[key].observers[i].set('value', value);
+                }
+            }
+            globalVariable[key].isChanging = false;
+        }
+    }
+
+    window.customElements.define(KalGlobalVariable.is, KalGlobalVariable);
+
+
+  </script>
+</dom-module>
