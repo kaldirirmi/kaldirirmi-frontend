@@ -34,6 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -58,6 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
 
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
@@ -74,6 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./kal-drawer-item.html">
 <link rel="import" href="./shared-styles.html">
 <link rel="import" href="./model/logout-button.html">
+<link rel="import" href="./model/login-modal.html">
 
 <link rel="lazy-import" href="./pages/kal-home-page.html">
 <link rel="lazy-import" href="./pages/kal-game-page.html">
@@ -97,9 +100,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     --app-secondary-color: #eee;
                     --app-theme-color: #ff7600;
                     --app-drawer-width: 200px;
-
                     display: block;
                 }
+
+                
 
                 a {
                     text-decoration: none;
@@ -139,7 +143,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     height: 64px;
                     @apply --layout-horizontal;
                     @apply --layout-center;
-                    @apply --layout-center-justified;
+                    padding: 0 16px;
+                    justify-content: flex-start;
+                    /* @apply --layout-center-justified; */
                 }
 
                 app-drawer div[main-logo] div[main-image] {
@@ -157,6 +163,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     width: 34px;
                     height: 50px;
 
+                }
+
+                app-drawer div[main-logo] paper-button[login-button] {
+                    background: white;
+                    color: #ff7800;
+                    letter-spacing: .7px;
+                    text-transform: capitalize;
+                    font-weight: 600;
+                    margin-left: 20px;
+                    line-height: 12px;
                 }
 
                 .drawer-list {
@@ -181,8 +197,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     --app-header-background-front-layer: {
                         background-image: url("../images/nouseradded.jpg");
                         background-position: 50% 10%;
-                    };
-                    
+                    }
+                    ;
+
                 }
 
                 app-header div[header-content] {
@@ -204,6 +221,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     background-color: #222;
                     text-transform: capitalize
                 }
+
+
+
+                /* dialog login */
+                #_loginDialog{
+                    background: #222;
+                }
+                
+                #_loginDialog paper-fab[close-dialog-button]{
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    --paper-fab-background: #ff7800;
+                    --paper-fab-keyboard-focus-background: #e65100;
+                    color: #000;
+                }
+                
+                iron-overlay-backdrop {
+                    --iron-overlay-backdrop-background-color: #ff7800 !important;
+                }
+
+                login-modal{
+                    z-index: 2;
+                }
             </style>
         </custom-style>
 
@@ -212,7 +253,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>-->
 
 
-        <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="500" icon-size="200" spinner-sub="-5"></splash-screen>
+        <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="500" icon-size="200"
+            spinner-sub="-5"></splash-screen>
 
         <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
         </app-location>
@@ -237,7 +279,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </iron-image>
                         </a>
                     </div>
-                    <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                    <div hidden$="[[storedUser.loggedin]]">
+                        <paper-button raised login-button on-tap="_toggleLoginDialog">Giriş Yap</paper-button>
+                    </div>
+                    <div hidden$="[[!storedUser.loggedin]]">
+                        <paper-button raised login-button on-tap="_toggleLoginDialog">[[storedUser.uname]]</paper-button>
+                        <!-- <logout-button stored-user=[[storedUser]]></logout-button> -->
+                    </div>
+
                 </div>
 
                 <!-- <div main-title>Logo</div> -->
@@ -272,6 +321,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <logout-button stored-user=[[storedUser]]></logout-button>
 
                             </div>
+                            
+                            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         </div>
                     </app-toolbar>
                 </app-header>
@@ -301,6 +352,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
 
         <paper-toast id="toaster" text=""></paper-toast>
+
+        <paper-dialog id="_loginDialog" modal entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+            <paper-fab icon="close" dialog-confirm autofocus close-dialog-button>Tap me to close</paper-fab>
+
+                <h2>Dialog Title</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <div class="buttons">
+                </div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                  irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </paper-dialog>
 
     </template>
 
@@ -339,7 +401,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         type: Number,
                         notify: true,
                         observer: '_uidChanged'
-                    }
+                    },
+                    uname: String
                 };
             }
 
@@ -369,23 +432,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // work until after first paint.
                 Polymer.RenderStatus.afterNextRender(this, function () {
                     let uid = this.uid;
+                    let uname = this.uname;
                     let user = null;
                     if (uid != 0) {
                         user = {
                             loggedin: true,
-                            uid: uid
+                            uid: uid,
+                            uname: uname
                         }
                     } else {
                         user = {
                             loggedin: false,
-                            uid: 0
+                            uid: 0,
+                            uname: ""
                         }
                     }
                     this.storedUser = user;
                     // console.log(this.storedUser);
                 });
             }
-            
+
             //How to fire?
             /*
                 var message = "Message Here!";
@@ -453,16 +519,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _uidChanged(uid, oldVal) {
                 // console.log('uidChanged: ', uid, oldVal);
                 var user = null;
-
+                let uname = this.uname;
                 if (uid != 0) {
                     user = {
                         loggedin: true,
-                        uid: uid
+                        uid: uid,
+                        uname: uname
                     }
                 } else {
                     user = {
                         loggedin: false,
-                        uid: 0
+                        uid: 0,
+                        uname: ""
                     }
                 }
 
@@ -470,6 +538,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 // console.log('storedUser: ', this.storedUser);
 
+            }
+
+            _toggleLoginDialog(e) {
+                //this.$._loginDialog.open();
+                if (!this._loginModal) {
+                    this._loginModal = document.createElement('login-modal');
+                    this.root.appendChild(this._loginModal);
+                }
+
+                // this.$.cart.addItem(event.detail);
+                this._loginModal.open();
+                // this._announce('Item added to the cart');
             }
         }
 
