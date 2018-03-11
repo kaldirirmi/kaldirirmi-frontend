@@ -2,6 +2,8 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
 <!-- <link rel="import" href="shop-button.html"> -->
 
 <dom-module id="login-modal">
@@ -12,16 +14,21 @@
             :host {
                 display: block;
                 position: fixed;
-                background-color: #222;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                z-index: -1;
+                /* background-color: #222;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
                 width: 320px;
-                padding: 12px;
+                /* padding: 12px; */
                 visibility: hidden;
                 will-change: transform;
-                top: 56px;
+                /* top: 56px;
                 right: 16px;
                 -webkit-transform: translate3d(calc(100% + 16px), 0, 0);
-                transform: translate3d(calc(100% + 16px), 0, 0);
+                transform: translate3d(calc(100% + 16px), 0, 0); */
+                top: 64px;
+                left: 200px;
+                -webkit-transform: translate3d(calc(100% + -200px), 0, 0);
+                transform: translate3d(200px, 0, 0);
                 transition-property: visibility, -webkit-transform;
                 transition-property: visibility, transform;
                 transition-duration: 0.2s;
@@ -32,6 +39,8 @@
                 visibility: visible;
                 -webkit-transform: translate3d(0, 0, 0);
                 transform: translate3d(0, 0, 0);
+                z-index: 3;
+
             }
 
             .layout-horizontal {
@@ -59,6 +68,7 @@
                 position: absolute;
                 right: 5px;
                 top: 5px;
+                color: #fff;
             }
 
             @media (max-width: 767px) {
@@ -71,11 +81,11 @@
                     width: auto;
                     -webkit-transform: translate3d(0, 100%, 0);
                     transform: translate3d(0, 100%, 0);
+                    top: 0px;
+                    background: rgba(255, 120, 0, 0.6);
                 }
 
             }
-
-
 
             /* MODAL CONFIG */
 
@@ -83,242 +93,124 @@
                 text-decoration: none;
             }
 
-            #profile-group .profile-child-group .child-detail a paper-card {
+            :root {
+                --paper-input-container-input-color: white;
+                --paper-input-container-color: #ff7800;
+                /* Label and underline color when the input is focused */
+                --paper-input-container-focus-color: #EE7813;
+                /* Label and underline color when the input is invalid */
+                --paper-input-container-invalid-color: red;
+                /* Input foreground color */
+            }
+
+            /* #piloginusername,
+            #piloginpassword {
+                --paper-input-container-input: {
+                    font-size: 1.25em !important;
+                }
+                --paper-input-container-label: {
+                    font-size: 0.80em !important;
+                }
+            } */
+
+            #loginmessage {
+                font-weight: 700;
+                margin-top: 10px;
+                font-size: calc(0.4em + 1vmin) !important;
+            }
+
+            .modal-container {
+                @apply --layout-vertical;
+            }
+
+            .modal-container .modal-header {
+                @apply --layout-horizontal;
                 display: flex;
                 justify-content: center;
-                align-items: center !important;
+                box-shadow: rgba(0, 0, 0, 0.14) 0px 8px 10px 1px, rgba(0, 0, 0, 0.12) 0px 3px 14px 2px, rgba(0, 0, 0, 0.4) 0px 5px 5px -3px;
+                transition: all 300ms cubic-bezier(0.35, 0, 0.25, 1) 100ms;
+                background: rgb(34, 34, 34);
+                padding: calc(0.3em + 1vmin) !important;
+                outline: none !important;
+                margin-bottom: 15px;
             }
 
-            @media only screen and (min-width: 320px) {
-                .login-area h4 {
-                    padding-right: 1px !important;
-                    padding-top: 26px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 49px !important;
-                    height: 49px !important;
-                    padding-left: 0px;
-                    margin-right: 3px !important;
-                    margin-top: 5px !important;
-                }
-
-
-                /* MODAL */
-                .login-modal {
-                    top: 45%;
-                }
-
-                .profile-modal {
-                    top: 42%;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 98px;
-                    height: 101px;
-                    max-width: 184px;
-                    margin: 3px;
-                    padding-top: 3px;
-                }
-
-                paper-card .card-content {
-                    padding: 8px !important;
-                }
+            .modal-container .modal-header .modal-logo {
+                height: 59px;
+                width: 45px;
             }
 
-            @media only screen and (min-width: 360px) {
-                .login-area h4 {
-                    padding-right: 1px !important;
-                    padding-top: 26px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 49px !important;
-                    height: 49px !important;
-                    padding-left: 0px;
-                    margin-right: 3px !important;
-                    margin-top: 5px !important;
-                }
-
-                /* MODAL */
-                .login-modal {
-                    top: 48%;
-                }
-
-                .profile-modal {
-                    top: 37%;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 112px;
-                    height: 111px;
-                    max-width: 184px;
-                    margin: 3px;
-                    padding-top: 5px;
-                }
-
-                paper-card .card-content {
-                    padding: 11px !important;
-                }
+            .modal-container .modal-body {
+                @apply --layout-vertical;
+                padding: 12px;
+                transition: all 300ms cubic-bezier(0.35, 0, 0.25, 1) 100ms;
+                background: rgb(34, 34, 34);
+                box-shadow: rgba(0, 0, 0, 0.14) 0px 8px 10px 1px, rgba(0, 0, 0, 0.12) 0px 3px 14px 2px, rgba(0, 0, 0, 0.4) 0px 5px 5px -3px;
             }
 
-            @media only screen and (min-width: 412px) {
-                .login-area h4 {
-                    padding-right: 1px !important;
-                    padding-top: 26px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 49px !important;
-                    height: 49px !important;
-                    padding-left: 0px;
-                    margin-right: 3px !important;
-                    margin-top: 7px !important;
-                }
-
-                /* MODAL */
-                .login-modal {
-                    top: 44%;
-                }
-
-                .profile-modal {
-                    top: 35%;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 122px;
-                    height: 120px;
-                    max-width: 184px;
-                    margin: 3px;
-                    padding-top: 9px;
-                }
-
-                paper-card .card-content {
-                    padding: 11px !important;
-                }
+            .modal-container .modal-body .btns {
+                position: relative;
+                margin-top: 20px;
             }
 
-            @media only screen and (min-width: 480px) {
-                .login-area h4 {
-                    padding-right: 1px !important;
-                    padding-top: 26px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 49px !important;
-                    height: 49px !important;
-                    padding-left: 0px;
-                    margin-right: 3px !important;
-                    margin-top: 7px !important;
-                }
-
-                /* MODAL */
-                .login-modal {
-                    top: 46%;
-                }
-
-                .profile-modal {
-                    top: 38%;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 145px;
-                    height: 127px;
-                    max-width: 184px;
-                    margin: 4px;
-                    padding-top: 10px;
-                }
-
-                paper-card .card-content {
-                    padding: 13px !important;
-                }
+            .modal-container .modal-body .btns button {
+                display: -ms-inline-flexbox;
+                display: -webkit-inline-flex;
+                display: inline-flex;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+                -ms-flex-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                /* position: relative; */
+                box-sizing: border-box;
+                min-width: 5.14em;
+                margin: 0 .29em;
+                background: 0 0;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-tap-highlight-color: transparent;
+                font: inherit;
+                text-transform: uppercase;
+                outline-width: 0;
+                border-radius: 3px;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                -webkit-user-select: none;
+                user-select: none;
+                cursor: pointer;
+                z-index: 0;
+                font-family: Roboto, Noto, sans-serif;
+                -webkit-font-smoothing: antialiased;
+                margin-top: 20px;
+                margin: 0 auto;
+                width: 50% !important;
+                background: #ff7800;
+                color: #fff;
+                border-color: transparent;
+                font-size: 18px;
+                padding: 10px;
+                margin: 0 auto !important;
+                width: 100% !important;
+                text-transform: capitalize;
             }
 
-            @media only screen and (min-width: 768px) {
-                .login-area h4 {
-                    padding-right: 1px !important;
-                    padding-top: 19px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 51px !important;
-                    height: 51px !important;
-                    padding-left: 0px;
-                    margin-right: 3px !important;
-                    margin-top: 0px !important;
-                }
-
-                /* MODAL */
-                .md-modal {
-                    width: 50% !important;
-                }
-
-                .login-modal {
-                    top: 35%;
-                }
-
-                .profile-modal {
-                    top: 24%;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 112px;
-                    height: 112px;
-                    max-width: 184px;
-                    margin: 1px;
-                    padding-top: 0px;
-                }
-
-                paper-card .card-content {
-                    padding: 8px !important;
-                }
+            .modal-container .modal-body .divider {
+                color: #fff;
+                margin: 10px 0px;
             }
 
-            @media only screen and (min-width: 1024px) {
-                /* zoom %175 */
-                .md-content h3 {
-                    font-size: 1.6em;
-                }
-
-                .login-area h4 {
-                    padding-right: 1px !important;
-                    padding-top: 19px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 49px !important;
-                    height: 49px !important;
-                    padding-left: 0px;
-                    margin-right: 3px !important;
-                }
-
-                /* modal ve içindeki card elementlerinin boyutlanması*/
-                .md-modal {
-                    max-width: 440px !important;
-                }
-
-                .login-modal {
-                    top: 41%;
-                }
-
-                .profile-modal {
-                    top: 33%;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 125px;
-                    height: 115px;
-                    max-width: 184px;
-                    margin: 5px;
-                }
-
-                paper-card .card-content {
-                    padding: 8px !important;
-                }
+            .modal-container .modal-body .button-group {
+                @apply --layout-vertical;
+                color: #fff;
             }
 
-
-            /* font of butttons */
+            .modal-container .modal-body .button-group paper-button {
+                margin: 7px 5px;
+                color: #fff !important;
+                text-transform: capitalize;
+                text-align: center;
+            }
 
             .facebook,
             .twitch,
@@ -329,572 +221,30 @@
                 font-size: 0.9em !important;
             }
 
-            .login-modal {
-                top: 45%;
+            /* PROFILE */
+
+            .profile-group {
+                @apply --layout-vertical;
             }
 
-            .profile-modal {
-                top: 30%;
+            .profile-group .profile-child-group {
+                @apply --layout-horizontal;
             }
 
-            .login-area h4 {
-                padding-top: 19px !important;
-                padding-right: 0px !important;
-            }
-
-            .login-area paper-icon-button {
-                width: 50px !important;
-                height: 50px !important;
-            }
-
-            /* modal ve içindeki card elementlerinin boyutlanması*/
-
-            .md-modal {
-                max-width: 470px !important;
-            }
-
-            #profile-group .profile-child-group .child-detail a paper-card {
-                width: 126px;
-                height: 110px;
-                max-width: 184px;
-                margin: 4px;
-            }
-
-            paper-card .card-content {
-                padding: 10px !important;
-            }
-
-            }
-
-            @media only screen and (min-width: 1440px) {
-                /* zoom % 125*/
-                .login-modal {
-                    /*top: 46.2%;*/
-                    top: 41%;
-                }
-
-                .profile-modal {
-                    top: 27.3%;
-                }
-
-                .login-area h4 {
-                    padding-top: 18px !important;
-                    padding-right: 0px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 49px !important;
-                    height: 49px !important;
-                }
-                /* modal ve içindeki card elementlerinin boyutlanması*/
-                .md-modal {
-                    max-width: 445px !important;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 137px;
-                    height: 115px;
-                    max-width: 184px;
-                    margin: 3px;
-                }
-
-                paper-card .card-content {
-                    padding: 12px !important;
-                }
-            }
-
-            @media only screen and (min-width: 1640px) {
-                /* zoom %110*/
-                .login-modal {
-                    /*top: 46.2%;*/
-                    top: 41.7%;
-                }
-
-                .profile-modal {
-                    /*top: 30.7%;*/
-                    top: 28.7%;
-                }
-
-                .login-area h4 {
-                    padding-top: 19px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 52px !important;
-                    height: 52px !important;
-                }
-                /* modal ve içindeki card elementlerinin boyutlanması*/
-                .md-modal {
-                    max-width: 460px !important;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 143px;
-                    height: 115px;
-                    max-width: 184px;
-                    margin: 3px;
-                }
-
-                paper-card .card-content {
-                    padding: 14px !important;
-                }
-            }
-
-            @media only screen and (min-width: 1824px) {
-                .login-modal {
-                    top: 38.8%;
-                }
-
-                .profile-modal {
-                    top: 28%;
-                }
-
-                .login-area h4 {
-                    padding-top: 20px !important;
-                }
-
-                .login-area paper-icon-button {
-                    width: 55px !important;
-                    height: 55px !important;
-                }
-
-                /* modal ve içindeki card elementlerinin boyutlanması*/
-                .md-modal {
-                    max-width: 510px !important;
-                }
-
-                #profile-group .profile-child-group .child-detail a paper-card {
-                    width: 157px;
-                    height: 125px;
-                    max-width: 184px;
-                    margin: 4px;
-                }
-
-                paper-card .card-content {
-                    padding: 16px !important;
-                }
-            }
-
-
-            :root {
-                --paper-input-container-input-color: white;
-
-                --paper-input-container-color: #ff7800;
-                /* Label and underline color when the input is focused */
-                --paper-input-container-focus-color: #EE7813;
-                /* Label and underline color when the input is invalid */
-                --paper-input-container-invalid-color: red;
-                /* Input foreground color */
-            }
-
-            #piloginusername,
-            #piloginpassword {
-                --paper-input-container-input: {
-                    font-size: 1.25em !important;
-                }
-                --paper-input-container-label: {
-                    font-size: 0.80em !important;
-                }
-            }
-
-            .user-layer .tab-content .tab-content-login {
-                z-index: 3;
-                overflow: hidden !important;
-                padding: 20px;
-            }
-
-            .user-layer .tab-content .tab-content-login .tab-content-login-details {
-                display: flex;
+            .profile-group .profile-child-group .child-detail {
+                @apply --layout-flex-6;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
                 position: relative;
-                flex-direction: column;
-                width: 100%;
-                height: auto;
-            }
-
-            .user-layer .tab-content .tab-content-login .tab-content-login-details .btns {
-                margin: 10px 0px;
-            }
-
-            .user-layer .tab-content .tab-content-login .tab-content-login-details .btns button {
-                display: -ms-inline-flexbox;
-                display: -webkit-inline-flex;
-                display: inline-flex;
-                -ms-flex-align: center;
-                -webkit-align-items: center;
-                align-items: center;
-                -ms-flex-pack: center;
-                -webkit-justify-content: center;
-                justify-content: center;
-                position: relative;
-                box-sizing: border-box;
-                min-width: 5.14em;
-                margin: 0 0.29em;
-                background: transparent;
-                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-                -webkit-tap-highlight-color: transparent;
-                font: inherit;
-                text-transform: uppercase;
-                outline-width: 0;
-                border-radius: 3px;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                -webkit-user-select: none;
-                user-select: none;
-                cursor: pointer;
-                z-index: 0;
-                font-family: 'Roboto', 'Noto', sans-serif;
-                -webkit-font-smoothing: antialiased;
-                margin-top: 20px;
-                margin: 0 auto;
-                width: 50% !important;
-                background: #ff7800;
-                color: white;
-                border-color: transparent;
-                font-size: 18px;
-                padding: 15px;
-                margin: 0 auto !important;
-                width: 100% !important;
-            }
-
-            .user-layer .tab-content .tab-content-login .tab-content-login-details .button-group {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .user-layer .tab-content .tab-content-login .tab-content-login-details .button-group paper-button {
-                font-size: 18px;
-                padding: 15px;
-                margin: 11px 5px;
-                color: white !important;
-                text-transform: capitalize;
-                text-align: center;
-            }
-
-            /* Mobile Login*/
-
-            .mobile-login-btn,
-            .profile-link-button {
-                text-transform: capitalize;
+                @apply --shadow-elevation-4dp;
                 color: #fff;
-                /*background-color: #222;*/
-                font-size: calc(0.3em + 1vmin) !important;
-                /*margin-left: 2em;*/
-            }
-
-            .mobile-login-btn p,
-            .profile-link-button p {
-                margin: 0px !important;
-                font-size: 14px;
-            }
-
-            .mobile-login {
-                position: fixed;
-                top: 150%;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                /*background: #EEE;*/
-                -webkit-transition: -webkit-transform .3s;
-                transition: -webkit-transform .3s;
-                transition: transform .3s;
-                transition: transform .3s, -webkit-transform .3s;
-                -webkit-transform: translateY(0);
-                transform: translateY(0);
-                z-index: 2000;
-                background: #222;
-                opacity: 0.9;
-            }
-
-            .mobile-login.searching {
-                -webkit-transform: translateY(-150%);
-                transform: translateY(-150%);
-                position: absolute !important;
-            }
-
-            .mobile-login .header {
-                align-items: center;
-                display: -webkit-box;
-                display: -ms-flexbox;
-                display: flex;
-                -webkit-box-pack: start;
-                -ms-flex-pack: start;
-                justify-content: flex-start;
-                background: #ff7800;
-                height: 55px;
-                box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
-            }
-
-            .mobile-login .header .back {
-                width: 58px;
-                height: 58px;
-                margin-left: 10px;
-                background: url('../img/arrowbackblack.svg') center no-repeat;
-            }
-
-            .mobile-login .header .back-btn-mobilelogin {
-                color: #222;
-                width: 45px;
-                height: 45px;
-            }
-
-            .mobile-login .header .title {
-                color: #222;
-                display: flex;
-                width: 75%;
-                justify-content: center;
-                font-size: 25px;
-            }
-
-            #loginlayermobile {
-                z-index: 3;
-                height: 500px !important;
-                overflow: hidden !important;
-                background: #222;
-                position: relative;
-                width: 100%;
-                background: #222;
-            }
-
-            #loginlayermobile .searchresultsmobile {
-                margin: 20px;
-            }
-
-            @media only screen and (max-width: 768px) {
-                #loginlayermobile {
-                    min-height: calc(100vh);
-                    overflow: hidden !important;
-                    overflow-y: auto !important;
-                    height: 300px;
-                }
-            }
-
-            #loginlayermobile .searchresultsmobile {
-                display: flex;
-                position: relative;
-                flex-direction: column;
-
-            }
-
-            #loginlayermobile .searchresultsmobile .btns {
-                display: flex;
-                margin: 6px 0px;
-            }
-
-            #loginlayermobile .searchresultsmobile .btns #loginbtnMobile {
-                @apply(--layout-inline);
-                @apply(--layout-center-center);
-                position: relative;
-                box-sizing: border-box;
-                min-width: 5.14em;
-                margin: 0 0.29em;
-                background: transparent;
-                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-                -webkit-tap-highlight-color: transparent;
-                font: inherit;
-                text-transform: uppercase;
-                outline-width: 0;
-                border-radius: 3px;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                -webkit-user-select: none;
-                user-select: none;
-                cursor: pointer;
-                z-index: 0;
-                @apply(--paper-font-common-base);
-                @apply(--paper-button);
-                margin-top: 20px;
-                margin: 0 auto;
-                width: 50% !important;
-                background: #ff7800;
-                color: white;
-                border-color: transparent;
-                font-size: 18px;
-                padding: 15px;
-                margin: 0 auto !important;
-                width: 50% !important;
-            }
-
-            #loginlayermobile .searchresultsmobile paper-button {
-                font-size: 18px;
-                padding: 15px;
-                margin: 11px 5px;
-                color: white !important;
-            }
-
-            .nav-bar-container .nav-user .user .web-login-btn {
-                margin: 0 !important;
-                height: 50px !important;
-            }
-
-            .nav-bar-container .nav-user .user .web-login-btn p {
-                margin: 0 !important;
-            }
-
-            /* media queries */
-
-            @media (max-width: 700px) {
-                .web-login-btn {
-                    display: none !important;
-                }
-            }
-
-            @media (min-width: 700px) {
-                .mobile-login-btn,
-                .profile-link-button {
-                    display: none !important;
-                }
-            }
-
-
-            .user-layer .tab-content .tab-content-profile {
-                z-index: 3;
-                overflow: hidden !important;
-                padding: 5px;
-            }
-
-            .user-layer .tab-content .tab-content-profile .tab-content-profile-details {
-                display: flex;
-                position: relative;
-                flex-direction: column;
-                width: 100%;
-                height: auto;
-            }
-
-            #profile-group {
-                display: flex;
-                flex-flow: column !important;
-            }
-
-            #profile-group .profile-child-group {
-                display: flex;
-                flex-flow: row !important;
-                width: 100%;
-            }
-
-            #profile-group .profile-child-group .child-detail {
                 margin: 5px;
-                width: 50%;
-                min-height: 5em;
-                height: 125px;
-                height: calc(5em + 1vmin) !important;
-                box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12),
-                0 5px 5px -3px rgba(0, 0, 0, 0.4);
+    padding: 5px 0px;
             }
 
-            #profile-group .profile-child-group .child-detail a {
-                text-decoration: none;
-                @apply(--layout-vertical);
-                @apply(--layout-center-center);
-                color: white;
-                width: 100%;
-                height: 100%;
-                position: relative;
-            }
-
-            #profile-group .profile-child-group .child-detail a paper-fab {
-                --paper-fab-background: #ff7800 !important;
-            }
-
-            #profile-group .profile-child-group .child-detail a div {
-                margin: 10px;
-                font-size: 20px;
-            }
-
-            @media only screen and (max-width: 760px) {
-                .user-layer {
-                    left: 0;
-                    width: 100%;
-
-                }
-                .user-layer .nav {
-                    margin-bottom: 0px !important;
-                    border-bottom: 3px solid #ff7800;
-                }
-
-                #profile-group .profile-child-group .child-detail {
-                    height: 100px;
-                }
-            }
-
-            @media only screen and (max-width: 1100px) {
-                .user-layer {
-                    top: 10%;
-                    left: 20%;
-                }
-            }
-
-            .nav-user-mobile .user-mobile paper-button {
-                text-transform: capitalize;
-                color: #fff;
-                background: #222;
-                font-size: calc(0.3em + 1vmin) !important;
-            }
-
-            .nav-user-mobile .user-mobile paper-button p {
-                margin: 0 !important;
-                font-size: 16px;
-            }
-
-
-            @media only screen and (min-width: 1224px) {
-                /* zoom %150 */
-                .user-layer {
-                    width: 400px;
-                    left: 37%;
-                    top: 5%;
-                }
-
-                .user-layer .tab-content .tab-content-login .tab-content-login-details .btns button,
-                .user-layer .tab-content .tab-content-login .tab-content-login-details .button-group paper-button {
-                    font-size: calc(0.33em + 1vmin) !important;
-                    padding: 10px;
-                }
-
-                #piloginusername,
-                #piloginpassword {
-                    --paper-input-container-input: {
-                        font-size: calc(0.7em + 1vmin) !important;
-                    }
-                    --paper-input-container-label: {
-                        font-size: calc(0.5em + 1vmin) !important;
-                    }
-                }
-
-
-            }
-
-            @media only screen and (min-width: 1440px) {
-                /* zoom % 125*/
-                .user-layer {
-                    width: 450px;
-                    left: 40%;
-                    top: 5%;
-                }
-
-                /*.user-layer .tab-content .tab-content-login .tab-content-login-details .btns button {
-                            font-size: 18px;
-                            padding: 15px;
-                        
-                        }*/
-            }
-
-            @media only screen and (min-width: 1640px) {
-                /* zoom %110*/
-                .user-layer {
-                    width: 500px;
-                    left: 40%;
-                    top: 0%;
-                }
-            }
-
-            #loginmessage {
-                margin-top: 10px;
-                font-size: calc(0.4em + 1vmin) !important;
-            }
-
-            .setInvisible {
-                opacity: 0 !important;
+            .profile-group .profile-child-group .child-detail paper-fab{
+                    --paper-fab-background: #ff7800 !important;
+                
             }
         </style>
 
@@ -902,91 +252,80 @@
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
-        <div class="user-layer">
-            <ul class="nav nav-tabs nav-justified" role="tablist">
-                <iron-image alt="Kaldirirmi.com Beyaz Logo" src="/assets/img/kallogowhite.png" sizing="cover"></iron-image>
-            </ul>
-            <div class="no-gutters tab-content">
-                <template is="dom-if" if="[[!storedUser.loggedin]]">
-                    <div class="tab-content-login">
-                        <div class="tab-content-login-details">
-                            <paper-ripple recenters></paper-ripple>
-                            <form id="loginform" is="iron-form" action="/h/main" method="post">
-                                <input type="hidden" name="fm" value="login" />
-                                <paper-input id="piloginusername" type="text" label="Kullanıcı Adı" name="username" required auto-validate error-message="bu alanın doldurulması zorunludur"
-                                    maxlength="12"></paper-input>
-                                <paper-input id="piloginpassword" type="password" label="Şifre" name="password" required auto-validate error-message="bu alanın doldurulması zorunludur"
-                                    maxlenght="16"></paper-input>
-                                <div id="loginmessage"></div>
-                                <div class="btns">
-                                    <button id="loginbtn" class="theme-color" type="submit">Giriş</button>
-                                </div>
-                            </form>
-                            <div class="divider">ya da</div>
-                            <div class="button-group">
-                                <paper-button raised style="background:#3B5998;" class="facebook" onclick="load(); location.href='/auth/facebook/login';">Facebook ile Giriş Yap / Kayıt Ol</paper-button>
-                                <paper-button raised style="background:#D73D32;" class="google" onclick="load(); location.href='/auth/google/login';">Google ile Giriş Yap / Kayıt Ol</paper-button>
-                                <paper-button raised style="background:#6441A4;" class="twitch" onclick="load(); location.href='/auth/twitch/login';">Twitch ile Giriş Yap / Kayıt Ol</paper-button>
+
+
+        <div class="modal-container">
+            <div class="modal-header">
+                <iron-image class="modal-logo" alt="Kaldirirmi.com Beyaz Logo" src="./frontend/images/kallogowhite.png" sizing="cover"></iron-image>
+            </div>
+            <div class="modal-body">
+                <div hidden="[[storedUser.loggedin]]">
+                    <iron-form id="loginform" on-iron-form-response="_loginFormResponse">
+                        <form action="/h/main" method="post">
+                            <input type="hidden" name="fm" value="login" />
+                            <paper-input id="piloginusername" type="text" label="Kullanıcı Adı" name="username" required auto-validate error-message="bu alanın doldurulması zorunludur"
+                                maxlength="12"></paper-input>
+                            <paper-input id="piloginpassword" type="password" label="Şifre" name="password" required auto-validate error-message="bu alanın doldurulması zorunludur"
+                                maxlenght="16"></paper-input>
+                            <div id="loginmessage"></div>
+                            <div class="btns">
+                                <paper-ripple></paper-ripple>
+                                <button id="loginbtn" class="theme-color" type="button" on-tap="_loginButton">Giriş Yap</button>
                             </div>
+                        </form>
+                    </iron-form>
+                    <div class="divider">ya da</div>
+                    <div class="button-group">
+                        <paper-button raised style="background:#3B5998;" class="facebook" onclick="location.href='/auth/facebook/login';">Facebook İle Giriş Yap / Kayıt Ol</paper-button>
+                        <paper-button raised style="background:#D73D32;" class="google" onclick="location.href='/auth/google/login';">Google İle Giriş Yap / Kayıt Ol</paper-button>
+                        <paper-button raised style="background:#6441a4;" class="twitch" onclick="location.href='/auth/twitch/login';">Twitch İle Giriş Yap / Kayıt Ol</paper-button>
+                    </div>
+                </div>
+
+                <div hidden="[[!storedUser.loggedin]]">
+                    <div class="profile-group">
+                        <div class="profile-child-group">
+                            <a class="child-detail" href="/uye/profil">
+                                <paper-ripple></paper-ripple>
+                                <paper-fab class="main-color" icon="icons:accessibility" title="Profil"></paper-fab>
+                                <div class="card-content" style="text-align:center">Profil</div>
+                            </a>
+                            <a href="/uye/profil#tFwitch" class="child-detail">
+                                <paper-ripple></paper-ripple>
+                                <paper-fab class="main-color" title="Twitch" icon="kaldirirmi:twitch"></paper-fab>
+                                <div class="card-content" style="text-align:center;">Twitch</div>
+                            </a>
+
+                        </div>
+                        <div class="profile-child-group">
+                            <a href="/uye/profil#system" class="child-detail">
+                                <paper-ripple></paper-ripple>
+                                <paper-fab class="main-color" icon="icons:system-update-alt" title="Sistem"></paper-fab>
+                                <div class="card-content" style="text-align:center">Sistem</div>
+                            </a>
+                            <a href="/uye/profil#games" class="child-detail">
+                                <paper-ripple></paper-ripple>
+                                <paper-fab class="main-color" icon="hardware:videogame-asset" title="Oyunlar"></paper-fab>
+                                <div class="card-content" style="text-align:center">Oyunlar</div>
+                            </a>
+
+                        </div>
+                        <div class="profile-child-group">
+                            <a href="/uye/profil#forum" class="child-detail">
+                                <paper-ripple></paper-ripple>
+                                <paper-fab class="main-color" icon="communication:forum" title="Forum"></paper-fab>
+                                <div class="card-content" style="text-align:center">Forum</div>
+                            </a>
+
+                            <a href="/uye/cikis" class="child-detail">
+                                <paper-ripple></paper-ripple>
+                                <paper-fab class="main-color" icon="icons:exit-to-app" title="Çıkış"></paper-fab>
+                                <div class="card-content" style="text-align:center">Çıkış</div>
+                            </a>
+
                         </div>
                     </div>
-                </template>
-                <template is="dom-if" if="[[storedUser.loggedin]]">
-                    <div class="tab-content-profile">
-                        <div class="tab-content-profile-details">
-                            <div id="profile-group">
-                                <div class="profile-child-group">
-                                    <div class="child-detail">
-                                        <a href="/uye/profil">
-                                            <paper-ripple></paper-ripple>
-                                            <paper-fab class="main-color" icon="icons:accessibility" title="Profil"></paper-fab>
-                                            <div class="card-content" style="text-align:center">Profil</div>
-                                        </a>
-                                    </div>
-                                    <div class="child-detail">
-                                        <a href="/uye/profil#twitch">
-                                            <paper-ripple></paper-ripple>
-                                            <paper-fab class="main-color" title="Twitch" icon="kaldirirmi:twitch"></paper-fab>
-                                            <div class="card-content" style="text-align:center;">Twitch</div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="profile-child-group">
-                                    <div class="child-detail">
-                                        <a href="/uye/profil#system">
-                                            <paper-ripple></paper-ripple>
-                                            <paper-fab class="main-color" icon="icons:system-update-alt" title="Sistem"></paper-fab>
-                                            <div class="card-content" style="text-align:center">Sistem</div>
-                                        </a>
-                                    </div>
-                                    <div class="child-detail">
-                                        <a href="/uye/profil#games">
-                                            <paper-ripple></paper-ripple>
-                                            <paper-fab class="main-color" icon="hardware:videogame-asset" title="Oyunlar"></paper-fab>
-                                            <div class="card-content" style="text-align:center">Oyunlar</div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="profile-child-group">
-                                    <div class="child-detail">
-                                        <a href="/uye/profil#forum">
-                                            <paper-ripple></paper-ripple>
-                                            <paper-fab class="main-color" icon="communication:forum" title="Forum"></paper-fab>
-                                            <div class="card-content" style="text-align:center">Forum</div>
-                                        </a>
-                                    </div>
-                                    <div class="child-detail">
-                                        <a href="/uye/cikis">
-                                            <paper-ripple></paper-ripple>
-                                            <paper-fab class="main-color" icon="icons:exit-to-app" title="Çıkış"></paper-fab>
-                                            <div class="card-content" style="text-align:center">Çıkış</div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+                </div>
             </div>
         </div>
 
@@ -1007,7 +346,18 @@
                     withBackdrop: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    route: Object,
+                    formData: {
+                        type: Object,
+                        value: {}
+                    },
+                    storedUser: Object,
+                    error: String,
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
                 }
             }
 
@@ -1035,6 +385,7 @@
                 if (e.detail instanceof MouseEvent) {
                     this.restoreFocusOnClose = false;
                 }
+
             }
 
             _transitionEnd(e) {
@@ -1057,6 +408,48 @@
             refit() {}
 
             notifyResize() {}
+
+            _loginButton() {
+                console.log(this);
+
+                if (this.$.piloginusername.validate() && this.$.piloginpassword.validate()) {
+                    this.$.loginform.submit();
+                }
+            }
+
+            _loginFormResponse(a) {
+                console.log('loginform response');
+                console.log(a.detail.response);
+                if (a.detail.response.success) {
+                    this.$.loginmessage.innerHTML = a.detail.response.message;
+                    this.$.loginmessage.style.color = "green";
+
+                    //id: hakan pwd: hakan123
+
+                    // location.reload();
+                    console.log(a.detail.response);
+                    // this.storedUser = {
+                    //     loggedin: true
+                    // }
+
+                    this.set('route.path', '/home');
+
+                    location.reload();
+
+                    // this.error = '';
+                    // this.storedUser = {
+                    //     name: this.formData.username,
+                    //     id_token: response.id_token,
+                    //     access_token: response.access_token,
+                    //     loggedin: true
+                    // };
+
+                } else {
+                    this.$.loginform.reset();
+                    this.$.loginmessage.innerHTML = a.detail.response.message;
+                    this.$.loginmessage.style.color = "#D50000";
+                }
+            }
 
         }
 

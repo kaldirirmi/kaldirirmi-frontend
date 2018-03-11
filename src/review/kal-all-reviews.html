@@ -97,7 +97,7 @@
         </style>
 
         <iron-ajax auto id="getreviews" url="/h/main?fm=get-populer-content-default&a=[[datatable]]&b=[[itemsize]]" method="get"
-            handle-as="json" on-response="_responseNews" loading="{{loading}}"></iron-ajax>
+            handle-as="json" on-response="_responseReviews" loading="{{loading}}"></iron-ajax>
 
         <div id="allreviews">
             <div class="loadingindicator" hidden$="[[!loading]]">
@@ -125,7 +125,7 @@
          * @polymer
          * @extends {Polymer.Element}
          */
-        class KalAllNews extends Polymer.Element {
+        class KalAllReviews extends Polymer.Element {
             /**
              * String providing the tag name to register the element under.
              */
@@ -177,7 +177,7 @@
                 });
             }
 
-            _responseNews(a) {
+            _responseReviews(a) {
 
                 if (this.items.length > 0)
                     this.set('items', []);
@@ -193,6 +193,6 @@
 
         }
 
-        window.customElements.define(KalAllNews.is, KalAllNews);
+        window.customElements.define(KalAllReviews.is, KalAllReviews);
     </script>
 </dom-module>

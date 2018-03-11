@@ -41,6 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/iron-icons/image-icons.html">
 <link rel="import" href="../bower_components/iron-icons/places-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 
 
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
@@ -363,7 +364,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
                   irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </paper-dialog>
-
     </template>
 
     <script>
@@ -541,14 +541,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _toggleLoginDialog(e) {
-                //this.$._loginDialog.open();
-                if (!this._loginModal) {
-                    this._loginModal = document.createElement('login-modal');
-                    this.root.appendChild(this._loginModal);
+                 if (!this._loginModal) {
+                 this._loginModal = document.createElement('login-modal');
+                 this.root.appendChild(this._loginModal);
                 }
 
-                // this.$.cart.addItem(event.detail);
-                this._loginModal.open();
+                // // this.$.cart.addItem(event.detail);
+                 this._loginModal.open();
                 // this._announce('Item added to the cart');
             }
         }
