@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _selectedNewsChanged(selectedNews, previousValue) {
                 if (Object.keys(selectedNews).length !== 0) {
                     //Error Fix for /game/ subroute
-                    if (selectedNews.gameUrl.length === 0)
+                    if (selectedNews.newsUrl.length === 0)
                         this.selectedActive = false;
                 }
                 //console.log('selectedNews: ', selectedNews);
