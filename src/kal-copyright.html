@@ -1,0 +1,167 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="kal-copyright">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+        <style is="custom-style">
+            #sitecopyright {
+                margin-bottom: 20px !important;
+                display: flex;
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                flex-direction: column;
+                -webkit-flex-direction: column;
+                -ms-flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                -ms-flex-align: center;
+                -webkit-justify-content: center;
+                ms-flex-pack: center;
+                color: white;
+                line-height: 24px;
+                padding: 5px;
+                font-size: 15px;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            #sitecopyright a {
+                color: white;
+                text-decoration: none;
+            }
+
+            #sitecopyright a:not(:first-child):before {
+                content: '/';
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
+            #sitecopyright .copyright-message {
+                font-weight: 100;
+                margin: 0px 3em;
+            }
+
+            #sitecopyright .copyright-message b {
+                font-weight: 500;
+                color: #ff7800;
+            }
+        </style>
+
+        <div hidden$=[[!isgamepage]]>
+            <div id="sitecopyright">
+                <div>
+                    {{_remakeDate()}}&nbsp;&copy;&nbsp;
+                    <a href="http://oktosoft.com" target="_blank">Oktosoft</a>
+                    <a href="/legal/kaldirirmi.com-uyelik-sozlesmesi.pdf" target="_blank">Üyelik Sözleşmesi</a>
+                </div>
+                <div class="copyright-message">
+                    <b>[[gamename]]</b>,
+                    <b>[[gamedeveloper]]</b> tarafından geliştirilip,
+                    <b>[[gamepublisher]]</b> tarafından yayınlanmıştır. Tüm hakları saklıdır. Kullanılan diğer tüm markalar
+                    gerçek sahiplerine aittir.
+                </div>
+            </div>
+        </div>
+        <div hidden$=[[isgamepage]]>
+            <div id="sitecopyright" data-step="3" data-intro="^-^">
+                <div>
+                    {{_remakeDate()}}&nbsp;
+                    <a href="http://oktosoft.com" target="_blank">Oktosoft&trade;</a>
+                    <a href="/legal/kaldirirmi.com-uyelik-sozlesmesi.pdf" target="_blank">Üyelik Sözleşmesi</a>
+
+                </div>
+                <div>
+                    Kullanılan diğer tüm markalar gerçek sahiplerine aittir.
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `kal-copyright` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalCopyRight extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-copyright';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    isgamepage: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    gamename: {
+                        type: String,
+                        value: '',
+                    },
+                    gamedeveloper: {
+                        type: String,
+                        value: '',
+                    },
+                    gamepublisher: {
+                        type: String,
+                        value: '',
+                    },
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            /**
+              * Called every time the element is inserted into the DOM. Useful for 
+              * running setup code, such as fetching resources or rendering.
+              * Generally, you should try to delay work until this time.
+              */
+            connectedCallback() {
+                super.connectedCallback();
+            
+                if (this.gamename !== '' && this.gamedeveloper) {
+                    this.isgamepage = true;
+                }
+            }
+
+             _remakeDate() {
+                return new Date().getFullYear();
+            }
+
+        }
+
+        window.customElements.define(KalCopyRight.is, KalCopyRight);
+    </script>
+</dom-module>

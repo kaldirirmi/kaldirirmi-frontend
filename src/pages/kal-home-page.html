@@ -24,6 +24,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../model/game-item.html">
 
 
+
+
 <dom-module id="kal-home-page">
   <template>
     <style include="shared-styles">
@@ -119,29 +121,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         /* width: calc(12.5em + 1vmin); */
       }
     </style>
-    <!-- 
-    <iron-ajax
-      id="ajax"
-      url="http://localhost:8081/data.json"
-      handle-as="json"
-      on-response="_handleNewsResponse"
-      loading="{{loading}}"
-      debounce-duration="300"></iron-ajax> -->
-
-
- 
     <home-news is-mobile=[[isMobile]]></home-news>
-    
     <home-gpm-slider></home-gpm-slider>
-
-
-
     <home-games is-mobile=[[isMobile]]></home-games>
-
     <home-extras is-mobile=[[isMobile]]></home-extras>
-
-
-
+    <kal-copyright></kal-copyright>
 
   </template>
 
