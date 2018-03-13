@@ -1,0 +1,115 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="kal-profile-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block
+            }
+        </style>
+
+        <app-route route="{{route}}" pattern="/:profileUrl" data="{{data}}" active="{{selectedPageActive}}"></app-route>
+
+
+        <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
+        <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
+
+        <div class="card">
+            <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
+                Giriş Yapmalısın
+            </div>
+            <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
+                <h2>Hello, [[storedUser.uname]]!</h2>
+                <p>You are currently logged in. You can access
+                </p>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-profile-page` Description
+         *
+         * @summary kaldirirmi profile main page.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalProfilePage extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-profile-page';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    route: {
+                        type: Object,
+                    },
+                    data: {
+                        type: Object,
+                        observer: '_selectedPageChanged'
+                    },
+                    selectedGameActive: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        observer: '_selectedPageActiveChanged'
+                    },
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+            }
+            _selectedPageChanged(value){
+                console.log('page changed', value);
+            }
+
+            _selectedPageActiveChanged(value){
+                console.log('page active changed', value);
+            }
+        }
+
+        window.customElements.define(KalProfilePage.is, KalProfilePage);
+    </script>
+</dom-module>

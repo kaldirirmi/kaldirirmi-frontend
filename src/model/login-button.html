@@ -1,0 +1,115 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="login-button">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+
+            a {
+                text-decoration: none;
+            }
+
+            paper-button[login-button] {
+                background: white;
+                color: #ff7800;
+                letter-spacing: .7px;
+                text-transform: capitalize;
+                font-weight: 600;
+                margin-left: 20px;
+                line-height: 12px;
+            }
+        </style>
+
+        <paper-button raised login-button on-tap="_toggleLoginDialog">[[_remakeButtonText(storedUser)]]</paper-button>
+
+        <!-- <div hidden$="[[storedUser.loggedin]]">
+            <paper-button raised login-button on-tap="_toggleLoginDialog">Giriş Yap</paper-button>
+        </div>
+        <div hidden$="[[!storedUser.loggedin]]">
+            <paper-button raised login-button on-tap="_toggleLoginDialog">[[storedUser.uname]]</paper-button>
+        </div> -->
+
+    </template>
+
+    <script>
+        /**
+         * `login-button` Description
+         *
+         * @summary login-button triggers the event to open the login modal of app.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class LoginButton extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'login-button';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    storedUser: Object,
+                    notification: String,
+                    disabled: Boolean
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _remakeButtonText(user){
+                var loggedin = false;
+                var username = "";
+                
+                if(user != null)
+                {
+                   username = user.uname;
+                   loggedin = user.loggedin;
+                }
+               
+                return loggedin ? username : 'Giriş Yap';  
+            }
+            
+            _toggleLoginDialog(e){
+                this._fireCustomEvent('loginmodaler', { author: 'hakke' });
+            }
+
+            _fireCustomEvent(eventname, detailobject){
+                var event = new CustomEvent(eventname, {
+                    bubbles: true,
+                    composed: true,
+                    detail: detailobject
+                });
+                this.dispatchEvent(event);
+            }
+            
+        }
+
+        window.customElements.define(LoginButton.is, LoginButton);
+    </script>
+</dom-module>

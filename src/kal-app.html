@@ -77,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./kal-drawer-item.html">
 <link rel="import" href="./kal-copyright.html">
 <link rel="import" href="./shared-styles.html">
-<link rel="import" href="./model/logout-button.html">
+<link rel="import" href="./model/login-button.html">
 <link rel="import" href="./model/login-modal.html">
 
 <link rel="lazy-import" href="./pages/kal-home-page.html">
@@ -90,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="./pages/kal-challenge-page.html">
 <link rel="lazy-import" href="./pages/kal-twitch-page.html">
 <link rel="lazy-import" href="./pages/kal-view404-page.html">
-<link rel="lazy-import" href="./pages/kal-login-page.html">
+<link rel="lazy-import" href="./pages/kal-profile-page.html">
 
 
 <dom-module id="kal-app">
@@ -104,8 +104,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     --app-drawer-width: 200px;
                     display: block;
                 }
-
-                
 
                 a {
                     text-decoration: none;
@@ -165,16 +163,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     width: 34px;
                     height: 50px;
 
-                }
-
-                app-drawer div[main-logo] paper-button[login-button] {
-                    background: white;
-                    color: #ff7800;
-                    letter-spacing: .7px;
-                    text-transform: capitalize;
-                    font-weight: 600;
-                    margin-left: 20px;
-                    line-height: 12px;
                 }
 
                 .drawer-list {
@@ -254,7 +242,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-spinner-lite active$="[[loading]]" class="orange"></paper-spinner-lite>
         </div>-->
 
-
         <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="500" icon-size="200"
             spinner-sub="-5"></splash-screen>
 
@@ -281,14 +268,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </iron-image>
                         </a>
                     </div>
-                    <div hidden$="[[storedUser.loggedin]]">
-                        <paper-button raised login-button on-tap="_toggleLoginDialog">Giriş Yap</paper-button>
-                    </div>
-                    <div hidden$="[[!storedUser.loggedin]]">
-                        <paper-button raised login-button on-tap="_toggleLoginDialog">[[storedUser.uname]]</paper-button>
-                        <!-- <logout-button stored-user=[[storedUser]]></logout-button> -->
-                    </div>
-
+                    <login-button stored-user={{storedUser}}></login-button>
                 </div>
 
                 <!-- <div main-title>Logo</div> -->
@@ -321,7 +301,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <div hidden$="[[!storedUser.loggedin]]">
                                 <!--<span class="greeting">Hi [[storedUser.name]]!</span>-->
                                 <logout-button stored-user=[[storedUser]]></logout-button>
-
                             </div>
                             
                             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
@@ -345,7 +324,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <kal-hardware-page name="hardware" is-mobile=[[isMobile]] route="{{subroute}}"></kal-hardware-page>
                     <kal-challenge-page name="challenge" is-mobile=[[isMobile]] route="{{subroute}}"></kal-challenge-page>
                     <kal-twitch-page name="twitch" is-mobile=[[isMobile]] route="{{subroute}}"></kal-twitch-page>
-                    <kal-login-page name="login" is-mobile=[[isMobile]] route="{{route}}"></kal-login-page>
+                    <kal-profile-page name="login" is-mobile=[[isMobile]] route="{{subroute}}"></kal-profile-page>
                     <kal-view404-page name="view404"></kal-view404-page>
                 </iron-pages>
 
@@ -406,6 +385,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     uname: String
                 };
             }
+            
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
 
             /**
              * Called every time the element is inserted into the DOM. Useful for
@@ -414,9 +399,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              */
             connectedCallback() {
                 super.connectedCallback();
-
-
-                console.log('connectedCallback kal-app');
+                // console.log('connectedCallback kal-app');
 
             }
 
@@ -425,9 +408,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              * initialized.
              */
             ready() {
+                //Custom Listeners
                 this.addEventListener('toaster', this._toasterFire);
+                this.addEventListener('loginmodaler', this._toggleLoginDialog);
+
                 super.ready();
-                console.log('ready kal-app');
+                // console.log('ready kal-app');
 
                 // When possible, use afterNextRender to defer non-critical
                 // work until after first paint.
@@ -449,29 +435,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         }
                     }
                     this.storedUser = user;
-                    // console.log(this.storedUser);
                 });
-            }
-
-            //How to fire?
-            /*
-                var message = "Message Here!";
-                var event = new CustomEvent('toaster', {
-                    bubbles: true,
-                    composed: true,
-                    detail: {
-                    text: message
-                    }
-                });
-                this.dispatchEvent(event);
-
-            */
-            _toasterFire(e) {
-                var scope = this;
-                if (e.detail) {
-                    scope.$.toaster.text = e.detail.text;
-                    scope.$.toaster.open();
-                }
             }
 
             _queryMatchesChanged(isDesktop) {
@@ -483,12 +447,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // }
                 this.set('isDesktop', isDesktop);
                 // console.log('this.isDesktop: ', this.isDesktop);
-            }
-
-            static get observers() {
-                return [
-                    '_routePageChanged(routeData.page)',
-                ];
             }
 
             _routePageChanged(page) {
@@ -540,7 +498,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // console.log('storedUser: ', this.storedUser);
 
             }
-
+            
+            //How to fire the toaster?
+            /*
+                var message = "Message Here!";
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                    text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            */
+            _toasterFire(e) {
+                var scope = this;
+                if (e.detail) {
+                    scope.$.toaster.text = e.detail.text;
+                    scope.$.toaster.open();
+                }
+            }
+            
+            //triggered by 'loginmodaler' customEvent
             _toggleLoginDialog(e) {
                  if (!this._loginModal) {
                  this._loginModal = document.createElement('login-modal');

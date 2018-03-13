@@ -369,7 +369,6 @@
 
         <div class="card">
             <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
-
                 <paper-material elevation="1" id="pmRegistrationPage" class="horizontal-section-container">
                     <div class="registrationContainer">
                         <div class="login-part">
@@ -461,14 +460,12 @@
                     <paper-button class="link" on-tap="postRegister">Sign Up</paper-button>
                 </div> -->
             </div>
-
             <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
                 <h2>Hello, [[storedUser.name]]!</h2>
                 <p>You are currently logged in. You can access
                     <a href="[[rootPath]]secret-quotes">Secret Quotes</a>!</p>
                     <log-out stored-user="{{storedUser}}"></log-out>
             </div>
-
         </div>
     </template>
 

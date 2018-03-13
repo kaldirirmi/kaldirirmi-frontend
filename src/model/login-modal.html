@@ -3,13 +3,10 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
-
-<!-- <link rel="import" href="shop-button.html"> -->
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <dom-module id="login-modal">
-
     <template>
-
         <style include="shared-styles">
             :host {
                 display: block;
@@ -34,45 +31,36 @@
                 transition-duration: 0.2s;
                 transition-delay: 0.1s;
             }
-
             :host(.opened) {
                 visibility: visible;
                 -webkit-transform: translate3d(0, 0, 0);
                 transform: translate3d(0, 0, 0);
                 z-index: 3;
-
             }
-
             .layout-horizontal {
                 @apply --layout-horizontal;
             }
-
             .label {
                 @apply --layout-flex;
                 line-height: 24px;
                 margin: 8px;
             }
-
             .modal-button {
                 @apply --layout-flex;
                 margin: 16px 8px;
             }
-
             .modal-button>a {
                 box-sizing: border-box;
                 width: 100%;
                 padding: 8px 24px;
             }
-
             #closeBtn {
                 position: absolute;
                 right: 5px;
                 top: 5px;
                 color: #fff;
             }
-
             @media (max-width: 767px) {
-
                 :host {
                     top: auto;
                     bottom: 0;
@@ -102,16 +90,6 @@
                 --paper-input-container-invalid-color: red;
                 /* Input foreground color */
             }
-
-            /* #piloginusername,
-            #piloginpassword {
-                --paper-input-container-input: {
-                    font-size: 1.25em !important;
-                }
-                --paper-input-container-label: {
-                    font-size: 0.80em !important;
-                }
-            } */
 
             #loginmessage {
                 font-weight: 700;
@@ -239,20 +217,18 @@
                 @apply --shadow-elevation-4dp;
                 color: #fff;
                 margin: 5px;
-    padding: 5px 0px;
+                padding: 5px 0px;
             }
 
-            .profile-group .profile-child-group .child-detail paper-fab{
-                    --paper-fab-background: #ff7800 !important;
-                
+            .profile-group .profile-child-group .child-detail paper-fab {
+                --paper-fab-background: #ff7800 !important;
+
             }
         </style>
 
 
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
-
-
 
         <div class="modal-container">
             <div class="modal-header">
@@ -457,67 +433,3 @@
     </script>
 
 </dom-module>
-<!-- 
-<dom-module id="login-modal">
-    <template>
-        <style>
-            :host {
-                display: block
-            }
-        </style>
-
-        
-
-    </template>
-
-    <script>
-        /**
-         * `login-modal` Description
-         *
-         * @summary ShortDescription.
-         * @customElement
-         * @polymer
-         * @extends {Polymer.Element}
-         */
-        class LoginModal extends Polymer.Element {
-            /**
-             * String providing the tag name to register the element under.
-             */
-            static get is() {
-                return 'login-modal';
-            }
-
-            /**
-             * Object describing property-related metadata used by Polymer features
-             */
-            static get properties() {
-                return {
-                    
-                };
-            }
-
-            /**
-             * Instance of the element is created/upgraded. Use: initializing state,
-             * set up event listeners, create shadow dom.
-             * @constructor
-             */
-            constructor() {
-                super();
-            }
-
-            /**
-             * Use for one-time configuration of your component after local DOM is initialized. 
-             */
-            ready() {
-                super.ready();
-
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
-                });
-            }
-
-        }
-
-        window.customElements.define(LoginModal.is, LoginModal);
-    </script>
-</dom-module> -->

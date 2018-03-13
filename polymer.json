@@ -11,7 +11,7 @@
     "src/pages/kal-playground-page.html",
     "src/pages/kal-twitch-page.html",
     "src/pages/kal-hardware-page.html",
-    "src/pages/kal-login-page.html",
+    "src/pages/kal-profile-page.html",
     "src/pages/kal-view404-page.html"
   ],
   "sources": [
