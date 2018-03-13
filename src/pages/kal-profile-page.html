@@ -3,6 +3,12 @@
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../model/login-button.html">
+<!-- Fragments -->
+<link rel="lazy-import" href="../profile/kal-profile-general-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-system-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-accounts-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-404-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-games-page.html">
 
 <dom-module id="kal-profile-page">
     <template>
@@ -10,6 +16,320 @@
             :host {
                 display: block
             }
+
+            :root {
+                --paper-input-container-input: {
+                    font-size: calc(0.5em + 1vmin) !important;
+                };
+                
+                --paper-input-container-label: {
+                    font-size: calc(0.55em + 1vmin);
+                };
+                
+            }
+
+            paper-tooltip.custom-tooltip {
+                --paper-tooltip-background: #ff7800;
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+
+            iron-pages {
+                width: 100%;
+                height: 1000px;
+                font-size: 50px;
+                color: white;
+                text-align: center;
+            }
+
+            iron-pages div {
+                width: 100%;
+                height: 100%;
+                padding: 20px 0;
+            }
+
+            #profile-page {
+                width: 100%;
+                min-height: calc(100vh - 64px);
+                background-color: #222;
+                display: flex;
+            }
+
+            #profileleftnav {
+                width: 5%;
+                min-height: 100%;
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+
+            }
+
+            #profileleftnav #profilenavigations {
+                --paper-menu-background-color: #222;
+                --paper-menu-color: white;
+                padding: 0px 0px 20px 0px;
+            }
+
+            #profile-content {
+                width: 100%;
+                min-height: 100%;
+            }
+
+            #profile-rightnav {
+                width: 400px;
+                min-height: 100%;
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+                border-left: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+            /*  parallax element for scrollbar*/
+
+            #profile-content div::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            #profile-content div::-webkit-scrollbar-thumb {
+                background-color: #222;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            #profile-content div::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
+            #profile-content div {
+                width: 100%;
+                height: calc(100vh - 64px) !important;
+            }
+
+            #profilepages paper-material {
+                max-width: 1400px !important;
+                padding: 20px !important;
+                margin: auto !important;
+            }
+
+            #profilenavigations {
+                --paper-menu-selected-item: {
+                    color: #ff7800;
+                }
+            }
+
+            #profilenavigations paper-icon-item {
+                padding: 0px calc(1em + 1vmin) !important;
+            }
+
+            /* twitch like sidebar*/
+
+            #profileleftnav {
+                transition: all .5s ease;
+                width: 200px;
+            }
+
+            #profilenavigations paper-item iron-icon {
+                padding-right: 10px;
+            }
+
+            #buttonGroupOpeners {
+                display: flex;
+                flex-direction: row;
+                height: calc(2.3em + 1vmin);
+                justify-content: space-between;
+            }
+
+            #buttonGroupOpeners paper-icon-button {
+                color: white;
+                margin-bottom: -30px;
+                width: calc(2.3em + 1vmin);
+                height: calc(2.3em + 1vmin);
+            }
+
+            #profile-rightnav {
+                transition: all .5s ease;
+            }
+
+            paper-item .navigationname {
+                font-size: calc(0.4em + 1vmin);
+                display: block;
+            }
+
+            .closedNavigation {
+                width: 65px !important;
+            }
+
+            .closedProfile {
+                width: 119px !important;
+            }
+
+            .closedSpan {
+                display: none !important;
+            }
+
+            .mobileProCardOpened {
+                width: 100% !important;
+                position: absolute !important;
+                background: #222;
+                display: block !important;
+            }
+
+            #smallvcard {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                width: 100%;
+                height: auto;
+                margin-top: 3em;
+            }
+
+            #smallvcard paper-material {
+                width: 100%;
+                text-align: center;
+            }
+
+            #smallvcard .user-background {
+                width: 100%;
+                height: calc(10em + 1vmin);
+                filter: blur(5px);
+            }
+
+            #smallvcard .user-image {
+                border: 3px solid transparent;
+                height: calc(4.4em + 1vmin);
+                width: calc(4.4em + 1vmin);
+                display: block;
+                margin-left: calc(0.2em + 1vmin);
+                margin-top: -70px;
+                -webkit-box-shadow: 0px 0px 20px 2px rgba(56, 56, 56, 0.64);
+                -moz-box-shadow: 0px 0px 20px 2px rgba(56, 56, 56, 0.64);
+                box-shadow: 0px 1px 15px 3px rgba(56, 56, 56, 0.64);
+            }
+
+            #smallvcard .user-name {
+                font-size: calc(1em + 1vmin);
+                margin: 0;
+                color: white;
+                margin-bottom: 30px;
+                margin-top: 10px;
+            }
+
+
+            #profile-rightnav,
+            #pibOpenCloseNav,
+            #pibOpenCloseProCard,
+            #profilenavigations paper-item span {
+                display: none;
+            }
+
+            #buttonGroupOpeners {
+                display: none;
+            }
+
+            #pibMobileCloseProCard {
+                display: inline-block;
+            }
+
+            #pibMobileOpenProCard {
+                display: flex;
+                color: #ff7800;
+                padding: 0 !important;
+                padding-left: 15px !important;
+            }
+
+            #profileleftnav {
+                width: 65px;
+            }
+
+            #pibMobileCloseProCard {
+                background: #e64a19;
+                width: 100%;
+                height: 40px;
+                font-size: calc(0.6em + 1vmin);
+            }
+
+            @media only screen and (min-width: 1024px) {
+                #profile-rightnav,
+                #profilenavigations paper-item span {
+                    display: block;
+                }
+                #pibOpenCloseNav,
+                #pibOpenCloseProCard {
+                    display: inline-block;
+                    cursor: pointer;
+                    color: white;
+                }
+                #pibMobileCloseProCard,
+                #pibMobileOpenProCard {
+                    display: none;
+                }
+                #profileleftnav {
+                    width: 200px;
+                }
+                #buttonGroupOpeners {
+                    display: flex !important;
+                }
+
+
+            }
+
+            .closedTooltip {
+                display: none !important;
+            }
+
+            /*neon-animated-pages  > *{
+                         position: relative !important;
+                     }
+                     neon-animatable{
+                         display: flex !important;
+                     }*/
+
+            #profilepages .iron-selected {
+                position: static !important;
+            }
+
+
+            #profile-content #profileTopNav {
+                @apply --layout-horizontal;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            #profileTopNav #profilenavigations {
+                color: white;
+                font-weight: 100;
+                font-size: 16px;
+                --paper-tabs-selection-bar-color: #222;
+            }
+
+            #profilenavigations .iron-selected {
+                color: #ff7800 !important;
+                font-weight: bold;
+                font-size: 19px;
+            }
+
+            #profilenavigations paper-tab span {
+
+                display: none;
+                transition: opacity linear .3s;
+                opacity: 0;
+            }
+
+            #profilenavigations paper-tab iron-icon {
+                margin-right: 5px;
+            }
+
+            .spanOpener {
+                display: block !important;
+                opacity: 1 !important;
+            }
+
+            paper-toast {
+                left: 10% !important;
+            }
+        </style>
         </style>
 
         <app-route route="{{route}}" pattern="/:subpage" data="{{data}}" active="{{selectedPageActive}}"></app-route>
@@ -23,9 +343,105 @@
                 <login-button stored-user={{storedUser}}></login-button>
             </div>
             <div id="authenticated" hidden$="[[storedUser.loggedin]]">
-                <h2>Hello, [[storedUser.uname]]!</h2>
-                <p>You are currently logged in. You can access
-                </p>
+
+                <iron-ajax auto id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
+                <iron-ajax auto id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
+
+                <div id="profile-page">
+                    <div id="profile-content">
+                        <div id="profileTopNav">
+                            <paper-item id="pibMobileOpenProCard" class="nav-icon" on-tap="_pibMobileOpenProCard">
+                                <iron-icon icon="social:mood" item-icon></iron-icon>
+                            </paper-item>
+                            <paper-tabs id="profilenavigations" selected="[[subpage]]" attr-for-selected="name" scrollable>
+                                <paper-tab name="general" class="nav-icon">
+                                    <iron-icon icon="device:data-usage" item-icon></iron-icon>
+                                    <span class="navigationname ">Genel Bilgiler</span>
+                                </paper-tab>
+                                <paper-tab name="accounts" class="nav-icon">
+                                    <iron-icon icon="icons:account-box" item-icon></iron-icon>
+                                    <span class="navigationname ">Hesaplar</span>
+                                </paper-tab>
+                                <paper-tab name="system" class="nav-icon">
+                                    <iron-icon icon="device:brightness-high" item-icon></iron-icon>
+                                    <span class="navigationname ">Sistem</span>
+                                </paper-tab>
+                                <paper-tab name="forum" class="nav-icon">
+                                    <iron-icon icon="communication:forum" item-icon></iron-icon>
+                                    <span class="navigationname ">Forum</span>
+                                </paper-tab>
+                                <paper-tab name="friends" class="nav-icon">
+                                    <iron-icon icon="social:people" item-icon></iron-icon>
+                                    <span class="navigationname ">Arkadaşlar</span>
+                                </paper-tab>
+                                <paper-tab name="games" class="nav-icon">
+                                    <iron-icon icon="hardware:videogame-asset" item-icon></iron-icon>
+                                    <span class="navigationname ">Kütüphane</span>
+                                </paper-tab>
+                                <paper-tab name="twitch" class="nav-icon">
+                                    <iron-icon icon="kaldirirmi:twitch" item-icon></iron-icon>
+                                    <span class="navigationname ">Twitch</span>
+                                </paper-tab>
+                                <paper-tab name="steam" class="nav-icon">
+                                    <iron-icon icon="kaldirirmi:steam" item-icon></iron-icon>
+                                    <span class="navigationname">Steam</span>
+                                </paper-tab>
+                            </paper-tabs>
+                            <!--<paper-icon-button id="pibOpenCloseNav" on-tap="_pibOpenCloseNav" icon="[[closerIcon]]"></paper-icon-button>-->
+                            <paper-icon-button id="pibOpenCloseProCard" on-tap="_pibOpenCloseProCard" icon="[[vButtonIcon]]"></paper-icon-button>
+                        </div>
+                        <div profile>
+                            <neon-animated-pages id="profilepages" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation">
+                                <neon-animatable>
+                                    <kal-profile-general-page></kal-profile-general-page>
+                                    <!-- <kaldirirmi-profile-general-information id="ipGeneralInformation" generator="{{generator}}" blurred="{{blurred}}"></kaldirirmi-profile-general-information> -->
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kal-profile-accounts-page></kal-profile-accounts-page>
+                                    <!-- <kaldirirmi-profile-user-accounts id="ipUserAccounts" auths="[[auths]]"></kaldirirmi-profile-user-accounts> -->
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kal-profile-system-page></kal-profile-system-page>
+                                    <!-- <kaldirirmi-profile-user-system id="ipUserSystem"></kaldirirmi-profile-user-system> -->
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kaldirirmi-profile-forum id="ipUserForum"></kaldirirmi-profile-forum>
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kaldirirmi-profile-friends id="ipUserFriends"></kaldirirmi-profile-friends>
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kal-profile-games-page></kal-profile-games-page>
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kaldirirmi-profile-twitch id="idUserTwitch" connected="[[auths.twitch.linked]]"></kaldirirmi-profile-twitch>
+                                </neon-animatable>
+                                <neon-animatable>
+                                    <kaldirirmi-profile-steam id="idUserSteam" connected="[[auths.steam.linked]]"></kaldirirmi-profile-steam>
+                                </neon-animatable>
+                            </neon-animated-pages>
+                        </div>
+                    </div>
+                    <div id="profile-rightnav">
+
+                        <paper-button raised id="pibMobileCloseProCard" on-tap="_pibMobileCloseProCard">
+                            <iron-icon icon="arrow-back"></iron-icon>
+                            Geri Dön</paper-button>
+
+                        <template is="dom-if" if="[[!vcardOpened]]">
+                            <div id="smallvcard">
+                                <paper-material elevation="4">
+                                    <iron-image class="user-background" src="{{_remakeUserAvatar(userinfo.avatar)}}" sizing="cover" preload fade></iron-image>
+                                    <iron-image class="user-image center" src="{{_remakeUserAvatar(userinfo.avatar)}}" sizing="cover" preload fade></iron-image>
+                                    <p class="user-name center">[[userinfo.username]]</p>
+                                </paper-material>
+                            </div>
+                        </template>
+                        <template is="dom-if" if="[[vcardOpened]]">
+                            <profile-vcard userinfo="[[userinfo]]" on-tile-click="_onTileClick"></profile-vcard>
+                        </template>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -63,6 +479,44 @@
                         type: String,
                         reflectToAttribute: true,
                         observer: '_subPageChanged',
+                    },
+
+                    userinfo: {
+                        type: Object,
+                        notify: true
+                    },
+                    twitchConnected: {
+                        type: Boolean,
+                        notify: true
+                    },
+                    closerIcon: {
+                        type: String,
+                        value: 'lock-open',
+                        notify: true
+                    },
+                    vcardOpened: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    vButtonIcon: {
+                        type: String,
+                        value: 'lock-open',
+                        notify: true
+                    },
+                    accountGo: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    generator: {
+                        type: String,
+                        value: '',
+                        observer: '_generatorChanged'
+                    },
+                    blurred: {
+                        type: String,
+                        notify: true
                     }
                 };
             }
@@ -77,7 +531,7 @@
              * set up event listeners, create shadow dom.
              * @constructor
              */
-             constructor() {
+            constructor() {
                 super();
             }
 
@@ -109,13 +563,13 @@
                 // Default to 'profile/general' in that case.
                 this.subpage = subpage || 'general';
 
-                console.log('_routeSubPageChanged after subpage: ',  this.subpage);
+                console.log('_routeSubPageChanged after subpage: ', this.subpage);
 
             }
 
             _subPageChanged(subpage) {
-                 // Load subpage of profile import on demand. Show 404 page if fails
-                 var resolvedPageUrl = this.resolveUrl('profile/kal-profile-' + page + '-page.html');
+                // Load subpage of profile import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('../profile/kal-profile-' + subpage + '-page.html');
                 Polymer.importHref(
                     resolvedPageUrl,
                     null,
@@ -125,7 +579,7 @@
             _showPage404() {
                 this.page = 'view404';
             }
-            
+
             _selectedPageChanged(value) {
                 console.log('page changed', value);
             }
@@ -133,6 +587,116 @@
             _selectedPageActiveChanged(value) {
                 console.log('page active changed', value);
             }
+            
+            _generatorChanged(newVal, oldVal){
+                //console.log('new =>' + newVal);
+                //console.log('oldies =>' + oldVal);
+                this.$.ironAJaxGetUserInfo.generateRequest();
+            }
+            _pibOpenCloseProCard() {
+                if (this.vcardOpened) {
+                    //açıksa kapat height daralt!
+                    this.vcardOpened = false;
+                    this.vButtonIcon = 'lock-outline';
+                    document.getElementById('profile-rightnav').classList.add('closedProfile');
+                }
+                else {
+                    //demekki kapalı, simdi aç height full
+                    this.vcardOpened = true;
+                    this.vButtonIcon = 'lock-open';
+                    document.getElementById('profile-rightnav').classList.remove('closedProfile');
+
+                }
+            }
+            _pibOpenCloseNav() {
+                var leftnav = document.getElementById('profileleftnav');
+                if (this.closerIcon == 'lock-open') {
+                    this.closerIcon = 'lock-outline';
+                    leftnav.classList.add("closedNavigation");
+                    var nodes = document.querySelectorAll('span.navigationname')
+                      , i
+                      , node;
+                    for (i in nodes) {
+                        node = nodes[i];
+                        node.className += " closedSpan";
+                    }
+
+
+                    //tooltip config
+                    var allTooltips = document.querySelectorAll('paper-tooltip.custom-tooltip'), i, tooltip;
+                    for (i in allTooltips) {
+                        tooltip = allTooltips[i];
+                        tooltip.className += " closedTooltip";
+                    }
+
+
+                }
+                else if (this.closerIcon == 'lock-outline') {
+                    this.closerIcon = 'lock-open';
+                    leftnav.classList.remove("closedNavigation");
+                    var nodes = document.querySelectorAll('span.navigationname')
+                      , i
+                      , node;
+
+                    setTimeout(function () {
+                        for (i in nodes) {
+                            node = nodes[i];
+                            node.className = "navigationname style-scope kaldirirmi-profile-page";
+                        }
+                    }, 400);
+
+                    //tooltip config
+                    var allTooltips = document.querySelectorAll("paper-tooltip.custom-tooltip"), i, tooltip;
+                    setTimeout(function () {
+                        for (i in allTooltips) {
+                            tooltip = allTooltips[i];
+                            //console.log(tooltip.className);
+                        }
+                    });
+
+
+                }
+            }
+            _pibMobileOpenProCard(){
+                document.getElementById('profile-rightnav').classList.add('mobileProCardOpened');
+            }
+            _pibMobileCloseProCard() {
+                document.getElementById('profile-rightnav').classList.remove('mobileProCardOpened');
+            }
+            _remakeUserBackground(background) {
+                var url = '//cdn.kaldirirmi.com/images/user/wallpaper/';
+                if (background) {
+                    return url + background;
+                }
+                else {
+                    return '/assets/img/kaldirirmi-header-2.png';
+                }
+            }
+            _remakeUserAvatar(avatar) {
+                //console.log('_remakeUserAvatar' + avatar);
+                var url = '//cdn.kaldirirmi.com/images/user/avatar/';
+                if (avatar) {
+                    return url + avatar;
+                }
+                else {
+                    return url + 'default-user-avatar3.png';
+                }
+            }
+
+            _ironSelect(event) {
+                var item = event.detail.item;
+                var selected = event.target.selected;
+                this.$.profilepages.select(selected);
+            }
+           
+            _onTileClick(event) {
+                //console.log('_onTileClick is fired');
+                this.blurred = Math.random().toString();
+                this.$.profilepages.select(0);
+                this.selectedIndex = 0;
+
+            }
+
         }
 
         window.customElements.define(KalProfilePage.is, KalProfilePage);
