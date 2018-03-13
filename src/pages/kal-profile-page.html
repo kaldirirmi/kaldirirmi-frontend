@@ -1,8 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
-
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../model/login-button.html">
 
 <dom-module id="kal-profile-page">
     <template>
@@ -12,17 +12,17 @@
             }
         </style>
 
-        <app-route route="{{route}}" pattern="/:profileUrl" data="{{data}}" active="{{selectedPageActive}}"></app-route>
-
+        <app-route route="{{route}}" pattern="/:subpage" data="{{data}}" active="{{selectedPageActive}}"></app-route>
 
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
         <div class="card">
-            <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
-                Giriş Yapmalısın
+            <div id="unauthenticated" hidden$="[[!storedUser.loggedin]]">
+                Önce Giriş Yapmalısın!
+                <login-button stored-user={{storedUser}}></login-button>
             </div>
-            <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
+            <div id="authenticated" hidden$="[[storedUser.loggedin]]">
                 <h2>Hello, [[storedUser.uname]]!</h2>
                 <p>You are currently logged in. You can access
                 </p>
@@ -57,27 +57,27 @@
                         type: Boolean,
                         reflectToAttribute: true
                     },
-                    route: {
-                        type: Object,
-                    },
-                    data: {
-                        type: Object,
-                        observer: '_selectedPageChanged'
-                    },
-                    selectedGameActive: {
-                        type: Boolean,
+                    route: Object,
+                    data: Object,
+                    subpage: {
+                        type: String,
                         reflectToAttribute: true,
-                        observer: '_selectedPageActiveChanged'
-                    },
+                        observer: '_subPageChanged',
+                    }
                 };
             }
 
+            static get observers() {
+                return [
+                    '_routeSubPageChanged(data.subpage)',
+                ];
+            }
             /**
              * Instance of the element is created/upgraded. Use: initializing state,
              * set up event listeners, create shadow dom.
              * @constructor
              */
-            constructor() {
+             constructor() {
                 super();
             }
 
@@ -101,11 +101,36 @@
                 super.connectedCallback();
 
             }
-            _selectedPageChanged(value){
+            _routeSubPageChanged(subpage) {
+
+                console.log('_routeSubPageChanged before subpage: ', subpage);
+
+                // If no subpage was found in the route data, subpage will be an empty string.
+                // Default to 'profile/general' in that case.
+                this.subpage = subpage || 'general';
+
+                console.log('_routeSubPageChanged after subpage: ',  this.subpage);
+
+            }
+
+            _subPageChanged(subpage) {
+                 // Load subpage of profile import on demand. Show 404 page if fails
+                 var resolvedPageUrl = this.resolveUrl('profile/kal-profile-' + page + '-page.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true);
+            }
+            _showPage404() {
+                this.page = 'view404';
+            }
+            
+            _selectedPageChanged(value) {
                 console.log('page changed', value);
             }
 
-            _selectedPageActiveChanged(value){
+            _selectedPageActiveChanged(value) {
                 console.log('page active changed', value);
             }
         }

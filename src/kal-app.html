@@ -11,75 +11,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-input/paper-input-container.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/iron-input/iron-input.html">
-<link rel="import" href="../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
-<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
-
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
-<link rel="import" href="../bower_components/iron-icons/image-icons.html">
-<link rel="import" href="../bower_components/iron-icons/places-icons.html">
-<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
-
-
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-item/all-imports.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
-
-<!-- Neon Animations -->
-<link rel="import" href="../bower_components/neon-animation/web-animations.html">
-
-<link rel="import" href="../bower_components/neon-animation/animations/fade-in-animation.html">
-<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
-<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
-
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<!-- Import All Polymer Elements -->
+<link rel="import" href="./kal-polymer-imports.html">
 
 <!-- Custom Imports -->
 <link rel="import" href="../bower_components/animated-content-placeholder/animated-content-placeholder.html">
 <link rel="import" href="./thirdparty/jquery.html">
 <link rel="import" href="./splash-screen.html">
-
 <link rel="import" href="./kal-global-variable.html">
 <link rel="import" href="./kal-icons.html">
 <link rel="import" href="./kal-search.html">
 <link rel="import" href="./kal-drawer-item.html">
 <link rel="import" href="./kal-copyright.html">
 <link rel="import" href="./shared-styles.html">
+
+<!-- Model Imports -->
 <link rel="import" href="./model/login-button.html">
+<link rel="import" href="./model/logout-button.html">
 <link rel="import" href="./model/login-modal.html">
 
+<!-- Fragments -->
 <link rel="lazy-import" href="./pages/kal-home-page.html">
 <link rel="lazy-import" href="./pages/kal-game-page.html">
 <link rel="lazy-import" href="./pages/kal-news-page.html">
@@ -91,7 +43,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="./pages/kal-twitch-page.html">
 <link rel="lazy-import" href="./pages/kal-view404-page.html">
 <link rel="lazy-import" href="./pages/kal-profile-page.html">
-
 
 <dom-module id="kal-app">
     <template>
@@ -215,11 +166,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
                 /* dialog login */
-                #_loginDialog{
+
+                #_loginDialog {
                     background: #222;
                 }
-                
-                #_loginDialog paper-fab[close-dialog-button]{
+
+                #_loginDialog paper-fab[close-dialog-button] {
                     position: fixed;
                     top: 20px;
                     left: 20px;
@@ -227,12 +179,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     --paper-fab-keyboard-focus-background: #e65100;
                     color: #000;
                 }
-                
+
                 iron-overlay-backdrop {
                     --iron-overlay-backdrop-background-color: #ff7800 !important;
                 }
 
-                login-modal{
+                login-modal {
                     z-index: 2;
                 }
             </style>
@@ -282,6 +234,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <kal-drawer-item name="hardware" href="[[rootPath]]hardware" icon="hardware:memory" title="Donanım"></kal-drawer-item>
                     <kal-drawer-item name="challenge" href="[[rootPath]]challenge" icon="places:all-inclusive" title="Challenge"></kal-drawer-item>
                     <kal-drawer-item name="twitch" href="[[rootPath]]twitch" icon="kaldirirmi:twitch" title="Twitch"></kal-drawer-item>
+                    <kal-drawer-item name="profile" href="[[rootPath]]profile" icon="icons:account-box" title="Profile"></kal-drawer-item>
                 </iron-selector>
             </app-drawer>
 
@@ -302,7 +255,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <!--<span class="greeting">Hi [[storedUser.name]]!</span>-->
                                 <logout-button stored-user=[[storedUser]]></logout-button>
                             </div>
-                            
                             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         </div>
                     </app-toolbar>
@@ -312,7 +264,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <!--   POLYMER DECLARED PROPERTIES *********************
                      is-desktop maps to isDesktop
                     isDesktop maps to isdesktop -->
-
 
                 <iron-pages id="ironpages" selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
@@ -324,7 +275,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <kal-hardware-page name="hardware" is-mobile=[[isMobile]] route="{{subroute}}"></kal-hardware-page>
                     <kal-challenge-page name="challenge" is-mobile=[[isMobile]] route="{{subroute}}"></kal-challenge-page>
                     <kal-twitch-page name="twitch" is-mobile=[[isMobile]] route="{{subroute}}"></kal-twitch-page>
-                    <kal-profile-page name="login" is-mobile=[[isMobile]] route="{{subroute}}"></kal-profile-page>
+                    <kal-profile-page name="profile" is-mobile=[[isMobile]] route="{{subroute}}"></kal-profile-page>
                     <kal-view404-page name="view404"></kal-view404-page>
                 </iron-pages>
 
@@ -336,13 +287,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <paper-dialog id="_loginDialog" modal entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
             <paper-fab icon="close" dialog-confirm autofocus close-dialog-button>Tap me to close</paper-fab>
-
-                <h2>Dialog Title</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <div class="buttons">
-                </div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <h2>Dialog Title</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat.</p>
+            <div class="buttons">
+            </div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </paper-dialog>
     </template>
 
@@ -385,7 +339,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     uname: String
                 };
             }
-            
+
             static get observers() {
                 return [
                     '_routePageChanged(routeData.page)',
@@ -451,7 +405,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _routePageChanged(page) {
                 // If no page was found in the route data, page will be an empty string.
-                // Default to 'view1' in that case.
+                // Default to 'home' in that case.
                 this.page = page || 'home';
 
                 // console.log(this.page);
@@ -498,7 +452,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // console.log('storedUser: ', this.storedUser);
 
             }
-            
+
             //How to fire the toaster?
             /*
                 var message = "Message Here!";
@@ -518,16 +472,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     scope.$.toaster.open();
                 }
             }
-            
+
             //triggered by 'loginmodaler' customEvent
             _toggleLoginDialog(e) {
-                 if (!this._loginModal) {
-                 this._loginModal = document.createElement('login-modal');
-                 this.root.appendChild(this._loginModal);
+                if (!this._loginModal) {
+                    this._loginModal = document.createElement('login-modal');
+                    this.root.appendChild(this._loginModal);
                 }
 
                 // // this.$.cart.addItem(event.detail);
-                 this._loginModal.open();
+                this._loginModal.open();
                 // this._announce('Item added to the cart');
             }
         }
