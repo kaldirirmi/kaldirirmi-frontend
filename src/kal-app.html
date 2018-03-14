@@ -265,7 +265,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                      is-desktop maps to isDesktop
                     isDesktop maps to isdesktop -->
 
-                <iron-pages id="ironpages" selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                <iron-pages id="ironpages"
+                    selected="[[page]]"
+                    attr-for-selected="name"
+                    fallback-selection="view404"
+                    role="main"
+                    >
                     <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
                     <kal-playground-page name="playground" is-mobile=[[isMobile]] route="{{subroute}}"></kal-playground-page>
                     <kal-game-page name="game" is-mobile=[[isMobile]] route="{{subroute}}"></kal-game-page>
