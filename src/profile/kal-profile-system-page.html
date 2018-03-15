@@ -4,9 +4,181 @@
             :host {
                 display: block
             }
-        </style>
 
-        
+            paper-item[heading] {
+                background: #ff7800;
+                color: white;
+                font-size: calc(0.80em + 1vmin);
+                font-weight: 100;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+            paper-item[heading] paper-button {
+                font-size: 14px;
+            }
+
+            div[empty-info],
+            div[info] {
+                color: white;
+                font-size: calc(0.5em + 1vmin);
+                padding: calc(0.5em + 1vmin);
+                /* @apply --shadow-elevation-8dp; */
+            }
+
+            div[empty-info]:hover,
+            div[info]:hover {
+                /* background: #121212; */
+                /* @apply --shadow-elevation-4dp; */
+            }
+
+            paper-item[info] {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+              div[empty-info] {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            div[empty-info] .empty-panel {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+
+            div[empty-info] iron-icon {
+                width: calc(1.3em + 1vmin) !important;
+                height: calc(1.3em + 1vmin) !important;
+            }
+
+            div[empty-info] div {
+                font-size: calc(0.8em + 1vmin) !important;
+            }
+
+            .tb {
+                color: white;
+                font-size: 20px;
+            }
+
+            #usersysteminfo {
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+                margin: 10px;
+                @apply --layout-vertical;
+            }
+
+            .button-panel {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                justify-content: center;
+                padding: 10px;
+            }
+
+            .button-panel paper-button {
+                font-size: calc(0.5em + 1vmin);
+                background: #E64A19;
+                color: #222;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .empty-panel paper-button {
+                font-size: calc(0.45em + 1vmin);
+                background: #E64A19;
+                color: #222;
+                font-weight: bold;
+            }
+
+            .empty-panel {
+                margin: 10px;
+            }
+
+            .loadingIndicatorUserSystem {
+                text-align: center;
+                padding: 10px;
+                font-size: calc(0.3em + 1vmin);
+                min-height: 350px !important;
+            }
+
+            .loadingIndicatorUserSystem paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            @media only screen and (min-width: 1024px) {
+                #usersysteminfo {
+                    width: 50% !important;
+                }
+
+                div[empty-info],
+                div[info],
+                .button-panel paper-button,
+                .empty-panel paper-button {
+                    font-size: calc(0.4em + 1vmin);
+                }
+                paper-item[heading] {
+                    font-size: calc(0.50em + 1vmin);
+                }
+
+                div[empty-info] div {
+                    font-size: calc(0.5em + 1vmin) !important;
+                }
+            }
+        </style>
+        <iron-ajax auto id="usersystem" url="/h/main?fm=user-system" method="get" handle-as="json" last-response="{{system}}" loading="{{loadingsystem}}"></iron-ajax>
+        <paper-material elevation="0" id="usersysteminfo" role="listbox">
+            <paper-item heading>
+                Sistemin
+            </paper-item>
+            <div class="loadingIndicatorUserSystem" style="color:#FF7800" hidden$="[[!loadingsystem]]">
+                <loader-pac></loader-pac>
+                <p>Sistemin Yükleniyor</p>
+            </div>
+            <div hidden$="[[loadingsystem]]">
+                <template is="dom-if" if="[[system.added]]">
+                    <paper-item info>
+                        <div>İşlemci</div>
+                        <div>[[system.cpu.text]]</div>
+                    </paper-item>
+                    <paper-item info>
+                        <div>Ekran Kartı</div>
+                        <div>[[system.gpu.text]]</div>
+                    </paper-item>
+                    <paper-item info>
+                        <div>İşletim Sistemi</div>
+                        <div>[[system.os.text]]</div>
+                    </paper-item>
+                    <paper-item info>
+                        <div>RAM</div>
+                        <div>[[system.ram]] GB</div>
+                    </paper-item>
+                    <paper-item info>
+                        <div>Boş Alan</div>
+                        <div>[[system.free_hdd]] GB</div>
+                    </paper-item>
+                    <div class="button-panel">
+                        <paper-button onclick="load(); location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
+                        <paper-button onclick="load(); location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
+                    </div>
+                </template>
+                <template is="dom-if" if="[[!system.added]]">
+                    <div empty-info>
+                        <div class="empty-panel">
+                            <iron-icon icon="notification:sim-card-alert"></iron-icon>
+                            <div>Henüz sistemini tanımlamamışsın</div>
+                        </div>
+                        <div class="empty-panel">
+                            <paper-button onclick="load(); location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
+                            <paper-button onclick="load(); location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </paper-material>
+
 
     </template>
 
@@ -32,7 +204,11 @@
              */
             static get properties() {
                 return {
-                    
+                    loadingsystem: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
                 };
             }
 
@@ -51,8 +227,8 @@
             ready() {
                 super.ready();
 
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    // console.log('yoooo');
                 });
             }
 

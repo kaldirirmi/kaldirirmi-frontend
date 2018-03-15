@@ -2,12 +2,157 @@
     <template>
         <style>
             :host {
-                display: block
+                display: block;
+                @apply --layout-horizontal;
+            }
+            
+            @media screen and (max-width: 767px){
+                :host{
+                    @apply --layout-vertical;
+                }
+            }
+
+            paper-item[heading] {
+                background-color: #ff7800;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+                color: white;
+                font-size: calc(0.8em + 1vmin);
+                font-weight: 100;
+            }
+
+            paper-item[auth] {
+                color: white;
+                font-size: calc(0.4em + 1vmin);
+                padding: calc(0.3em + 1vmin);
+                margin: calc(0.17em + 1vmin) 0px;
+            }
+
+            paper-item[auth] .options{
+                /* width: 160px; */
+            }
+
+            paper-item[auth] .acc {
+                flex-grow: 2;
+            }
+
+            #profileaccounts {
+                /* width: 95%; */
+                @apply --layout-flex-9;
+                margin: 10px;
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+            }
+            div[empty]{
+                @apply --layout-flex-3;
+            }
+
+            .authemail {
+                margin-left: 0.6em;
+            }
+
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                paper-item[heading] {
+                    font-size: calc(0.50em + 1vmin);
+                }
+            }
+
+            paper-tooltip.custom-tooltip {
+                --paper-tooltip-background: #ff7800;
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
             }
         </style>
 
-        
+        <paper-material elevation="0" id="profileaccounts" role="listbox">
+            <paper-item heading>
+                Sosyal Medya Hesapların
+            </paper-item>
 
+            <paper-item auth style="background-color: #4184f3">
+                <div>
+                    <img src="./frontend/images/social-icon/steam-icon.png" />
+                </div>
+                <div class="authemail">[[auths.steam.email]]</div>
+                <div class="acc">
+                </div>
+                <div class="options">
+                    <template is="dom-if" if="[[!auths.steam.linked]]">
+                        <paper-icon-button id="steamauthbtn" onclick="load(); location.href='/auth/steam/login';" icon="add-circle"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="steamauthbtn" position="left" offset="5" animation-delay="0">Steam hesabını bağla</paper-tooltip>
+                    </template>
+                    <template is="dom-if" if="[[auths.steam.linked]]">
+                        <paper-icon-button id="steamauthbtn" onclick="load(); location.href = '/auth/steam/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="steamauthbtn" position="left" offset="5" animation-delay="0">Steam hesabını kaldır</paper-tooltip>
+                    </template>
+                </div>
+            </paper-item>
+
+            <paper-item auth style="background-color: #E13719">
+                <div>
+                    <img src="./frontend/images/social-icon/google-icon.png" />
+                </div>
+                <div class="authemail">[[auths.google.email]]</div>
+                <div class="acc">
+
+                </div>
+                <div class="options">
+                    <template is="dom-if" if="[[!auths.google.linked]]">
+                        <paper-icon-button id="googleauthbtn" onclick="load(); location.href='/auth/google/login';" icon="add-circle"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="googleauthbtn" position="left" offset="5" animation-delay="0">Google hesabını bağla</paper-tooltip>
+                    </template>
+                    <template is="dom-if" if="[[auths.google.linked]]">
+                        <paper-icon-button id="googleauthbtn" onclick="load(); location.href='/auth/google/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="googleauthbtn" position="left" offset="5" animation-delay="0">Google hesabını kaldır</paper-tooltip>
+                    </template>
+                </div>
+            </paper-item>
+            <paper-item auth style="background-color: #6542a6">
+                <div>
+                    <img src="./frontend/images/social-icon/twitch-icon.png" />
+                </div>
+                <div class="authemail">[[auths.twitch.email]]</div>
+
+                <div class="acc">
+                </div>
+                <div class="options">
+                    <template is="dom-if" if="[[!auths.twitch.linked]]">
+                        <paper-icon-button id="twitchauthbtn" onclick="load(); location.href='/auth/twitch/login';" icon="add-circle"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="twitchauthbtn" position="left" offset="5" animation-delay="0">Twitch hesabını bağla</paper-tooltip>
+                    </template>
+                    <template is="dom-if" if="[[auths.twitch.linked]]">
+                        <paper-icon-button id="twitchauthbtn" onclick="load(); location.href='/auth/twitch/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="twitchauthbtn" position="left" offset="5" animation-delay="0">Twitch hesabını kaldır</paper-tooltip>
+                    </template>
+                </div>
+            </paper-item>
+            <paper-item auth style="background-color:#3A5BA0">
+                <div>
+                    <img src="./frontend/images/social-icon/facebook-icon.png" />
+                </div>
+                <div class="authemail">[[auths.facebook.email]]</div>
+                <div class="acc">
+                </div>
+                <div class="options">
+                    <template is="dom-if" if="[[!auths.facebook.linked]]">
+                        <paper-icon-button id="facebookauthbtn" onclick="load(); location.href='/auth/facebook/login';" icon="add-circle"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="facebookauthbtn" position="left" offset="5" animation-delay="0">Facebook hesabını bağla</paper-tooltip>
+                    </template>
+                    <template is="dom-if" if="[[auths.facebook.linked]]">
+                        <paper-icon-button id="facebookauthbtn" onclick="load(); location.href='/auth/facebook/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-tooltip class="custom-tooltip" for="facebookauthbtn" position="left" offset="5" animation-delay="0">Facebook hesabını kaldır</paper-tooltip>
+                    </template>
+                </div>
+            </paper-item>
+        </paper-material>
+
+        <div empty>
+
+        </div>
     </template>
 
     <script>
@@ -32,7 +177,10 @@
              */
             static get properties() {
                 return {
-                    
+                    auths: {
+                        type: Object,
+                        notify: true
+                    }
                 };
             }
 
@@ -51,8 +199,8 @@
             ready() {
                 super.ready();
 
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                  
                 });
             }
 
