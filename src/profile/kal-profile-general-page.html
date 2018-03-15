@@ -1,14 +1,237 @@
 <dom-module id="kal-profile-general-page">
     <template>
-        <style>
-            :host {
-                display: block;
-                color: #fff;
+        <style include="shared-styles">
+            :host{
+                @apply --layout-horizontal;
             }
-        </style>
 
-        GENERAL INFORMATION 
-        
+            @media screen and (max-width: 767px){
+                :host{
+                    @apply --layout-vertical;
+                }
+            }
+
+            :root {
+                /* Label and underline color when the input is not focused */
+                --paper-input-container-color: white;
+
+                /* Label and underline color when the input is focused */
+                --paper-input-container-focus-color: #ff7800;
+
+                /* Label and underline color when the input is invalid */
+                --paper-input-container-invalid-color: #EA4335;
+
+                /* Input foreground color */
+                --paper-input-container-input-color: white;
+            }
+
+            paper-material#userinformation,
+            paper-material#changepassword{
+                @apply --layout-flex-6;
+                margin: 10px;
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+            } 
+
+
+            /* #userinformation,
+            #changepassword {
+                margin: 10px;
+                width: 85%;
+            } */
+
+            /* #userinformation,
+            #changepassword {
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+            } */
+
+            paper-item[heading] {
+                background-color: #ff7800;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+                font-size: calc(0.50em + 1vmin);
+                                font-weight: 100;
+                color: white !important;
+            }
+
+            paper-item[info] {
+                color: white;
+                justify-content: center;
+                background: #222;
+            }
+
+            #profileform,
+            #passwordform {
+                @apply --layout-vertical;
+                padding: 0px 20px;
+                 padding-bottom: 10px;
+            }
+
+            #profileform .birthday {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+            #profileform .birthday paper-input {
+                display: inline-block;
+                margin-right: 5px;
+                /* max-width: 90px; */
+                @apply --layout-flex-4;
+            }
+
+            #profileform .buttons,
+            #passwordform .buttons {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                @apply --layout-end-justified;
+                margin-top: 15px;
+            }
+
+            #profileform .buttons paper-icon-button,
+            #passwordform .buttons paper-icon-button {
+                background-color: #ff7800;
+                color: white;
+            }
+            
+            #passwordform form{
+                @apply --layout-vertical;
+            }
+            
+            #password form paper-input{
+                @apply --layout-flex-4;
+            }
+
+            #passwordform paper-input {
+                display: inline-block;
+                margin-right: 5px;
+                min-width: 200px;
+            }
+
+            .loadingIndicatorProfile {
+                text-align: center;
+                height: 40px;
+                font-size: calc(0.5em + 1vmin);
+                min-height: 350px !important;
+            }
+
+            .loadingIndicatorProfile h5 {
+                font-size: 1.4em;
+            }
+
+
+            /* @media only screen and (min-width: 1024px) {
+                :host {
+                    flex-direction: row !important;
+                }
+                #userinformation,
+                #changepassword {
+                    width: 50% !important;
+                }
+
+                paper-item[heading] {
+                    font-size: calc(0.50em + 1vmin);
+                }
+
+                #passwordform paper-input {
+                    min-width: 270px;
+                }
+            }
+
+            #alarmaa {
+                left: 0px !important;
+                text-align: center !important;
+            } */
+
+            .blurred {
+                box-shadow: 12px 7px 67px -6px rgba(255, 239, 239, 0.71) !important;
+            }
+            
+            
+            
+
+        </style>
+        <!-- dom elements here-->
+        <iron-ajax auto id="userinfo" url="/h/main?fm=user-info" method="get" handle-as="json" last-response="{{userinfo}}" loading="{{loadingProfil}}"></iron-ajax>
+       
+        <paper-material elevation="0" id="userinformation" role="listbox">
+            <paper-item heading>Profil Bilgilerin</paper-item>
+            <div info>
+                <div class="loadingIndicatorProfile" style="color:#FF7800" hidden$="[[!loadingProfil]]">
+                    <loader-pac></loader-pac>
+                    <h5>Profil Yükleniyor</h5>
+                </div>
+                <div hidden$=[[loadingProfil]]>
+                    <iron-form on-iron-form-response="_ironFormResponseForProfile">
+                        <form id="profileform" action="/h/main" method="post">
+                            <paper-input label="İsim Soyisim" id="namesurname" name="namesurname" value$="[[userinfo.namesurname]]" char-counter maxlength="150"></paper-input>
+                            <paper-textarea label="Hakkında" id="about" name="about" value$="[[userinfo.about]]" char-counter maxlength="500"></paper-textarea>
+                            <div class="birthday">
+                                <paper-input 
+                                    label="Doğum Gün"
+                                    type="number"
+                                    id="birthday"
+                                    name="birthday"
+                                    value$="[[userinfo.birthday]]"
+                                    max="31"
+                                    min="1"
+                                    minlength="1"
+                                    maxlength="2"
+                                    allowed-pattern="[a-zA-Z]*"
+                                    auto-validate></paper-input>
+                                <paper-input 
+                                    label="Doğum Ay" 
+                                    type="number"
+                                    id="birthmonth"
+                                    name="birthmonth"
+                                    value$="[[userinfo.birthmonth]]"
+                                    max="12"
+                                    min="1"
+                                    minlength="1"
+                                    maxlength="2"
+                                    allowed-pattern="[a-zA-Z]*"
+                                    auto-validate
+                                    ></paper-input>
+                                <paper-input 
+                                    label="Doğum Yıl"
+                                    type="number" 
+                                    id="birthyear"
+                                    name="birthyear"
+                                    value$="[[userinfo.birthyear]]"
+                                    max="[[_currentYear]]"
+                                    maxlength="4"
+                                    minlength="4"
+                                    min="1930"
+                                    auto-validate></paper-input>
+                            </div>
+                            <div class="buttons">
+                                <input type="hidden" name="fm" value="update-user-profile" />
+                                <paper-icon-button id="profileformsubmit" on-tap="_profileFormSubmit" icon="done"></paper-icon-button>
+                            </div>
+                        </form>
+                    </iron-form>
+                </div>
+            </div>
+        </paper-material>
+        <paper-material elevation="0" id="changepassword" role="listbox">
+            <paper-item heading>Şifre Değiştir</paper-item>
+            <div info>
+                <iron-form id="passwordform" on-iron-form-response="_ironFormResponseForPassword">
+                    <form action="/h/main" method="post">
+                        <paper-input label="Şuanki şifren" id="oldpass" name="oldpass" required auto-validate error-message="bu alanın doldurulması zorunludur"
+                            type="password"></paper-input>
+                        <paper-input label="Yeni şifren" id="newpass" name="newpass" required char-counter minlength="8" maxlength="12" auto-validate
+                            error-message="minimum 8 karakter olmalıdır" type="password"></paper-input>
+                        <paper-input label="Yeni şifreni onayla" id="newpasscon" name="newpasscon" required char-counter minlength="8" maxlength="12"
+                            auto-validate error-message="minimum 8 karakter olmalıdır" type="password"></paper-input>
+                        <div class="buttons">
+                            <input type="hidden" name="fm" value="change-password" />
+                            <paper-icon-button id="passwordsubmit" on-tap="_passwdSubmit" icon="done"></paper-icon-button>
+                        </div>
+                    </form>
+                </iron-form>
+            </div>
+        </paper-material>
+        <!-- <paper-toast id="alarmaa" duration="10000" class="fit-bottom"></paper-toast> -->
+
 
     </template>
 
@@ -34,7 +257,36 @@
              */
             static get properties() {
                 return {
-                    
+                    loadingProfil: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    generator: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    profilecounter: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    passwordcounter: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    blurred: {
+                        type: String,
+                        observer: '_isBlurredFocus'
+                    },
+                    _currentYear: {
+                        type: String,
+                        value: () => {
+                            return (new Date().getFullYear() - 5);
+                        }
+                    }
                 };
             }
 
@@ -53,9 +305,70 @@
             ready() {
                 super.ready();
 
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
+                Polymer.RenderStatus.afterNextRender(this, function () {
                 });
+            }
+
+            _passwdSubmit(a) {
+                if (this.$.oldpass.validate() && this.$.newpass.validate() && this.$.newpasscon.validate()) {
+                    if (this.passwordcounter <= 3) {
+                        this.$.passwordform.submit();
+                        // document.getElementById('passwordform').submit();
+                    }
+                    else {
+                        this._setAlarmaa('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
+                    }
+                    this.passwordcounter = this.passwordcounter + 1;
+
+                }
+            }
+
+            _profileFormSubmit(a) {
+                if (this.$.namesurname.validate() && this.$.about.validate() && this.$.birthday.validate() && this.$.birthmonth.validate() && this.$.birthyear.validate()){
+                    if (this.profilecounter <= 3) {
+                        this.$.profileform.submit();
+                        // document.getElementById('profileform').submit();
+                    }
+                    else {
+                        this._setAlarmaa('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
+                    }
+                    this.profilecounter = this.profilecounter + 1;
+                }
+            }
+
+            _ironFormResponseForProfile(event) {
+                var response = event.detail.response;
+                //console.log(response);
+                if (response.success) {
+                    //console.log('scuess');
+                    //if success, trigger userinfo vcard
+                    this.generator = Math.random().toString();
+                }
+                this._setAlarmaa(response.message);
+            }
+
+            _ironFormResponseForPassword(event) {
+                var response = event.detail.response;
+                //console.log('ironForm Password => ' + response);
+                this._setAlarmaa(response.message);
+            }
+
+            _setAlarmaa(message) {
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                    text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+            
+            _isBlurredFocus(newVal, oldVal) {
+                //console.log('_isBLurred' + newVal);
+                this.$.userinformation.toggleClass('blurred');
+                // $('#userinformation').toggleClass('blurred');
+                //$('#userinformation').css("box-shadow", "12px 7px 67px -6px rgba(255, 239, 239, 0.71)");
             }
 
         }

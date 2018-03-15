@@ -32,6 +32,22 @@
             :host([is-mobile]) {
                 height: auto !important;
             }
+            
+            :host([is-mobile]) #profile-container{
+                @apply --layout-vertical;
+            }
+
+            :host([is-mobile]) #profile-container .main-profile{
+                @apply --layout-flex-12;
+            }
+
+            :host([is-mobile]) #profile-container .main-profile .main-content{
+                /* min-height: 300px; */
+            }    
+
+            :host([is-mobile]) #profile-container .side-profile{
+                @apply --layout-flex-12;
+            }
 
             :root {
                 --paper-input-container-input: {
@@ -180,7 +196,7 @@
                             role="main"
                             >
                             <neon-animatable name="general">
-                                <kal-profile-general-page generator="{{generator}}" blurred="{{blurred}}"></kal-profile-general-page>
+                                <kal-profile-general-page userinfo="[[userinfo]]" generator="{{generator}}" blurred="{{blurred}}"></kal-profile-general-page>
                             </neon-animatable>
                             <neon-animatable name="accounts">
                                 <kal-profile-accounts-page auths="[[auths]]"></kal-profile-accounts-page>
@@ -454,13 +470,6 @@
 
             _selectedPageActiveChanged(value) {
                 console.log('page active changed', value);
-            }
-
-            _ironSelect(event) {
-                console.log('_ironSelect', event);
-                var item = event.detail.item;
-                var selected = event.target.selected;
-                this.$.profilepages.select(selected);
             }
 
             _generatorChanged(newVal, oldVal) {
