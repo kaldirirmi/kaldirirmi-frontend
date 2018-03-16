@@ -18,6 +18,7 @@
 <link rel="lazy-import" href="../profile/kal-profile-accounts-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-404-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-games-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-friends-page.html">
 
 <dom-module id="kal-profile-page">
     <template>
@@ -204,11 +205,11 @@
                             <neon-animatable name="system">
                                 <kal-profile-system-page></kal-profile-system-page>
                             </neon-animatable>
-                            <neon-animatable name="forum">
+                            <!-- <neon-animatable name="forum">
                                 <kaldirirmi-profile-forum id="ipUserForum"></kaldirirmi-profile-forum>
-                            </neon-animatable>
+                            </neon-animatable> -->
                             <neon-animatable>
-                                <kaldirirmi-profile-friends id="ipUserFriends"></kaldirirmi-profile-friends>
+                                <kal-profile-friends-page></kal-profile-friends-page>
                             </neon-animatable>
                             <neon-animatable name="games">
                                 <kal-profile-games-page></kal-profile-games-page>

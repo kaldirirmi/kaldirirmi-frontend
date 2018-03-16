@@ -1,0 +1,733 @@
+<dom-module id="kal-profile-friends-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                @apply --layout-horizontal;
+            }
+
+            :root {
+                /* Label and underline color when the input is not focused */
+                --paper-input-container-color: white;
+                /* Label and underline color when the input is focused */
+                --paper-input-container-focus-color: #ff7800;
+                /* Label and underline color when the input is invalid */
+                --paper-input-container-invalid-color: #EA4335;
+                /* Input foreground color */
+                --paper-input-container-input-color: white;
+            }
+
+            #userinformation,
+            #changepassword {
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+            }
+
+            paper-item[heading] {
+                background-color: #ff7800;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+                font-size: calc(0.80em + 1vmin);
+                font-weight: 100;
+                color: white !important;
+            }
+
+            paper-item[info] {
+                color: white;
+                justify-content: center;
+                background: #222;
+            }
+
+            #profileform,
+            #passwordform {
+                @apply --layout-vertical;
+                /*@apply --layout-center);*/
+                padding: 20px;
+            }
+
+            #profileform .birthday {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+            #profileform .birthday paper-input {
+                display: inline-block;
+                margin-right: 5px;
+                max-width: 90px;
+            }
+
+            #profileform .buttons,
+            #passwordform .buttons {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                @apply --layout-end-justified;
+                margin-top: 15px;
+            }
+
+            #profileform .buttons paper-icon-button,
+            #passwordform .buttons paper-icon-button {
+                background-color: #ff7800;
+                color: white;
+            }
+
+            #passwordform paper-input {
+                display: inline-block;
+                margin-right: 5px;
+                min-width: 270px;
+            }
+
+            #friendlistinfo,
+            #pendingListInfo {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                @apply --layout-start-justified;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                padding: calc(0.5em + 1vmin);
+                background: #222;
+            }
+
+            .friend {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: calc(7em + 1vmin);
+                height: calc(10em + 1vmin);
+                position: relative;
+                text-decoration: none;
+                box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+            }
+
+            .friend iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .friend .friend-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                height: calc(1.45em + 1vmin);
+                /*background: #ff7800;*/
+                width: 100%;
+                border-top: 2px solid #ff7800;
+            }
+
+            .friend .friend-title span {
+                width: 100%;
+                @apply --paper-font-common-nowrap;
+                text-align: center;
+            }
+
+            .friend:hover iron-image[background] {
+                opacity: 1;
+            }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+                min-height: 300px;
+            }
+
+            .loadingIndicator,
+            .res-message {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            .friend a {
+                text-decoration: none;
+                height: 110px;
+                width: 100%;
+            }
+
+            .friend .interactions {
+                @apply --layout-horizontal;
+                @apply --layout-justified;
+                width: 100%;
+                position: absolute;
+                bottom: 0;
+            }
+
+            .friend .interactions paper-icon-button {
+                padding: 5px !important;
+            }
+
+            .friend .interactions paper-icon-button:hover {
+                padding: 2px !important;
+            }
+
+            .colorGreen {
+                background: #008744;
+                margin: 0;
+                padding: 6px;
+                opacity: 0.8;
+            }
+
+            .colorRed {
+                background: #d62d20;
+                margin: 0;
+                padding: 6px;
+                opacity: 0.8;
+            }
+
+            .interactions paper-button:hover {
+                opacity: 1;
+            }
+
+            #addsystemalert {
+                color: #222 !important;
+                background-color: #ff7800 !important;
+                font-weight: bold;
+            }
+
+            /* pending list dom repeat items */
+
+            paper-card.u-card {
+                margin: 8px;
+                @apply --layout-horizontal;
+            }
+
+            paper-card.u-card a {
+                width: 100%;
+                height: 100%;
+                text-decoration: none;
+            }
+
+            .u-image {
+                width: calc(4em + 1vmin);
+                height: auto;
+                background-size: cover;
+            }
+
+            .u-image iron-image {
+                width: 100%;
+                height: 100%;
+            }
+
+            .u-content {
+                @apply --layout-flex;
+                float: left;
+            }
+
+            .u-header {
+                @apply --paper-font-headline;
+            }
+
+            .u-social {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+
+            paper-icon-button.rate-icon {
+                --iron-icon-fill-color: white;
+                --iron-icon-stroke-color: var(--paper-grey-600);
+            }
+
+            .unlinked {
+                opacity: 0.43;
+            }
+
+
+            /* Button 5b */
+
+            .btn-5 {
+                font-weight: bold;
+                background: #222;
+                color: #ff7800;
+                width: calc(10em + 1vmin);
+                line-height: 24px;
+                text-align: center;
+                font-size: calc(0.6em + 1vmin) !important;
+                overflow: hidden;
+                -webkit-backface-visibility: hidden;
+                -moz-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+
+            .btn-5:active {
+                /*background: #9053a9;*/
+                top: 2px;
+            }
+
+            .btn-5 span {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                -webkit-transition: all 0.3s;
+                -webkit-backface-visibility: hidden;
+                -moz-transition: all 0.3s;
+                -moz-backface-visibility: hidden;
+                transition: all 0.3s;
+                backface-visibility: hidden;
+            }
+
+            .btn-5:before {
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                line-height: 3;
+                -webkit-transition: all 0.3s;
+                -moz-transition: all 0.3s;
+                transition: all 0.3s;
+            }
+
+            .btn-5:active:before {
+                color: #703b87;
+            }
+
+            .btn-5b:hover span {
+                -webkit-transform: translateX(200%);
+                -moz-transform: translateX(200%);
+                -ms-transform: translateX(200%);
+                transform: translateX(200%);
+            }
+
+            .btn-5b:before {
+                left: -100%;
+                top: 0;
+            }
+
+            .btn-5b:hover:before {
+                left: 0;
+            }
+
+            .icon-remove:before {
+                content: attr(data-hover);
+            }
+
+
+            paper-item[info] {
+                min-height: 300px;
+                width: 90%;
+            }
+
+
+            #userinformation,
+            #changepassword {
+                margin: 2px;
+                width: 95%;
+            }
+
+            .u-header span {
+                color: black;
+                font-size: calc(0.88em + 1vmin);
+                font-weight: bold;
+            }
+
+            .u-social h3 {
+                color: black;
+                font-size: calc(0.66em + 1vmin);
+                font-weight: 100;
+            }
+
+            @media only screen and (min-width: 412px) {
+                #userinformation,
+                #changepassword {
+                    margin: 10px;
+                }
+            }
+
+            @media only screen and (min-width: 768px) {
+                .u-image {
+                    width: calc(6em + 1vmin);
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                paper-item[heading] {
+                    font-size: calc(0.50em + 1vmin);
+                }
+                .u-social h3 {
+                    font-size: calc(0.33em + 1vmin);
+                }
+                .u-header span {
+                    font-size: calc(0.66em + 1vmin);
+                }
+                .btn-5 {
+                    font-size: calc(0.4em + 1vmin) !important;
+                }
+            }
+
+            .res-message {
+                text-align: center;
+                font-weight: 500;
+                font-size: 1.2em;
+            }
+        </style>
+
+        <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
+        <iron-ajax auto="{{go}}" id="getfriendlist" debounce="3000" url="/h/main?fm=get-friendlist-of-current-user" handle-as="json"
+            on-response="_responseFriendList" loading="{{loadingfriends}}"></iron-ajax>
+        <iron-ajax auto="{{go}}" id="getpendinglist" debounce="3000" url="/h/main?fm=get-pending-of-current-user" handle-as="json"
+            on-response="_responsePendingList" loading="{{loadingpending}}"></iron-ajax>
+
+        <iron-form id="formAcceptRequest" on-iron-form-response="_onFormAcceptResponse">
+            <form method="post" action="/h/main">
+                <input type="hidden" name="fm" value="accept-friend-request" />
+                <input type="hidden" id="senderId" name="senderId" value=[[senderId]] />
+            </form>
+        </iron-form>
+        <iron-form id="formDeclineRequest" on-iron-form-response="_onFormDeclineResponse">
+            <form method="post" action="/h/main">
+                <input type="hidden" name="fm" value="decline-friend-request" />
+                <input type="hidden" id="senderId" name="senderId" value="[[senderId]]" />
+            </form>
+        </iron-form>
+
+        <iron-form id="cancelfriendrequestform" on-iron-form-response="_responseOfCancelFriendRequest">
+            <form action="/h/main" method="post">
+                <input type="hidden" name="fm" value="cancel-active-friendship" />
+                <input type="hidden" id="receiverId" name="receiverId" value=[[receiverId]] />
+            </form>
+        </iron-form>
+
+        <paper-material elevation="0" id="userinformation" role="listbox">
+            <paper-item heading>Arkadaşların</paper-item>
+            <paper-item info id="friendlistinfo">
+                <div class="loadingIndicator" hidden$="[[!loadingfriends]]">
+                    <loader-pac></loader-pac>
+                </div>
+                <template is="dom-if" if="[[!haveFriend]]">
+                    <h4 class="res-message">[[responseFriendMessage]]</h4>
+                </template>
+                <template is="dom-if" if="[[haveFriend]]">
+                    <template is="dom-repeat" items="{{response.friendList}}" as="item">
+                        <paper-card class="u-card" elevation="3">
+                            <div class="u-content">
+                                <a href="/u/[[item.url]]" onclick="load();">
+                                    <div class="card-content">
+                                        <div class="u-header">
+                                            <span>[[item.username]]</span>
+                                        </div>
+                                        <div class="u-social">
+                                            <h3>{{_remakeEmail(item.userauth.google.email, item.userauth.facebook.email, item.userauth.twitch.email)}}</h3>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="card-actions">
+                                    <paper-button name="[[item.id]]" raised data-hover="Arkadaşlıktan Çık" class="btn-5 btn-5b icon-remove" id="pbCancelFriendship"
+                                        on-tap="_triggerCancelFriendForm">
+                                        <span>Arkadaşsınız</span>
+                                    </paper-button>
+                                </div>
+                            </div>
+                            <div class="u-image">
+                                <iron-image background src="{{_remakeFriendAvatar(item.avatar)}}" sizing="cover" alt="[[item.username]]" preload fade></iron-image>
+                            </div>
+                        </paper-card>
+                    </template>
+                </template>
+            </paper-item>
+        </paper-material>
+        <paper-material elevation="0" id="changepassword">
+            <paper-item heading>Bekleyen İstekler</paper-item>
+            <paper-item info id="pendingListInfo">
+                <div class="loadingIndicator" hidden$="[[!loadingpending]]">
+                    <loader-pac></loader-pac>
+                </div>
+                <template is="dom-if" if="[[!havePending]]">
+                    <h4 class="res-message">[[responsePendingMessage]]</h4>
+                </template>
+                <template is="dom-if" if="[[havePending]]">
+                    <template is="dom-repeat" items="{{response.pendingList}}" as="item">
+                        <paper-card class="u-card" elevation="3">
+                            <div class="u-content">
+                                <a href="/u/[[item.url]]" onclick="load();">
+                                    <div class="card-content">
+                                        <div class="u-header">
+                                            <span>[[item.username]]</span>
+                                        </div>
+                                        <div class="u-social">
+                                            <template is="dom-if" if="[[item.userauth.google.linked]]">
+                                                <img src="/assets/img/social-icon/google-icon.png" />
+                                            </template>
+                                            <template is="dom-if" if="[[!item.userauth.google.linked]]">
+                                                <img class="unlinked" src="/assets/img/social-icon/google-icon.png" />
+                                            </template>
+                                            <template is="dom-if" if="[[item.userauth.twitch.linked]]">
+                                                <img src="/assets/img/social-icon/twitch-icon.png" />
+                                            </template>
+                                            <template is="dom-if" if="[[!item.userauth.twitch.linked]]">
+                                                <img class="unlinked" src="/assets/img/social-icon/twitch-icon.png" />
+                                            </template>
+                                            <template is="dom-if" if="[[item.userauth.facebook.linked]]">
+                                                <img src="/assets/img/social-icon/facebook-icon.png" />
+                                            </template>
+                                            <template is="dom-if" if="[[!item.userauth.facebook.linked]]">
+                                                <img class="unlinked" src="/assets/img/social-icon/facebook-icon.png" />
+                                            </template>
+
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <div class="card-actions">
+                                    <div class="interactions">
+                                        <paper-button name="[[item.id]]" class="colorGreen" on-tap="_acceptPendingRequest">
+                                            <iron-icon icon="done"></iron-icon>
+                                            <span>Onayla</span>
+                                        </paper-button>
+                                        <paper-button name="[[item.id]]" class="colorRed" on-tap="_declinePendingRequest">
+                                            <iron-icon icon="close"></iron-icon>
+                                            <span>Reddet</span>
+                                        </paper-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="u-image">
+                                <iron-image background src="{{_remakeFriendAvatar(item.avatar)}}" sizing="cover" alt="[[item.username]]" preload fade></iron-image>
+                            </div>
+                        </paper-card>
+
+
+                    </template>
+                </template>
+            </paper-item>
+        </paper-material>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-profile-friends-page` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalProfileFriendsPage extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-profile-friends-page';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    response: {
+                        type: Array,
+                        value: function () {
+                            return {
+                                friendList: [],
+                                pendingList: []
+                            }
+                        },
+                        notify: true
+                    },
+                    loadingpending: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    loadingfriends: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    haveFriend: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    havePending: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    responsePendingMessage: {
+                        type: String,
+                        value: 'Bekleyen İstekler Getiriliyor..',
+                        notify: true
+                    },
+                    responseFriendMessage: {
+                        type: String,
+                        value: 'Arkadaşların Getiriliyor..',
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    senderId: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    receiverId: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    Polymer.Async.microTask.run(() => this._letsGo());
+                });
+            }
+            
+            _letsGo(){
+                this.set('go', true);
+            }
+
+            _responseFriendList(event) {
+                this.set('response.friendList', []);
+                //console.log('_responseFriendList' + event.detail.response);
+
+                if (event.detail.response.length > 0) {
+                    this.haveFriend = true;
+                    this.set('response.friendList', event.detail.response);
+                }
+                else {
+                    this.responseFriendMessage = 'Hiç arkadaşın bulunmamakta!';
+                    this.haveFriend = false;
+                }
+            }
+            _responsePendingList(event) {
+                this.set('response.pendingList', []);
+                //console.log('_responsePendingList' + event.detail.response);
+
+                if (event.detail.response.length > 0) {
+                    this.havePending = true;
+                    this.set('response.pendingList', event.detail.response);
+
+                    event.detail.response.forEach(function (pend) {
+                        console.log(pend);
+                    }, this);
+                }
+                else {
+                    this.responsePendingMessage = 'Bekleyen istek bulunmamakta!';
+                    this.havePending = false;
+                }
+            }
+            _remakeFriendAvatar(avatar) {
+                if (avatar) {
+                    return '//cdn.kaldirirmi.com/images/user/avatar/' + avatar;
+                }
+                else {
+                    return '//cdn.kaldirirmi.com/images/user/avatar/' + 'default-user-avatar3.png';
+                }
+            }
+            _acceptPendingRequest(event) {
+                //console.log('_acceptPendingRequest');
+                this.senderId = event.currentTarget.name;
+                document.getElementById('formAcceptRequest').submit();
+            }
+            _declinePendingRequest(event) {
+                //console.log('_declinePendingRequest');
+                this.senderId = event.currentTarget.name;
+                document.getElementById('formDeclineRequest').submit();
+            }
+            _onFormAcceptResponse(event) {
+                //console.log('__onFormAcceptResponse');
+                var message = event.detail.response.message;
+                //console.log('message =>' + message);
+                var systemAlert = document.getElementById('alert');
+                systemAlert.setAttribute('text', message);
+
+                if (event.detail.response.success) {
+                    this.$.getfriendlist.generateRequest();
+                    this.$.getpendinglist.generateRequest();
+                }
+                else {
+                    unload();
+                    document.getElementById('formAcceptRequest').reset();
+                }
+                systemAlert.open();
+            }
+            _onFormDeclineResponse(event) {
+                //console.log('__onFormDeclineResponse');
+                var message = event.detail.response.message;
+                //console.log('message =>' + message);
+                var systemAlert = document.getElementById('alert');
+                systemAlert.setAttribute('text', message);
+
+                if (event.detail.response.success) {
+                    this.$.getpendinglist.generateRequest();
+                }
+                else {
+                    unload();
+                    document.getElementById('formDeclineRequest').reset();
+                }
+                systemAlert.open();
+            }
+            _triggerCancelFriendForm(event) {
+                //console.log('__triggerCancelFriendForm' + event.currentTarget.name);
+                document.getElementById('pbCancelFriendship').disabled = true;
+                this.receiverId = event.currentTarget.name;
+                document.getElementById('cancelfriendrequestform').submit();
+            }
+            _responseOfCancelFriendRequest(e) {
+                //console.log('_responseOfCancelFriendRequest');
+                var message = e.detail.response.message;
+                //console.log('message =>' + message);
+                var systemAlert = document.getElementById('alert');
+                systemAlert.setAttribute('text', message);
+
+                if (e.detail.response.success) {
+                    document.getElementById('pbCancelFriendship').disabled = false;
+                    //friendship is over! resend request for listing friends..
+                    this.$.getfriendlist.generateRequest();
+                }
+                else {
+                    unload();
+                    document.getElementById('cancelfriendrequestform').reset();
+                }
+                systemAlert.open();
+            }
+            _remakeEmail(go, fa, tw) {
+                if (go) {
+                    return go;
+                }
+                else if (tw) {
+                    return tw;
+                }
+                else if (fa) {
+                    return fa;
+                }
+            }
+        }
+
+        window.customElements.define(KalProfileFriendsPage.is, KalProfileFriendsPage);
+    </script>
+</dom-module>
