@@ -1,0 +1,197 @@
+﻿<link rel="import" href="streams-card.html">
+
+<dom-module id="user-get-followed-streams">
+    <template>
+        <style>
+            :host {
+                display: block;
+                box-sizing: border-box;
+                @apply --layout-vertical;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                width: 100%;
+            }
+
+            #streams {
+                @apply --layout-wrap;
+                width: 100%;
+            }
+
+            twitchtv-card,
+            youtube-card {
+                margin: 10px;
+            }
+
+            paper-spinner {
+                margin: 16px auto;
+            }
+
+            #errorMessage {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #streams {
+                    margin-left: 105px;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                #streams {
+                    margin-left: 30px;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #streams {
+                    margin-left: 130px;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                #streams {
+                    margin-left: 60px;
+                }
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                #streams {
+                    margin-left: 105px;
+                }
+            }
+
+            #errorMessage h3 {
+                font-weight: 100;
+                font-style: oblique;
+                font-size: calc(0.7em + 1vmin);
+                color: #757575;
+            }
+
+            #errorMessage iron-icon {
+                color: #6441a5;
+            }
+        </style>
+        <iron-ajax auto id="ajaxGetFollowedStreams" url="/auth/twitch/kalapi?fm=get-followed-streams&a=[[streamtype]]&b=[[limit]]&c=[[offset]]"
+            handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
+        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+            <loader-pac></loader-pac>
+        </div>
+        <div id="streams">
+            <template is="dom-if" if="[[!resultStatus]]">
+                <div id="errorMessage">
+                    <h3>Şuanda "[[streamtype]]" olarak yayın bulunmamaktadır!</h3>
+                    <iron-icon icon="error"></iron-icon>
+
+                </div>
+            </template>
+            <template is="dom-repeat" items="[[response.streams]]">
+                <streams-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></streams-card>
+            </template>
+        </div>
+        <event-infinite-scroll id="scroll" scrollOffset="60" on-reach-bottom="_loadMore">
+        </event-infinite-scroll>
+    </template>
+
+    <script>
+        Polymer({
+            is: "user-get-followed-streams",
+            properties: {
+                streamtype: {
+                    type: String,
+                    value: 'live',
+                    notify: true
+                },
+                limit: {
+                    type: Number,
+                    value: 10,
+                    notify: true
+                },
+                offset: {
+                    type: Number,
+                    value: 0,
+                    notify: true
+                },
+                width: {
+                    type: Number,
+                    notify: true,
+                    value: null
+                },
+
+                response: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            streams: []
+                        };
+                    },
+                    notify: true
+                },
+                resultStatus: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                loading: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                }
+            },
+            ready: function () {
+                if (this.width) {
+                    this.className = 'layout horizontal wrap';
+                }
+            },
+
+            _onRequest: function (event) {
+                this.loading = true;
+            },
+            _onResponse: function (event) {
+                //console.log('_onResponse followed streams ');
+                var len = event.detail.response.streams.length;
+                this.set('response.streams', []);
+
+                if (len > 0) {
+                    this.resultStatus = true;
+                    //console.log(event.detail.response);
+                    var response = event.detail.response;
+                    this.set('response.streams', response.streams);
+                    //console.log('stream type => ' + this.streamtype + ' this.repsonse = >' + this.response.streams);
+
+                    //event.detail.response.follows.forEach(function (streams) {
+                    //    console.log(streams);
+                    //}, this);
+                } else {
+                    this.resultStatus = false;
+                }
+                this.loading = false;
+            },
+            _cardLoaded: function (event) {
+                this.doneCards = this.doneCards || [];
+                this.doneCards.push(event.detail);
+                //console.log(this.doneCards.length, 'of', this.limit);
+                if (this.doneCards.length >= this.limit) {
+                    //console.log('all cards loaded');
+                    //console.log(this.response.streams);
+                    // reset spinner
+                    this.loading = false;
+                    this.fire('streaming-list-rendered', this.doneCards);
+                    this.doneCards = [];
+                }
+            }
+
+        });
+    </script>
+</dom-module>

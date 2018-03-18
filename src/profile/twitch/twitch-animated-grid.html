@@ -1,0 +1,592 @@
+<link rel="import" href="./twitch-expandable-card.html" />
+<link rel="import" href="./user-following-channel-list.html">
+<link rel="import" href="./user-get-followed-streams.html">
+<link rel="import" href="./user-get-followed-videos.html">
+<link rel="import" href="./user-get-friend-followed-channel.html">
+<link rel="import" href="./user-get-top-clips.html">
+
+<dom-module id="twitch-animated-grid">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                background: inherit;
+                flex-direction: row;
+                flex-flow: row wrap;
+                margin: 10px;
+            }
+
+            paper-dropdown-menu {
+                line-height: 0 !important;
+                --paper-input-container-label: {
+                    color: white;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: calc(0.45em + 1vmin);
+                }
+
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                    font-size: calc(0.55em + 1vmin);
+
+                }
+
+                --paper-input-container-focus-color: white;
+                --paper-input-container-underline: {
+                    display: none;
+                }
+
+
+            }
+
+            /* custom twitch expandable card*/
+
+            #retracted paper-card[mainimage] .card-content {
+                padding: 0px 20px;
+                margin-top: 0px;
+            }
+
+            #retracted .card-content .twitch-manset {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                color: white;
+
+            }
+
+            #retracted paper-card .card-content .twitch-manset h3 {
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: calc(0.6em + 1vmin) !important;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+
+            #retracted paper-card .card-content .twitch-manset h5 {
+                font-size: calc(0.41em + 1vmin) !important;
+                margin: 0;
+                font-weight: 100;
+                padding-bottom: 0.6em;
+            }
+
+            #retracted paper-card .card-content .twitch-manset paper-button {
+                font-weight: bold;
+                color: #6441a5;
+                background: white;
+                margin-top: 10px;
+                width: 33%;
+                font-size: calc(0.33em + 1vmin);
+                position: absolute;
+                bottom: 10px;
+            }
+
+            #retracted paper-card[mainimage] {
+                --paper-card-header-image: {
+                    width: 29%;
+                    margin: 0 auto;
+                }
+            }
+
+            /*  expandedContent for scrollbar*/
+
+            #expandedContent {
+                overflow-y: scroll !important;
+                overflow-x: hidden;
+
+            }
+
+            #expandedContent::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            #expandedContent::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                min-height: 50px;
+            }
+
+            #expandedContent::-webkit-scrollbar-track {
+                background-color: white;
+            }
+
+            .expandedContentPurple::-webkit-scrollbar-thumb {
+                background-color: #6441a5;
+                border: 2px solid #7932fc;
+
+            }
+
+            .expandedContentBlue::-webkit-scrollbar-thumb {
+                background-color: #0057e7;
+                border: 2px solid #5a90e8;
+            }
+
+            .expandedContentGreen::-webkit-scrollbar-thumb {
+                background-color: #008744;
+                border: 2px solid #0fe078;
+            }
+
+            .expandedContentRed::-webkit-scrollbar-thumb {
+                background-color: #d62d20;
+                border: 2px solid #f43729;
+            }
+
+
+            /* Custom, iPhone Retina */
+
+            @media only screen and (min-width: 320px) {
+                #expanded #expandedHeader {
+                    height: 180px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 170px !important;
+                }
+
+            }
+
+            /* Custom, Galaxy S5 */
+
+            @media only screen and (min-width: 360px) {
+                #expanded #expandedHeader {
+                    height: 180px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 180px !important;
+                }
+            }
+
+            /* Iphone 6s plus */
+
+            @media only screen and (min-width: 412px) {
+                #expanded #expandedHeader {
+                    height: 180px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 180px !important;
+                }
+            }
+
+            /* Extra Small Devices, Phones */
+
+            @media only screen and (min-width: 480px) {
+                #expanded #expandedHeader {
+                    height: 180px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 180px !important;
+                }
+            }
+
+            /* Small Devices, Tablets */
+
+            @media only screen and (min-width: 768px) {
+
+                #expanded #expandedHeader {
+                    height: 120px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 90px !important;
+                }
+
+                #retracted paper-card[mainimage] .card-content {
+                    margin-top: -30px;
+                }
+            }
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #expanded #expandedHeader {
+                    height: 50px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 110px !important;
+                }
+
+                #retracted paper-card .card-content .twitch-manset h3 {
+                    margin-top: 1em;
+                    margin-bottom: 1em;
+                }
+
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                #expanded #expandedHeader {
+                    height: 150px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 105px !important;
+                }
+
+                #retracted paper-card[mainimage] .card-content {
+                    margin-top: 0px;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #expanded #expandedHeader {
+                    height: 150px;
+
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 90px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                #expanded #expandedHeader {
+                    height: 150px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 70px !important;
+                }
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                #expanded #expandedHeader {
+                    height: 150px;
+                }
+                #expanded .expandedHeaderAddition {
+                    height: 70px !important;
+                }
+            }
+        </style>
+
+        <!-- User following channels -->
+        <twitch-expandable-card>
+            <div id="retracted" class="container">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color: #6441a5" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallar</h3>
+                            <h5>Twitcher! Sen seviyorsun diye üşenmedik, takip ettiğin kanalları senin için topladık. Haydi Genişlet!</h5>
+                            <paper-button class="toggle" raised>Genişlet</paper-button>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div id="expanded" class="container">
+                <div id="expandedHeader" class="container-header expandedHeaderAddition" style="background-color: #6441a5">
+                    <paper-icon-button class="container-header-side toggle" noink icon="arrow-back"></paper-icon-button>
+                    <div>Takip Ettiğin Kanallar</div>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Sayfa">
+                            <paper-listbox style="background-color:#6441a5; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{offset}}">
+                                <paper-item value="0">1</paper-item>
+                                <paper-item value="12">2</paper-item>
+                                <paper-item value="24">3</paper-item>
+                                <paper-item value="36">4</paper-item>
+                                <paper-item value="48">5</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                </div>
+                <div id="expandedContent" class="expandedContentPurple">
+                    <user-following-channel-list limit=12 offset="{{offset}}" width="{{size}}"></user-following-channel-list>
+                </div>
+            </div>
+        </twitch-expandable-card>
+
+
+        <!-- Get Channel Videos Via <channel ID> -->
+        <iron-ajax auto id="followingChannels" url="/auth/twitch/kalapi?fm=get-user-following-channels&a=100&b=0" handle-as="json"
+            on-response="_onResponseForChannelId"></iron-ajax>
+        <twitch-expandable-card>
+            <div id="retracted" class="container">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color:#421C52" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallardaki Videolar</h3>
+                            <h5>Twitcher! Yayınların hiç birini kaçırmıyorum abi dediğini duyuyor gibiyim.. Emin misin? Haydi
+                                Arşive İnelim..</h5>
+                            <paper-button style="color: #421C52;" class="toggle" noink>Genişlet</paper-button>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div id="expanded" class="container">
+                <div id="expandedHeader" class="container-header" style="background-color:#421C52">
+                    <paper-icon-button class="container-header-side toggle" raised icon="arrow-back"></paper-icon-button>
+                    <div>Takip Ettiğin Kanallardaki Videolar</div>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Kanal Seçiniz">
+                            <paper-listbox style="background-color:#421C52; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{fvi}}">
+                                <template is="dom-repeat" items="[[res.follows]]" as="item">
+                                    <paper-item value$="[[item.channel._id]]">[[item.channel.display_name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="Yayın Türü">
+                            <paper-listbox style="background-color:#421C52; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{fvt}}">
+                                <paper-item value="archive">Arşiv</paper-item>
+                                <paper-item value="highlight">Vurgulananlar</paper-item>
+                                <paper-item value="upload">Yüklemeler</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="Sayfa">
+                            <paper-listbox style="background-color:#421C52; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{fvo}}">
+                                <paper-item value="0">1</paper-item>
+                                <paper-item value="12">2</paper-item>
+                                <paper-item value="24">3</paper-item>
+                                <paper-item value="36">4</paper-item>
+                                <paper-item value="48">5</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                </div>
+                <div id="expandedContent" class="expandedContentRed">
+                    <user-get-followed-videos limit={{fvi}} videoId=44322889 streamtype="{{fvt}}" offset="{{fvo}}" width="{{size}}"></user-get-followed-videos>
+                </div>
+            </div>
+        </twitch-expandable-card>
+
+        <!-- Get Kal User Via <channel ID> -->
+        <twitch-expandable-card>
+            <div id="retracted" class="container">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color:#732C7B" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallardaki Diğer Takipçileri Bul</h3>
+                            <h5>Twitcher! Dedik ki, bu kadar yetmez!Gel bak daha kimler kimler burada.</h5>
+                            <paper-button style="color: #732C7B;" class="toggle" raised>Genişlet</paper-button>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div id="expanded" class="container">
+                <div id="expandedHeader" class="container-header" style="background-color:#732C7B">
+                    <paper-icon-button class="container-header-side toggle" noink icon="arrow-back"></paper-icon-button>
+                    <div>Takip Ettiğin Kanallardaki Diğer Takipçiler</div>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Kanal Seçiniz">
+                            <paper-listbox style="background-color:#732C7B; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{scfu}}">
+                                <template is="dom-repeat" items="[[res.follows]]" as="item">
+                                    <paper-item value$="[[item.channel._id]]">[[item.channel.display_name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                </div>
+                <div id="expandedContent" class="expandedContentBlue">
+                    <user-get-friend-followed-channel channel="{{scfu}}" width="150"></user-get-friend-followed-channel>
+                </div>
+            </div>
+        </twitch-expandable-card>
+
+        <!-- Get Top Clips For Followed Channel (Name) -->
+        <twitch-expandable-card>
+            <div id="retracted" class="container">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color:mediumslateblue" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallardaki Klipler</h3>
+                            <h5>Twitcher! Clips diye birşey çıktı duydun mu? o.O gel abim sıcak sıcak </h5>
+                            <paper-button style="color: mediumslateblue;" class="toggle" noink>Genişlet</paper-button>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div id="expanded" class="container">
+                <div id="expandedHeader" class="container-header" style="background-color:mediumslateblue">
+                    <paper-icon-button class="container-header-side toggle" raised icon="arrow-back"></paper-icon-button>
+                    <div>Takip Ettiğin Kanallardaki Klipler</div>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Kanal Seçiniz">
+                            <paper-listbox style="background-color:mediumslateblue; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{getclipschannel}}">
+                                <template is="dom-repeat" items="[[res.follows]]" as="item">
+                                    <paper-item value$="[[item.channel.display_name]]">[[item.channel.display_name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="En İyi">
+                            <paper-listbox style="background-color:mediumslateblue; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{getclipsperiod}}">
+                                <paper-item value="day">Son 24 Saatte</paper-item>
+                                <paper-item value="week">Son 1 Haftada</paper-item>
+                                <paper-item value="month">Son 1 Ayda</paper-item>
+                                <paper-item value="all">Tümü</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="Trend">
+                            <paper-listbox style="background-color:mediumslateblue; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{getclipstrending}}">
+                                <paper-item value="false">Hayır</paper-item>
+                                <paper-item value="true">Evet</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                </div>
+                <div id="expandedContent" class="expandedContentRed">
+                    <user-get-top-clips channel="{{getclipschannel}}" period="{{getclipsperiod}}" trending="{{getclipstrending}}" width="250"></user-get-top-clips>
+                </div>
+            </div>
+        </twitch-expandable-card>
+    </template>
+
+    <script>
+        /**
+         * `twitch-animated-grid` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class TwitchAnimatedGrid extends Polymer.mixinBehaviors([Polymer.NeonSharedElementAnimatableBehavior], Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'twitch-animated-grid';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    offset: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    followedStreamOffset: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    followedStreamType: {
+                        type: String,
+                        value: 'live',
+                        notify: true
+                    },
+                    fvo: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    fvi: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    getclipschannel: {
+                        type: String,
+                        value: "",
+                        notify: true
+                    },
+                    fvt: {
+                        type: String,
+                        value: 'archive',
+                        notify: true
+                    },
+                    getclipsperiod: {
+                        type: String,
+                        value: 'day',
+                        notify: true
+                    },
+                    getclipstrending: {
+                        type: String,
+                        value: 'false',
+                        notify: true
+                    },
+                    followedVideoChannelId: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    size: {
+                        type: Number,
+                        value: 250
+                    },
+                    res: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                follows: []
+                            };
+                        },
+                        notify: true
+                    },
+                    scfu: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    spfu: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+
+
+
+                    hovered: {
+                        type: String,
+                        value: 'display:none',
+                        notify: true
+                    },
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'entry': [{
+                                    name: 'cascaded-animation',
+                                    animation: 'transform-animation',
+                                    transformFrom: 'translateY(100%)',
+                                    transformTo: 'none',
+                                    timing: {
+                                        delay: 50
+                                    }
+                                }]
+                            }
+                        }
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _onResponseForChannelId(event) {
+                var len = event.detail.response.follows.length;
+                this.set('res.follows', []);
+                if (len > 0) {
+                    var response = event.detail.response;
+                    this.set('res.follows', response.follows);
+                }
+            }
+
+        }
+
+        window.customElements.define(TwitchAnimatedGrid.is, TwitchAnimatedGrid);
+    </script>
+</dom-module>

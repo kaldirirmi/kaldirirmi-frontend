@@ -1,0 +1,214 @@
+﻿<!-- <link rel="import" href="../bower_components/polymer/polymer-element.html"> -->
+
+<dom-module id="channel-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin: 5px !important;
+      }
+    </style>
+
+    <paper-card class="white" on-tap="_onTap" animated-shadow="true" id="card">
+      <div class="card-image">
+        <iron-image id="image" on-loaded-changed="_onImageLoaded">
+        </iron-image>
+      </div>
+      <div class="card-header">
+        <textfit-div id="status" min-font-size="10" max-font-size="22" text="[[data.channel.status]]" ignore-errors="true" manual-fire></textfit-div>
+      </div>
+      <div class="card-content">
+        <paper-icon-button src="[[_formatLogo(data.channel.logo)]]" title$="[[data.channel.display_name]] kanalına git"></paper-icon-button>
+        <div class="details">
+          <div class="heading" style="color:black !important">
+            <textfit-div id="title" text="[[data.channel.display_name]]" ignore-errors="true" manual-fire></textfit-div>
+            <span class$="[[formatFlag(data.channel.broadcaster_language)]]" title$="[[formatLanguage(data.channel.broadcaster_language)]]"></span>
+          </div>
+          <div class="viewers">
+            <iron-icon icon="icons:visibility"></iron-icon>
+            <span id="viewers">[[_formatViewers(data.channel.views)]]</span>
+          </div>
+        </div>
+      </div>
+      <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+    </paper-card>
+
+  </template>
+
+  <script>
+    /**
+     * `channel-card` Description
+     *
+     * @summary ShortDescription.
+     * @customElement
+     * @polymer
+     * @extends {Polymer.Element}
+     */
+    class ChannelCard extends Polymer.mixinBehaviors([
+      Polymer.NeonAnimationRunnerBehavior,
+      document.StreamingList.FlagBehavior
+    ], Polymer.Element) {
+      /**
+       * String providing the tag name to register the element under.
+       */
+      static get is() {
+        return 'channel-card';
+      }
+
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            notify: true,
+            value: function () {
+              return {
+                channel: {
+                  logo: null,
+                  display_name: null,
+                  video_banner: null,
+                  url: null,
+                  status: null,
+                  broadcaster_language: null,
+                  views: null,
+                }
+              }
+            }
+          },
+          width: {
+            type: Number,
+            value: null
+          },
+          animationConfig: {
+            value: function () {
+              return {
+                name: 'fade-in-animation',
+                node: this.$.card
+              }
+            }
+          }
+        };
+      }
+
+      /**
+       * Instance of the element is created/upgraded. Use: initializing state,
+       * set up event listeners, create shadow dom.
+       * @constructor
+       */
+      constructor() {
+        super();
+      }
+
+      /**
+       * Use for one-time configuration of your component after local DOM is initialized. 
+       */
+      ready() {
+        this.addEventListener('neon-animation-finish', this._onNeonAnimationFinish);
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function () {
+
+        });
+      }
+      /**
+       * Array of strings describing multi-property observer methods and their
+       * dependant properties
+       */
+      static get observers() {
+        return [
+          '_loadImage(data, width)',
+          '_onWidthChanged(width)'
+        ];
+      }
+
+      _formatViewers(views) {
+        numeral.locale('tr');
+        return numeral(views).format('0a') + ' görüntülenme';
+      }
+
+      _formatStatus(status) {
+        var cut = status.substr(0, 80)
+        if (status.length > cut.length) {
+          cut += '...';
+        }
+        return cut;
+      }
+
+      _formatLogo(image) {
+        if (image) {
+          return image;
+        } else {
+          return "assets/img/twitch_icon.svg";
+        }
+      }
+
+      _formatUrl(url) {
+        if (url) {
+          return url
+        } else {
+          return 'https://www.twitch.tv';
+        }
+      }
+
+      _onTap(event) {
+        if (Polymer.dom(event).localTarget === this.$.game) {
+          window.open(this._formatUrl(this.data.channel.url), '_blank');
+          return;
+        }
+        window.open(this.data.channel.url, '_blank');
+      }
+
+      _onImageLoaded(event) {
+        this.$.status.doFitMe();
+        this.$.title.doFitMe();
+
+        //this.$.status.doFitMe();
+        //this.$.title.doFitMe();
+        // Only play animation if element was not loaded before AND there is a IMAGE loaded
+        if (!this.$.card.classList.contains('loaded') &&
+          this.$.image.loaded
+        ) {
+          // console.log('Found a image, animating', event.target);
+          this.$.card.classList.add('loaded');
+          this.playAnimation();
+        }
+      }
+
+
+      _onNeonAnimationFinish(event) {
+        // simulate delay (only for testing)
+        /*
+        setTimeout(function(){
+          this.fire('loaded', this);
+        }.bind(this), Math.round(Math.random() * 2000));
+        */
+        this.fire('loaded', this);
+      }
+
+      _onWidthChanged(event) {
+        if (!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+        this.style.width = this.width + 'px';
+        this._loadImage();
+      }
+
+      _loadImage() {
+
+        var url = this.data.channel.video_banner;
+        if (url) {
+          this.$.image.src = url;
+        } else {
+          this.$.image.src = 'assets/img/twtcdefaultbackg.jpg';
+        }
+      }
+
+    }
+
+    window.customElements.define(ChannelCard.is, ChannelCard);
+  </script>
+</dom-module>

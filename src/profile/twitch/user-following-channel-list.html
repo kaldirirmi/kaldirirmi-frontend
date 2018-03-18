@@ -1,0 +1,247 @@
+﻿<!-- <link rel="import" href="../../../polymer/polymer.html"> -->
+<link rel="import" href="./channel-card.html">
+
+<dom-module id="user-following-channel-list">
+    <template>
+        <style>
+            :host {
+                display: block;
+                box-sizing: border-box;
+                @apply --layout-vertical;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                width: 100%;
+            }
+
+            #streams {
+                @apply --layout-wrap;
+            }
+
+            twitchtv-card,
+            youtube-card {
+                margin: 10px;
+            }
+
+            paper-spinner {
+                margin: 16px auto;
+            }
+
+            #errorMessage {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #streams {
+                    margin-left: 105px;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                #streams {
+                    margin-left: 30px;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #streams {
+                    margin-left: 130px;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                #streams {
+                    margin-left: 60px;
+                }
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                #streams {
+                    margin-left: 105px;
+                }
+            }
+
+            #errorMessage {
+                position: absolute;
+                width: 500px;
+                left: 10%;
+            }
+
+            #errorMessage h3 {
+                font-weight: 100;
+                font-style: oblique;
+                font-size: calc(0.7em + 1vmin);
+                color: #757575;
+            }
+
+            #errorMessage iron-icon {
+                color: #6441a5;
+            }
+        </style>
+
+        <iron-ajax auto id="ajaxUserFollowingChannels" debounce-duration="30" url="/auth/twitch/kalapi?fm=get-user-following-channels&a=[[limit]]&b=[[offset]]"
+            handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
+        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+            <loader-pac></loader-pac>
+        </div>
+        <div id="streams">
+            <template is="dom-if" if="[[!resultStatus]]">
+                <div id="errorMessage">
+                    <h3>[[errorMessage]]</h3>
+                    <iron-icon icon="error"></iron-icon>
+                </div>
+            </template>
+            <template is="dom-repeat" items="[[response.follows]]">
+                <channel-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></channel-card>
+            </template>
+        </div>
+        <event-infinite-scroll id="scroll" scrollOffset="60" on-reach-bottom="_loadMore">
+        </event-infinite-scroll>
+
+
+
+    </template>
+
+    <script>
+        /**
+         * `user-following-channel-list` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class UserFollowingChannelList extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'user-following-channel-list';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    limit: {
+                        type: Number,
+                        value: 10,
+                        notify: true
+                    },
+                    offset: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    width: {
+                        type: Number,
+                        notify: true,
+                        value: null
+                    },
+
+                    response: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                follows: []
+                            };
+                        },
+                        notify: true
+                    },
+                    resultStatus: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    errorMessage: {
+                        type: String,
+                        value: 'Takip ettiğin bir kanal bulunamadı.',
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    if (this.width) {
+                        this.className = 'layout horizontal wrap';
+                    }
+                });
+            }
+
+
+            _onRequest(event) {
+                this.loading = true;
+            }
+            _onResponse(event) {
+                var len = event.detail.response.follows.length;
+                this.set('response.follows', []);
+
+                if (len > 0) {
+                    this.resultStatus = true;
+                    //console.log(event.detail.response);
+                    var response = event.detail.response;
+                    this.set('response.follows', response.follows);
+                    //event.detail.response.follows.forEach(function (follows) {
+                    //    console.log(follows);
+                    //}, this);
+
+                } else {
+                    this.resultStatus = false;
+                    if (this.offset > 0) {
+                        this.errorMessage = 'Bu sayfa boş! Daha küçük bir sayfa seçmelisin';
+                    } else
+                        this.errorMessage = 'Takip ettiğin bir kanal bulunamadı!';
+                }
+                this.loading = false;
+            }
+            _cardLoaded(event) {
+                this.doneCards = this.doneCards || [];
+                this.doneCards.push(event.detail);
+                //console.log(this.doneCards.length, 'of', this.limit);
+                if (this.doneCards.length >= this.limit) {
+                    //console.log('all cards loaded');
+                    //console.log(this.response.streams);
+                    // reset spinner
+                    this.loading = false;
+                    this.fire('streaming-list-rendered', this.doneCards);
+                    this.doneCards = [];
+                }
+            }
+
+        }
+
+        window.customElements.define(UserFollowingChannelList.is, UserFollowingChannelList);
+    </script>
+</dom-module>

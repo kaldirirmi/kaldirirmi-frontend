@@ -1,0 +1,232 @@
+﻿
+<dom-module id="streams-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin: 5px;
+      }
+    </style>
+
+    <paper-card class="white" on-tap="_onTap" animated-shadow="true" id="card">
+      <div class="card-image">
+        <iron-image id="image" on-loaded-changed="_onImageLoaded">
+        </iron-image>
+      </div>
+      <div class="card-header">
+        <textfit-div id="status" min-font-size="10" max-font-size="22" text="[[data.channel.status]]" ignore-errors="true" manuel-fire></textfit-div>
+      </div>
+      <div class="card-content">
+        <paper-icon-button src="[[_formatLogo(data.channel.logo)]]" title$="[[data.channel.display_name]] kanalına git"></paper-icon-button>
+        <div class="details">
+          <div class="heading" style="color:black !important">
+            <textfit-div id="title" text="[[data.channel.display_name]]" ignore-errors="true" manuel-fire></textfit-div>
+            <span class$="[[formatFlag(data.channel.language)]]" title$="[[formatLanguage(data.channel.language)]]"></span>
+          </div>
+          <div class="game">
+            <iron-icon icon="hardware:videogame-asset"></iron-icon>
+            <span id="game" title$="[[data.channel.game]] ile ilgili daha fazla yayın">[[data.channel.game]]</span>
+          </div>
+          <div class="viewers">
+            <iron-icon icon="icons:visibility"></iron-icon>
+            <span id="viewers">[[_formatViewers(data.viewers)]]</span>
+          </div>
+        </div>
+      </div>
+      <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+    </paper-card>
+
+  </template>
+
+  <script>
+    /**
+     * `streams-card` Description
+     *
+     * @summary ShortDescription.
+     * @customElement
+     * @polymer
+     * @extends {Polymer.Element}
+     */
+    class StreamsCard extends Polymer.mixinBehaviors([
+      Polymer.NeonAnimationRunnerBehavior,
+      document.StreamingList.FlagBehavior
+    ], Polymer.Element) {
+      /**
+       * String providing the tag name to register the element under.
+       */
+      static get is() {
+        return 'streams-card';
+      }
+
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          /**
+           * `data` JSON Object representing source data (look Twitch.TV api for details)
+           */
+          data: {
+            type: Object,
+            notify: true,
+            value: function () {
+              return {
+                channel: {
+                  status: null,
+                  logo: null,
+                  display_name: null,
+                  language: null,
+                  game: null
+                },
+                viewers: null,
+                preview: {
+                  template: null
+                }
+              }
+            }
+          },
+
+          /**
+           * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+           */
+          width: {
+            type: Number,
+            value: null
+          },
+
+          /**
+           * `animationConfig` Animation configuration (See Polymer docs for details)
+           */
+          animationConfig: {
+            value: function () {
+              return {
+                name: 'fade-in-animation',
+                node: this.$.card
+              }
+            }
+          }
+        };
+      }
+
+      /**
+       * Instance of the element is created/upgraded. Use: initializing state,
+       * set up event listeners, create shadow dom.
+       * @constructor
+       */
+      constructor() {
+        super();
+      }
+
+      /**
+       * Use for one-time configuration of your component after local DOM is initialized. 
+       */
+      ready() {
+        this.addEventListener('neon-animation-finish', this._onNeonAnimationFinish);
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function () {
+
+        });
+      }
+
+      /**
+       * Array of strings describing multi-property observer methods and their
+       * dependant properties
+       */
+      static get observers() {
+        return [
+          '_loadImage(data, width)',
+          '_onWidthChanged(width)'
+        ];
+      }
+
+      _formatViewers(views) {
+        numeral.locale('tr');
+        return numeral(views).format('0a') + ' izleyici';
+        //return numeral(views).format('0a') + ' viewers';
+      }
+
+
+      _formatStatus(status) {
+        var cut = status.substr(0, 80)
+        if (status.length > cut.length) {
+          cut += '...';
+        }
+        return cut;
+      }
+
+      _formatLogo(image) {
+        if (image) {
+          return image;
+        } else {
+          return "assets/img/twitch_icon.svg";
+        }
+      }
+
+      _gameUrl(game) {
+        return 'https://www.twitch.tv/directory/game/' + encodeURI(game);
+      }
+
+      _onTap(event) {
+        if (Polymer.dom(event).localTarget === this.$.game) {
+          window.open(this._gameUrl(this.data.channel.game), '_blank');
+          return;
+        }
+
+        window.open(this.data.channel.url, '_blank');
+      }
+
+      _onImageLoaded(event) {
+        this.$.status.doFitMe();
+        this.$.title.doFitMe();
+        // Only play animation if element was not loaded before AND there is a IMAGE loaded
+        if (!this.$.card.classList.contains('loaded') &&
+          this.$.image.loaded
+        ) {
+          // console.log('Found a image, animating', event.target);
+          this.$.card.classList.add('loaded');
+          this.playAnimation();
+        }
+      }
+
+      _onNeonAnimationFinish(event) {
+        // simulate delay (only for testing)
+        /*
+        setTimeout(function(){
+          this.fire('loaded', this);
+        }.bind(this), Math.round(Math.random() * 2000));
+        */
+
+        this.fire('loaded', this);
+      }
+
+      _onWidthChanged(event) {
+        if (!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+
+        this.style.width = this.width + 'px';
+        this._loadImage();
+      }
+
+      _loadImage() {
+        var url,
+          // Get width form client width
+          width = this.width || this.$.card.clientWidth;
+        if (!this.width || !this.data.preview.template) return;
+
+        url = this.data.preview.template.replace('{width}', width);
+        // Calcules height using 16:9 aspect ratio
+        url = url.replace('{height}', Math.round(width / (16 / 9)));
+        // Debug
+        // url += '?' + Math.random();
+        this.$.image.src = url;
+      }
+
+    }
+
+    window.customElements.define(StreamsCard.is, StreamsCard);
+  </script>
+</dom-module>

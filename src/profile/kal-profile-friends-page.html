@@ -458,22 +458,22 @@
                                         </div>
                                         <div class="u-social">
                                             <template is="dom-if" if="[[item.userauth.google.linked]]">
-                                                <img src="/assets/img/social-icon/google-icon.png" />
+                                                <img src="./frontend/images/social-icon/google-icon.png" />
                                             </template>
                                             <template is="dom-if" if="[[!item.userauth.google.linked]]">
-                                                <img class="unlinked" src="/assets/img/social-icon/google-icon.png" />
+                                                <img class="unlinked" src="./frontend/images/social-icon/google-icon.png" />
                                             </template>
                                             <template is="dom-if" if="[[item.userauth.twitch.linked]]">
-                                                <img src="/assets/img/social-icon/twitch-icon.png" />
+                                                <img src="./frontend/images/social-icon/twitch-icon.png" />
                                             </template>
                                             <template is="dom-if" if="[[!item.userauth.twitch.linked]]">
-                                                <img class="unlinked" src="/assets/img/social-icon/twitch-icon.png" />
+                                                <img class="unlinked" src="./frontend/images/social-icon/twitch-icon.png" />
                                             </template>
                                             <template is="dom-if" if="[[item.userauth.facebook.linked]]">
-                                                <img src="/assets/img/social-icon/facebook-icon.png" />
+                                                <img src="./frontend/images/social-icon/facebook-icon.png" />
                                             </template>
                                             <template is="dom-if" if="[[!item.userauth.facebook.linked]]">
-                                                <img class="unlinked" src="/assets/img/social-icon/facebook-icon.png" />
+                                                <img class="unlinked" src="./frontend/images/social-icon/facebook-icon.png" />
                                             </template>
 
                                         </div>
@@ -497,8 +497,6 @@
                                 <iron-image background src="{{_remakeFriendAvatar(item.avatar)}}" sizing="cover" alt="[[item.username]]" preload fade></iron-image>
                             </div>
                         </paper-card>
-
-
                     </template>
                 </template>
             </paper-item>
@@ -615,12 +613,15 @@
                 //console.log('_responseFriendList' + event.detail.response);
 
                 if (event.detail.response.length > 0) {
-                    this.haveFriend = true;
+                    // this.haveFriend = true;
+                    this.set('haveFriend', true);
                     this.set('response.friendList', event.detail.response);
                 }
                 else {
-                    this.responseFriendMessage = 'Hiç arkadaşın bulunmamakta!';
-                    this.haveFriend = false;
+                    // this.responseFriendMessage = 'Hiç arkadaşın bulunmamakta!';
+                    // this.haveFriend = false;
+                    this.set('responseFriendMessage', 'Hiç arkadaşın bulunmamakta!');
+                    this.set('haveFriend', false);
                 }
             }
             _responsePendingList(event) {
@@ -628,90 +629,117 @@
                 //console.log('_responsePendingList' + event.detail.response);
 
                 if (event.detail.response.length > 0) {
-                    this.havePending = true;
+                    // this.havePending = true;
+                    this.set('havePending', true);
                     this.set('response.pendingList', event.detail.response);
 
-                    event.detail.response.forEach(function (pend) {
-                        console.log(pend);
-                    }, this);
+                    // event.detail.response.forEach(function (pend) {
+                    //     console.log(pend);
+                    // }, this);
                 }
                 else {
-                    this.responsePendingMessage = 'Bekleyen istek bulunmamakta!';
-                    this.havePending = false;
+                    this.set('responsePendingMessage', 'Bekleyen istek bulunmamakta!');
+                    this.set('havePending', false);
+
+                    // this.responsePendingMessage = 'Bekleyen istek bulunmamakta!';
+                    // this.havePending = false;
                 }
             }
             _remakeFriendAvatar(avatar) {
                 if (avatar) {
-                    return '//cdn.kaldirirmi.com/images/user/avatar/' + avatar;
+                    return 'https://cdn.kaldirirmi.com/images/user/avatar/' + avatar;
                 }
                 else {
-                    return '//cdn.kaldirirmi.com/images/user/avatar/' + 'default-user-avatar3.png';
+                    return 'https://cdn.kaldirirmi.com/images/user/avatar/' + 'default-user-avatar3.png';
                 }
             }
             _acceptPendingRequest(event) {
                 //console.log('_acceptPendingRequest');
                 this.senderId = event.currentTarget.name;
-                document.getElementById('formAcceptRequest').submit();
+                // document.getElementById('formAcceptRequest').submit();
+                this.$.formAcceptRequest.submit();
             }
             _declinePendingRequest(event) {
                 //console.log('_declinePendingRequest');
                 this.senderId = event.currentTarget.name;
-                document.getElementById('formDeclineRequest').submit();
+                // document.getElementById('formDeclineRequest').submit();
+                this.$.formDeclineRequest.submit();
             }
             _onFormAcceptResponse(event) {
                 //console.log('__onFormAcceptResponse');
                 var message = event.detail.response.message;
                 //console.log('message =>' + message);
-                var systemAlert = document.getElementById('alert');
-                systemAlert.setAttribute('text', message);
+                // var systemAlert = document.getElementById('alert');
+                // systemAlert.setAttribute('text', message);
 
                 if (event.detail.response.success) {
                     this.$.getfriendlist.generateRequest();
                     this.$.getpendinglist.generateRequest();
                 }
                 else {
-                    unload();
-                    document.getElementById('formAcceptRequest').reset();
+                    // unload();
+                    // document.getElementById('formAcceptRequest').reset();
+                    this.$.formAcceptRequest.reset();
                 }
-                systemAlert.open();
+                this._systemAlert(message);
+                // systemAlert.open();
             }
             _onFormDeclineResponse(event) {
-                //console.log('__onFormDeclineResponse');
-                var message = event.detail.response.message;
-                //console.log('message =>' + message);
-                var systemAlert = document.getElementById('alert');
-                systemAlert.setAttribute('text', message);
-
+                console.log('__onFormDeclineResponse');
+                // var message = event.detail.response.message;
+                // var systemAlert = document.getElementById('alert');
+                // systemAlert.setAttribute('text', message);
                 if (event.detail.response.success) {
                     this.$.getpendinglist.generateRequest();
                 }
                 else {
-                    unload();
-                    document.getElementById('formDeclineRequest').reset();
+                    // unload();
+                    this.$.formDeclineRequest.reset();
+                    // document.getElementById('formDeclineRequest').reset();
                 }
-                systemAlert.open();
+
+                // systemAlert.open();
+                this._systemAlert(message);
             }
+
+            _systemAlert(message){
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                    text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
             _triggerCancelFriendForm(event) {
                 //console.log('__triggerCancelFriendForm' + event.currentTarget.name);
-                document.getElementById('pbCancelFriendship').disabled = true;
+                // document.getElementById('pbCancelFriendship').disabled = true;
+                this.$.pbCancelFriendship.setAttribute('disabled', true);
+
                 this.receiverId = event.currentTarget.name;
-                document.getElementById('cancelfriendrequestform').submit();
+                // document.getElementById('cancelfriendrequestform').submit();
+                this.$.cancelfriendrequestform.submit();
             }
             _responseOfCancelFriendRequest(e) {
                 //console.log('_responseOfCancelFriendRequest');
                 var message = e.detail.response.message;
                 //console.log('message =>' + message);
-                var systemAlert = document.getElementById('alert');
-                systemAlert.setAttribute('text', message);
+                // var systemAlert = document.getElementById('alert');
+                // systemAlert.setAttribute('text', message);
+                this._systemAlert(message);
 
                 if (e.detail.response.success) {
-                    document.getElementById('pbCancelFriendship').disabled = false;
+                    // document.getElementById('pbCancelFriendship').disabled = false;
+                    this.$.pbCancelFriendship.setAttribute('disabled', false);
                     //friendship is over! resend request for listing friends..
                     this.$.getfriendlist.generateRequest();
                 }
                 else {
-                    unload();
-                    document.getElementById('cancelfriendrequestform').reset();
+                    // unload();
+                    // document.getElementById('cancelfriendrequestform').reset();
+                    this.$.cancelfriendrequestform.reset();
                 }
                 systemAlert.open();
             }

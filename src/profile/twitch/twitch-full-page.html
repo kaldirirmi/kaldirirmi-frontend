@@ -1,0 +1,87 @@
+<link rel="import" href="./twitch-animated-grid.html">
+
+<dom-module id="twitch-full-page">
+    <template>
+        <style>
+            :host {
+                background: black;
+                @apply --layout-vertical;
+            }
+
+            twitch-animated-grid {
+                /* height: calc(100% - 72px); */
+                height: calc(100% - 192px);
+                @apply --layout-flex;
+            }
+        </style>
+
+        <twitch-animated-grid id="grid"></twitch-animated-grid>
+
+    </template>
+    <script>
+        /**
+         * `twitch-full-page` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class TwitchFullPage extends Polymer.mixinBehaviors([Polymer.NeonAnimatableBehavior, Polymer.NeonAnimationRunnerBehavior],
+            Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'twitch-full-page';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'entry': [{
+                                    animatable: this.$.grid,
+                                    type: 'entry'
+                                }]
+                            };
+                        }
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            show() {
+                this.style.visibility = 'visible';
+                this.playAnimation('entry');
+            }
+
+        }
+
+        window.customElements.define(TwitchFullPage.is, TwitchFullPage);
+    </script>
+</dom-module>

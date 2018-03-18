@@ -1,0 +1,189 @@
+﻿<!-- <link href="../../../flag-icon-css/css/flag-icon.min.css" rel="stylesheet" /> -->
+
+<dom-module id="user-card">
+    <template>
+        <style>
+            :host {
+                border: 1px solid white;
+            }
+
+            #pr {
+                color: #8254d8;
+            }
+        </style>
+        <style include="card-style"></style>
+        <paper-card class="white" on-tap="_onTap" animated-shadow="true" id="card">
+            <div class="card-image" style="border-top-left-radius: 35px; border-bottom-right-radius: 20px;">
+                <iron-image id="image" on-loaded-changed="_onImageLoaded">
+                </iron-image>
+            </div>
+            <div class="card-header">
+            </div>
+            <div class="card-content" style="padding: 8px;">
+                <div class="details" style="border-top: 2px solid #8254D8; color: #8254D8;">
+                    <div class="heading" style="color:black; text-align:center;">
+                        <textfit-div id="title" text="[[data.username]]" ignore-errors="true" manual-fire></textfit-div>
+                    </div>
+                </div>
+            </div>
+            <paper-ripple id="pr" recenters opacityDecayVelocity="0.4" should-keep-animating="true"></paper-ripple>
+        </paper-card>
+
+
+    </template>
+
+    <script>
+        /**
+         * `user-card` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class UserCard extends Polymer.mixinBehaviors([
+            Polymer.NeonAnimationRunnerBehavior,
+            document.StreamingList.FlagBehavior
+        ], Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'user-card';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    data: {
+                        type: Object,
+                        notify: true,
+                        value: []
+                    },
+                    width: {
+                        type: Number,
+                        value: null
+                    },
+                    animationConfig: {
+                        value: function () {
+                            return {
+                                name: 'fade-in-animation',
+                                node: this.$.card
+                            }
+                        }
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                this.addEventListener('neon-animation-finish', this._onNeonAnimationFinish);
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            /**
+             * Array of strings describing multi-property observer methods and their
+             * dependant properties
+             */
+            static get observers() {
+                return [
+                    '_loadImage(data, width)',
+                    '_onWidthChanged(width)'
+                ];
+            }
+
+
+            _formatViewers(views) {
+                numeral.locale('tr');
+                return numeral(views).format('0a') + ' izleyici';
+                //return numeral(views).format('0a') + ' viewers';
+            }
+
+            _formatStatus(status) {
+                var cut = status.substr(0, 80)
+                if (status.length > cut.length) {
+                    cut += '...';
+                }
+                return cut;
+            }
+
+            _formatLogo(image) {
+                if (image) {
+                    return image;
+                } else {
+                    return "//cdn.kaldirirmi.com/images/user/avatar/default-user-avatar3.png";
+                }
+            }
+
+            _onTap(event) {
+                window.open('u/' + this.data.url, '_blank');
+            }
+            _onImageLoaded(event) {
+                //this.$.status.doFitMe();
+                this.$.title.doFitMe();
+                // Only play animation if element was not loaded before AND there is a IMAGE loaded
+                if (!this.$.card.classList.contains('loaded') &&
+                    this.$.image.loaded
+                ) {
+                    // console.log('Found a image, animating', event.target);
+                    this.$.card.classList.add('loaded');
+                    this.playAnimation();
+                }
+            }
+
+            _onNeonAnimationFinish(event) {
+                this.fire('loaded', this);
+            }
+
+            _onWidthChanged(event) {
+                if (!this.width) {
+                    this.width = this.clientWidth;
+                } else {
+                    this.style.display = 'inline-block';
+                }
+
+                this.style.width = this.width + 'px';
+                this._loadImage();
+            }
+            _loadImage() {
+                //var url,
+                //    // Get width form client width
+                //    width = this.width || this.$.card.clientWidth;
+                //if(!this.width || !this.data.preview.template) return;
+                var url = 'https://cdn.kaldirirmi.com/images/user/avatar/';
+                if (this.data.avatar) {
+                    url += this.data.avatar;
+                } else {
+                    url += 'default-user-avatar3.png';
+                }
+                //url = this.data.preview.template.replace('{width}', width);
+                // Calcules height using 16:9 aspect ratio
+                //url = url.replace('{height}', Math.round(width / (16/9)));
+                // Debug
+                // url += '?' + Math.random();
+
+                this.$.image.src = url;
+            }
+
+        }
+
+        window.customElements.define(UserCard.is, UserCard);
+    </script>
+</dom-module>

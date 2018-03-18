@@ -19,6 +19,13 @@
 <link rel="lazy-import" href="../profile/kal-profile-404-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-games-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-friends-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-twitch-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-steam-page.html">
+
+
+<!-- Moment.js Element Import -->
+<link rel="import" href="../thirdparty/moment.html">
+
 
 <dom-module id="kal-profile-page">
     <template>
@@ -215,10 +222,12 @@
                                 <kal-profile-games-page></kal-profile-games-page>
                             </neon-animatable>
                             <neon-animatable name="twitch">
-                                <kaldirirmi-profile-twitch id="idUserTwitch" connected="[[auths.twitch.linked]]"></kaldirirmi-profile-twitch>
+                                <kal-profile-twitch-page  connected="[[auths.twitch.linked]]"></kal-profile-games-page>
+                                <!-- <kaldirirmi-profile-twitch id="idUserTwitch" connected="[[auths.twitch.linked]]"></kaldirirmi-profile-twitch> -->
                             </neon-animatable>
                             <neon-animatable name="steam">
-                                <kaldirirmi-profile-steam id="idUserSteam" connected="[[auths.steam.linked]]"></kaldirirmi-profile-steam>
+                                <kal-profile-steam-page  connected="[[auths.twitch.linked]]"></kal-profile-games-page>
+                                <!-- <kaldirirmi-profile-steam id="idUserSteam" connected="[[auths.steam.linked]]"></kaldirirmi-profile-steam> -->
                             </neon-animatable>
                         </neon-animated-pages>
                     </div>

@@ -1,0 +1,288 @@
+<dom-module id="kal-profile-twitch-page">
+    <template>
+        <style>
+            :host {
+                display: flex;
+            }
+
+            #twitchmaterial {
+                width: 100%;
+                margin: 10px;
+            }
+
+            .notconnectedalert {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: #4285F4;
+                font-size: calc(0.40em + 1vmin);
+            }
+
+            .notconnectedalert paper-button {
+                text-transform: none;
+                background-color: #4285F4;
+                color: #222;
+                font-weight: bold;
+                margin-left: 20px;
+            }
+
+            paper-item[heading] {
+                background-color: #6441a5;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+                font-size: calc(0.15em + 1vmin);
+                font-weight: 100;
+            }
+
+            #notconnecteddiv {
+                width: 100%;
+                min-height: 500px;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            #notconnecteddiv p {
+                width: 100%;
+                text-align: center;
+                color: white;
+                position: absolute;
+                top: 0;
+                font-size: calc(0.8em + 1vmin);
+            }
+
+            #notconnecteddiv paper-button {
+                margin: 0;
+                color: white;
+                width: 100%;
+                position: absolute;
+                bottom: 16%;
+                left: 0;
+                font-size: calc(1em + 1vmin);
+            }
+
+            #notconnecteddiv paper-button iron-icon {
+                height: calc(0.8em + 1vmin) !important;
+                width: calc(0.8em + 1vmin) !important;
+            }
+
+            div[info] {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                min-height: 333px;
+                padding: 0px 16px;
+                font-size: calc(0.33em + 1vmin);
+            }
+
+            .paperSubMaterial {
+                margin: 10px;
+                width: 100%;
+            }
+
+            .paperSubMaterial paper-item[heading] {
+                background-color: #8254d8
+            }
+
+            paper-item[heading] div h2 {
+                font-size: calc(0.7em + 1vmin) !important;
+                text-align: left;
+                font-weight: 100;
+            }
+
+            .pdmHeader {
+                line-height: 0 !important;
+                --paper-input-container-label: {
+                    color: #ff7800;
+                    text-align: center;
+                    font-weight: bold;
+                }
+
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                }
+
+                --paper-input-container-focus-color: #ff7800;
+                --paper-input-container-underline: {
+                    display: none;
+                }
+
+            }
+
+            /*expandable car style*/
+
+            div[info] {
+                @apply --layout-fullbleed;
+            }
+
+            div[info] twitch-full-page {
+                @apply --layout-fit;
+                top: 0px;
+                /*position: relative;*/
+                height: auto;
+            }
+
+
+            /* Custom, iPhone Retina */
+
+            @media only screen and (min-width: 320px) {
+                div[info] {
+                    height: 615px !important;
+                }
+
+            }
+
+            /* Custom, Galaxy S5 */
+
+            @media only screen and (min-width: 360px) {
+                div[info] {
+                    height: 630px !important;
+                }
+            }
+
+            /* Iphone 6s plus */
+
+            @media only screen and (min-width: 412px) {
+                div[info] {
+                    height: 650px !important;
+                }
+            }
+
+            /* Extra Small Devices, Phones */
+
+            @media only screen and (min-width: 480px) {
+                div[info] {
+                    height: 650px !important;
+                }
+            }
+
+            /* Small Devices, Tablets */
+
+            @media only screen and (min-width: 768px) {
+                div[info] {
+                    height: 770px !important;
+                }
+            }
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                div[info] {
+                    height: 570px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                div[info] {
+                    height: 520px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                div[info] {
+                    height: 550px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                div[info] {
+                    height: 570px !important;
+                }
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                div[info] {
+                    height: 580px !important;
+                }
+            }
+        </style>
+
+        <!-- dom elements here-->
+        <paper-material elevation="5" id="twitchmaterial" role="listbox">
+            <!-- Not connected part-->
+            <template is="dom-if" if="[[!connected]]">
+                <div id="notconnecteddiv" style="background-image:url('/assets/img/twitchbackground.jpg')">
+                    <p>Buradaki içeriklere erişebilmek için twitch hesabının bağlı olması gerekmektedir</p>
+                    <paper-button id="twitchauthbtn" onclick="load(); location.href='/auth/twitch/login';" raised>Bağlan
+                        <iron-icon icon="av:loop"></iron-icon>
+                    </paper-button>
+                </div>
+            </template>
+            <!-- Connected Part -->
+            <template is="dom-if" if="[[connected]]">
+                <paper-item heading>Twitch Dünyan</paper-item>
+                <div info>
+                    <twitch-full-page id="twitchfullpage"></twitch-full-page>
+                </div>
+            </template>
+        </paper-material>
+        <!-- <paper-toast id="passwordalert" duration="10000"  class="fit-bottom"></paper-toast> -->
+
+    </template>
+
+    <script>
+        /**
+         * `kal-profile-twitch-page` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalProfileTwitchPage extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-profile-twitch-page';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    connected: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    channelListIcon: {
+                        type: String,
+                        value: 'add-circle-outline'
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    this.$.twitchfullpage.show();
+                });
+            }
+
+        }
+
+        window.customElements.define(KalProfileTwitchPage.is, KalProfileTwitchPage);
+    </script>
+</dom-module>

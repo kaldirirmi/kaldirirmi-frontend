@@ -1,0 +1,267 @@
+﻿<!-- <link rel="import" href="../../../polymer/polymer.html"> -->
+
+<!-- <link rel="import" href="../bower_components/polymer/polymer-element.html"> -->
+<!-- <link href="../../../flag-icon-css/css/flag-icon.min.css" rel="stylesheet" /> -->
+
+<dom-module id="clip-card">
+    <template>
+        <style>
+            :host {
+                display: block;
+                margin: 5px !important;
+            }
+
+            .viewers {
+                text-align: left;
+            }
+
+            .createdAndUser {
+                text-align: left;
+                padding-bottom: 4px;
+                padding-top: 4px;
+
+            }
+
+            .createdAndUser #createdAt {
+                font-weight: 100;
+            }
+
+            .createdAndUser #displayName {
+                font-weight: bold;
+                color: #ff7800;
+            }
+
+            .game iron-icon,
+            .viewers iron-icon,
+            .heading {
+                color: #8254D8;
+            }
+
+            .heading {
+                border-bottom: 1px solid #8254D8;
+            }
+
+            .viewers {
+                text-align: left;
+            }
+
+            .data-title {
+                color: black;
+                white-space: pre-wrap;
+                text-overflow: ellipsis;
+                font-size: 17px;
+                font-weight: bold;
+            }
+        </style>
+
+        <paper-card class="white" on-tap="_onTap" animated-shadow="true" id="card">
+            <div class="card-image">
+                <iron-image id="image" on-loaded-changed="_onImageLoaded">
+                </iron-image>
+            </div>
+            <div class="card-header">
+                <!--<textfit-div id="status" min-font-size="10" max-font-size="22" text="[[data.title]]" ignore-errors="true" manual-fire></textfit-div>-->
+            </div>
+            <div class="card-content">
+                <!--<paper-icon-button src="[[_formatLogo(data.channel.logo)]]" title$="[[data.channel.display_name]] kanalına git"></paper-icon-button>-->
+                <div class="details">
+                    <div class="heading" style="color:black !important">
+                        <span class="data-title">[[data.title]]</span>
+                        <!--<textfit-div id="status" min-font-size="10" max-font-size="22" text="[[data.title]]" ignore-errors="true" manual-fire></textfit-div>-->
+                        <!--<span class$="[[formatFlag(data.channel.language)]]" title$="[[formatLanguage(data.channel.language)]]"></span>-->
+                    </div>
+                    <div class="createdAndUser" style="color: #757575 !important;">
+                        <span id="createdAt">{{_formatCreatedAt(data.created_at)}}</span>
+                        <span id="displayName">[[data.channel.display_name]]</span>
+                    </div>
+                    <div class="game" style="color: #757575 !important;">
+                        <iron-icon icon="hardware:videogame-asset"></iron-icon>
+                        <span id="game">{{_formatGameName(data.game)}}</span>
+                    </div>
+                    <div class="viewers" style="color: #757575 !important;">
+                        <iron-icon icon="icons:visibility"></iron-icon>
+                        <span id="viewers">[[_formatViewers(data.views)]]</span>
+                    </div>
+                </div>
+            </div>
+            <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+        </paper-card>
+
+    </template>
+
+    <script>
+        /**
+         * `clip-card` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ClipCard extends Polymer.mixinBehaviors([
+                Polymer.NeonAnimationRunnerBehavior,
+                document.StreamingList.FlagBehavior
+            ], Polymer.Element ) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'clip-card';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    data: {
+                    type: Object,
+                    notify: true,
+                    value: function () {
+                        return {
+                            created_at: null,
+                            title: null,
+                            game: null,
+                            thumbnails: {
+                                medium: null
+                            },
+                            views: null,
+                            url: null
+                        }
+                    }
+                },
+                width: {
+                    type: Number,
+                    value: null
+                },
+                animationConfig: {
+                    value: function () {
+                        return {
+                            name: 'fade-in-animation',
+                            node: this.$.card
+                        }
+                    }
+                }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                this.addCustomListener('neon-animation-finish', this._onNeonAnimationFinish);
+
+
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+            
+            /**
+              * Array of strings describing multi-property observer methods and their
+              * dependant properties
+              */
+            static get observers() {
+                return [
+                    '_loadImage(data, width)',
+                    '_onWidthChanged(width)'
+                ];
+            }
+            
+            _formatViewers(views) {
+                numeral.locale('tr');
+                return numeral(views).format('0a') + ' görüntülenme';
+            }
+
+            _formatStatus(status) {
+                var cut = status.substr(0, 80)
+                if (status.length > cut.length) {
+                    cut += '...';
+                }
+                return cut;
+            }
+            _formatDescription(desc) {
+                return desc.substr(0, 44) + '...';
+            }
+            _formatCreatedAt(date) {
+                return moment(date).format('LL');
+            }
+            _formatLogo(image) {
+                if (image) {
+                    return image;
+                } else {
+                    return "assets/img/twitch_icon.svg";
+                }
+            }
+            _formatGameName(game) {
+                if (game) {
+                    return game;
+                } else {
+                    return 'Oyun Belirtilmemiş';
+                }
+            }
+            _gameUrl(game) {
+                return 'https://www.twitch.tv/directory/game/' + encodeURI(game);
+            }
+
+            _onTap(event) {
+                if (Polymer.dom(event).localTarget === this.$.game) {
+                    window.open(this.data.url, '_blank');
+                    return;
+                }
+                window.open(this.data.url, '_blank');
+            }
+
+            _onImageLoaded(event) {
+                //this.$.status.doFitMe();
+                if (!this.$.card.classList.contains('loaded') &&
+                    this.$.image.loaded
+                ) {
+                    this.$.card.classList.add('loaded');
+                    this.playAnimation();
+                }
+            }
+
+            _onNeonAnimationFinish(event) {
+
+
+                //fire will be changed!
+                this.fire('loaded', this);
+            }
+
+            _onWidthChanged(event) {
+                if (!this.width) {
+                    this.width = this.clientWidth;
+                } else {
+                    this.style.display = 'inline-block';
+                }
+
+                this.style.width = this.width + 'px';
+                this._loadImage();
+            }
+
+            _loadImage() {
+                var url,
+                    width = this.width || this.$.card.clientWidth;
+                if (!this.width || !this.data.thumbnails.medium) return;
+
+                url = this.data.thumbnails.medium;
+                this.$.image.src = url;
+            }
+
+        }
+
+        window.customElements.define(ClipCard.is, ClipCard);
+    </script>
+</dom-module>

@@ -1,0 +1,279 @@
+﻿<!-- <link rel="import" href="../../../polymer/polymer.html"> -->
+<link rel="import" href="user-card.html">
+
+<dom-module id="user-get-friend-followed-channel">
+    <template>
+        <style>
+            :host {
+                display: block;
+                box-sizing: border-box;
+                @apply --layout-vertical;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                width: 100%;
+            }
+
+            #streams {
+                @apply --layout-wrap;
+            }
+
+            twitchtv-card,
+            youtube-card {
+                margin: 10px;
+            }
+
+            paper-spinner {
+                margin: 16px auto;
+            }
+
+            #errorMessage {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #streams {
+                    margin-left: 105px;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                #streams {
+                    margin-left: 30px;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #streams {
+                    margin-left: 130px;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                #streams {
+                    margin-left: 60px;
+                }
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                #streams {
+                    margin-left: 105px;
+                }
+            }
+
+            #errorMessage {
+                position: absolute;
+                width: 50%;
+                left: 10%;
+            }
+
+            #errorMessage h3 {
+                font-weight: 100;
+                font-style: oblique;
+                font-size: calc(0.7em + 1vmin);
+                color: #757575;
+            }
+
+            #errorMessage iron-icon {
+                color: #6441a5;
+            }
+
+            #streams {
+                width: 100%;
+                text-align: left;
+            }
+        </style>
+        <iron-ajax auto id="ajaxGetFriendFollowingChannels" debounce-duration="30" url="/auth/twitch/kalapi?fm=get-user-friend-following-channel&a=[[channel]]"
+            handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
+
+
+        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+            <loader-pac></loader-pac>
+        </div>
+        <!--<paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>-->
+        <div id="streams">
+            <template is="dom-if" if="[[firstTime]]">
+                <!-- if first time, also called have not selected channel yet-->
+                <!-- show channel choose message -->
+                <div id="errorMessage">
+                    <h3>[[errorMessage]]</h3>
+                    <iron-icon icon="[[errorIcon]]"></iron-icon>
+                </div>
+            </template>
+            <template is="dom-if" if="[[!firstTime]]">
+                <!-- channel is selected, if channel followers not in kaldirirmi. -> say not mutual friend yet -->
+                <template is="dom-if" if="[[noFriendsFind]]">
+                    <div id="errorMessage">
+                        <h3>[[errorMessage]]</h3>
+                        <iron-icon icon="[[errorIcon]]"></iron-icon>
+                    </div>
+                </template>
+                <template is="dom-repeat" items="[[response]]">
+                    <user-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></user-card>
+                </template>
+            </template>
+        </div>
+        <event-infinite-scroll id="scroll" scrollOffset="60" on-reach-bottom="_loadMore">
+        </event-infinite-scroll>
+
+    </template>
+
+    <script>
+        /**
+         * `user-get-friend-followed-channel` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class UserGetFriendFollowedChannel extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'user-get-friend-followed-channel';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    channel: {
+                        type: Number,
+                        notify: true
+                    },
+                    limit: {
+                        type: Number,
+                        value: 8,
+                        notify: true
+                    },
+                    offset: {
+                        type: Number,
+                        notify: true
+                    },
+                    width: {
+                        type: Number,
+                        notify: true,
+                        value: null
+                    },
+                    response: {
+                        type: Object,
+                        value: [],
+                        notify: true
+                    },
+                    errorIcon: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    errorMessage: {
+                        type: String,
+                        value: 'Takip ettiğin bir kanal bulunamadı.',
+                        notify: true
+                    },
+                    firstTime: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    noFriendsFind: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    if (this.width) {
+                        this.className = 'layout horizontal wrap';
+                    }
+                });
+            }
+
+            _onRequest(event) {
+                //this.$.spinnerBottom.active = true;
+                this.loading = true;
+            }
+            _onResponse(event) {
+                this._resetState();
+                if (this.channel == 0) {
+                    this.firstTime = true;
+                    this.errorMessage = 'Arkadaşlarını bulmak için önce kanal seçmelisin';
+                    this.errorIcon = 'social:poll';
+                } else {
+                    this.firstTime = false;
+                    var len = event.detail.response.length;
+                    if (len > 0) {
+                        var response = event.detail.response;
+                        this.set('response', response);
+                        //event.detail.response.forEach(function (user) {  console.log(user)});
+                    } else {
+                        //len <= 0 :/ 
+                        this.noFriendsFind = true;
+                        this.errorIcon = 'social:mood-bad';
+                        this.errorMessage = 'Bu kanalda sitemizi kullanan bir kullanıcı bulunamadı';
+                    }
+                }
+                //this.$.spinnerBottom.active = false;
+                this.loading = false;
+
+            }
+            _cardLoaded(event) {
+                this.doneCards = this.doneCards || [];
+                this.doneCards.push(event.detail);
+                //console.log(this.doneCards.length, 'of', this.limit);
+                if (this.doneCards.length >= this.limit) {
+                    //console.log('all cards loaded');
+                    //console.log(this.response.streams);
+                    // reset spinner
+                    //this.$.spinnerBottom.active = false;
+                    this.loading = false;
+
+                    this.fire('streaming-list-rendered', this.doneCards);
+                    this.doneCards = [];
+                }
+            }
+            _resetState() {
+                this.set('response', []);
+                this.noFriendsFind = false;
+            }
+
+        }
+
+        window.customElements.define(UserGetFriendFollowedChannel.is, UserGetFriendFollowedChannel);
+    </script>
+</dom-module>
