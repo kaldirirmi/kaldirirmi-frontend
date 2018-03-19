@@ -1,5 +1,4 @@
-﻿
-<dom-module id="streams-card">
+﻿<dom-module id="streams-card">
   <template>
     <style>
       :host {
@@ -191,13 +190,15 @@
 
       _onNeonAnimationFinish(event) {
         // simulate delay (only for testing)
-        /*
-        setTimeout(function(){
-          this.fire('loaded', this);
-        }.bind(this), Math.round(Math.random() * 2000));
-        */
 
-        this.fire('loaded', this);
+        // this.fire('loaded', this);
+        this.dispatchEvent(new CustomEvent('loading', {
+          // bubbles: true, 
+          // composed: true,
+          detail: {
+            element: this,
+          }
+        }));
       }
 
       _onWidthChanged(event) {

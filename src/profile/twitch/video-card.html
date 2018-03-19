@@ -262,7 +262,14 @@
                 }.bind(this), Math.round(Math.random() * 2000));
                 */
 
-                this.fire('loaded', this);
+                // this.fire('loaded', this);
+                this.dispatchEvent(new CustomEvent('loading', {
+                    // bubbles: true, 
+                    // composed: true,
+                    detail: {
+                        element: this,
+                    }
+                }));
             }
 
             _onWidthChanged(event) {

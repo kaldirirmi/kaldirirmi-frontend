@@ -263,7 +263,14 @@
                     //this.$.spinnerBottom.active = false;
                     this.loading = false;
 
-                    this.fire('streaming-list-rendered', this.doneCards);
+                    // this.fire('streaming-list-rendered', this.doneCards);
+                    this.dispatchEvent(new CustomEvent('streaming-list-rendered', {
+                        // bubbles: true, 
+                        // composed: true,
+                        detail: {
+                            doneCards: this.doneCards,
+                        }
+                    }));
                     this.doneCards = [];
                 }
             }

@@ -395,12 +395,12 @@
                 </div>
                 <div id="userPicturesEditing">
                     <div>
-                        <div class="user-background hakke-flex" style="background-image: url({{_remakeUserBackground(userinfo.background)}});">
+                        <div class="user-background hakke-flex" style$="background-image: url({{_remakeUserBackground(userinfo.background)}});">
                             <paper-icon-button id="changecover" class="upload-icon" icon="file-upload" on-tap="_handleBackground"></paper-icon-button>
                         </div>
                     </div>
                     <div>
-                        <div class="user-image hakke-flex" style="background-image: url({{_remakeUserAvatar(userinfo.avatar)}});">
+                        <div class="user-image hakke-flex" style$="background-image: url({{_remakeUserAvatar(userinfo.avatar)}});">
                             <paper-icon-button id="changeavatar" class="upload-icon" icon="file-upload" on-tap="_handleAvatar"></paper-icon-button>
                         </div>
                     </div>
@@ -666,11 +666,21 @@
                 while (target !== this && !target._templateInstance) {
                     target = target.parentNode;
                 }
+                
+                this.dispatchEvent(new CustomEvent('tile-click', 
+                    { 
+                        bubbles: true, 
+                        composed: true,
+                        detail: {
+                            tile: target,
+                            data: target._templateInstance.item
+                        }
+                    }));
 
-                this.fire('tile-click', {
-                    tile: target,
-                    data: target._templateInstance.item
-                })
+                // this.fire('tile-click', {
+                //     tile: target,
+                //     data: target._templateInstance.item
+                // })
 
             }
 

@@ -149,7 +149,14 @@
             }
 
             _onNeonAnimationFinish(event) {
-                this.fire('loaded', this);
+                // this.fire('loaded', this);
+                this.dispatchEvent(new CustomEvent('loading', {
+                    // bubbles: true, 
+                    // composed: true,
+                    detail: {
+                        element: this,
+                    }
+                }));
             }
 
             _onWidthChanged(event) {

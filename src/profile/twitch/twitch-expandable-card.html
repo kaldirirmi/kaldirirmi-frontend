@@ -425,9 +425,19 @@ The following custom properties and mixins are available for styling:
 						last = _this.getBoundingClientRect();
 						_this.style.zIndex = 10;
 					}
-					_this.fire(evt, {
-						el: _this
-					});
+					// this.fire('loaded', this);
+					_this.dispatchEvent(new CustomEvent(evt, {
+					// bubbles: true, 
+					// composed: true,
+					detail: {
+						el: _this,
+					}
+					}));
+
+					// _this.fire(evt, {
+					// 	el: _this
+					// });
+					
 					var invertCard = _this._computeCardInterpolation(first, last, !_this._expanded);
 					_this.style.transform = invertCard;
 					var invertPlaceholderCard = _this._setPlaceholderCardStyle(evt, first.height / last.height);

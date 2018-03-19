@@ -99,9 +99,9 @@
          * @extends {Polymer.Element}
          */
         class ClipCard extends Polymer.mixinBehaviors([
-                Polymer.NeonAnimationRunnerBehavior,
-                document.StreamingList.FlagBehavior
-            ], Polymer.Element ) {
+            Polymer.NeonAnimationRunnerBehavior,
+            document.StreamingList.FlagBehavior
+        ], Polymer.Element) {
             /**
              * String providing the tag name to register the element under.
              */
@@ -115,33 +115,33 @@
             static get properties() {
                 return {
                     data: {
-                    type: Object,
-                    notify: true,
-                    value: function () {
-                        return {
-                            created_at: null,
-                            title: null,
-                            game: null,
-                            thumbnails: {
-                                medium: null
-                            },
-                            views: null,
-                            url: null
+                        type: Object,
+                        notify: true,
+                        value: function () {
+                            return {
+                                created_at: null,
+                                title: null,
+                                game: null,
+                                thumbnails: {
+                                    medium: null
+                                },
+                                views: null,
+                                url: null
+                            }
+                        }
+                    },
+                    width: {
+                        type: Number,
+                        value: null
+                    },
+                    animationConfig: {
+                        value: function () {
+                            return {
+                                name: 'fade-in-animation',
+                                node: this.$.card
+                            }
                         }
                     }
-                },
-                width: {
-                    type: Number,
-                    value: null
-                },
-                animationConfig: {
-                    value: function () {
-                        return {
-                            name: 'fade-in-animation',
-                            node: this.$.card
-                        }
-                    }
-                }
                 };
             }
 
@@ -167,18 +167,18 @@
 
                 });
             }
-            
+
             /**
-              * Array of strings describing multi-property observer methods and their
-              * dependant properties
-              */
+             * Array of strings describing multi-property observer methods and their
+             * dependant properties
+             */
             static get observers() {
                 return [
                     '_loadImage(data, width)',
                     '_onWidthChanged(width)'
                 ];
             }
-            
+
             _formatViewers(views) {
                 numeral.locale('tr');
                 return numeral(views).format('0a') + ' görüntülenme';
@@ -237,7 +237,14 @@
 
 
                 //fire will be changed!
-                this.fire('loaded', this);
+                // this.fire('loaded', this);
+                this.dispatchEvent(new CustomEvent('loading', {
+                    // bubbles: true, 
+                    // composed: true,
+                    detail: {
+                        element: this,
+                    }
+                }));
             }
 
             _onWidthChanged(event) {

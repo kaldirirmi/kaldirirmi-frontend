@@ -147,59 +147,59 @@
             static get properties() {
                 return {
                     game: {
-                            type: String,
-                            value: "",
-                            notify: true
+                        type: String,
+                        value: "",
+                        notify: true
+                    },
+                    channel: {
+                        type: String,
+                        value: "",
+                        notify: true
+                    },
+                    limit: {
+                        type: Number,
+                        value: 10,
+                        notify: true
+                    },
+                    period: {
+                        type: String,
+                        value: "day",
+                        notify: true
+                    },
+                    trending: {
+                        type: String,
+                        notify: true,
+                        value: "false"
+                    },
+                    response: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                clips: []
+                            };
                         },
-                        channel: {
-                            type: String,
-                            value: "",
-                            notify: true
-                        },
-                        limit: {
-                            type: Number,
-                            value: 10,
-                            notify: true
-                        },
-                        period: {
-                            type: String,
-                            value: "day",
-                            notify: true
-                        },
-                        trending: {
-                            type: String,
-                            notify: true,
-                            value: "false"
-                        },
-                        response: {
-                            type: Object,
-                            value: function () {
-                                return {
-                                    clips: []
-                                };
-                            },
-                            notify: true
-                        },
-                        resultStatus: {
-                            type: Boolean,
-                            value: false,
-                            notify: true
-                        },
-                        go: {
-                            type: Boolean,
-                            value: true,
-                            notify: true
-                        },
-                        loading: {
-                            type: Boolean,
-                            value: true,
-                            notify: true
-                        },
-                        width: {
-                            type: Number,
-                            notify: true,
-                            value: null
-                        },
+                        notify: true
+                    },
+                    resultStatus: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    width: {
+                        type: Number,
+                        notify: true,
+                        value: null
+                    },
                 };
             }
 
@@ -223,33 +223,40 @@
                 });
             }
 
-             _onResponse(event) {
-                        this.set('response.clips', []);
+            _onResponse(event) {
+                this.set('response.clips', []);
 
-                        var response = event.detail.response;
-                        if (response.success === false) {
-                            return;
+                var response = event.detail.response;
+                if (response.success === false) {
+                    return;
+                }
+                var len = response.clips.length;
+
+                if (len > 0) {
+                    this.resultStatus = true;
+
+                    this.set('response.clips', response.clips);
+                } else {
+                    this.resultStatus = false;
+                }
+            }
+
+            _cardLoaded(event) {
+                this.doneCards = this.doneCards || [];
+                this.doneCards.push(event.detail);
+                if (this.doneCards.length >= this.limit) {
+                    this.loading = false;
+                    // this.fire('streaming-list-rendered', this.doneCards);
+                    this.dispatchEvent(new CustomEvent('streaming-list-rendered', {
+                        // bubbles: true, 
+                        // composed: true,
+                        detail: {
+                            doneCards: this.doneCards,
                         }
-                        var len = response.clips.length;
-
-                        if (len > 0) {
-                            this.resultStatus = true;
-
-                            this.set('response.clips', response.clips);
-                        } else {
-                            this.resultStatus = false;
-                        }
-                    }
-
-                    _cardLoaded(event) {
-                        this.doneCards = this.doneCards || [];
-                        this.doneCards.push(event.detail);
-                        if (this.doneCards.length >= this.limit) {
-                            this.loading = false;
-                            this.fire('streaming-list-rendered', this.doneCards);
-                            this.doneCards = [];
-                        }
-                    }
+                    }));
+                    this.doneCards = [];
+                }
+            }
 
 
         }
