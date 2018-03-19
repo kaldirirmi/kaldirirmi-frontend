@@ -1,0 +1,365 @@
+<dom-module id="kal-nav-content">
+    <template>
+        <style>
+            /* SVG wrap */
+
+            .svg-wrap {
+                position: absolute;
+                width: 0px;
+                height: 0px;
+                overflow: hidden;
+            }
+
+            nav a {
+                position: absolute;
+                top: 50%;
+                display: block;
+                outline: none;
+                text-align: left;
+                z-index: 1000;
+                -webkit-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }
+
+            nav a.prev {
+                left: 0;
+            }
+
+            nav a.next {
+                right: 0;
+            }
+
+            nav a svg {
+                display: block;
+                margin: 0 auto;
+                padding: 0;
+            }
+
+            /*--------------------*/
+
+            /* Reveal */
+
+            /*--------------------*/
+
+            .color-6 {
+                background-color: #af7ac4;
+            }
+
+            .nav-reveal a {
+                overflow: hidden;
+                width: 40px;
+                height: 120px;
+                white-space: nowrap;
+                background-color: rgba(255, 120, 0, 0.6);
+                -webkit-transition: width 0.4s, background-color 0.4s;
+                transition: width 0.4s, background-color 0.4s;
+                -webkit-transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+                transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+                box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+                0 9px 46px 8px rgba(0, 0, 0, 0.12),
+                0 11px 15px -7px rgba(0, 0, 0, 0.4);
+
+            }
+
+
+            .nav-reveal .icon-wrap {
+                position: absolute;
+                z-index: 100;
+                padding: 44px 4px;
+                width: 40px;
+            }
+
+            .nav-reveal a.prev .icon-wrap {
+                left: 0;
+            }
+
+            .nav-reveal a.next .icon-wrap {
+                right: 0;
+            }
+
+            .nav-reveal svg.icon {
+                fill: #ff7800;
+            }
+
+            .nav-reveal a:hover,
+            svg.icon {
+                fill: white !important;
+            }
+
+
+            .nav-reveal div {
+                position: absolute;
+                top: 0;
+                padding: 0 40px;
+                /*width: 400px;*/
+                height: 100%;
+            }
+
+            .nav-reveal a.prev div {
+                left: 0;
+                padding-right: 150px;
+                text-align: right;
+            }
+
+            .nav-reveal a.next div {
+                right: 0;
+                padding-left: 150px;
+            }
+
+            .nav-reveal h3 {
+                position: relative;
+                margin: 0;
+                padding: 20px 0;
+                color: #fff;
+                font-weight: 300;
+                font-size: 1.15em;
+                line-height: 1.2;
+                transition: all ease-in-out .6s;
+            }
+
+            .nav-reveal div h3 span {
+                display: block;
+                padding-top: 10px;
+                color: #542568;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-weight: 700;
+                font-size: 50%;
+            }
+
+            .nav-reveal img {
+                position: absolute;
+                top: 10px;
+                height: 100px;
+                width: 130px;
+            }
+
+            .nav-reveal a.prev img {
+                right: 10px;
+            }
+
+            .nav-reveal a.next img {
+                left: 10px;
+            }
+
+            .nav-reveal a:hover {
+                width: 400px;
+                background-color: #ff7800;
+                white-space: normal;
+            }
+
+            @media screen and (max-width: 520px) {
+                .nav-slide a.prev,
+                .nav-reveal a.prev,
+                .nav-doubleflip a.prev,
+                .nav-fillslide a.prev,
+                .nav-growpop a.prev {
+                    -webkit-transform-origin: 0% 50%;
+                    transform-origin: 0% 50%;
+                }
+
+                .nav-slide a.next,
+                .nav-reveal a.next,
+                .nav-doubleflip a.next,
+                .nav-fillslide a.next,
+                .nav-growpop a.next {
+                    -webkit-transform-origin: 100% 50%;
+                    transform-origin: 100% 50%;
+                }
+
+                .nav-slide a,
+                .nav-reveal a,
+                .nav-doubleflip a,
+                .nav-fillslide a {
+                    -webkit-transform: scale(0.6);
+                    transform: scale(0.6);
+                }
+
+                .nav-growpop a {
+                    -webkit-transform: translateY(-50%) scale(0.6);
+                    transform: translateY(-50%) scale(0.6);
+                }
+            }
+
+            @media only screen and (max-width: 759px) {
+                :host {
+                    display: none !important;
+                }
+            }
+        </style>
+        <div class="svg-wrap">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-left-1" d="M46.077 55.738c0.858 0.867 0.858 2.266 0 3.133s-2.243 0.867-3.101 0l-25.056-25.302c-0.858-0.867-0.858-2.269 0-3.133l25.056-25.306c0.858-0.867 2.243-0.867 3.101 0s0.858 2.266 0 3.133l-22.848 23.738 22.848 23.738z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-right-1" d="M17.919 55.738c-0.858 0.867-0.858 2.266 0 3.133s2.243 0.867 3.101 0l25.056-25.302c0.858-0.867 0.858-2.269 0-3.133l-25.056-25.306c-0.858-0.867-2.243-0.867-3.101 0s-0.858 2.266 0 3.133l22.848 23.738-22.848 23.738z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-left-2" d="M26.667 10.667q1.104 0 1.885 0.781t0.781 1.885q0 1.125-0.792 1.896l-14.104 14.104h41.563q1.104 0 1.885 0.781t0.781 1.885-0.781 1.885-1.885 0.781h-41.563l14.104 14.104q0.792 0.771 0.792 1.896 0 1.104-0.781 1.885t-1.885 0.781q-1.125 0-1.896-0.771l-18.667-18.667q-0.771-0.813-0.771-1.896t0.771-1.896l18.667-18.667q0.792-0.771 1.896-0.771z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-right-2" d="M37.333 10.667q1.125 0 1.896 0.771l18.667 18.667q0.771 0.771 0.771 1.896t-0.771 1.896l-18.667 18.667q-0.771 0.771-1.896 0.771-1.146 0-1.906-0.76t-0.76-1.906q0-1.125 0.771-1.896l14.125-14.104h-41.563q-1.104 0-1.885-0.781t-0.781-1.885 0.781-1.885 1.885-0.781h41.563l-14.125-14.104q-0.771-0.771-0.771-1.896 0-1.146 0.76-1.906t1.906-0.76z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-left-3" d="M44.797 17.28l0.003 29.44-25.6-14.72z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-right-3" d="M19.203 17.28l-0.003 29.44 25.6-14.72z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-left-4" d="M15.946 48l0.003-10.33 47.411 0.003v-11.37h-47.414l0.003-10.304-15.309 16z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-right-4" d="M48.058 48l-0.003-10.33-47.414 0.003v-11.37h47.418l-0.003-10.304 15.306 16z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-left-5" d="M48 10.667q1.104 0 1.885 0.781t0.781 1.885-0.792 1.896l-16.771 16.771 16.771 16.771q0.792 0.792 0.792 1.896t-0.781 1.885-1.885 0.781q-1.125 0-1.896-0.771l-18.667-18.667q-0.771-0.771-0.771-1.896t0.771-1.896l18.667-18.667q0.771-0.771 1.896-0.771zM32 10.667q1.104 0 1.885 0.781t0.781 1.885-0.792 1.896l-16.771 16.771 16.771 16.771q0.792 0.792 0.792 1.896t-0.781 1.885-1.885 0.781q-1.125 0-1.896-0.771l-18.667-18.667q-0.771-0.771-0.771-1.896t0.771-1.896l18.667-18.667q0.771-0.771 1.896-0.771z"></path>
+            </svg>
+            <svg width="64" height="64" viewBox="0 0 64 64">
+                <path id="arrow-right-5" d="M29.333 10.667q1.104 0 1.875 0.771l18.667 18.667q0.792 0.792 0.792 1.896t-0.792 1.896l-18.667 18.667q-0.771 0.771-1.875 0.771t-1.885-0.781-0.781-1.885q0-1.125 0.771-1.896l16.771-16.771-16.771-16.771q-0.771-0.771-0.771-1.896 0-1.146 0.76-1.906t1.906-0.76zM13.333 10.667q1.104 0 1.875 0.771l18.667 18.667q0.792 0.792 0.792 1.896t-0.792 1.896l-18.667 18.667q-0.771 0.771-1.875 0.771t-1.885-0.781-0.781-1.885q0-1.125 0.771-1.896l16.771-16.771-16.771-16.771q-0.771-0.771-0.771-1.896 0-1.146 0.76-1.906t1.906-0.76z"></path>
+            </svg>
+        </div>
+
+        <iron-ajax auto id="iaGetNavContents" debounce="3000" url="/h/main?fm=get-nav-contents&a=[[dataid]]&b=[[datatable]]" handle-as="json"
+            on-response="_onResponse"></iron-ajax>
+        <nav class="nav-reveal">
+            <a class="prev" href$="{{_remakeUrl(response.left.url, datatable)}}">
+                <span class="icon-wrap">
+                    <svg class="icon" width="32" height="32" viewBox="0 0 64 64">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-left-3"></use>
+                    </svg>
+                </span>
+                <div>
+                    <h3>[[response.left.title]]</h3>
+                    <img src$="{{_remakePicture(response.left.picture, datatable)}}" alt="[[response.left.title]]" />
+                </div>
+            </a>
+
+            <template is="dom-if" if="[[!end]]">
+                <a class="next" href$="{{_remakeUrl(response.right.url, datatable)}}">
+                    <span class="icon-wrap">
+                        <svg class="icon" width="32" height="32" viewBox="0 0 64 64">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right-3"></use>
+                        </svg>
+                    </span>
+                    <div>
+                        <h3>[[response.right.title]]</h3>
+                        <img src$="{{_remakePicture(response.right.picture, datatable)}}" alt="[[response.right.title]]" />
+                    </div>
+                </a>
+            </template>
+        </nav>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-nav-content` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalNavContent extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-nav-content';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    datatable: {
+                    type: String,
+                    value: "",
+                    notify: true
+                },
+                dataid: {
+                    type: Number,
+                    value: 0,
+                    notify: true
+                },
+                response: {
+                    type: Array,
+                    notify: true,
+                    value: function(){
+                        return { left: null, right: null }
+                    }
+                },
+                end: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+            
+            _onResponse(event) {
+                var response = event.detail.response;
+                //console.log(response);
+                var index = 0;
+
+                if(event.detail.response.length == 1)
+                {
+                    this.end = true;
+                }
+                response.forEach(function (data) {
+                    if (index == 0) {
+                        this.set('response.left', data);
+                    }
+                    else if (index == 1) {
+                        this.set('response.right', data);
+                    }
+                    index++;
+                }, this);
+
+            }
+            _remakeUrl(url, table) {
+                
+                if (table == 'kalnews') {
+                    return '/news/' + url;
+                }
+                else if (table == 'kalreviews') {
+                    return '/reviews/' + url;
+                }
+
+            }
+            _remakePicture(picture, table) {
+                if (table == 'kalnews') {
+                    return 'https://cdn.kaldirirmi.com/images/news/' + picture;
+                }
+                else if (table == 'kalreviews') {
+                    return 'https://cdn.kaldirirmi.com/images/reviews/' + picture;
+                }
+            }
+
+        }
+
+        window.customElements.define(KalNavContent.is, KalNavContent);
+    </script>
+</dom-module>
