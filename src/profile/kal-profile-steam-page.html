@@ -41,6 +41,7 @@
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
+                position: relative;
             }
 
             #notconnecteddiv p {
@@ -243,16 +244,16 @@
         <!-- dom elements here-->
         <paper-material elevation="5" id="steammaterial" role="listbox">
             <!-- Not connected part-->
-            <template is="dom-if" if="[[!connected]]">
+            <div hidden$="[[connected]]">
                 <div id="notconnecteddiv" style="background-image:url('/assets/img/steambackground.jpg')">
                     <p>Buradaki içeriklere erişebilmek için steam hesabının bağlı olması gerekmektedir</p>
                     <paper-button id="steamhauthbtn" onclick="load(); location.href='/auth/steam/login';" raised>Bağlan
                         <iron-icon icon="av:loop"></iron-icon>
                     </paper-button>
                 </div>
-            </template>
+            </div>
             <!-- Connected Part -->
-            <template is="dom-if" if="[[connected]]">
+            <div hidden$="[[!connected]]">
                 <paper-item heading>Steam Dünyan</paper-item>
                 <div info>
                     <!-- Steam FriendsList -->
@@ -360,7 +361,7 @@
                     </paper-material>
 
                 </div>
-            </template>
+            </div>
         </paper-material>
 
 

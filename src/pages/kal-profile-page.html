@@ -12,6 +12,8 @@
 
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../model/login-button.html">
+<link rel="import" href="../model/profile-card.html">
+
 <!-- Fragments -->
 <link rel="lazy-import" href="../profile/kal-profile-general-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-system-page.html">
@@ -33,7 +35,7 @@
             :host {
                 display: block;
                 overflow: hidden !important;
-                height: calc(100vh - 192px);
+                /* height: calc(100vh - 192px); */
                 color: #fff !important;
             }
 
@@ -92,7 +94,8 @@
                 /* @apply --shadow-elevation-4dp; */
                 /* background: red; */
                 padding: 10px;
-                min-height: 1000px;
+                /* min-height: 1000px; */
+                min-height: 500px;
             }
 
             paper-tabs#main-navigation {
@@ -172,10 +175,10 @@
                             <iron-icon icon="device:brightness-high" item-icon></iron-icon>
                             <span class="navigationname ">Sistem</span>
                         </paper-tab>
-                        <paper-tab name="forum" class="nav-icon">
+                        <!-- <paper-tab name="forum" class="nav-icon">
                             <iron-icon icon="communication:forum" item-icon></iron-icon>
                             <span class="navigationname ">Forum</span>
-                        </paper-tab>
+                        </paper-tab> -->
                         <paper-tab name="friends" class="nav-icon">
                             <iron-icon icon="social:people" item-icon></iron-icon>
                             <span class="navigationname ">Arkadaşlar</span>
@@ -233,7 +236,7 @@
                     </div>
                 </div>
                 <div class="side-profile">
-
+                    <profile-card userinfo="[[userinfo]]" on-tile-click="_onTileClick"></profile-card>
                 </div>
             </div>
 
@@ -570,16 +573,12 @@
                 }
             }
 
-           
-
             _onTileClick(event) {
                 //console.log('_onTileClick is fired');
                 this.blurred = Math.random().toString();
                 this.$.profilepages.select(0);
                 this.selectedIndex = 0;
-
             }
-
         }
 
         window.customElements.define(KalProfilePage.is, KalProfilePage);

@@ -1,0 +1,689 @@
+<dom-module id="profile-card">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                width: 100%;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            .shadow {
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+            }
+
+            .card {
+                position: relative;
+                overflow: hidden;
+                margin: 0.4em;
+                background-color: #222;
+                border-radius: 2px;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+                height: auto;
+                width: 100%;
+            }
+
+            .card-header {
+                background-color: #e64a19;
+                color: #fff;
+                /*height: 25px;*/
+                padding-left: 15px;
+            }
+
+            .card-header paper-button {
+                font-size: calc(0.22em + 1vmin);
+            }
+
+            .card-content {
+                color: #fff;
+            }
+
+            .user-image {
+                /*border-radius: 50%;*/
+                border: 3px solid transparent;
+                height: calc(4.4em + 1vmin);
+                width: calc(4.4em + 1vmin);
+                display: block;
+                /*margin-left: auto;
+            margin-right: auto;*/
+                margin-top: -50px;
+                margin-left: 10px;
+                -webkit-box-shadow: 0px 0px 20px 2px rgba(56, 56, 56, 0.64);
+                -moz-box-shadow: 0px 0px 20px 2px rgba(56, 56, 56, 0.64);
+                box-shadow: 0px 1px 15px 3px rgba(56, 56, 56, 0.64);
+            }
+
+            .user-name {
+                font-size: calc(1em + 1vmin);
+                margin: 0;
+                margin-bottom: 5px;
+            }
+
+            .user-profession {
+                margin: 10px auto;
+                font-size: 18px;
+                color: #ff7800;
+                font-weight: 100;
+            }
+
+            .card-desc {
+                font-size: calc(0.35em + 1vmin);
+                padding-left: 10px;
+                font-style: italic;
+                font-weight: 100;
+                padding-right: 10px;
+            }
+
+            .card-social {
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .card-social .card-social-content h5 {
+                font-size: calc(0.45em + 1vmin) !important;
+            }
+
+            .card-social-content {
+                flex: 5;
+                color: white;
+                text-align: center;
+            }
+
+            .vseparator {
+                height: 15px;
+                width: 1px;
+                margin: 0 auto;
+                background-color: #FFF;
+            }
+
+
+            .twitter>a,
+            .website>a {
+                text-decoration: none;
+                color: #D1C4E9;
+            }
+
+            .card-place {
+                color: #FFF;
+                margin: 0 auto;
+                width: 50%;
+                border: 1px solid #e64a19;
+                margin-bottom: 10px;
+                background-color: #e64a19;
+                padding-left: 10px;
+                padding-right: 10px;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                justify-content: center;
+            }
+
+            /* avatar changer dialog */
+
+            #avatarchanger,
+            #coverchanger {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: 0;
+                padding: 0;
+                background-color: #000;
+                color: white;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+            }
+
+            #avatarchanger #closeavatarchanger,
+            #coverchanger #closecoverchanger {
+                width: calc(100% - 20px);
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
+                margin-top: 50px;
+            }
+
+            #avatarchanger #closeavatarchanger paper-icon-button,
+            #coverchanger #closecoverchanger paper-icon-button {
+                --paper-icon-button-ink-color: white;
+                color: white;
+            }
+
+            #avatarchanger #avatarform,
+            #coverchanger #coverform {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                width: calc(100% - 48px);
+                height: calc(100% - 108px);
+            }
+
+            #avatarchanger #avatarform paper-button,
+            #coverchanger #coverform paper-button {
+                background-color: #ff7800;
+                color: white;
+                margin-top: 20px;
+            }
+
+
+            .card-content {
+                @apply --layout-vertical;
+            }
+
+            .user-background {
+                width: 100%;
+                height: calc(10em + 1vmin);
+            }
+
+            #userPictures {
+                display: block;
+            }
+
+            #userPicturesEditing {
+                display: none;
+            }
+
+            .hakke-flex {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                justify-content: center;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            .upload-icon {
+                width: calc(4em + 1vmin);
+                height: calc(4em + 1vmin);
+                color: white;
+                /*border-radius: 50%;*/
+                background-color: rgba(0, 0, 0, 0.4);
+                border-style: dashed;
+            }
+
+            .hakke-flex:hover {
+                box-shadow: inset 0 0 0 5px #e64a19 !important;
+            }
+
+
+            @media only screen and (max-width: 480px) {
+                #pbOpenEditor {
+                    width: 100%;
+                    font-size: calc(0.6em + 1vmin);
+                }
+            }
+
+
+            .oi-sprite {
+                background-image: url(/assets/img/OI-spritesheet.png);
+                background-repeat: no-repeat;
+                display: block;
+            }
+
+            .sprite-atari-OI {
+                width: 110px;
+                height: 114px;
+                background-position: -5px -5px;
+            }
+
+            .sprite-disket-OI {
+                width: 97px;
+                height: 104px;
+                background-position: -125px -5px;
+            }
+
+            .sprite-gameboy-OI {
+                width: 74px;
+                height: 112px;
+                background-position: -232px -5px;
+            }
+
+            .sprite-gameboydisk-OI {
+                width: 106px;
+                height: 121px;
+                background-position: -316px -5px;
+            }
+
+            .sprite-joyscreen-OI {
+                width: 127px;
+                height: 117px;
+                background-position: -5px -136px;
+            }
+
+            .sprite-joystick-OI {
+                width: 82px;
+                height: 101px;
+                background-position: -142px -136px;
+            }
+
+            .sprite-kol-OI {
+                width: 126px;
+                height: 86px;
+                background-position: -234px -136px;
+            }
+
+            .sprite-komodor-OI {
+                width: 125px;
+                height: 69px;
+                background-position: -234px -232px;
+            }
+
+            .sprite-monitor-OI {
+                width: 124px;
+                height: 77px;
+                background-position: -5px -311px;
+            }
+
+            .sprite-pacman-OI {
+                width: 90px;
+                height: 93px;
+                background-position: -370px -136px;
+            }
+
+            .sprite-pacmanshirt-OI {
+                width: 110px;
+                height: 105px;
+                background-position: -139px -311px;
+            }
+
+            .sprite-radio-OI {
+                width: 124px;
+                height: 88px;
+                background-position: -259px -311px;
+            }
+
+            .sprite-revolver-OI {
+                width: 130px;
+                height: 83px;
+                background-position: -432px -5px;
+            }
+
+            .sprite-sega-OI {
+                width: 126px;
+                height: 121px;
+                background-position: -470px -98px;
+            }
+
+            .sprite-spacefight-OI {
+                width: 92px;
+                height: 85px;
+                background-position: -470px -229px;
+            }
+
+            .sprite-spider-OI {
+                width: 76px;
+                height: 93px;
+                background-position: -393px -324px;
+            }
+
+            .sprite-tv-OI {
+                width: 124px;
+                height: 106px;
+                background-position: -479px -324px;
+            }
+
+            .sprite-yenikol-OI {
+                width: 129px;
+                height: 83px;
+                background-position: -5px -440px;
+            }
+
+            @media only screen and (max-width: 1111px) {
+                .card-header paper-button {
+                    font-size: calc(0.6em + 1vmin);
+                }
+            }
+
+            #userInformation {
+                display: none;
+            }
+        </style>
+
+        <iron-ajax auto id="getusersteamlevel" url="/auth/steam/kalapi?fm=get-steam-level" handle-as="json" on-response="_responseSteamLevel"
+            debounce-duration="300"></iron-ajax>
+
+        <paper-dialog id="avatarchanger" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+            <div id="closeavatarchanger">
+                <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
+            </div>
+            <iron-form id="avatarform">
+                <form action="/h/main" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="fm" value="update-user-avatar" />
+                    <input type="file" name="avatar" title="Lütfen bir resim seç" accept=".png,.jpg,.jpeg" required />
+                    <paper-button raised on-tap="_avatarFormSubmit">gönder</paper-button>
+                </form>
+            </iron-form>
+            <div>Avatarın maksimum 200x200 piksel boyutlarında ve 1 MB büyüklüğünde olabilir. Desteklenen türler: .png, .jpg ve
+                .jpeg
+            </div>
+        </paper-dialog>
+        <paper-dialog id="coverchanger" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+            <div id="closecoverchanger">
+                <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
+            </div>
+            <iron-form id="coverform">
+                <form action="/h/main" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="fm" value="update-user-cover" />
+                    <input type="file" name="avatar" title="Lütfen bir resim seç" accept=".png,.jpg,.jpeg" required />
+                    <paper-button raised on-tap="_coverFormSubmit">gönder</paper-button>
+                </form>
+            </iron-form>
+
+            <div>Arkaplanın maksimum 1920x1080 piksel boyutlarında ve 4MB büyüklüğünde olabilir. Desteklenen türler: .png, .jpg
+                ve .jpeg</div>
+        </paper-dialog>
+        <article class="card shadow">
+            <div class="card-header">
+                <paper-button id="pbOpenEditor" on-tap="_btnEditPictures">Resimlerini düzenle</paper-button>
+                <paper-button id="pbCloseEditor" style="display:none;" on-tap="_btnCloseEditor">İptal</paper-button>
+            </div>
+            <div class="card-content">
+                <div id="userPictures">
+                    <iron-image class="user-background" src="{{_remakeUserBackground(userinfo.background)}}" sizing="cover" preload fade></iron-image>
+                    <iron-image background class="user-image center oi-sprite sprite-spacefight-OI" src="{{_remakeUserAvatar(userinfo.avatar)}}"
+                        sizing="cover" preload fade></iron-image>
+                    <!--<paper-icon-button id="changeavatar" icon="file-upload" on-tap="_handleAvatar"></paper-icon-button>-->
+                    <!--<paper-tooltip for="changeavatar" position="top" animation-delay="150" offset="2">Avatar Değiştir</paper-tooltip>-->
+                </div>
+                <div id="userPicturesEditing">
+                    <div>
+                        <div class="user-background hakke-flex" style="background-image: url({{_remakeUserBackground(userinfo.background)}});">
+                            <paper-icon-button id="changecover" class="upload-icon" icon="file-upload" on-tap="_handleBackground"></paper-icon-button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="user-image hakke-flex" style="background-image: url({{_remakeUserAvatar(userinfo.avatar)}});">
+                            <paper-icon-button id="changeavatar" class="upload-icon" icon="file-upload" on-tap="_handleAvatar"></paper-icon-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-content-details">
+                    <p class="user-name center">[[userinfo.username]]</p>
+                    <div id="userInformation" on-tap="_tapUserInformationDiv">
+                        <paper-ripple recenters></paper-ripple>
+                        <div class="card-social">
+                            <div class="card-social-content">
+                                <h5>{{_remakeNameSurname(userinfo.namesurname)}}</h5>
+                            </div>
+                            <div class="vseparator"></div>
+                            <div class="card-social-content">
+                                <h5>{{_remakeBirthday(userinfo.birthday)}}</h5>
+                            </div>
+                        </div>
+                        <p class="user-profession center">[[steamlevel]]</p>
+                        <div class="card-desc">
+                            <p class="center">{{_remakeAbout(userinfo.about)}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-place">
+                <iron-icon style="padding-right:10px;" icon="{{_remakeIcon(userinfo.moderator)}}"></iron-icon>
+                <p class="center">{{_remakeBadge(userinfo.moderator)}}</p>
+            </div>
+        </article>
+
+
+    </template>
+
+    <script>
+        /**
+         * `profile-card` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ProfileCard extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'profile-card';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    userinfo: {
+                        type: Object,
+                        notify: true,
+                        observer: '_infoChanged'
+                    },
+                    steamlevel: {
+                        type: String,
+                        value: '',
+                    },
+                    /**
+                     * The user name for the card.
+                     *
+                     * @attribute name
+                     * @type string
+                     */
+                    name: '',
+                    /**
+                     * The user profile image for the card.
+                     *
+                     * @attribute image
+                     * @type string
+                     */
+                    image: '',
+                    /**
+                     * The user profession for the card.
+                     *
+                     * @attribute profession
+                     * @type string
+                     */
+                    profession: '',
+                    /**
+                     * The user description for the card.
+                     *
+                     * @attribute description
+                     * @type string
+                     */
+                    description: '',
+                    /**
+                     * The username for twitter, this will be passed without '@'.
+                     *
+                     * @attribute twitter
+                     * @type string
+                     */
+                    twitter: '',
+                    /**
+                     * The user website link for the card, please use this without 'www'.
+                     *
+                     * @attribute name
+                     * @type string
+                     */
+                    website: '',
+                    /**
+                     * The user location for the card.
+                     *
+                     * @attribute place
+                     * @type string
+                     */
+                    place: '',
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _infoChanged(newVal, oldVal) {
+                //console.log('vcard newVal' + newVal);
+                //console.log('vcard oldVal' + oldVal);
+                if (!this._isEmpty(this.userinfo.namesurname) &&
+                    !this._isEmpty(this.userinfo.birthday) &&
+                    !this._isEmpty(this.userinfo.about)
+                ) {
+                    var d = new window.Date();
+                    if ((d.getFullYear() + 100) == this.userinfo.birthday.toString().split('.')[2] || this.userinfo
+                        .birthday.toString().split('.')[2] == 1900) {} else {
+                        this.$.userInformation.style.display = "block";
+                    }
+                }
+            }
+
+            _responseSteamLevel(event) {
+                var steam = event.detail.response;
+                //console.log(steam);
+                if (steam !== null) {
+                    if (typeof steam.response === 'undefined') {} else {
+                        var level = steam.response.player_level;
+                        this.steamlevel = "Steam Seviyesi: " + level;
+                    }
+                }
+            }
+
+            _btnEditPictures() {
+
+                this.$.userPictures.style.display = "none";
+                this.$.userPicturesEditing.style.display = "block";
+                this.$.pbOpenEditor.style.display = "none";
+                this.$.pbCloseEditor.style.display = "block";
+
+                // $('#userPictures').css('display', 'none');
+                // $('#userPictures-editing').css('display', 'block');
+                // $('#pbOpenEditor').css('display', 'none');
+                // $('#pbCloseEditor').css('display', 'block');
+            }
+
+            _btnCloseEditor() {
+                this.$.userPictures.style.display = "block";
+                this.$.userPicturesEditing.style.display = "none";
+                this.$.pbOpenEditor.style.display = "block";
+                this.$.pbCloseEditor.style.display = "none";
+
+                // $('#userPictures').css('display', 'block');
+                // $('#userPictures-editing').css('display', 'none');
+                // $('#pbOpenEditor').css('display', 'block');
+                // $('#pbCloseEditor').css('display', 'none');
+            }
+
+            _remakeUserBackground(background) {
+                var url = 'https://cdn.kaldirirmi.com/images/user/wallpaper/';
+                if (background) {
+                    return url + background;
+                } else {
+                    return '/assets/img/kaldirirmi-header-2.png';
+                }
+            }
+
+            _remakeUserAvatar(avatar) {
+                var url = 'https://cdn.kaldirirmi.com/images/user/avatar/';
+                if (avatar) {
+                    return url + avatar;
+                }
+                //else {
+                //    return url + 'default-user-avatar3.png';
+                //}
+            }
+            _isEmpty(str) {
+                return (!str || 0 === str.length);
+            }
+            _remakeNameSurname(namesurname) {
+                if (!this._isEmpty(namesurname)) {
+                    return namesurname;
+                } else {
+                    return 'Ad soyad ekle!';
+                }
+            }
+
+            _remakeBirthday(birthday) {
+                if (!this._isEmpty(birthday)) {
+                    return birthday;
+                } else {
+                    return 'Doğum tarihini ekle!';
+                }
+
+            }
+            _remakeAbout(about) {
+                if (!this._isEmpty(about)) {
+                    return about;
+                } else {
+                    return 'Hakkında ekle!';
+                }
+            }
+
+            _remakeBadge(mod) {
+                if (mod == 1) {
+                    return 'Kal_Mod';
+                } else if (mod == 0) {
+                    return 'Kal_Kid';
+                }
+            }
+
+            _remakeIcon(mod) {
+                if (mod == 1) {
+                    return 'icons:gavel';
+                } else if (mod == 0) {
+                    return 'places:child-care';
+                }
+            }
+
+            _handleAvatar() {
+                this.$.avatarchanger.open();
+                //document.querySelector('iron-overlay-backdrop')[0].style.zIndex = -5;
+                //document.getElementsByTagName('iron-overlay-backdrop')[0].style.zIndex = -5;
+            }
+
+            _handleBackground() {
+                this.$.coverchanger.open();
+                //document.getElementsByTagName('iron-overlay-backdrop')[0].style.zIndex = -5;
+            }
+
+            _tapUserInformationDiv(event) {
+                //console.log('tapping');
+                var target = event.target;
+                while (target !== this && !target._templateInstance) {
+                    target = target.parentNode;
+                }
+
+                this.fire('tile-click', {
+                    tile: target,
+                    data: target._templateInstance.item
+                })
+
+            }
+
+            _avatarFormSubmit() {
+                this.$.avatarform.submit();
+            }
+
+            _coverFormSubmit() {
+                this.$.coverform.submit();
+            }
+
+        }
+
+        window.customElements.define(ProfileCard.is, ProfileCard);
+    </script>
+</dom-module>

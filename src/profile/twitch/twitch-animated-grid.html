@@ -577,11 +577,17 @@
             }
 
             _onResponseForChannelId(event) {
-                var len = event.detail.response.follows.length;
-                this.set('res.follows', []);
-                if (len > 0) {
-                    var response = event.detail.response;
-                    this.set('res.follows', response.follows);
+                
+                if(event.detail.response.success == false){
+                    console.warn('Event Error', event);
+                }
+                else{
+                    var len = event.detail.response.follows.length;
+                    this.set('res.follows', []);
+                    if (len > 0) {
+                        var response = event.detail.response;
+                        this.set('res.follows', response.follows);
+                    }
                 }
             }
 

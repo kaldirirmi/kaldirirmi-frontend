@@ -1,3 +1,6 @@
+
+<link rel="import" href="./twitch/twitch-full-page.html">
+
 <dom-module id="kal-profile-twitch-page">
     <template>
         <style>
@@ -39,6 +42,7 @@
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
+                position: relative;
             }
 
             #notconnecteddiv p {
@@ -206,21 +210,21 @@
         <!-- dom elements here-->
         <paper-material elevation="5" id="twitchmaterial" role="listbox">
             <!-- Not connected part-->
-            <template is="dom-if" if="[[!connected]]">
+            <div hidden$=[[connected]]>
                 <div id="notconnecteddiv" style="background-image:url('/assets/img/twitchbackground.jpg')">
                     <p>Buradaki içeriklere erişebilmek için twitch hesabının bağlı olması gerekmektedir</p>
                     <paper-button id="twitchauthbtn" onclick="load(); location.href='/auth/twitch/login';" raised>Bağlan
                         <iron-icon icon="av:loop"></iron-icon>
                     </paper-button>
                 </div>
-            </template>
+            </div>
             <!-- Connected Part -->
-            <template is="dom-if" if="[[connected]]">
+            <div hidden$=[[!connected]]>
                 <paper-item heading>Twitch Dünyan</paper-item>
                 <div info>
                     <twitch-full-page id="twitchfullpage"></twitch-full-page>
                 </div>
-            </template>
+            </div>
         </paper-material>
         <!-- <paper-toast id="passwordalert" duration="10000"  class="fit-bottom"></paper-toast> -->
 
@@ -277,6 +281,7 @@
                 super.ready();
 
                 Polymer.RenderStatus.afterNextRender(this, function () {
+
                     this.$.twitchfullpage.show();
                 });
             }
