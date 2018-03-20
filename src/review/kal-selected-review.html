@@ -1,32 +1,900 @@
+<link rel="import" href="../kal-copyright.html">
+<link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../model/login-button.html">
+<link rel="import" href="../model/kal-nav-content.html">
+<link rel="import" href="../model/kal-tagcloud.html">
+
+<link rel="import" href="./review-related-game.html">
+<link rel="import" href="./review-user-vote.html">
+
+<link rel="import" href="./kal-review-popular.html">
+
 <dom-module id="kal-selected-review">
     <template>
         <style>
-            :host {
-                display: block
+            p,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            ol,
+            li {
+                color: white;
+            }
+
+            #review-page {
+                height: 100%;
+                @apply --layout-horizontal;
+                @apply --layout-center-justified;
+            }
+
+            #review-page-header {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: #222;
+                height: 45px;
+                padding: 0 30px;
+                position: absolute;
+                width: 100%;
+                @apply --shadow-elevation-12dp;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+            #review-page-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+                color: white;
+                margin-right: 10px;
+            }
+
+            #review-page-header h1 {
+                font-size: 20px;
+                pointer-events: none;
+                font-weight: normal;
+                flex-grow: 2;
+                margin: 0 !important;
+            }
+
+            /* parallax demo*/
+
+            #review-parallax {
+                width: 100%;
+                height: calc(100vh - 109px);
+            }
+
+            parallax-element::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            parallax-element::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            parallax-element::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
+            #reviewcontent {
+                width: calc(100% + 2px);
+                position: relative;
+                z-index: 0;
+                box-sizing: border-box;
+                min-height: 500px;
+                background: #222;
+            }
+
+            #reviewcontent #panel {
+                position: relative;
+                background: #ff7800;
+                color: white;
+            }
+
+            #reviewcontent #panel-contents {
+                @apply --layout-horizontal;
+                width: 100%;
+                align-items: center;
+            }
+
+            #reviewcontent #options {
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
+                background: rgba(0, 0, 0, 0.5);
+                position: absolute;
+                left: 0;
+                right: 0;
+                padding: 0 10px;
+            }
+
+            #reviewcontent #metadata {
+                width: 100%;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                align-items: flex-start;
+            }
+
+            #reviewcontent #metadata h1 {
+                @apply --paper-font-common-nowrap;
+                margin: 0 0 4px;
+                font-size: 32px;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            #reviewcontent #metadata h4 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            #reviewcontent #metadata h6 {
+                margin: 7px 0 0 0;
+                font-size: 12px;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            .review-subtitle-container {
+                justify-content: space-between;
+                display: flex !important;
+                padding: 0px 5px;
+            }
+
+            .review-subtitle-container .review-subtitle h3 {
+                font-family: inherit;
+                font-weight: 100;
+            }
+
+            .review-subtitle-container .review-release h3,
+            h4 {
+                font-style: italic;
+                font-weight: 100;
+            }
+
+            .review-subtitle-container .review-release iron-icon {
+                padding-right: 5px;
+                color: white;
+            }
+
+
+            .review-description .review-details p {
+                font-weight: 100;
+                color: white !important;
+                font-family: 'Roboto', 'Noto', sans-serif !important;
+                font-size: calc(0.45em + 1vmin) !important;
+
+            }
+
+
+            #review-details-publisher {
+                @apply --layout-horizontal;
+                width: 100%;
+                height: 60px;
+                @apply --layout-center;
+                justify-content: space-between;
+            }
+
+            .review-details-publisher-container {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                color: white;
+                flex-flow: row;
+            }
+
+            .review-details-publisher-container iron-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            #review-details-publisher iron-image {
+                min-width: 40px;
+                height: 40px;
+                margin-top: 10px;
+                margin-right: 5px;
+                margin-left: 5px;
+            }
+
+            /* chart style*/
+
+            #jqxbargauge {
+                font-family: 'Roboto', 'Noto', sans-serif !important;
+                background-color: #222;
+            }
+
+            .pb_heading {
+                display: flex;
+                text-transform: none;
+                margin-left: -10px;
+                padding: 0;
+                font-size: 20px;
+                margin-left: 0px;
+            }
+
+            .pb_heading .ic_heading {
+                padding-top: 18px;
+                padding-left: 6px;
+            }
+
+            .header-h3 {
+                margin: 0 !important;
+                margin-bottom: 5px !important;
+                padding-left: 5px;
+            }
+
+            .header-h3 b {
+                font-weight: 500;
+                color: #ff7800;
+            }
+
+            #pib_share_face,
+            #pib_share_twit {
+                opacity: 0.7;
+                transition: all linear .2s;
+            }
+
+            #pib_share_face:hover {
+                cursor: pointer;
+                opacity: 1;
+            }
+
+            #pib_share_twit:hover {
+                opacity: 1;
+                cursor: pointer;
+            }
+
+
+            /* MOBİLE FIRST */
+
+            parallax-layers {
+                position: relative;
+                width: 100%;
+                min-height: 37%;
+                z-index: -1;
+                margin: 0 auto;
+            }
+
+            parallax-layers iron-image {
+                width: 100%;
+                height: 100%;
+                background-color: #222;
+            }
+
+            #review-page-container {
+                height: 100%;
+                margin: 0 auto;
+                width: 95%;
+            }
+
+            #panel-contents {
+                height: 40px;
+            }
+
+            #options {
+                bottom: 40px;
+                height: 36px;
+            }
+
+            #options #options_share_buttons {
+                margin-top: 3px;
+            }
+
+            #review-page-header h1 {
+                font-size: 13px !important;
+            }
+
+            #panel-contents h2 {
+                text-overflow: ellipsis;
+                padding-left: 10px;
+            }
+
+            .review-description {
+                display: flex;
+                flex-direction: column !important;
+                width: 100%;
+                box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.4);
+            }
+
+            .review-description .review-details,
+            .review-description .review-popular-review {
+                width: 95% !important;
+                padding-left: 15px !important;
+                margin-right: 10px;
+            }
+
+            .review-description .review-details {
+                z-index: 2;
+            }
+
+            .review-subtitle-container .review-subtitle h3 {
+                font-size: calc(0.75em + 1vmin) !important;
+            }
+
+            /* chart */
+
+            .review-chart-details {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                background: #222;
+                margin-top: 5px;
+            }
+
+            .review-chart-details #gamekpdetails {
+                z-index: 400;
+                width: 100%;
+            }
+
+            .review-chart-details #review-chart-panel {
+                display: block;
+                position: relative;
+                margin: 0 auto;
+            }
+
+            .review-chart-details #mobile-chart {
+                background-color: #222;
+                width: 95%;
+                color: white !important;
+            }
+
+            #mobile-chart .mobilecardheader {
+                margin: 0px 16px;
+                border-top: 3px solid #ff7800;
+                padding-top: 5px;
+                color: #ff7800;
+            }
+
+            #mobile-chart .mobilecardheader span {
+                font-size: calc(1.3em + 1vmin) !important;
+                font-weight: bold;
+            }
+
+            #mobile-chart .card-content .card-content-column {
+                display: flex;
+                justify-content: space-between;
+                margin: 0px 16px;
+            }
+
+            #mobile-chart .card-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #mobile-chart .card-actions h2 {
+                font-weight: 100;
+            }
+
+            #mobile-chart .card-actions .pbmobilechartloginbutton {
+                background: #ff7800;
+                margin: 0;
+                background: #ff7800;
+                font-size: 22px;
+                padding: 0px 20px;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(1) {
+                border-bottom: 2px solid #D94306;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(2) {
+                border-bottom: 2px solid #EE9641;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(3) {
+                border-bottom: 2px solid #EEC46E;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(4) {
+                border-bottom: 2px solid #4CAC90;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(5) {
+                border-bottom: 2px solid #09337B;
+            }
+
+            #mobile-chart .card-content .card-content-column p {
+                font-size: calc(0.8em + 1vmin);
+                font-weight: 500;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(1) p {
+                color: #D94306;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(2) p {
+                color: #EE9641;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(3) p {
+                color: #EEC46E;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(4) p {
+                color: #4CAC90;
+            }
+
+            #mobile-chart .card-content .card-content-column:nth-of-type(5) p {
+                color: #09337B;
+            }
+
+
+            #review-chart-panel h1,
+            #review-chart-panel #jqxbargauge {
+                display: none;
+            }
+
+            #review-chart-panel #user-vote {
+                position: relative;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            #user-vote .buttons {
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            #user-vote .buttons #pb_LoginButton {
+                margin-bottom: 50px !important;
+                background-color: #FF7800;
+                font-size: 18px;
+                padding: 0 20px;
+            }
+
+            #user-vote .buttons #pb_LoginButton h3 {
+                font-size: calc(1em + 1vmin) !important;
+            }
+
+            #user-vote .buttons #pb_LoginButton iron-icon {
+                padding: 0 !important;
+                color: white;
+            }
+
+            #review-chart-panel h1 {
+                font-family: inherit;
+                margin: 0 auto;
+                position: absolute;
+                margin-top: 315px;
+                margin-left: 220px;
+                color: white;
+                font-weight: bolder;
+                color: #ff7800;
+            }
+
+            #jqxlistbox {
+                width: 0%;
+            }
+
+            hr.package-tile {
+                color: rgb(221, 201, 230);
+                background-color: black;
+                width: 100%;
+            }
+
+            @media only screen and (min-width: 320px) {}
+
+            @media only screen and (min-width: 360px) {
+                #panel-contents {
+                    height: 50px;
+                }
+                #options {
+                    bottom: 50px;
+                }
+
+            }
+
+            @media only screen and (max-width: 360px) {
+                .review-description .review-details iframe {
+                    width: 300px;
+                    height: 200px;
+
+                }
+            }
+
+            @media only screen and (max-width: 481px) {
+                .review-description .review-details iframe {
+                    width: 350px;
+                    height: 220px;
+                }
+            }
+
+            @media only screen and (min-width: 768px) {
+                parallax-layers {
+                    min-height: 47% !important;
+                }
+                #review-page-header h1 {
+                    font-size: 16px !important;
+                }
+
+                .review-chart-details {
+                    margin-bottom: 85px;
+                }
+                .review-chart-details #review-chart-panel {
+                    display: block;
+                }
+                .review-chart-details #mobile-chart {
+                    display: none;
+                }
+
+                #review-chart-panel h1,
+                #review-chart-panel #jqxbargauge {
+                    display: block;
+                }
+                #review-chart-panel #user-vote {
+                    position: absolute;
+                    bottom: -110px;
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #user-vote .buttons #pb_LoginButton h3 {
+                    font-size: calc(0.55em + 1vmin) !important;
+                }
+
+                .review-description {
+                    flex-direction: row !important;
+                }
+                .review-description .review-details {
+                    width: 70% !important;
+                }
+                .review-description .review-popular-review {
+                    width: 30% !important;
+                }
+                .review-description .review-details,
+                .review-description .review-popular-review {
+                    padding-left: 5px !important;
+                }
+                .review-subtitle-container .review-subtitle h3 {
+                    font-size: calc(0.55em + 1vmin) !important;
+                }
+                parallax-layers {
+                    width: 70% !important;
+                    min-height: 60% !important;
+                }
+                #review-page-container {
+                    width: 70%;
+                }
+                #review-page-header {
+                    width: 70% !important;
+                    height: calc(2em + 1vmin) !important;
+                }
+                #review-page-header h1 {
+                    font-size: calc(0.5em + 1vmin) !important;
+                }
+                #panel-contents {
+                    height: 45px;
+                }
+                #options {
+                    bottom: 45px;
+                    height: 38px;
+                }
+                #options #options_share_buttons {
+                    margin-top: 3px;
+                }
+
+                /*jqxbargauge positions*/
+                #review-chart-panel {
+                    margin-right: -113px;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                #panel-contents {
+                    height: 50px;
+                }
+                #options {
+                    bottom: 50px;
+                    height: 41px;
+                }
+                #options #options_share_buttons {
+                    margin-top: 4px;
+                }
+
+                /* chart */
+                .review-chart-details {
+                    flex-direction: row;
+                    margin-bottom: 95px;
+
+                }
+                .review-chart-details #gamekpdetails {
+                    width: 60%;
+                }
+                .review-chart-details #review-chart-panel {
+                    position: absolute;
+                    margin-right: -59px;
+                    right: 0;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #panel-contents {
+                    height: 60px;
+                }
+                #options {
+                    bottom: 60px;
+                    height: 42px;
+                }
+                #options #options_share_buttons {
+                    margin-top: 5px;
+                }
+
+                /* chart */
+                .review-chart-details {
+                    margin-bottom: 110px;
+
+                }
+                .review-chart-details #review-chart-panel {
+                    margin-right: -82px;
+                }
+
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                #panel-contents {
+                    height: 70px;
+                }
+                #options {
+                    bottom: 70px;
+                    height: 43px;
+                }
+                #options #options_share_buttons {
+                    margin-top: 6px;
+                }
+
+                /* chart */
+                .review-chart-details {
+                    margin-bottom: 110px;
+
+                }
+                .review-chart-details #review-chart-panel {
+                    margin-right: -35px;
+                }
+
+            }
+
+            @media only screen and (min-width: 1824px) {
+                #panel-contents {
+                    height: 80px;
+                }
+                #options {
+                    bottom: 80px;
+                    height: 45px;
+                }
+                #options #options_share_buttons {
+                    margin-top: 8px;
+                }
+
+
+                /* chart */
+                .review-chart-details {
+                    margin-bottom: 105px;
+
+                }
+                .review-chart-details #review-chart-panel {
+                    margin-right: 0;
+                }
+            }
+
+            h2 {
+                font-size: calc(0.65em + 1vmin) !important;
+            }
+
+            h3 {
+                font-size: calc(0.55em + 1vmin) !important;
+            }
+
+            h4 {
+                font-size: calc(0.45em + 1vmin) !important;
+            }
+
+            h5 {
+                font-size: calc(0.35em + 1vmin) !important;
+            }
+
+            h6 {
+                font-size: calc(0.25em + 1vmin) !important;
+            }
+
+            .review-details img {
+                width: 70% !important;
+            }
+
+            .pbKeywords {
+                opacity: 0.7;
+                background-color: #ff7800;
+                color: white;
+                font-weight: 100;
+                font-size: calc(0.15em + 1vmin);
+                text-transform: lowercase;
+            }
+
+            .pbKeywords:hover {
+                opacity: 1;
+            }
+
+            .review-popular-review {
+                width: 30%;
+                @apply --layout-vertical;
+                z-index: 1;
+            }
+
+            .review-popular-review .rightside-tagcloud {
+                width: 100%;
+            }
+
+            .review-popular-review .rightside-popular-review {
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
             }
         </style>
+        <iron-ajax id="getselectedreview" url="/h/main?fm=get-review-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
+        <iron-ajax id="getgamekpinfo" url="/h/main?fm=get-gamekp-info&a=[[reviewinfo.relatedgames]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
 
-<iron-ajax id="getselectedreview" url="/h/main?fm=get-review-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
+        <app-toolbar>
+            <!-- <paper-icon-button icon="arrow-back" on-tap="onBackToAll"></paper-icon-button> -->
+            <a id="back" href="/reviews">
+                <paper-icon-button icon="icons:arrow-back" on-tap="onBackToAll"></paper-icon-button>
+            </a>
+            <span>Geri Dön</span>
+        </app-toolbar>
 
-<app-toolbar>
-    <!-- <paper-icon-button icon="arrow-back" on-tap="onBackToAll"></paper-icon-button> -->
-    <a id="back" href="/reviews">
-        <paper-icon-button icon="icons:arrow-back" on-tap="onBackToAll"></paper-icon-button>
-    </a>
-    <span>Geri Dön</span>
-</app-toolbar>
+        <div hidden$=[[!loading]] class="loader-pac-content">
+            <loader-pac></loader-pac>
+        </div>
+        <div hidden$="[[loading]]">
+            <template is="dom-if" if={{isReview}}>
 
-<div hidden$=[[!loading]] class="loader-pac-content">
-    <loader-pac></loader-pac>
-</div>
-<div hidden$="[[loading]]">
-    <template is="dom-if" if={{isReview}}>
+                <div>
+                    <iron-form id="formkleine">
+                        <form action="/h/main" method="post">
+                            <input type="hidden" name="fm" value="post-kleine-container-reviews" />
+                            <input type="hidden" id="container" name="container" value="[[reviewinfo.id]]" />
+                            <input type="hidden" id="kleine" name="kleine" value="[[reviewinfo.viewcount]]" />
+                        </form>
+                    </iron-form>
 
-    </template>
-    <template is="dom-if" if={{!isReview}}>
-        <span>Böyle bir inceleme bulunmamaktadır!</span>
-    </template>
-</div>
+                    <div id="review-page">
+                        <div id="review-page-header">
+                            <paper-icon-button id="pibBackReviews" icon="arrow-back" onclick="load(); location.href='/incelemeler';"></paper-icon-button>
+                            <paper-tooltip for="pibBackReviews" position="left" animation-delay="200">İncelemelere Geri Dön</paper-tooltip>
+                            <h1>[[reviewinfo.title]]</h1>
+                        </div>
+                    </div>
+
+                    <parallax-layers>
+                        <div depth="-0.5" class="fullbleed" style="margin:0 auto;">
+                            <iron-image src="[[reviewinfo.picture]]" sizing="cover" preload fade alt="[[reviewinfo.title]]"></iron-image>
+                        </div>
+                    </parallax-layers>
+                    <kal-nav-content datatable="kalreviews" dataid="[[reviewinfo.id]]"></kal-nav-content>
+                    <div id="review-page-container">
+                        <div id="reviewcontent" itemscope itemtype="http://schema.org/Review">
+                            <div id="panel">
+                                <div id="options">
+                                    <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+                                </div>
+                                <div id="panel-contents">
+                                    <h2 itemprop="headline" style="padding-left: 15px; font-weight: 100;">[[reviewinfo.title]]</h2>
+                                </div>
+                            </div>
+                            <div id="review-content-details">
+                                <div class="review-chart-details">
+                                    <div id="gamekpdetails">
+                                        <review-related-game gameid="[[_getRelatedGame(reviewinfo)]]"></review-related-game>
+                                    </div>
+                                    <paper-card id="mobile-chart" evelation="4">
+                                        <div class="mobilecardheader">
+                                            <span>
+                                                [[(gamekpinfo.gameplay + gamekpinfo.graphics + gamekpinfo.story + gamekpinfo.averagevotes)/4]] KP
+                                            </span>
+
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-content-column">
+                                                <p>Oynanış</p>
+                                                <p>[[gamekpinfo.gameplay]]</p>
+                                            </div>
+
+                                            <div class="card-content-column">
+                                                <p>Zorluk</p>
+                                                <p>[[gamekpinfo.difficulty]]</p>
+                                            </div>
+                                            <div class="card-content-column">
+                                                <p>Grafikler</p>
+                                                <p>[[gamekpinfo.graphics]]</p>
+                                            </div>
+                                            <div class="card-content-column">
+                                                <p>Hikaye</p>
+                                                <p>[[gamekpinfo.story]]</p>
+                                            </div>
+                                            <div class="card-content-column">
+                                                <p>Kullanıcı Değerlendirmesi</p>
+                                                <p>[[gamekpinfo.averagevotes]]</p>
+                                            </div>
+
+                                        </div>
+
+                                    </paper-card>
+                                    <div id="review-chart-panel">
+                                        <h1>
+                                            [[(gamekpinfo.gameplay + gamekpinfo.graphics + gamekpinfo.story + gamekpinfo.averagevotes)/4]] KP
+                                        </h1>
+                                        <div id='jqxbargauge'></div>
+                                        <div id="user-vote">
+                                            <div hidden$="[[!storedUser.loggedin]]">
+                                                <h3 class="header-h3">Haydi sende
+                                                    <b>oyla!</b>
+                                                </h3>
+                                                <review-user-vote gameid="[[gamekpinfo.gameid]]" userid="[[((core.user)Session[" user "]).id]]"></review-user-vote>
+                                            </div>
+                                            <div hidden$="[[storedUser.loggedin]]">
+                                                <h3 class="header-h3">Oylayabilmek için
+                                                    <b>Giriş</b> Yapmalısın</h3>
+                                                <div class="buttons">
+                                                    <login-button></login-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id='jqxlistbox'></div>
+                                </div>
+                                <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
+                                <div class="review-subtitle-container">
+                                    <div class="review-subtitle">
+                                        <h3 itemprop="alternativeHeadline">[[reviewinfo.subtitle]]</h3>
+                                    </div>
+                                    <div class="review-release">
+                                        <h3 itemprop="dateCreated">[[reviewinfo.releasedate]]</h3>
+                                    </div>
+                                </div>
+                                <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
+                                <div class="review-description">
+                                    <div itemprop="reviewBody" class="review-details">
+                                        <p>
+                                            [[reviewinfo.details]]
+                                        </p>
+                                        <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
+                                        <div id="review-details-publisher">
+                                            <div itemprop="thumbnailUrl" class="review-details-publisher-container">
+                                                <iron-image src="https://cdn.kaldirirmi.com/images/user/avatar/default-user-avatar.png" sizing="cover"></iron-image>
+                                                <h3 itemprop="publisher">[[reviewinfo.publisher]]</h3>
+                                            </div>
+                                            <div class="review-details-publisher-container">
+                                                <iron-icon icon="image:remove-red-eye"></iron-icon>
+                                                <h3>[[reviewinfo.viewcount]]</h3>
+                                            </div>
+
+                                        </div>
+                                        <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum" style="color: rgb(221, 201, 230); background-color: black; width: 100%;">
+                                    </div>
+                                    <div class="review-popular-review">
+                                        <div class="rightside-tagcloud">
+                                            <kal-tagcloud contenttitle="[[reviewinfo.title]]" contenttable="kalreviews"></kal-tagcloud>
+                                        </div>
+                                        <div class="rightside-popular-review">
+                                            <kal-review-popular currentreview="[[reviewinfo.id]]"></kal-review-popular>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <kal-copyright></kal-copyright>
+                    </div>
+                </div>
+            </template>
+            <template is="dom-if" if={{!isReview}}>
+                <span>Böyle bir inceleme bulunmamaktadır!</span>
+            </template>
+        </div>
 
     </template>
 
@@ -61,10 +929,11 @@
                         type: Object,
                         value: null,
                     },
+                    storedUser: Object,
                 };
             }
 
-            
+
 
             static get observers() {
                 return [
@@ -136,7 +1005,7 @@
 
                 if (response !== null) {
                     this.set('isReview', true);
-                  
+
                     this.set('reviewinfo', response);
 
                 } else
@@ -163,6 +1032,10 @@
                     this.$.getselectedreview.lastRequest.abort();
                 }
                 this.$.getselectedreview.generateRequest();
+            }
+
+            _getRelatedGame(reviewinfo) {
+                return reviewinfo.relatedgames.Split(',')[0];
             }
         }
 

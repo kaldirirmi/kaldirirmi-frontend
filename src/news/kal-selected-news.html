@@ -30,9 +30,6 @@
         </div>
         <div hidden$="[[loading]]">
             <template is="dom-if" if={{isNews}}>
-
-
-
                 <form id="formkleine" is="iron-form" action="/h/main" method="post">
                     <input type="hidden" name="fm" value="post-kleine-container-news" />
                     <input type="hidden" id="container" name="container" value="[[newsinfo.id]]" />
@@ -92,11 +89,11 @@
                                     <p>
                                         [[newsinfo.details]]
                                     </p>
-                                    <kaldirirmi-related-game relatedgameid="[[_getRelatedGame(newsinfo)]]" currentnewsid="[[newsinfo.id]]"></kaldirirmi-related-game>
+                                    <kal-related-game relatedgameid="[[_getRelatedGame(newsinfo)]]" currentnewsid="[[newsinfo.id]]"></kal-related-game>
                                     <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
                                     <div id="news-details-publisher">
                                         <div itemprop="thumbnailUrl" class="news-details-publisher-container">
-                                            <iron-image itemprop="image" src="//cdn.kaldirirmi.com/images/user/avatar/default-user-avatar.png" sizing="cover" alt="[[newsinfo.publisher]]"></iron-image>
+                                            <iron-image itemprop="image" src="https://cdn.kaldirirmi.com/images/user/avatar/default-user-avatar.png" sizing="cover" alt="[[newsinfo.publisher]]"></iron-image>
                                             <h3 itemprop="publisher">
                                                 [[newsinfo.publisher]]
                                             </h3>
@@ -135,7 +132,7 @@
                                         <kal-tagcloud contenttitle="[[newsinfo.title]]" contenttable="[[tablename]]"></kal-tagcloud>
                                     </div>
                                     <div class="rightside-popular-news">
-                                        <kal-news-populer currentnews="[[newsinfo.id]]"></kal-news-populer>
+                                        <kal-news-popular currentnews="[[newsinfo.id]]"></kal-news-popular>
                                     </div>
                                 </div>
                             </div>
@@ -144,12 +141,7 @@
                         <!-- <kaldirirmi-sitecopyright></kaldirirmi-sitecopyright> -->
                     </div>
                 </div>
-
                 <script id="dsq-count-scr" src="https://kaldirirmi-com.disqus.com/count.js" async></script>
-
-
-
-
             </template>
             <template is="dom-if" if={{!isNews}}>
                 <span>Böyle bir haber bulunmamaktadır!</span>

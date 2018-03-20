@@ -1,0 +1,125 @@
+<dom-module id="kal-news-popular">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+        <template itemscope itemtype="http://schema.org/Blog">
+            <iron-ajax auto="{{go}}" id="getpopulernews" url="/h/main?fm=get-populer-news&a=[[currentnews]]" handle-as="json" on-response="_response"
+                loading="{{loadingnews}}"></iron-ajax>
+            <h3 itemprop="about">Popüler Haberler</h3>
+            <div id="populernewslist" itemscope itemtype="http://schema.org/Game">
+                <template is="dom-repeat" items="{{newscast}}" as="item">
+                    <a itemprop="url" class="populernews" href="/haber/[[item.url]]" onclick="load();">
+                        <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
+                        <div itemprop="interactionCount" class="populernews-viewcount">
+                            <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>
+                        <div itemprop="name" class="populernews-title">
+                            <h5>[[item.title]]</h5>
+                        </div>
+                    </a>
+                </template>
+            </div>
+
+            <div class="loadingIndicatorPopulerNews" style="color:#FF7800" hidden$="[[!loadingnews]]">
+                <loader-pac></loader-pac>
+            </div>
+        </template>
+
+
+    </template>
+
+    <script>
+        /**
+         * `kal-news-popular` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalNewsPopular extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-news-popular';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    page: {
+                        type: Number,
+                        value: 0
+                    },
+                    itemperpage: {
+                        type: Number,
+                        value: 18
+                    },
+                    query: {
+                        type: String,
+                        value: ''
+                    },
+                    loadingnews: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    newscast: {
+                        type: Array,
+                        value: []
+                    },
+                    currentnews: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    Polymer.Async.microTask.run(() => this.goReady());
+                });
+            }
+
+            goReady() {
+                this.set('go', true);
+            }
+
+            _response(a) {
+                //console.log('kaldirirmi-news-populer;_response' + a.detail.response.length);
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (news) {
+                        this.push('newscast', news);
+                    }, this);
+                }
+            }
+        }
+
+        window.customElements.define(KalNewsPopular.is, KalNewsPopular);
+    </script>
+</dom-module>

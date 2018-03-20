@@ -1,0 +1,172 @@
+<link rel="import" href="../model/paper-star-rating.html">
+
+<dom-module id="review-user-vote">
+    <template>
+        <style>
+            paper-star-rating {
+                --paper-star-rating-icon-size: 30px;
+            }
+
+            h3 {
+                color: white;
+                font-weight: 100;
+                margin: 0;
+            }
+
+            h3 b {
+                color: #FF7800;
+            }
+
+            #star-actions .star-column {
+                float: left;
+                padding: 10px;
+                margin: 10px;
+                width: 120px;
+            }
+
+            #star-actions .star-column paper-button {
+                width: 100%;
+                background-color: #FF7800;
+                color: white;
+            }
+
+            #star-actions {
+                display: flex;
+                justify-content: center;
+            }
+        </style>
+
+        <paper-star-rating itemprop="ratingValue" star="5" value="{{vote}}"></paper-star-rating>
+        <meta itemprop="bestRating" content="5" />
+        <div id="star-actions">
+
+            <div class="star-column">
+                <paper-button id="pbGameVote" raised on-click="_voteGame">Oyla</paper-button>
+            </div>
+        </div>
+        <iron-form id="postuservote" on-iron-form-response="_responsePostUserVote">
+                <form action="/h/main" method="post">
+                    <input type="hidden" name="fm" value="post-uservote-review" />
+                    <input type="hidden" id="userid" name="userid" value="[[userid]]" />
+                    <input type="hidden" id="gameid" name="gameid" value="[[gameid]]" />
+                    <input type="hidden" id="vote" name="vote" value="[[vote]]" />
+                </form>
+        </iron-form>
+
+        <!--<iron-ajax id="postuservote" method="POST" url="/h/main?fm=post-uservote-review&a=[[userid]]&b=[[gameid]]&c=[[vote]]" handl e-as="json" on-response="_responsePostVote"></iron-ajax>-->
+        <iron-ajax auto id="checkuserisvote" url="/h/main?fm=get-uservote&a=[[userid]]&b=[[gameid]]" handle-as="json" on-response="_responseCheckVote"></iron-ajax>
+
+    </template>
+
+    <script>
+        /**
+         * `review-user-vote` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ReviewUserVote extends Polymer.Element {
+                /**
+                 * String providing the tag name to register the element under.
+                 */
+                static get is() {
+                    return 'review-user-vote';
+                }
+
+                /**
+                 * Object describing property-related metadata used by Polymer features
+                 */
+                static get properties() {
+                    return {
+                        userid: {
+                            type: Number,
+                            value: 0,
+                            notify: true
+                        },
+                        gameid: {
+                            type: Number,
+                            value: 0,
+                            notify: true
+                        },
+                        uservoted: {
+                            type: Boolean,
+                            value: false,
+                            notify: true
+                        },
+                        vote: {
+                            type: Number,
+                            value: 0,
+                            notify: true
+                        }
+                    };
+                }
+
+                /**
+                 * Instance of the element is created/upgraded. Use: initializing state,
+                 * set up event listeners, create shadow dom.
+                 * @constructor
+                 */
+                constructor() {
+                    super();
+                }
+
+                /**
+                 * Use for one-time configuration of your component after local DOM is initialized. 
+                 */
+                ready() {
+                    super.ready();
+
+                    Polymer.RenderStatus.afterNextRender(this, function () {
+
+                    });
+                }
+
+
+                _responseCheckVote(a) {
+                        //console.log("check response ");
+                        if (a.detail.response.length > 0) {
+                            this.uservoted = true;
+                            a.detail.response.forEach(function (gameuservote) {
+                                //console.log(gameuservote.vote + " " + gameuservote.gameid);
+                                this.vote = gameuservote.vote;
+                            }, this);
+                        } else {
+                            this.uservoted = false;
+                        }
+                    }
+                    _voteGame() {
+                        if (this.vote == 0) {
+                            window.alert('Oy kullanmadan önce seçim yapmalısın!');
+                        } else if (this.vote != 0 && this.userid != null && this.gameid != null) {
+                            this.$.postuservote.submit();
+                            //this.$.postuservote.generateRequest();
+                            //oy secildi devamında userid ve gameid de boş olmadığına sıra geldi ajax post işlemine..
+                        }
+                    }
+                    _responsePostUserVote(e){
+                        console.log(e.detail.response);
+                        
+                        if (e.detail.response.success) {
+                            var btn = this.$.pbGameVote;
+                            btn.innerText = 'Oylama başarılı yönlendiriliyorsunuz..';
+                            btn.style.width = '200px';
+                            btn.style.fontSize = '15px';
+                            btn.style.fontWeight = '100';
+                            btn.style.right = '44px';
+                            // location.reload();
+                        }
+                        else {
+                            this.$.postuservote.reset();
+                            this.$.userid.removeAttribute('value');
+                            this.$.gameid.removeAttribute('value');
+                            this.$.vote.removeAttribute('value');
+                        }
+                    }
+
+                    }
+
+                window.customElements.define(ReviewUserVote.is, ReviewUserVote);
+    </script>
+</dom-module>

@@ -1,0 +1,306 @@
+<dom-module id="kal-review-popular">
+    <template>
+        <style>
+            :host {
+                display: block;
+                margin-bottom: 50px;
+            }
+
+            #populerreviewlist {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                background: #222;
+            }
+
+            .populerreview {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: 100%;
+                position: relative;
+                text-decoration: none;
+            }
+
+            .populerreview iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .populerreview .populerreview-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                height: 35%;
+                background: #ff7800;
+                width: 100%;
+            }
+
+            .populerreview .populerreview-viewcount {
+                color: white;
+                position: absolute;
+                top: 0;
+                right: 0;
+                padding: 5px;
+            }
+
+            .populerreview .populerreview-title h5 {
+                padding: 5px;
+                font-weight: 100;
+                font-size: calc(0.55em + 1vmin) !important;
+            }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            h3 {
+                font-weight: 100;
+                color: white;
+                padding: 10px;
+                background-color: #ff7800;
+            }
+
+            /*shine effect*/
+
+            populerreview:hover {}
+
+            /* generated element for shine effect.
+            * normal state is semi-transparent
+            * white but with zero width. Set no
+            * transition here for no mouse-leave
+            * animations. Otherwise the effect
+            * will play in reverse when your mouse
+            * leaves the element
+            */
+
+            .populerreview:after {
+                content: "";
+                position: absolute;
+                top: 0px;
+                /*left: 0px;*/
+                width: 0%;
+                height: 100%;
+                background-color: rgba(255, 120, 0, 0.4);
+                -webkit-transition: none;
+                -moz-transition: none;
+                -ms-transition: none;
+                -o-transition: none;
+                transition: none;
+            }
+
+            /* on hover we animate the width to
+            * 100% and opacity to 0 so the element
+            * grows and fades out
+            */
+
+            .populerreview:hover:after {
+                width: 100%;
+                background-color: rgba(255, 120, 0, 0.1);
+                -webkit-transition: all 0.3s ease-out;
+                -moz-transition: all 0.3s ease-out;
+                -ms-transition: all 0.3s ease-out;
+                -o-transition: all 0.3s ease-out;
+                transition: all 0.3s ease-out;
+            }
+
+            /*mobile first*/
+
+            .populerreview {
+                height: 180px;
+            }
+
+            @media only screen and (min-width: 768px) {
+                /* zoom %175 */
+                .populerreview {
+                    height: 260px;
+                }
+            }
+
+            /* media query for images */
+
+            /* yazı ayarları anasayfasından geliyor */
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                .populerreview {
+                    height: 195px;
+                }
+
+                .populerreview .populerreview-title {
+                    height: 27%;
+                }
+
+                .populerreview .populerreview-title h5 {
+                    font-size: calc(0.35em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                .populerreview {
+                    height: 215px;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                .populerreview {
+                    height: 230px;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                .populerreview {
+                    height: 280px;
+                }
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                .populerreview {
+                    height: 300px;
+                }
+            }
+        </style>
+
+        <template itemscope itemtype="http://schema.org/Review">
+            <iron-ajax auto="{{go}}" id="getpopulerreview" url="/h/main?fm=get-populer-review&a=[[currentreview]]" handle-as="json" on-response="_response"
+                loading="{{loadingreview}}"></iron-ajax>
+            <h3 itemprop="about">Popüler İncelemeler</h3>
+            <meta itemprop="author" content="[[item.title]]" />
+            <div itemscope itemtype="http://schema.org/Game" id="populerreviewlist">
+                <template is="dom-repeat" items="{{reviewcast}}" as="item">
+                    <a itemprop="url" class="populerreview" href="/inceleme/[[item.url]]" onclick="load();">
+                        <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
+                        <div itemprop="interactionCount" class="populerreview-viewcount">
+                            <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>
+                        <div itemprop="name" class="populerreview-title">
+                            <h5>[[item.title]]</h5>
+                        </div>
+                    </a>
+                </template>
+            </div>
+
+            <div class="loadingIndicatorPopulerNews" style="color:#FF7800" hidden$="[[!loadingreview]]">
+                <loader-pac></loader-pac>
+            </div>
+
+        </template>
+    </template>
+    <script>
+        /**
+         * `kal-review-popular` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalReviewPopular extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-review-popular';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    page: {
+                        type: Number,
+                        value: 0
+                    },
+                    itemperpage: {
+                        type: Number,
+                        value: 18
+                    },
+                    query: {
+                        type: String,
+                        value: ''
+                    },
+                    loadingreview: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    reviewcast: {
+                        type: Array,
+                        value: []
+                    },
+                    currentreview: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    Polymer.Async.microTask.run(() => this.goReady());
+                });
+            }
+
+            goReady() {
+                this.set('go', true);
+            }
+
+            _response(a) {
+                //console.log('kaldirirmi-review-populer;_response' + a.detail.response.length);
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (review) {
+                        this.push('reviewcast', review);
+                    }, this);
+                }
+            }
+        }
+
+        window.customElements.define(KalReviewPopular.is, KalReviewPopular);
+    </script>
+</dom-module>

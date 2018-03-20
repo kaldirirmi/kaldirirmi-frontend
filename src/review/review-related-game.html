@@ -1,0 +1,423 @@
+<dom-module id="review-related-game">
+    <template>
+        <style>
+            :host {
+                display: block;
+                margin-bottom: 50px;
+                color: white;
+            }
+
+            h2 {
+                font-weight: 100;
+                color: white;
+            }
+
+            #relatedgamelist {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                height: auto;
+                background: #222;
+                margin-top: 30px;
+            }
+
+            .relatedgame {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                /*margin: 5px;*/
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: 100%;
+                height: 100%;
+                position: relative;
+                text-decoration: none;
+            }
+
+            .relatedgame:hover iron-image[background] {
+                opacity: 1;
+            }
+
+            .card {
+                display: inline-block;
+                position: relative;
+                width: 100%;
+                margin: 25px 0px 0px 0px;
+                box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+                border-radius: 3px;
+            }
+
+            .card-stats .card-header {
+                float: left;
+                text-align: center;
+            }
+
+            .card [data-background-color] {
+                color: #FFFFFF;
+            }
+
+            .card [data-background-color="orange"] {
+                background: linear-gradient(60deg, #ffa726, #fb8c00);
+                box-shadow: 0 12px 20px -10px rgba(255, 152, 0, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(255, 152, 0, 0.2);
+            }
+
+            .card .card-header {
+                box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+                margin: -20px 15px 0;
+                border-radius: 4px;
+                background-color: #999999;
+                margin-bottom: 20px;
+            }
+
+            .card-stats .card-content {
+                text-align: right;
+                padding-top: 10px;
+            }
+
+            .card .card-content {
+                padding: 15px 20px;
+            }
+
+            .card .card-content-category:not([class*="text-"]) {
+                color: #fb8c00;
+                font-weight: 500;
+            }
+
+            p {
+                margin: 0 0 10px;
+            }
+
+            .card-stats .card-content {
+                color: black;
+                margin: 0;
+            }
+
+
+            .card .card-footer {
+                margin: 0 20px 10px;
+                padding-top: 10px;
+                border-top: 1px solid #eeeeee;
+            }
+
+            .card-header .relatedgame iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            #relatednewspanel {
+                margin-bottom: 15px;
+                border-top: 1px solid #eeeeee;
+                padding-top: 10px;
+                @apply --layout-horizontal;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+            }
+
+            #relatednewspanel .relatedpanel-title {
+                padding-left: 15px;
+                margin: 0;
+                padding-bottom: 5px;
+                font-weight: 400;
+                color: #fb8c00;
+            }
+
+            #relatednewspanel .relatedpanel-title b {
+                color: black;
+                font-weight: 500;
+            }
+
+            #relatednewslist {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+            }
+
+            .relatednews {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 2px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: 32%;
+                height: 100%;
+                position: relative;
+                text-decoration: none;
+            }
+
+            .relatednews iron-image {
+                width: 100%;
+                height: 190px;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+
+            .relatednews .relatednews-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                height: 52px;
+                background: #ff7800;
+                width: 100%;
+            }
+
+            .relatednews .relatednews-title h5 {
+                /*@apply --paper-font-common-nowrap);
+            text-align: center;*/
+                padding: 5px;
+                font-weight: 100;
+            }
+
+            .relatednews:hover iron-image[background] {
+                opacity: 1;
+            }
+
+
+            #pbGoGame a {
+                text-decoration: none;
+                color: white;
+            }
+
+            #pbGoGame {
+                background-color: #FF7800;
+                font-size: 15px;
+                min-width: 100%;
+            }
+
+            .game-comments p {
+                font-weight: 100 !important;
+            }
+
+            .card-footer .game-rating {
+                @apply --layout-vertical;
+                float: left;
+            }
+
+            .card-footer .game-rating .game-comments {
+                margin-left: 10px;
+            }
+
+
+            @media only screen and (min-width: 320px) {
+                /* game big image! */
+                .card-header {
+                    padding: 5px;
+                    height: 128px;
+                    width: 33%;
+                }
+            }
+
+            @media only screen and (min-width: 360px) {
+                /* game big image! */
+                .card-header {
+                    height: 156px;
+                }
+            }
+
+            @media only screen and (min-width: 412px) {
+                .card-header {
+                    height: 185px;
+                }
+            }
+
+            @media only screen and (max-width: 480px) {
+                .card-content-title {
+                    font-size: calc(0.6em + 1vmin);
+                }
+            }
+
+            @media only screen and (min-width: 768px) {
+                /* game big image! */
+                .card-header {
+                    padding: 6px;
+                    height: 210px;
+                    width: 22%;
+                }
+
+                .card-footer .game-rating {
+                    flex-direction: row;
+                }
+
+                #pbGoGame {
+                    min-width: 30%;
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                .card-header {
+                    padding: 6px;
+                    height: 180px;
+                    width: 23%;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                .card-header {
+                    padding: 7px;
+                    height: 190px;
+                    width: 21%;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                .card-header {
+                    padding: 8px;
+                    height: 190px;
+                    width: 19%;
+                }
+            }
+
+            @media only screen and (min-width: 1824px) {
+                .card-header {
+                    padding: 10px;
+                    height: 200px;
+                    width: 20%;
+                }
+            }
+        </style>
+
+        <iron-ajax auto id="gereviewrelatedgame" url="/h/main?fm=get-related-game-with-reviews&a=[[gameid]]" handle-as="json" on-response="_responseGame"></iron-ajax>
+        <div id="relatedgamelist" itemscope itemtype="http://schema.org/Game">
+            <template is="dom-repeat" items="{{relatedgame}}" as="item">
+                <span itemprop="name" hidden>[[item.name]]</span>
+                <div class="card card-stats">
+                    <div class="card-header" data-background-color="orange">
+                        <a itemprop="url" class="relatedgame" href="/oyun/[[item.url]]" onclick="load();">
+                            <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.name]]" preload fade></iron-image>
+                        </a>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-content-category" itemprop="publisher">[[item.publisher]]</h3>
+                        <h2 class="card-content-title" itemprop="genre">[[item.genres]]</h2>
+                        <paper-button id="pbGoGame" raised>
+                            <a itemprop="isBasedOnUrl" href="/oyun/[[item.url]]" onclick="load();">[[item.name]] oyununa git</a>
+                        </paper-button>
+                    </div>
+                    <div class="card-footer">
+                        <div class="game-rating" itemscope itemtype="http://schema.org/Offer">
+                            <div class="game-comments">
+                                <template is="dom-repeat" items="{{positivecomments}}" as="positive">
+                                    <p class="positive-comment-class" itemprop="commentText">
+                                        <iron-icon style="color:green" icon="icons:add-circle-outline"></iron-icon> [[positive]] </p>
+                                </template>
+                            </div>
+                            <div class="game-comments">
+                                <template is="dom-repeat" items="{{negativecomments}}" as="negative">
+                                    <p class="negative-comment-class" itemprop="commentText">
+                                        <iron-icon style="color:red" icon="icons:remove-circle-outline"></iron-icon> [[negative]] </p>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `review-related-game` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ReviewRelatedGame extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'review-related-game';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gameid: String,
+                    relatedgame: {
+                        type: Array,
+                        value: []
+                    },
+                    positivecomments: {
+                        type: Array,
+                        value: []
+                    },
+                    negativecomments: {
+                        type: Array,
+                        value: []
+                    },
+                    gametitle: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    newsActive: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _responseGame(a) {
+                //console.log('review-related-game reponse');
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (game) {
+                        //console.log(game);
+                        this.push('relatedgame', game);
+                        this.positivecomments = game.positivecomments.split(';');
+                        this.negativecomments = game.negativecomments.split(';');
+
+                    }, this);
+                }
+            }
+
+        }
+
+        window.customElements.define(ReviewRelatedGame.is, ReviewRelatedGame);
+    </script>
+</dom-module>
