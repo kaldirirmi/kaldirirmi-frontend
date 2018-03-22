@@ -6,13 +6,13 @@
         <style>
             /* Desktops and laptops ----------- */
 
-            #tag-cloud {
+            #tagcloud {
                 display: none;
             }
 
             @media only screen and (min-width: 1024px) {
                 /* zoom %175 */
-                #tag-cloud {
+                #tagcloud {
                     margin-left: -90px;
                     display: block;
                 }
@@ -20,21 +20,21 @@
 
             @media only screen and (min-width: 1224px) {
                 /* zoom %150 */
-                #tag-cloud {
+                #tagcloud {
                     margin-left: -70px;
                 }
             }
 
             @media only screen and (min-width: 1440px) {
                 /* zoom % 125*/
-                #tag-cloud {
+                #tagcloud {
                     margin-left: -30px;
                 }
             }
 
             @media only screen and (min-width: 1640px) {
                 /* zoom %110*/
-                #tag-cloud {
+                #tagcloud {
                     margin-left: 0px;
                 }
             }
@@ -42,7 +42,7 @@
             /* Large screens ----------- */
 
             @media only screen and (min-width: 1824px) {
-                #tag-cloud {
+                #tagcloud {
                     margin-left: 0px;
                 }
             }
@@ -51,8 +51,8 @@
         <iron-ajax auto id="gettagsofcontent" debounce="3000" url="/h/main?fm=get-tags-of-content&a=[[contenttitle]]&b=[[contenttable]]"
             handle-as="json" on-response="_response" loading="{{loadinggames}}"></iron-ajax>
 
-        <!-- dom elements here-->
-        <div id='tag-cloud'></div>
+        <!-- shadow dom elements here-->
+        <div id='tagcloud'></div>
 
     </template>
 
@@ -110,7 +110,7 @@
              */
             ready() {
                 super.ready();
-
+                console.log('yooo' ,this.contenttitle);
                 Polymer.RenderStatus.afterNextRender(this, function () {
 
                 });
@@ -118,6 +118,8 @@
 
 
             _response(a) {
+                // console.log('kalcloud, response',a);
+                this.set('contents', []);
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (content) {
                         //console.log(content);
@@ -146,7 +148,28 @@
                     fontStretch: 'normal', //wider, narrower, ultra-condensed, extra-condensed, condensed, semi-condensed, semi-expanded, expanded, extra-expanded, ultra-expanded
                     fontToUpperCase: true
                 };
-                $('#tag-cloud').svg3DTagCloud(settings);
+
+
+                console.log('settitngs', settings);
+                var tagcloud = this.$.tagcloud;
+                
+                var hasNodes = tagcloud.hasChildNodes();
+
+                if(hasNodes){
+                    var fc = tagcloud.firstChild;
+                    while( fc ) {
+                        tagcloud.removeChild( fc );
+                        fc = tagcloud.firstChild;
+                    }
+                }
+
+                window.SVG3DTagCloud(tagcloud, settings);
+
+                // this.$.tagcloud.svg3DTagCloud(settings);
+                //  $('#tagcloud').svg3DTagCloud(settings);
+                // console.log(settings);
+                // console.log(jQuery);
+                // console.log($('#tagcloud'));
             }
 
         }

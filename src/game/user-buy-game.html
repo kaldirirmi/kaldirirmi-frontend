@@ -1,0 +1,257 @@
+<!-- <user-buy-game userid="[[userid]]" gamename="[[gameinfo.name]]"></user-buy-game> -->
+
+<dom-module id="user-buy-game">
+    <template>
+        <style is="custom-style">
+            #buydialog {
+                overflow: auto;
+                min-height: 250px;
+                min-width: 600px;
+                position: fixed !important;
+                left: 0 !important;
+                margin: 15px !important;
+            }
+
+            #pbBuyButton {
+                background: #ff7800;
+                color: white;
+                text-transform: capitalize;
+                border-radius: 0px;
+                margin: 0;
+                margin-right: 2px;
+                width: 100px;
+            }
+
+            #pbBuyButton span {
+                transition: all linear .3s;
+            }
+
+            #pbBuyButton span:hover {
+                transform: scale(1.1);
+            }
+
+            #buylist {
+                @apply --layout-vertical;
+                @apply --shadow-elevation-8dp;
+                margin: 10px 0px;
+            }
+
+            #buylist .link {
+                text-decoration: none;
+                @apply --shadow-elevation-2dp;
+                background: #222;
+                color: white;
+                margin: 5px 10px;
+                transition: all linear .3s;
+            }
+
+            #buylist .link:hover {
+                transform: scale(1.04);
+            }
+
+            #buylist .link paper-button {
+                text-transform: capitalize;
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .loadingIndicator {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                min-height: 200px;
+            }
+
+            .loadingIndicator span {
+                font-size: calc(0.7em + 1vmin);
+                padding: 0px 15px;
+            }
+
+            #buydialog h2 {
+                margin: 0px;
+                padding: 10px;
+                border-bottom: 4px solid #ff7800;
+                background: #222;
+                color: #ff7800;
+            }
+        </style>
+        <iron-ajax id="iagetbuygames" url="/h/main?fm=get-google-search-list-of-that&a=[[gamename]]&b=[[querytype]]" method="get"
+            handle-as="json" on-response="_responseGoogleSearchList" loading="{{loading}}"></iron-ajax>
+
+        <paper-button id="pbBuyButton" raised on-tap="_pbOpenBuyDialog">
+            <span>Satın Al</span>
+        </paper-button>
+        <paper-dialog id="buydialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+            <h2>
+                <iron-icon icon="icons:arrow-downward"></iron-icon> Oyunu Buradaki Sitelerden Satın Alabilirsin</h2>
+            <paper-dialog-scrollable>
+                <template is="dom-if" if="[[loading]]">
+                    <div class="loadingIndicator">
+                        <paper-spinner-lite active class="orange"></paper-spinner-lite>
+                        <span>Liste Getiriliyor</span>
+                    </div>
+                </template>
+                <div hidden$="[[loading]]">
+                    <div id="buylist">
+                        <template is="dom-repeat" items="[[buylist]]">
+                            <a class="link" href="[[item.link]]" target="_blank">
+                                <paper-button>{{_remakeDisplay(item.displayLink)}}</paper-button>
+                            </a>
+                        </template>
+                    </div>
+                </div>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Kapat</paper-button>
+            </div>
+        </paper-dialog>
+
+
+
+    </template>
+
+    <script>
+        /**
+         * `user-buy-game` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class UserBuyGame extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'user-buy-game';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gamename: {
+                        type: String,
+                        value: "Battlefield 1", //default game 
+                    },
+                    userid: {
+                        type: Number,
+                        value: 0,
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    buylist: {
+                        type: Array,
+                        value: [],
+                    },
+                    querytype: {
+                        type: String,
+                        value: 'game',
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            setMessageToToaster(message) {
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                    text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
+            _pbOpenBuyDialog() {
+                    if (this.userid == 0) {
+
+                        this.setMessageToToaster('Satın Alma Listesini Görebilmek İçin Giriş Yapmalısın');
+                        // document.getElementById('alert').setAttribute('text',
+                        //     'Satın Alma Listesini Görebilmek İçin Giriş Yapmalısın');
+                        // document.getElementById('alert').open();
+                    } else {
+                        if (this.buylist.length > 0) {} else {
+                            this._debounceJob = Polymer.Debouncer.debounce(
+                                this._debounceJob,
+                                Polymer.Async.microTask,
+                                () => {
+                                    this._generateRequest()
+                                }
+                            )
+                            // this.debounce('_triggerBuyList', this._generateRequest, 400);
+                        }
+                        //document.getElementById('buydialog').positionTarget = this.$.pbBuyButton;
+                        this.$.buydialog.open();
+                        // document.getElementById('buydialog').open();
+                    }
+                    //this.$.buydialog.open();
+                }
+                _generateRequest() {
+                    //console.log('generate');
+                    if (this.$.iagetbuygames.lastRequest) {
+                        this.$.iagetbuygames.lastRequest.abort();
+                    }
+                    this.$.iagetbuygames.generateRequest();
+                }
+                
+                _responseGoogleSearchList(event) {
+                    //console.log('_responseGoogleSearchList');
+                    var response = event.detail.response;
+                    //console.log(response);
+
+                    if (response != null) {
+                        var counter = 0;
+                        response.items.forEach(function (current) {
+                            if (counter < 4) {
+                                if (this.buylist.length > 0) {
+                                    var locked = false;
+                                    this.buylist.forEach(function (previous) {
+                                        if (previous.displayLink == current.displayLink) {
+                                            locked = true;
+                                        }
+                                    });
+                                    if (!locked) {
+                                        this.push('buylist', current);
+                                        counter++;
+                                    }
+                                } else {
+                                    this.push('buylist', current);
+                                }
+                            }
+
+                        }, this);
+                    }
+                    this.loading = false;
+                }
+                _remakeDisplay(name) {
+                    return name + ' sitesine git';
+                }
+        }
+
+        window.customElements.define(UserBuyGame.is, UserBuyGame);
+    </script>
+</dom-module>

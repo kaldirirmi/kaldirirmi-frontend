@@ -1,0 +1,142 @@
+<!-- <game-steam-price gameappid="[[gameinfo.steamappid]]"></game-steam-price> -->
+
+<dom-module id="game-steam-price">
+    <template>
+        <style>
+            :host {
+                position: absolute;
+                left: 200px;
+            }
+
+            .steam-price {
+                font-weight: 100;
+                font-size: 20px;
+
+            }
+        </style>
+
+        <iron-ajax id="getpricefromsteam" url="/h/main?fm=get-app-details&amp;a=[[gameappid]]" handle-as="json" on-response="_responseAppDetails"
+            loading="{{loading}}" debounce-duration="300"></iron-ajax>
+        <template is="dom-if" if="[[!invisibleprice]]">
+            <template is="dom-if" if="[[!loading]]">
+                <template is="dom-if" if="[[isfree]]">
+                    <span class="steam-price">Steam Fiyatı: Oynaması Ücretsiz</span>
+                </template>
+                <template is="dom-if" if="[[!isfree]]">
+                    <template is="dom-if" if="[[priceadded]]">
+                        <span class="steam-price">Steam Fiyatı:
+                            <b>[[price]] TL</b>
+                        </span>
+                    </template>
+                    <template is="dom-if" if="[[!priceadded]]">
+                        <span class="steam-price" style$="color:[[pricecolor]]">Steam Fiyatı:
+                            <i>Belli Değil</i>
+                        </span>
+                    </template>
+                </template>
+
+            </template>
+            <template is="dom-if" if="[[loading]]">
+                <paper-spinner-lite active="" class="orange"></paper-spinner-lite>
+            </template>
+        </template>
+
+
+
+
+    </template>
+
+    <script>
+        /**
+         * `game-steam-price` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GameSteamPrice extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'game-steam-price';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gameappid: Number,
+                    price: String,
+                    loading: Boolean,
+                    invisibleprice: Boolean,
+                    priceadded: Boolean,
+                    isfree: Boolean,
+                    pricecolor: {
+                        type: String,
+                        value: '#fff',
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                if (this.gameappid != 0)
+                    this.$.getpricefromsteam.generateRequest();
+                else
+                    this.set('invisibleprice', true);
+
+            }
+
+            _responseAppDetails(event) {
+                var response = event.detail.response;
+                if (response != null) {
+                    //console.log(response);
+                    var id = response[this.gameappid.toString()];
+                    if (id.data.is_free == false) {
+                        if (typeof id.data.price_overview != 'undefined') {
+                            var price = id.data.price_overview.final.toString();
+                            var result = price.substring(0, price.length - 2);
+                            this.price = result;
+                            this.set('priceadded', true);
+                        }
+                    } else {
+                        this.set('isfree', true);
+                    }
+                }
+                this.set('loading', false);
+            }
+
+        }
+
+        window.customElements.define(GameSteamPrice.is, GameSteamPrice);
+    </script>
+</dom-module>

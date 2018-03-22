@@ -316,7 +316,7 @@
                         // document.getElementById('passwordform').submit();
                     }
                     else {
-                        this._setAlarmaa('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
+                        this.setMessageToToaster('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
                     }
                     this.passwordcounter = this.passwordcounter + 1;
 
@@ -330,7 +330,7 @@
                         // document.getElementById('profileform').submit();
                     }
                     else {
-                        this._setAlarmaa('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
+                        this.setMessageToToaster('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
                     }
                     this.profilecounter = this.profilecounter + 1;
                 }
@@ -344,16 +344,16 @@
                     //if success, trigger userinfo vcard
                     this.generator = Math.random().toString();
                 }
-                this._setAlarmaa(response.message);
+                this.setMessageToToaster(response.message);
             }
 
             _ironFormResponseForPassword(event) {
                 var response = event.detail.response;
                 //console.log('ironForm Password => ' + response);
-                this._setAlarmaa(response.message);
+                this.setMessageToToaster(response.message);
             }
 
-            _setAlarmaa(message) {
+            setMessageToToaster(message) {
                 var event = new CustomEvent('toaster', {
                     bubbles: true,
                     composed: true,

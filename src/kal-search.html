@@ -289,7 +289,7 @@
                 if (e.detail.response.length > 0) {
                     var sh = '';
                     for (var i = 0; i < e.detail.response.length; i++) {
-                        sh = sh.concat('<li class="game" onclick="location.href=\'/oyun/' + e.detail.response[i]
+                        sh = sh.concat('<li class="game" onclick="location.href=\'/game/' + e.detail.response[i]
                             .url +
                             '\'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/' + e.detail
                             .response[
@@ -318,88 +318,88 @@
 
 
 
-        //navigate 'Oyun Ara' with arrow keys
-        function navigateSearchGame() {
-            var active = 0;
-            rePosition();
+        //navigate 'game Ara' with arrow keys
+        // function navigateSearchGame() {
+        //     var active = 0;
+        //     rePosition();
 
-            $('.header-search').keydown(function (e) {
-                if (e.keyCode == 38 || e.keyCode == 40) {
-                    reCalculate(e);
-                    rePosition();
-                    return false;
-                }
-                if (e.keyCode == 13) {
-                    e.preventDefault();
-                    $('#searchlayer #searchresults .game').eq(active).click();
-                }
+        //     $('.header-search').keydown(function (e) {
+        //         if (e.keyCode == 38 || e.keyCode == 40) {
+        //             reCalculate(e);
+        //             rePosition();
+        //             return false;
+        //         }
+        //         if (e.keyCode == 13) {
+        //             e.preventDefault();
+        //             $('#searchlayer #searchresults .game').eq(active).click();
+        //         }
 
-            });
+        //     });
 
-            function reCalculate(e) {
-                var columns = $('#searchlayer #searchresults:eq(0) .game').length; //5
-                //console.log(' columns:' + columns + ', active =>' + active);
-                if (e.keyCode == 38) { // move up
-                    if (active <= 0) {
-                        active = 0;
-                    } else {
-                        active = active - 1;
-                    }
-                }
-                if (e.keyCode == 40) { // move down
-                    if (active + 1 >= columns) active = columns - 1;
-                    else active = active + 1;
-                }
-            }
+        //     function reCalculate(e) {
+        //         var columns = $('#searchlayer #searchresults:eq(0) .game').length; //5
+        //         //console.log(' columns:' + columns + ', active =>' + active);
+        //         if (e.keyCode == 38) { // move up
+        //             if (active <= 0) {
+        //                 active = 0;
+        //             } else {
+        //                 active = active - 1;
+        //             }
+        //         }
+        //         if (e.keyCode == 40) { // move down
+        //             if (active + 1 >= columns) active = columns - 1;
+        //             else active = active + 1;
+        //         }
+        //     }
 
-            function rePosition() {
-                $('.active').removeClass('active');
-                $('#searchlayer #searchresults .game').eq(active).addClass('active');
-            }
-        }
+        //     function rePosition() {
+        //         $('.active').removeClass('active');
+        //         $('#searchlayer #searchresults .game').eq(active).addClass('active');
+        //     }
+        // }
 
 
-        document.getElementById('searchgame').addEventListener('input',
-            function (e) {
-                var q = this.value.trim();
-                if (q.length >= 2) {
-                    document.getElementById('searching').setAttribute('active', '');
-                    document.getElementById('searchlayer').removeAttribute('hidden');
-                    document.getElementById('gamesearcher').params = {
-                        "fm": "search-game",
-                        "query": q
-                    };
-                    if (document.getElementById('gamesearcher').lastRequest)
-                        document.getElementById('gamesearcher').lastRequest.abort();
+        // document.getElementById('searchgame').addEventListener('input',
+        //     function (e) {
+        //         var q = this.value.trim();
+        //         if (q.length >= 2) {
+        //             document.getElementById('searching').setAttribute('active', '');
+        //             document.getElementById('searchlayer').removeAttribute('hidden');
+        //             document.getElementById('gamesearcher').params = {
+        //                 "fm": "search-game",
+        //                 "query": q
+        //             };
+        //             if (document.getElementById('gamesearcher').lastRequest)
+        //                 document.getElementById('gamesearcher').lastRequest.abort();
 
-                    document.getElementById('gamesearcher').generateRequest();
-                } else {
-                    document.getElementById('searching').removeAttribute('active');
-                    document.getElementById('searchlayer').setAttribute('hidden', '');
-                }
+        //             document.getElementById('gamesearcher').generateRequest();
+        //         } else {
+        //             document.getElementById('searching').removeAttribute('active');
+        //             document.getElementById('searchlayer').setAttribute('hidden', '');
+        //         }
 
-            });
-        document.getElementById('gamesearcher').addEventListener('response', function (e) {
-            if (e.detail.response.length > 0) {
-                var sh = '';
-                for (var i = 0; i < e.detail.response.length; i++) {
-                    sh = sh.concat('<li class="game" onclick="location.href=\'/oyun/' + e.detail.response[i].url +
-                        '\'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/' + e.detail.response[
-                            i].picture + '" /></div><div class="title"><span>' + e.detail.response[i].name +
-                        '</span></div></li>');
-                }
-                document.getElementById('searchresults').innerHTML = sh;
-                document.getElementById('searchresults').removeAttribute('hidden');
-            } else {
-                document.getElementById('searchresults').setAttribute('hidden', '');
-            }
-            document.getElementById('defaultsearchlink').setAttribute('href', '/ara?query=' + document.getElementById(
-                'searchgame').value);
-            document.getElementById('defaultsearchtext').innerText = document.getElementById('searchgame').value +
-                ' ile tüm ilgili sonuçları gör';
-            document.getElementById('searching').removeAttribute('active');
+        //     });
+        // document.getElementById('gamesearcher').addEventListener('response', function (e) {
+        //     if (e.detail.response.length > 0) {
+        //         var sh = '';
+        //         for (var i = 0; i < e.detail.response.length; i++) {
+        //             sh = sh.concat('<li class="game" onclick="location.href=\'/game/' + e.detail.response[i].url +
+        //                 '\'"><div class="picture"><img src="//cdn.kaldirirmi.com/images/games/' + e.detail.response[
+        //                     i].picture + '" /></div><div class="title"><span>' + e.detail.response[i].name +
+        //                 '</span></div></li>');
+        //         }
+        //         document.getElementById('searchresults').innerHTML = sh;
+        //         document.getElementById('searchresults').removeAttribute('hidden');
+        //     } else {
+        //         document.getElementById('searchresults').setAttribute('hidden', '');
+        //     }
+        //     document.getElementById('defaultsearchlink').setAttribute('href', '/ara?query=' + document.getElementById(
+        //         'searchgame').value);
+        //     document.getElementById('defaultsearchtext').innerText = document.getElementById('searchgame').value +
+        //         ' ile tüm ilgili sonuçları gör';
+        //     document.getElementById('searching').removeAttribute('active');
 
-            navigateSearchGame();
-        });
+        //     navigateSearchGame();
+        // });
     </script>
 </dom-module>

@@ -11,6 +11,12 @@
 <link rel="import" href="../../bower_components/watsonlogic-parallax/watsonlogic-parallax.html">
 
 
+<link rel="import" href="./game-steam-price.html">
+<link rel="import" href="./user-buy-game.html">
+<link rel="import" href="./user-like-game.html">
+
+
+
 <dom-module id="kal-selected-game">
     <template>
         <style include="shared-styles">
@@ -108,8 +114,6 @@
             }
 
             #gamecontent #options {
-                /*@apply(--layout-horizontal);
-                @apply(--layout-end-justified);*/
                 display: -ms-flexbox;
                 display: -webkit-flex;
                 display: flex;
@@ -329,7 +333,7 @@
                 -webkit-justify-content: center;
                 justify-content: center;
                 /*@apply(--layout-vertical);
-            @apply(--layout-center-center);*/
+                @apply(--layout-center-center);*/
             }
 
             #embedholder #closeembed {
@@ -464,7 +468,6 @@
             }
 
             /* All content font sizes */
-
             p,
             h1,
             h2,
@@ -758,12 +761,6 @@
                     width: 38px;
                     height: 38px;
                 }
-
-
-                /*#gamecontent div[role="listbox"]:nth-last-child(2),
-            #gamecontent div[role="listbox"]:nth-last-child(2) ~ div {
-                width: calc(50% - 20px);
-            }*/
                 /* user like button */
                 #panel-contents .user-like-part {
                     margin: 8px;
@@ -1062,11 +1059,6 @@
                 padding: 0px 6px 6px 6px;
             }
 
-            /*#gamecontent #poster iron-image{
-            min-height: 80% !important;
-
-        }*/
-
             #gamecontent #poster .interaction paper-button {
                 color: #222;
                 background-color: #ff7800;
@@ -1331,8 +1323,6 @@
                             <div id="metadata">
                                 <h1 class="metagametitle" itemprop="name">[[gameinfo.name]]</h1>
                                 <h4 itemprop="genre">[[_remakeGenres(gameinfo.genres)]]</h4>
-
-
                             </div>
                             <div id="similargames">
                                 <kaldirirmi-similar-games genre="[[gameinfo.genres]]"></kaldirirmi-similar-games>
