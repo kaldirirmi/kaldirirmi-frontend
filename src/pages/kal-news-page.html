@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Selected News Page -->
         <template is="dom-if" if={{selectedActive}}>
-            <kal-selected-news url="[[data.newsUrl]]"></kal-selected-news>
+            <kal-selected-news url="[[data.newsUrl]]" is-mobile=[[isMobile]]></kal-selected-news>
         </template>
         <!-- All News Page -->
         <template is="dom-if" if={{!selectedActive}}>

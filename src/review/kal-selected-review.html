@@ -14,6 +14,66 @@
 <dom-module id="kal-selected-review">
     <template>
         <style>
+            :host {
+                display: block;
+                /* --header-image: url('/frontend/images/nouseradded.jpg'); */
+            }
+
+            :host([is-mobile]) #news-page-container #kalparallax {
+                height: 210px;
+            }
+
+
+            app-header {
+                --app-header-background-front-layer: {
+                    background-image: var(--header-image);
+                    background-position: 50% 10%;
+                }
+            }
+
+            #review-page-container #kalparallax {
+                /* The image used */
+                /* background-image: url('img_parallax.jpg'); */
+                /* background-image: var(--header-image); */
+                height: 45vh;
+                /* background-attachment: fixed;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover; */
+            }
+
+            #review-page-container #kalparallax iron-image {
+                width: 100%;
+                height: 100%;
+            }
+
+            .loader-pac-content {
+                position: relative;
+                min-height: 300px;
+            }
+
+            .loader-pac-content span {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                /* margin-top: 150px; */
+                /* margin-left: 20px; */
+                position: absolute;
+                top: 20%;
+                width: 100%;
+                text-align: center;
+            }
+
+            .review-is-not-exist {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                position: absolute;
+                width: 100%;
+                margin-top: 20px;
+                text-align: center;
+            }
+
             p,
             h1,
             h2,
@@ -742,45 +802,36 @@
             loading="{{loading}}"></iron-ajax>
         <iron-ajax id="getgamekpinfo" url="/h/main?fm=get-gamekp-info&a=[[reviewinfo.relatedgames]]" handle-as="json" on-response="_onResponseKpInfo"
             loading="{{loading}}"></iron-ajax>
+        <iron-form id="formkleine">
+            <form action="/h/main" method="post">
+                <input type="hidden" name="fm" value="post-kleine-container-reviews" />
+                <input type="hidden" id="container" name="container" value="[[reviewinfo.id]]" />
+                <input type="hidden" id="kleine" name="kleine" value="[[reviewinfo.viewcount]]" />
+            </form>
+        </iron-form>
 
         <app-toolbar>
             <!-- <paper-icon-button icon="arrow-back" on-tap="onBackToAll"></paper-icon-button> -->
-            <a id="back" href="/reviews">
+            <a id="back" href="/news">
                 <paper-icon-button icon="icons:arrow-back" on-tap="onBackToAll"></paper-icon-button>
             </a>
-            <span>Geri Dön</span>
+            <span>Tüm İncelemeler</span>
         </app-toolbar>
 
         <div hidden$=[[!loading]] class="loader-pac-content">
             <loader-pac></loader-pac>
+            <span>
+                İnceleme Getiriyor..
+            </span>
         </div>
         <div hidden$="[[loading]]">
             <template is="dom-if" if={{isReview}}>
-
-                <div>
-                    <iron-form id="formkleine">
-                        <form action="/h/main" method="post">
-                            <input type="hidden" name="fm" value="post-kleine-container-reviews" />
-                            <input type="hidden" id="container" name="container" value="[[reviewinfo.id]]" />
-                            <input type="hidden" id="kleine" name="kleine" value="[[reviewinfo.viewcount]]" />
-                        </form>
-                    </iron-form>
-
-                    <div id="review-page">
-                        <div id="review-page-header">
-                            <paper-icon-button id="pibBackReviews" icon="arrow-back" onclick="load(); location.href='/incelemeler';"></paper-icon-button>
-                            <paper-tooltip for="pibBackReviews" position="left" animation-delay="200">İncelemelere Geri Dön</paper-tooltip>
-                            <h1>[[reviewinfo.title]]</h1>
-                        </div>
-                    </div>
-
-                    <parallax-layers>
-                        <div depth="-0.5" class="fullbleed" style="margin:0 auto;">
-                            <iron-image src="[[reviewinfo.picture]]" sizing="cover" preload fade alt="[[reviewinfo.title]]"></iron-image>
-                        </div>
-                    </parallax-layers>
+                <div id="review-page">
                     <kal-nav-content datatable="kalreviews" dataid="[[reviewinfo.id]]"></kal-nav-content>
                     <div id="review-page-container">
+                        <div id="kalparallax">
+                            <iron-image src="[[reviewinfo.picture]]" sizing="cover" preload fade alt="[[reviewinfo.title]]"></iron-image>
+                        </div>
                         <div id="reviewcontent" itemscope itemtype="http://schema.org/Review">
                             <div id="panel">
                                 <div id="options">
@@ -895,9 +946,9 @@
                     </div>
                 </div>
             </template>
-            <template is="dom-if" if={{!isReview}}>
-                <span>Böyle bir inceleme bulunmamaktadır!</span>
-            </template>
+            <div hidden$=[[isReview]]>
+                <span class="news-is-not-exist">Böyle bir inceleme bulunmamaktadır!</span>
+            </div>
         </div>
 
     </template>
@@ -1015,7 +1066,7 @@
 
                     //generate this for retrieving kp infos
                     this.$.getgamekpinfo.generateRequest();
-                } else{
+                } else {
                     var myobj = {
                         details: "Lorem Ipsum Nedir?Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır. Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur.Neden Kullanırız?Yinelenen bir sayfa içeriğinin okuyucunun dikkatini dağıttığı bilinen bir gerçektir. Lorem Ipsum kullanmanın amacı, sürekli 'buraya metin gelecek, buraya metin gelecek' yazmaya kıyasla daha dengeli bir harf dağılımı sağlayarak okunurluğu artırmasıdır. Şu anda birçok masaüstü yayıncılık paketi ve web sayfa düzenleyicisi, varsayılan mıgır metinler olarak Lorem Ipsum kullanmaktadır. Ayrıca arama motorlarında 'lorem ipsum' anahtar sözcükleri ile arama yapıldığında henüz tasarım aşamasında olan çok sayıda site listelenir. Yıllar içinde, bazen kazara, bazen bilinçli olarak (örneğin mizah katılarak), çeşitli sürümleri geliştirilmiştir.",
                         category: "inceleme",
