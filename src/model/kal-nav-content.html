@@ -220,7 +220,7 @@
             </svg>
         </div>
 
-        <iron-ajax auto id="iaGetNavContents" debounce="3000" url="/h/main?fm=get-nav-contents&a=[[dataid]]&b=[[datatable]]" handle-as="json"
+        <iron-ajax id="iaGetNavContents" debounce="3000" url="/h/main?fm=get-nav-contents&a=[[dataid]]&b=[[datatable]]" handle-as="json"
             on-response="_onResponse"></iron-ajax>
         <nav class="nav-reveal">
             <a class="prev" href$="{{_remakeUrl(response.left.url, datatable)}}">
@@ -281,8 +281,7 @@
                 },
                 dataid: {
                     type: Number,
-                    value: 0,
-                    notify: true
+                    observer: '_dataidchanged'
                 },
                 response: {
                     type: Array,
@@ -307,6 +306,19 @@
             constructor() {
                 super();
             }
+            
+            _dataidchanged(newVal, oldVal){
+                if(newVal !== undefined){
+                    this._generateRequest();
+                }
+            }
+
+            _generateRequest(){
+                if(this.$.iaGetNavContents.lastRequest){
+                    this.$.iaGetNavContents.lastRequest.abort();
+                }
+                this.$.iaGetNavContents.generateRequest();
+            }
 
             /**
              * Use for one-time configuration of your component after local DOM is initialized. 
@@ -321,7 +333,7 @@
             
             _onResponse(event) {
                 var response = event.detail.response;
-                //console.log(response);
+                // console.log(response);
                 var index = 0;
 
                 if(event.detail.response.length == 1)
@@ -350,12 +362,15 @@
 
             }
             _remakePicture(picture, table) {
-                if (table == 'kalnews') {
-                    return 'https://cdn.kaldirirmi.com/images/news/' + picture;
+                if(picture !== undefined){
+                    if (table == 'kalnews') {
+                        return 'https://cdn.kaldirirmi.com/images/news/' + picture;
+                    }
+                    else if (table == 'kalreviews') {
+                        return 'https://cdn.kaldirirmi.com/images/reviews/' + picture;
+                    }
                 }
-                else if (table == 'kalreviews') {
-                    return 'https://cdn.kaldirirmi.com/images/reviews/' + picture;
-                }
+
             }
 
         }

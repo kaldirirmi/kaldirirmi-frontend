@@ -6,7 +6,25 @@
                 margin-bottom: 50px;
                 color: white;
             }
+            h2 {
+                font-size: calc(0.65em + 1vmin) !important;
+            }
 
+            h3 {
+                font-size: calc(0.55em + 1vmin) !important;
+            }
+
+            h4 {
+                font-size: calc(0.45em + 1vmin) !important;
+            }
+
+            h5 {
+                font-size: calc(0.35em + 1vmin) !important;
+            }
+
+            h6 {
+                font-size: calc(0.25em + 1vmin) !important;
+            }
             h2 {
                 font-weight: 100;
                 color: white;
@@ -294,9 +312,23 @@
                     width: 20%;
                 }
             }
+
+            
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
         </style>
 
-        <iron-ajax auto id="gereviewrelatedgame" url="/h/main?fm=get-related-game-with-reviews&a=[[gameid]]" handle-as="json" on-response="_responseGame"></iron-ajax>
+        <iron-ajax id="gereviewrelatedgame" url="/h/main?fm=get-related-game-with-reviews&a=[[gameid]]" handle-as="json" on-response="_responseGame" loading={{loading}}></iron-ajax>
         <div id="relatedgamelist" itemscope itemtype="http://schema.org/Game">
             <template is="dom-repeat" items="{{relatedgame}}" as="item">
                 <span itemprop="name" hidden>[[item.name]]</span>
@@ -332,7 +364,9 @@
                 </div>
             </template>
         </div>
-
+        <div class="loadingIndicator" style="color:#FF7800" hidden$="[[!loading]]">
+            <paper-spinner-lite active></paper-spinner-lite>
+        </div>
     </template>
 
     <script>
@@ -357,7 +391,10 @@
              */
             static get properties() {
                 return {
-                    gameid: String,
+                    gameid:{
+                        type: String,
+                        observer: '_gameidchanged'
+                    },
                     relatedgame: {
                         type: Array,
                         value: []
@@ -373,11 +410,6 @@
                     gametitle: {
                         type: String,
                         value: '',
-                        notify: true
-                    },
-                    newsActive: {
-                        type: Boolean,
-                        value: false,
                         notify: true
                     }
                 };
@@ -402,8 +434,31 @@
 
                 });
             }
+            
+            _gameidchanged(newVal, oldVal){
+                if(newVal !== undefined){
+                    this._generateRequest();
+                }
+            }
+
+            _generateRequest(){
+                
+                if(this.$.gereviewrelatedgame.lastRequest){
+                    this.$.gereviewrelatedgame.lastRequest.abort();
+                }
+                this.$.gereviewrelatedgame.generateRequest();
+
+            }
+
+            _clear(){
+                this.set('relatedgame', []);
+                this.set('positivecomments', []);
+                this.set('negativecomments', []);
+                
+            }
 
             _responseGame(a) {
+                this._clear();
                 //console.log('review-related-game reponse');
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (game) {

@@ -43,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             
         </style>
 
-        <app-route route="{{route}}" pattern="/:newsUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/news/:newsUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
 
         <!-- Selected News Page -->
         <template is="dom-if" if={{selectedActive}}>
@@ -62,7 +62,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
-                   
                     isMobile: {
                         type: Boolean,
                         reflectToAttribute: true
@@ -82,9 +81,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
 
+            /**
+             * Use for one-time configuration of your component after local DOM is
+             * initialized.
+             */
+            ready() {
+                super.ready();
+            
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                });
+            
+            }
+
            
             _selectedActiveChanged(selectedActive, previousValue) {
-                // console.log('selectedActive: ', selectedActive);
+                //  console.log('selectedActive: ', selectedActive);
                 // console.log('previousValue: ', previousValue);
             }
 

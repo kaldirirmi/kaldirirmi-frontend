@@ -4,6 +4,7 @@
             :host {
                 display: block;
                 margin-bottom: 50px;
+                /* @apply --shadow-elevation-8dp; */
             }
 
             #populerreviewlist {
@@ -186,28 +187,27 @@
                 }
             }
         </style>
+        <iron-ajax id="getpopulerreview" url="/h/main?fm=get-populer-review&a=[[currentreview]]" handle-as="json" on-response="_response"
+            loading="{{loadingreview}}"></iron-ajax>
 
-        <template itemscope itemtype="http://schema.org/Review">
-            <iron-ajax auto="{{go}}" id="getpopulerreview" url="/h/main?fm=get-populer-review&a=[[currentreview]]" handle-as="json" on-response="_response"
-                loading="{{loadingreview}}"></iron-ajax>
-            <h3 itemprop="about">Popüler İncelemeler</h3>
-            <meta itemprop="author" content="[[item.title]]" />
-            <div itemscope itemtype="http://schema.org/Game" id="populerreviewlist">
-                <template is="dom-repeat" items="{{reviewcast}}" as="item">
-                    <a itemprop="url" class="populerreview" href="/inceleme/[[item.url]]" onclick="load();">
-                        <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
-                        <div itemprop="interactionCount" class="populerreview-viewcount">
-                            <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>
-                        <div itemprop="name" class="populerreview-title">
-                            <h5>[[item.title]]</h5>
-                        </div>
-                    </a>
-                </template>
-            </div>
+        <h3 itemprop="about">Popüler İncelemeler</h3>
 
-            <div class="loadingIndicatorPopulerNews" style="color:#FF7800" hidden$="[[!loadingreview]]">
-                <loader-pac></loader-pac>
-            </div>
+        <div itemscope itemtype="http://schema.org/Game" id="populerreviewlist">
+            <template is="dom-repeat" items="{{reviewcast}}" as="item">
+                <a itemprop="url" class="populerreview" href="/inceleme/[[item.url]]" onclick="load();">
+                    <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
+                    <div itemprop="interactionCount" class="populerreview-viewcount">
+                        <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>
+                    <div itemprop="name" class="populerreview-title">
+                        <h5>[[item.title]]</h5>
+                    </div>
+                </a>
+            </template>
+        </div>
+
+        <div class="loadingIndicator" style="color:#FF7800" hidden$="[[!loadingreview]]">
+            <paper-spinner-lite active></paper-spinner-lite>
+        </div>
 
         </template>
     </template>
@@ -261,8 +261,7 @@
                     },
                     currentreview: {
                         type: Number,
-                        value: 0,
-                        notify: true
+                        observer: '_currentreviewchanged'
                     }
                 };
             }
@@ -282,16 +281,24 @@
             ready() {
                 super.ready();
 
-                Polymer.RenderStatus.afterNextRender(this, function () {
-                    Polymer.Async.microTask.run(() => this.goReady());
-                });
+            }
+            
+            _currentreviewchanged(newVal, oldVal){
+                if(newVal !== undefined){
+                    this._generateRequest();
+                }
             }
 
-            goReady() {
-                this.set('go', true);
+            _generateRequest(){
+                if(this.$.getpopulerreview.lastRequest){
+                    this.$.getpopulerreview.lastRequest.abort();
+                }
+                this.$.getpopulerreview.generateRequest();
             }
 
             _response(a) {
+                this.set('reviewcast', []);
+
                 //console.log('kaldirirmi-review-populer;_response' + a.detail.response.length);
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (review) {

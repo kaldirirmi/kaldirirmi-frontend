@@ -18,6 +18,10 @@
                height: 210px;
             }
 
+            :host([is-mobile]) #news-page{
+                height: auto !important;
+            }
+
             
             app-header {
                 --app-header-background-front-layer: {
@@ -806,7 +810,7 @@
             }
 
             _selectedNewsChanged(newVal, oldVal) {
-                console.log('newVal', newVal);
+                // console.log('newVal', newVal);
                 // we are starting here..
                 this._clearState();
                 this._debounceWork();
@@ -815,11 +819,9 @@
 
             _onResponse(event) {
                 var response = event.detail.response;
-                console.log('kal-selected-news response: ', response);
+                // console.log('kal-selected-news response: ', response);
 
                 if (response !== null) {
-                    console.log('burdaaa');
-
                     this.set('isNews', true);
                     response.details =
                         "Lorem Ipsum Nedir?Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır. Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur.Neden Kullanırız?Yinelenen bir sayfa içeriğinin okuyucunun dikkatini dağıttığı bilinen bir gerçektir. Lorem Ipsum kullanmanın amacı, sürekli 'buraya metin gelecek, buraya metin gelecek' yazmaya kıyasla daha dengeli bir harf dağılımı sağlayarak okunurluğu artırmasıdır. Şu anda birçok masaüstü yayıncılık paketi ve web sayfa düzenleyicisi, varsayılan mıgır metinler olarak Lorem Ipsum kullanmaktadır. Ayrıca arama motorlarında 'lorem ipsum' anahtar sözcükleri ile arama yapıldığında henüz tasarım aşamasında olan çok sayıda site listelenir. Yıllar içinde, bazen kazara, bazen bilinçli olarak (örneğin mizah katılarak), çeşitli sürümleri geliştirilmiştir.";

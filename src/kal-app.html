@@ -105,6 +105,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     @apply --layout-center-justified;
 
                 }
+                app-drawer div[main-logo] login-button{
+                    margin-left: 20px;
+                }
 
                 app-drawer div[main-logo] div[main-image] a {
                     cursor: pointer;
@@ -273,14 +276,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     >
                     <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
                     <kal-playground-page name="playground" is-mobile=[[isMobile]] route="{{subroute}}"></kal-playground-page>
-                    <kal-game-page name="game" is-mobile=[[isMobile]] route="{{subroute}}"></kal-game-page>
-                    <kal-news-page name="news" is-mobile=[[isMobile]] route="{{subroute}}"></kal-news-page>
-                    <kal-reviews-page name="reviews" is-mobile=[[isMobile]] route="{{subroute}}"></kal-reviews-page>
+                    <kal-game-page name="game" is-mobile=[[isMobile]] route="{{route}}"></kal-game-page>
+                    <kal-news-page name="news" is-mobile=[[isMobile]] route="{{route}}"></kal-news-page>
+                    <kal-reviews-page name="reviews" is-mobile=[[isMobile]] route="{{route}}"></kal-reviews-page>
                     <kal-gallery-page name="gallery" is-mobile=[[isMobile]] route="{{subroute}}"></kal-gallery-page>
                     <kal-hardware-page name="hardware" is-mobile=[[isMobile]] route="{{subroute}}"></kal-hardware-page>
                     <kal-challenge-page name="challenge" is-mobile=[[isMobile]] route="{{subroute}}"></kal-challenge-page>
                     <kal-twitch-page name="twitch" is-mobile=[[isMobile]] route="{{subroute}}"></kal-twitch-page>
-                    <kal-profile-page name="profile" is-mobile=[[isMobile]] route="{{subroute}}"></kal-profile-page>
+                    <kal-profile-page name="profile" is-mobile=[[isMobile]] route="{{route}}"></kal-profile-page>
                     <kal-view404-page name="view404"></kal-view404-page>
                 </iron-pages>
 

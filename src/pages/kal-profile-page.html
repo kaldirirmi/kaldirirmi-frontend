@@ -137,7 +137,7 @@
             }
         </style>
 
-        <app-route route="{{route}}" pattern="/:subpage" data="{{data}}" active="{{selectedPageActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/profile/:subpage" data="{{data}}" active="{{selectedPageActive}}"></app-route>
 
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
@@ -357,7 +357,7 @@
                     isMobile: {
                         type: Boolean,
                         reflectToAttribute: true
-                    },
+                    },  
                     route: Object,
                     data: Object,
                     subpage: {

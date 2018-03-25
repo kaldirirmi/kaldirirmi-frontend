@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             
         </style>
 
-        <app-route route="{{route}}" pattern="/:reviewUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/reviews/:reviewUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
         
         <hakke-global-variable key="userData" value="{{storedUser}}"></hakke-global-variable>
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
@@ -39,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Selected Review Page -->
         <template is="dom-if" if={{selectedActive}}>
-            <kal-selected-review url="[[data.reviewUrl]]" stored-user=[[storedUser]]></kal-selected-review>
+            <kal-selected-review url="[[data.reviewUrl]]" stored-user=[[storedUser]] is-mobile=[[isMobile]]></kal-selected-review>
         </template>
         <!-- All Reviews Page -->
         <template is="dom-if" if={{!selectedActive}}>

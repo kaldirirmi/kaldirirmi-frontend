@@ -11,7 +11,7 @@
                 @apply --layout-center-center;
                 flex-flow: row wrap;
                 -ms-flex-flow: row wrap;
-                width: 90%;
+                /* width: 90%; */
                 height: auto;
                 background: #222;
                 margin-top: 30px;
@@ -121,7 +121,25 @@
             }
 
 
+            h2 {
+                font-size: calc(0.65em + 1vmin) !important;
+            }
 
+            h3 {
+                font-size: calc(0.55em + 1vmin) !important;
+            }
+
+            h4 {
+                font-size: calc(0.45em + 1vmin) !important;
+            }
+
+            h5 {
+                font-size: calc(0.35em + 1vmin) !important;
+            }
+
+            h6 {
+                font-size: calc(0.25em + 1vmin) !important;
+            }
 
             /* related news */
 
@@ -156,13 +174,14 @@
                 justify-content: flex-start !important;
                 flex-flow: row wrap;
                 -ms-flex-flow: row wrap;
-                width: 100%;
+                /* width: 100%;  */
                 height: auto;
             }
 
             .relatednews {
                 @apply --layout-vertical;
                 @apply --layout-center;
+                @apply --layout-flex-4;
                 margin: 2px;
                 background-color: #222;
                 transition: all ease .2s;
@@ -213,7 +232,7 @@
             }
 
             #relatednewslist .relatednews {
-                width: 90%;
+                /* width: 90%; */
                 height: calc(10em + 1vmin);
                 margin: 0 auto;
             }
@@ -228,7 +247,7 @@
                 }
 
                 #relatednewslist .relatednews {
-                    width: 48%;
+                    /* width: 48%; */
                     height: calc(10em + 1vmin);
                     margin: 0px 5px;
                 }
@@ -254,11 +273,11 @@
                 }
                 /* ilgili haberler kısmı */
                 #relatednewslist {
-                    flex-direction: column !important;
+                    /* flex-direction: column !important; */
                 }
 
                 #relatednewslist .relatednews {
-                    width: 32%;
+                    /* width: 32%; */
                     height: 140px;
                 }
 
@@ -373,7 +392,7 @@
                                 <b>[[gametitle]]</b> ile İlgili Haberler</h3>
                             <div id="relatednewslist">
                                 <template is="dom-repeat" items="{{relatednews}}" as="item">
-                                    <a class="relatednews" href="/haber/[[item.url]]" onclick="load();">
+                                    <a class="relatednews" href="/news/[[item.url]]" onclick="load();">
                                         <iron-image background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
                                         <div class="relatednews-title">
                                             <h6>[[item.title]]</h6>
@@ -450,6 +469,8 @@
                 });
             }
             _responseGame(a) {
+                this.set('relatedgame', []);
+
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (game) {
                         this.push('relatedgame', game);
@@ -460,6 +481,7 @@
                 }
             }
             _responseNews(a) {
+                this.set('relatednews', []);
 
                 if (a.detail.response.length > 0) {
                     this.newsActive = true;

@@ -1380,7 +1380,7 @@
                 // When possible, use afterNextRender to defer non-critical
                 // work until after first paint.
                 Polymer.RenderStatus.afterNextRender(this, function () {
-                    console.log('ready', this.url)
+                    // console.log('ready', this.url)
 
                 });
 
@@ -1404,7 +1404,7 @@
             connectedCallback() {
                 super.connectedCallback();
 
-                console.log('connectedCallback', this.url)
+                // console.log('connectedCallback', this.url)
 
 
             }
@@ -1416,7 +1416,7 @@
              */
             constructor() {
                 super();
-                console.log('constructor', this.url)
+                // console.log('constructor', this.url)
             }
 
             _selectedGameChanged(newVal, oldVal) {

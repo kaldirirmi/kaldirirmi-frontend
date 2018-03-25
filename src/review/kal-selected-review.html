@@ -3,13 +3,14 @@
 <link rel="import" href="../model/login-button.html">
 <link rel="import" href="../model/kal-nav-content.html">
 <link rel="import" href="../model/kal-tagcloud.html">
+<link rel="import" href="../model/ability-chart.html">
 
 <link rel="import" href="./review-related-game.html">
 <link rel="import" href="./review-user-vote.html">
 
 <link rel="import" href="./kal-review-popular.html">
 
-<link rel="import" href="../thirdparty/jqwidgets/jqwidget-imports.html">
+<!-- <link rel="import" href="../thirdparty/jqwidgets/jqwidget-imports.html"> -->
 
 <dom-module id="kal-selected-review">
     <template>
@@ -19,16 +20,39 @@
                 /* --header-image: url('/frontend/images/nouseradded.jpg'); */
             }
 
-            :host([is-mobile]) #news-page-container #kalparallax {
+            :host([is-mobile]) #review-page-container #kalparallax {
                 height: 210px;
             }
 
+            :host([is-mobile]) #review-page {
+                height: auto !important;
+            }
+
+            :host([is-mobile]) ability-chart {
+                display: none;
+            }
+
+            :host([is-mobile]) #review-chart-panel {
+                margin: 0;
+            }
 
             app-header {
                 --app-header-background-front-layer: {
                     background-image: var(--header-image);
                     background-position: 50% 10%;
                 }
+            }
+
+            #review-chart-panel {
+                margin: 0;
+                text-align: center;
+                margin-top: -75px;
+            }
+
+            #review-chart-panel h1 {
+                color: #ff7800;
+                margin: 5px;
+                padding: 0;
             }
 
             #review-page-container #kalparallax {
@@ -74,6 +98,33 @@
                 text-align: center;
             }
 
+            app-toolbar {
+                background-color: #E65100;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: #222;
+                height: 45px;
+                padding: 0 30px;
+                @apply --shadow-elevation-12dp;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+
+            app-toolbar a {
+                color: #fff;
+            }
+
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+
             p,
             h1,
             h2,
@@ -86,9 +137,10 @@
             }
 
             #review-page {
-                height: 100%;
-                @apply --layout-horizontal;
-                @apply --layout-center-justified;
+                @apply --layout-vertical;
+                overflow-y: scroll !important;
+                height: calc(100vh - 192px);
+
             }
 
             #review-page-header {
@@ -390,11 +442,6 @@
                 width: 100%;
             }
 
-            .review-chart-details #review-chart-panel {
-                display: block;
-                position: relative;
-                margin: 0 auto;
-            }
 
             .review-chart-details #mobile-chart {
                 background-color: #222;
@@ -407,6 +454,8 @@
                 border-top: 3px solid #ff7800;
                 padding-top: 5px;
                 color: #ff7800;
+                @apply --layout-vertical;
+                justify-content: center;
             }
 
             #mobile-chart .mobilecardheader span {
@@ -484,51 +533,6 @@
             }
 
 
-            #review-chart-panel h1,
-            #review-chart-panel #jqxbargauge {
-                display: none;
-            }
-
-            #review-chart-panel #user-vote {
-                position: relative;
-                bottom: 0;
-                width: 100%;
-                text-align: center;
-            }
-
-            #user-vote .buttons {
-                display: flex;
-                justify-content: center;
-                margin-top: 10px;
-            }
-
-            #user-vote .buttons #pb_LoginButton {
-                margin-bottom: 50px !important;
-                background-color: #FF7800;
-                font-size: 18px;
-                padding: 0 20px;
-            }
-
-            #user-vote .buttons #pb_LoginButton h3 {
-                font-size: calc(1em + 1vmin) !important;
-            }
-
-            #user-vote .buttons #pb_LoginButton iron-icon {
-                padding: 0 !important;
-                color: white;
-            }
-
-            #review-chart-panel h1 {
-                font-family: inherit;
-                margin: 0 auto;
-                position: absolute;
-                margin-top: 315px;
-                margin-left: 220px;
-                color: white;
-                font-weight: bolder;
-                color: #ff7800;
-            }
-
             #jqxlistbox {
                 width: 0%;
             }
@@ -574,30 +578,16 @@
                     font-size: 16px !important;
                 }
 
-                .review-chart-details {
-                    margin-bottom: 85px;
-                }
-                .review-chart-details #review-chart-panel {
-                    display: block;
-                }
                 .review-chart-details #mobile-chart {
                     display: none;
                 }
 
-                #review-chart-panel h1,
-                #review-chart-panel #jqxbargauge {
-                    display: block;
-                }
-                #review-chart-panel #user-vote {
-                    position: absolute;
-                    bottom: -110px;
-                }
             }
 
             @media only screen and (min-width: 1024px) {
                 /* zoom %175 */
-                #user-vote .buttons #pb_LoginButton h3 {
-                    font-size: calc(0.55em + 1vmin) !important;
+                .review-chart-details {
+                    @apply --layout-horizontal;
                 }
 
                 .review-description {
@@ -641,10 +631,6 @@
                     margin-top: 3px;
                 }
 
-                /*jqxbargauge positions*/
-                #review-chart-panel {
-                    margin-right: -113px;
-                }
             }
 
             @media only screen and (min-width: 1224px) {
@@ -661,18 +647,8 @@
                 }
 
                 /* chart */
-                .review-chart-details {
-                    flex-direction: row;
-                    margin-bottom: 95px;
-
-                }
                 .review-chart-details #gamekpdetails {
                     width: 60%;
-                }
-                .review-chart-details #review-chart-panel {
-                    position: absolute;
-                    margin-right: -59px;
-                    right: 0;
                 }
             }
 
@@ -689,14 +665,6 @@
                     margin-top: 5px;
                 }
 
-                /* chart */
-                .review-chart-details {
-                    margin-bottom: 110px;
-
-                }
-                .review-chart-details #review-chart-panel {
-                    margin-right: -82px;
-                }
 
             }
 
@@ -715,7 +683,7 @@
 
                 /* chart */
                 .review-chart-details {
-                    margin-bottom: 110px;
+                    margin-bottom: 20px;
 
                 }
                 .review-chart-details #review-chart-panel {
@@ -736,15 +704,6 @@
                     margin-top: 8px;
                 }
 
-
-                /* chart */
-                .review-chart-details {
-                    margin-bottom: 105px;
-
-                }
-                .review-chart-details #review-chart-panel {
-                    margin-right: 0;
-                }
             }
 
             h2 {
@@ -798,10 +757,12 @@
                 box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
             }
         </style>
-        <iron-ajax auto id="getselectedreview" url="/h/main?fm=get-review-info&a=[[url]]" handle-as="json" on-response="_onResponse"
+
+        <iron-ajax id="getselectedreview" url="/h/main?fm=get-review-info&a=[[url]]" handle-as="json" on-response="_onResponse"
             loading="{{loading}}"></iron-ajax>
         <iron-ajax id="getgamekpinfo" url="/h/main?fm=get-gamekp-info&a=[[reviewinfo.relatedgames]]" handle-as="json" on-response="_onResponseKpInfo"
             loading="{{loading}}"></iron-ajax>
+
         <iron-form id="formkleine">
             <form action="/h/main" method="post">
                 <input type="hidden" name="fm" value="post-kleine-container-reviews" />
@@ -812,7 +773,7 @@
 
         <app-toolbar>
             <!-- <paper-icon-button icon="arrow-back" on-tap="onBackToAll"></paper-icon-button> -->
-            <a id="back" href="/news">
+            <a id="back" href="/reviews">
                 <paper-icon-button icon="icons:arrow-back" on-tap="onBackToAll"></paper-icon-button>
             </a>
             <span>Tüm İncelemeler</span>
@@ -844,63 +805,66 @@
                             <div id="review-content-details">
                                 <div class="review-chart-details">
                                     <div id="gamekpdetails">
-                                        <review-related-game gameid="[[_getRelatedGame(reviewinfo)]]"></review-related-game>
+                                        <review-related-game gameid="[[reviewinfo.relatedgames]]"></review-related-game>
                                     </div>
-                                    <paper-card id="mobile-chart" evelation="4">
-                                        <div class="mobilecardheader">
-                                            <span>
-                                                [[(gamekpinfo.gameplay + gamekpinfo.graphics + gamekpinfo.story + gamekpinfo.averagevotes)/4]] KP
-                                            </span>
+                                    <div class="chart-panel">
+                                        <paper-card id="mobile-chart" evelation="4">
+                                            <div class="mobilecardheader">
+                                                <span>
+                                                    [[_remakeGameKP(gamekpinfo)]]
+                                                </span>
 
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="card-content-column">
-                                                <p>Oynanış</p>
-                                                <p>[[gamekpinfo.gameplay]]</p>
                                             </div>
+                                            <div class="card-content">
+                                                <div class="card-content-column">
+                                                    <p>Oynanış</p>
+                                                    <p>[[gamekpinfo.gameplay]]</p>
+                                                </div>
 
-                                            <div class="card-content-column">
-                                                <p>Zorluk</p>
-                                                <p>[[gamekpinfo.difficulty]]</p>
+                                                <div class="card-content-column">
+                                                    <p>Zorluk</p>
+                                                    <p>[[gamekpinfo.difficulty]]</p>
+                                                </div>
+                                                <div class="card-content-column">
+                                                    <p>Grafikler</p>
+                                                    <p>[[gamekpinfo.graphics]]</p>
+                                                </div>
+                                                <div class="card-content-column">
+                                                    <p>Hikaye</p>
+                                                    <p>[[gamekpinfo.story]]</p>
+                                                </div>
+                                                <div class="card-content-column">
+                                                    <p>Kullanıcı Değerlendirmesi</p>
+                                                    <p>[[gamekpinfo.averagevotes]]</p>
+                                                </div>
                                             </div>
-                                            <div class="card-content-column">
-                                                <p>Grafikler</p>
-                                                <p>[[gamekpinfo.graphics]]</p>
-                                            </div>
-                                            <div class="card-content-column">
-                                                <p>Hikaye</p>
-                                                <p>[[gamekpinfo.story]]</p>
-                                            </div>
-                                            <div class="card-content-column">
-                                                <p>Kullanıcı Değerlendirmesi</p>
-                                                <p>[[gamekpinfo.averagevotes]]</p>
-                                            </div>
-
-                                        </div>
-
-                                    </paper-card>
-                                    <div id="review-chart-panel">
-                                        <h1>
-                                            [[(gamekpinfo.gameplay + gamekpinfo.graphics + gamekpinfo.story + gamekpinfo.averagevotes)/4]] KP
-                                        </h1>
-                                        <div id='jqxbargauge'></div>
-                                        <div id="user-vote">
-                                            <div hidden$="[[!storedUser.loggedin]]">
-                                                <h3 class="header-h3">Haydi sende
-                                                    <b>oyla!</b>
-                                                </h3>
-                                                <review-user-vote gameid="[[gamekpinfo.gameid]]" userid="[[((core.user)Session[" user "]).id]]"></review-user-vote>
-                                            </div>
-                                            <div hidden$="[[storedUser.loggedin]]">
-                                                <h3 class="header-h3">Oylayabilmek için
-                                                    <b>Giriş</b> Yapmalısın</h3>
-                                                <div class="buttons">
-                                                    <login-button></login-button>
+                                        </paper-card>
+                                        <!-- <div id="jqxlistbox"></div> -->
+                                        <ability-chart prop=[[sourcekp]]>
+                                        </ability-chart>
+                                        <div id="review-chart-panel">
+                                            <h1>
+                                                [[_remakeGameKP(gamekpinfo)]]
+                                            </h1>
+                                            <!-- <div id='jqxbargauge'></div> -->
+                                            <div id="user-vote">
+                                                <div hidden$="[[!storedUser.loggedin]]">
+                                                    <h3 class="header-h3">Haydi sende
+                                                        <b>oyla!</b>
+                                                    </h3>
+                                                    <review-user-vote gameid="[[gamekpinfo.gameid]]" stored-user=[[storedUser]]></review-user-vote>
+                                                </div>
+                                                <div hidden$="[[storedUser.loggedin]]">
+                                                    <h3 class="header-h3">Oylayabilmek için
+                                                        <b>Giriş</b> Yapmalısın</h3>
+                                                    <div class="buttons">
+                                                        <login-button stored-user={{storedUser}}></login-button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div id='jqxlistbox'></div>
                                 </div>
                                 <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
                                 <div class="review-subtitle-container">
@@ -947,7 +911,7 @@
                 </div>
             </template>
             <div hidden$=[[isReview]]>
-                <span class="news-is-not-exist">Böyle bir inceleme bulunmamaktadır!</span>
+                <span class="review-is-not-exist">Böyle bir inceleme bulunmamaktadır!</span>
             </div>
         </div>
 
@@ -986,6 +950,13 @@
                     },
                     gamekpinfo: Object,
                     storedUser: Object,
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    sourcekp: Object,
+
+
                 };
             }
 
@@ -993,7 +964,7 @@
 
             static get observers() {
                 return [
-                    '_selectedNewsChanged(url)'
+                    '_selectedReviewChanged(url)'
                 ]
             }
 
@@ -1033,7 +1004,6 @@
 
                 // console.log('connectedCallback', this.url)
 
-
             }
 
             /**
@@ -1046,8 +1016,7 @@
                 // console.log('constructor', this.url)
             }
 
-            _selectedNewsChanged(newVal, oldVal) {
-
+            _selectedReviewChanged(newVal, oldVal) {
                 // we are starting here..
                 this._clearState();
                 this._debounceWork();
@@ -1057,11 +1026,11 @@
             _onResponse(event) {
                 var response = event.detail.response;
 
-                console.log('kal-selected-review response: ', response);
+                // console.log('kal-selected-review response: ', response);
 
                 if (response !== null) {
                     this.set('isReview', true);
-
+                    // console.log(response);
                     this.set('reviewinfo', response);
 
                     //generate this for retrieving kp infos
@@ -1090,120 +1059,182 @@
             _onResponseKpInfo(event) {
                 var response = event.detail.response;
 
-                console.log('kal-selected-review get kpinfo: ', response);
+                // console.log('kal-selected-review get kpinfo: ', response);
                 if (response !== null) {
 
                     this.set('gamekpinfo', response);
 
-                    var game_data = [{
-                        "id": "1",
-                        "name": "Oynanış",
-                        "degree": gamekpinfo.gameplay
-                    }, {
-                        "id": "2",
-                        "name": "Zorluk",
-                        "degree": gamekpinfo.difficulty
-                    }, {
-                        "id": "3",
-                        "name": "Grafikler",
-                        "degree": gamekpinfo.graphics
-                    }, {
-                        "id": "4",
-                        "name": "Hikaye",
-                        "degree": gamekpinfo.story
-                    }, {
-                        "id": "5",
-                        "name": "Kullanıcı Değerlendirmesi",
-                        "degree": gamekpinfo.averagevotes
-                    }];
+                    // var game_data = [{
+                    //     "id": "1",
+                    //     "name": "Oynanış",
+                    //     "degree": this.gamekpinfo.gameplay
+                    // }, {
+                    //     "id": "2",
+                    //     "name": "Zorluk",
+                    //     "degree": this.gamekpinfo.difficulty
+                    // }, {
+                    //     "id": "3",
+                    //     "name": "Grafikler",
+                    //     "degree": this.gamekpinfo.graphics
+                    // }, {
+                    //     "id": "4",
+                    //     "name": "Hikaye",
+                    //     "degree": this.gamekpinfo.story
+                    // }, {
+                    //     "id": "5",
+                    //     "name": "Kullanıcı Değerlendirmesi",
+                    //     "degree": this.gamekpinfo.averagevotes
+                    // }];
 
-                    var game_source = {
-                        datatype: "json",
-                        datafields: [{
-                                name: 'name'
+                    this.sourcekp = {
+                        "dimension": 400,
+                        "numLayer": 5,
+                        "eachLayerStyle": [{
+                                "fillColor": "#D94306",
+                                "borderColor": "#222222"
                             },
                             {
-                                name: 'degree',
-                                type: 'int'
+                                "fillColor": "#EE9641",
+                                "borderColor": "#222222"
+                            },
+                            {
+                                "fillColor": "#EEC46E",
+                                "borderColor": "#222222"
+                            },
+                            {
+                                "fillColor": "#4CAC90",
+                                "borderColor": "#222222"
+                            },
+                            {
+                                "fillColor": "#09337B",
+                                "borderColor": "#222222"
                             }
                         ],
-                        id: 'id',
-                        localdata: game_data
-                    };
-
-                    var game_dataAdapter = new $.jqx.dataAdapter(game_source);
-                    this.$.jqxlistbox.jqxListBox({
-                        width: 10,
-                        height: 10,
-                        source: game_dataAdapter,
-                        displayMember: "name",
-                        valueMember: "degree",
-                        checkboxes: true
-                    });
-
-                    // this.$.jqxlistbox.css('visibility', 'hidden');
-                    this.$.jqxlistbox.style.visibility = "hidden";
-
-                    this.$.jqxlistbox.jqxListBox('checkIndex', 0);
-                    this.$.jqxlistbox.jqxListBox('checkIndex', 1);
-                    this.$.jqxlistbox.jqxListBox('checkIndex', 2);
-                    this.$.jqxlistbox.jqxListBox('checkIndex', 3);
-                    this.$.jqxlistbox.jqxListBox('checkIndex', 4);
-
-                    var getValues = function () {
-                        var items = this.$.jqxlistbox.jqxListBox('getCheckedItems');
-                        var array = convertToArray(items);
-                        return array;
-                    };
-
-                    var convertToArray = function (items) {
-                        var preparedArray = new Array(items.length);
-                        for (var i = 0; i < items.length; i += 1) {
-                            preparedArray[i] = items[i].value;
-                        }
-                        return preparedArray;
-                    }
-
-                    var mean = 69;
-                    this.$.jqxbargauge.jqxBarGauge({
-                        width: 500,
-                        height: 400,
-                        values: getValues(),
-                        backgroundColor: '#222',
-                        max: 100,
-                        relativeInnerRadius: 0.2,
-                        colorScheme: 'scheme17',
-                        tooltip: {
-                            visible: true,
-                            formatFunction: function (value, index) {
-                                var items = this.$.jqxlistbox.jqxListBox('getCheckedItems');
-                                var item = items[index];
-                                return item.label + ": " + value + '/100 puan';
-                            }
+                        "labelFont": "13px Roboto",
+                        "labelFontColor": "#fff",
+                        "labelOffset": 10,
+                        "frameBorderWidth": 1,
+                        "chartBorderWidth": 2,
+                        "decorLineColor": "#222222",
+                        "chartPortion": 0.75,
+                        "chartAlpha": 0.95,
+                        "scale": {
+                            "font": "bold 12px Roboto",
+                            "fontColor": "white",
+                            "offset": 12,
+                            "scaleLabel": ["0", "20", "40", "60", "80", "100"]
                         },
-                        labels: {
-                            formatFunction: function (value) {
-                                return value + ' puan';
-                            },
-                            precision: 0,
-                            indent: 15,
-                            connectorWidth: 1
+                        "datasets": {
+                            "keys": ["Kullanıcı Değerlendirmesi", "Zorluk", "Grafikler", "Hikaye",
+                                "Oynanış"
+                            ],
+                            "values": [
+                                [this.gamekpinfo.averagevotes,
+                                    this.gamekpinfo.difficulty,
+                                    this.gamekpinfo.graphics,
+                                    this.gamekpinfo.story,
+                                    this.gamekpinfo.gameplay
+                                ]
+                            ],
+                            "styles": [{
+                                "borderColor": "#000000"
+                            }, {
+                                "borderColor": "#000000"
+                            }]
                         }
-                    });
-                    this.$.jqxbargauge.on('change', function (event) {
-                        var value = this.$.jqxbargauge.val();
-                        var type = event.args.type;
-                    });
-                    var getSum = function (array) {
-                        array = array || [];
-                        var sum = 0;
-                        if (!!array.length) {
-                            for (var i = 0; i < array.length; i += 1) {
-                                sum += array[i];
-                            }
-                        }
-                        return sum;
                     };
+
+
+                    // var game_source = {
+                    //     datatype: "json",
+                    //     datafields: [{
+                    //             name: 'name'
+                    //         },
+                    //         {
+                    //             name: 'degree',
+                    //             type: 'int'
+                    //         }
+                    //     ],
+                    //     id: 'id',
+                    //     localdata: game_data
+                    // };
+
+                    // var game_dataAdapter = new $.jqx.dataAdapter(game_source);
+                    // console.log(this.$.jqxlistbox);
+
+
+                    // this.$.jqxlistbox.jqxListBox({
+                    //     width: 10,
+                    //     height: 10,
+                    //     source: game_dataAdapter,
+                    //     displayMember: "name",
+                    //     valueMember: "degree",
+                    //     checkboxes: true
+                    // });
+
+                    // // this.$.jqxlistbox.css('visibility', 'hidden');
+                    // this.$.jqxlistbox.style.visibility = "hidden";
+
+                    // this.$.jqxlistbox.jqxListBox('checkIndex', 0);
+                    // this.$.jqxlistbox.jqxListBox('checkIndex', 1);
+                    // this.$.jqxlistbox.jqxListBox('checkIndex', 2);
+                    // this.$.jqxlistbox.jqxListBox('checkIndex', 3);
+                    // this.$.jqxlistbox.jqxListBox('checkIndex', 4);
+
+                    // var getValues = function () {
+                    //     var items = this.$.jqxlistbox.jqxListBox('getCheckedItems');
+                    //     var array = convertToArray(items);
+                    //     return array;
+                    // };
+
+                    // var convertToArray = function (items) {
+                    //     var preparedArray = new Array(items.length);
+                    //     for (var i = 0; i < items.length; i += 1) {
+                    //         preparedArray[i] = items[i].value;
+                    //     }
+                    //     return preparedArray;
+                    // }
+
+                    // var mean = 69;
+                    // this.$.jqxbargauge.jqxBarGauge({
+                    //     width: 500,
+                    //     height: 400,
+                    //     values: getValues(),
+                    //     backgroundColor: '#222',
+                    //     max: 100,
+                    //     relativeInnerRadius: 0.2,
+                    //     colorScheme: 'scheme17',
+                    //     tooltip: {
+                    //         visible: true,
+                    //         formatFunction: function (value, index) {
+                    //             var items = this.$.jqxlistbox.jqxListBox('getCheckedItems');
+                    //             var item = items[index];
+                    //             return item.label + ": " + value + '/100 puan';
+                    //         }
+                    //     },
+                    //     labels: {
+                    //         formatFunction: function (value) {
+                    //             return value + ' puan';
+                    //         },
+                    //         precision: 0,
+                    //         indent: 15,
+                    //         connectorWidth: 1
+                    //     }
+                    // });
+                    // this.$.jqxbargauge.on('change', function (event) {
+                    //     var value = this.$.jqxbargauge.val();
+                    //     var type = event.args.type;
+                    // });
+                    // var getSum = function (array) {
+                    //     array = array || [];
+                    //     var sum = 0;
+                    //     if (!!array.length) {
+                    //         for (var i = 0; i < array.length; i += 1) {
+                    //             sum += array[i];
+                    //         }
+                    //     }
+                    //     return sum;
+                    // };
                 }
             }
 
@@ -1228,9 +1259,17 @@
                 this.$.getselectedreview.generateRequest();
             }
 
-            _getRelatedGame(reviewinfo) {
-                return reviewinfo.relatedgames.Split(',')[0];
+            // _getRelatedGame(reviewinfo) {
+            //     console.log(reviewinfo);
+
+            //     return reviewinfo.relatedgames.split(',')[0];
+            // }
+
+            _remakeGameKP(gamekpinfo) {
+                return (gamekpinfo.gameplay + gamekpinfo.graphics + gamekpinfo.story + gamekpinfo.averagevotes) /
+                    4 + " KP";
             }
+
         }
 
         window.customElements.define(KalSelectedReview.is, KalSelectedReview);
