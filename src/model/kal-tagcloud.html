@@ -46,14 +46,31 @@
                     margin-left: 0px;
                 }
             }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
         </style>
 
         <iron-ajax auto id="gettagsofcontent" debounce="3000" url="/h/main?fm=get-tags-of-content&a=[[contenttitle]]&b=[[contenttable]]"
-            handle-as="json" on-response="_response" loading="{{loadinggames}}"></iron-ajax>
+            handle-as="json" on-response="_response" loading="{{loadingtags}}"></iron-ajax>
 
         <!-- shadow dom elements here-->
         <div id='tagcloud'></div>
 
+        <div class="loadingIndicator" style="color:#FF7800" hidden$="[[!loadingtags]]">
+            <paper-spinner-lite active></paper-spinner-lite>
+        </div>
+        
     </template>
 
     <script>

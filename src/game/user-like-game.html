@@ -1,13 +1,72 @@
-
 <dom-module id="user-like-game">
     <template>
         <style>
             :host {
                 display: block
             }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+                /* @apply --layout-horizontal;
+                @apply --layout-center-center; */
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+
+            #pibInteractionButton {
+                opacity: 0.8;
+                padding: 5px !important;
+                transition: all ease-in-out .3s;
+                width: 100%;
+            }
+
+            #pibInteractionButton:hover {
+                opacity: 1;
+                padding: 2px !important;
+            }
+
+            .like-container {
+                background: #DD9105;
+                padding: 0.8px;
+            }
+
+
+            paper-tooltip.custom-tooltip {
+                --paper-tooltip-background: #ff7800;
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
         </style>
 
-        
+        <iron-ajax id="iaCheckGame" debounce-duration="700" url="/h/main?fm=check-is-game-liked&a=[[gid]]" handle-as="json" on-response="_responseCheck"
+            loading="{{loadingcheck}}"></iron-ajax>
+
+        <iron-form id="formInteractionRequest" on-iron-form-response="_responseInteractionRequestForm">
+            <form action="/h/main" method="post">
+                <input type="hidden" name="fm" value="send-request-like-game" />
+                <input type="hidden" id="gameid" name="gameid" value=[[gid]] />
+                <input type="hidden" id="isliked" name="isliked" value=[[likeState]] />
+            </form>
+        </iron-form>
+
+        <div class="loadingIndicator" hidden$="[[!loadingcheck]]">
+            <paper-spinner-lite active$="[[loadingcheck]]"></paper-spinner-lite>
+        </div>
+        <div hidden$=[[loadingcheck]] class="like-container">
+            <paper-icon-button icon="[[icon]]" id="pibInteractionButton" on-tap="_clickInteractionButton"></paper-icon-button>
+            <paper-tooltip class="custom-tooltip" for="pibInteractionButton" position="bottom">[[likedstatus]]</paper-tooltip>
+        </div>
 
     </template>
 
@@ -33,8 +92,81 @@
              */
             static get properties() {
                 return {
-                    
+                    gid: {
+                        type: Number,
+                        observer: '_gidChanged'
+
+                    },
+                    likeState: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    isliked: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    loadingcheck: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    firstTime: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    icon: {
+                        type: String,
+                        value: 'av:playlist-add',
+                        notify: true
+                    },
+                    counter: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    bc: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    mc: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    likedstatus: {
+                        type: String,
+                        value: 'Oyunu Kütüphanene Eklemek için Tıkla!',
+                        notify: true
+                    },
+                    username: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    }
                 };
+            }
+
+            _gidChanged(newVal, oldVal) {
+                if (newVal !== undefined) {
+                    this._generateRequest();
+                }
+            }
+
+            _generateRequest() {
+                if (this.$.iaCheckGame.lastRequest) {
+                    this.$.iaCheckGame.lastRequest.abort();
+                }
+
+                this.$.iaCheckGame.generateRequest();
             }
 
             /**
@@ -51,10 +183,119 @@
              */
             ready() {
                 super.ready();
+                Polymer.RenderStatus.afterNextRender(this, function () {});
+            }
 
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
+            _responseCheck(event) {
+                var response = event.detail.response;
+                //console.log('_responseCheck' + response.message);
+                var message = response.message;
+                var result = message.split(' ')[1];
+                var time = message.split(' ')[3];
+                if (result === 'True') {
+                    this.isliked = true;
+                    this.likedstatus = 'Oyunu Kütüphanene Ekledin!';
+                } else {
+                    this.isliked = false;
+                    this.likedstatus = 'Oyunu Kütüphanenden Çıkarttın!';
+                }
+
+                if (time === 'True') {
+                    this.firstTime = true;
+                    this.likedstatus = 'Oyunu Kütüphanene Eklemek İçin Tıkla!';
+                } else {
+                    this.firstTime = false;
+                }
+
+                if (this.username === 0) {
+                    this.firstTime = true;
+                    this.likedstatus = 'Oyunu Kütüphanene Eklemek İçin Giriş Yapmalısın';
+
+                }
+                this._designIcons();
+                //console.log('Eend checj => isLiked' +  this.isliked  + ' , firstTime => ' + this.firstTime);
+            }
+            _clickInteractionButton(event) {
+                // var systemAlert = document.getElementById('alert');
+                if (this.username === 0) {
+                    this.$.pibInteractionButton.disabled = true;
+                    // systemAlert.setAttribute('text', 'Oyunu Kütüphanene Eklemek İçin Giriş Yapmalısın');
+                    // systemAlert.open();
+                    this._toaster('Oyunu Kütüphanene Eklemek İçin Giriş Yapmalısın');
+
+                } else {
+                    //console.log('_clickInteractionButton');
+                    if (this.isliked) {
+                        //eğer likelı ise dislike için 1 ata!
+                        this.likeState = 1;
+                    } else if (!this.isliked) {
+                        //likelı değil ise like için 1 ata!
+                        this.likeState = 0;
+                    }
+
+                    this.counter++;
+
+                    if (this.counter >= 4) {
+
+                        // systemAlert.setAttribute('text', 'Al Kırdın Kırdın ! :/');
+                        // systemAlert.open();
+                        this._toaster('Al Kırdın Kırdın ! :/');
+
+                        this.$.pibInteractionButton.disabled = true;
+                    } else {
+                        this.$.formInteractionRequest.submit();
+                    }
+
+                    //this.isliked = !this.isliked;
+                    //this._designIcons();
+
+                }
+            }
+            _responseInteractionRequestForm(event) {
+                var response = event.detail.response;
+                //console.log('_responseInteractionRequestForm');
+
+                if (response.success) {
+                    this.$.iaCheckGame.generateRequest();
+                } else {
+                    this.$.formInteractionRequest.reset();
+                }
+                this._toaster(response.message);
+            }
+            _designIcons() {
+                if (this.firstTime) {
+                    this.icon = 'av:playlist-add';
+                    this._colorChanger(false);
+                } else if (!this.firstTime) {
+                    if (this.isliked) {
+                        this.icon = 'av:playlist-add-check';
+                        this._colorChanger(true);
+                    } else if (!this.isliked) {
+                        this.icon = 'av:remove-from-queue';
+                        this._colorChanger(false);
+                    }
+                }
+
+
+            }
+            _colorChanger(status) {
+                if (status) {
+                    this.$.pibInteractionButton.style.color = '#E5DBCF';
+                } else {
+                    this.$.pibInteractionButton.style.color = '#1b1616';
+                }
+            }
+
+            _toaster(message) {
+                // var message = "Message Here!";
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: message
+                    }
                 });
+                this.dispatchEvent(event);
             }
 
         }

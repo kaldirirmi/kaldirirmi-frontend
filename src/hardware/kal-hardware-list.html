@@ -1,4 +1,5 @@
 <link rel="import" href="../model/hardware-item.html">
+<link rel="import" href="../kal-scroll-threshold.html">
 <link rel="import" href="../model/loader-pac.html">
 
 <dom-module id="kal-hardware-list">
@@ -163,7 +164,7 @@
 
             /* It's so important for threshold works */
 
-            iron-scroll-threshold {
+            kal-scroll-threshold {
                 height: calc(100vh - 300px);
                 box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
                 padding: 15px;
@@ -207,7 +208,7 @@
         </app-toolbar>
 
         <!-- IRON SCROLL THRESHOLD -->
-        <iron-scroll-threshold on-lower-threshold="_loadMoreHardware" id="threshold">
+        <kal-scroll-threshold on-lower-threshold="_loadMoreHardware" id="threshold">
             <iron-list scroll-target="threshold" items="[[response]]">
                 <template>
                     <div class="list-item">
@@ -221,7 +222,7 @@
             <div class="empty-message" hidden$="[[!empty]]">
                 Aradığınız kriterlerde sonuç bulunamadı.
             </div>
-        </iron-scroll-threshold>
+        </kal-scroll-threshold>
 
     </template>
 

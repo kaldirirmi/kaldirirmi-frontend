@@ -1,3 +1,6 @@
+
+<link rel="import" href="../kal-scroll-threshold.html">
+
 <dom-module id="kal-all-games">
     <template>
         <style>
@@ -10,7 +13,7 @@
                 height: var(--kal-gamepage-height);
                 /* this.updateStyles({'--my-dynamic-property': 'red'}); */
             }
-            iron-scroll-threshold {
+            kal-scroll-threshold {
                 height: calc(100vh - 280px);
                 box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
                 /* padding: 15px; */
@@ -391,8 +394,8 @@
                 <div class="loadingIndicator" hidden$="[[!loadinggames]]">
                         <paper-spinner-lite active$="[[loadinggames]]"></paper-spinner-lite> Yükleniyor
                     </div>
-            <iron-scroll-threshold on-lower-threshold="_loadmoregame" id="threshold" lower-threshold="500">
-                <!-- <iron-scroll-threshold auto lower-threshold="25" on-lower-threshold="_loadmoregame" id="threshold"> -->
+            <kal-scroll-threshold on-lower-threshold="_loadmoregame" id="threshold" lower-threshold="500">
+                <!-- <kal-scroll-threshold auto lower-threshold="25" on-lower-threshold="_loadmoregame" id="threshold"> -->
                 <section id="cd-timeline" class="cd-container" scroll-target="threshold">
                     <template is="dom-if" if="[[eighteen]]">
                         <div class="cd-timeline-block">
@@ -792,7 +795,7 @@
                         </div>
                     </template>
                 </section>
-            </iron-scroll-threshold>
+            </kal-scroll-threshold>
         </div>
     </template>
 
@@ -1054,7 +1057,7 @@
 
                 // this.loadinggames = !this.loadinggames;
 
-                console.log('response');
+                // console.log('response');
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (game) {
 
@@ -1123,7 +1126,7 @@
             }
 
             _debounceWork() {
-                console.log('_debounceWork');
+                // console.log('_debounceWork');
                 //Polymer.Async.timeOut.after(400)
                 this._debounceJob = Polymer.Debouncer.debounce(
                     this._debounceJob,
@@ -1136,7 +1139,7 @@
 
             _loadmoregame() {
 
-               console.log('_loadMoreData');
+            //    console.log('_loadMoreData');
                 if (this.$.getgames.lastRequest) {
                     //console.log("loadmoregame abort...");
                     this.$.getgames.lastRequest.abort();
@@ -1168,7 +1171,7 @@
                 this.$.getgames.generateRequest();
             }
             handleShooter(e) {
-                console.log(e);
+                // console.log(e);
 
                 if (this.$.getgames.lastRequest) {
                     //console.log("handleShooter...");
@@ -1265,17 +1268,11 @@
                 this.end = 2017;
             }
             _onTabSelect(event) {
-                console.log('onTabSelected ' + event.target.selected);
+                // console.log('onTabSelected ' + event.target.selected);
             }
 
         }
 
         window.customElements.define(KalAllGames.is, KalAllGames);
-
-
-        window.addEventListener('WebComponentsReady', function (e) {
-            // imports are loaded and elements have been registered
-            console.log('Components are ready');
-        });
     </script>
 </dom-module>

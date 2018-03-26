@@ -169,21 +169,24 @@
           text-align: center;
           font-weight: bold;
           font-size: calc(0.45em + 1vmin);
-        };
-        
+        }
+        ;
+
         --paper-input-container-input: {
           color: white;
           text-align: center;
           text-transform: uppercase;
           font-size: calc(0.45em + 1vmin);
 
-        };
-        
+        }
+        ;
+
 
         --paper-input-container-focus-color: white;
         --paper-input-container-underline: {
           display: none;
-        };
+        }
+        ;
       }
 
 
@@ -251,24 +254,26 @@
         text-decoration: none;
         color: #fff;
       }
+
       paper-dropdown-menu {
         width: 200px;
         margin-right: 20px;
       }
-
     </style>
 
     <app-route route="{{route}}" pattern="/game/:gameUrl" data="{{data}}" active="{{selectedGameActive}}"></app-route>
 
+    <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
+    <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
+
     <!-- Selected Game Page -->
     <template is="dom-if" if={{selectedGameActive}}>
-      <kal-selected-game url="[[data.gameUrl]]" on-backall="_handleBackButton"></kal-selected-game>
+      <kal-selected-game stored-user=[[storedUser]] url="[[data.gameUrl]]" is-mobile=[[isMobile]] on-backall="_handleBackButton"></kal-selected-game>
     </template>
 
     <!-- All Game Page -->
     <template is="dom-if" if={{!selectedGameActive}}>
       <kal-all-games is-mobile=[[isMobile]]></kal-all-games>
-      </div>
     </template>
 
 

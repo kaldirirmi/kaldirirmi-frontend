@@ -195,7 +195,7 @@
 
         <div class="header-search">
             <iron-form>
-                <form action="/ara" method="get" enctype="application/x-www-form-urlencoded" onsubmit="load();">
+                <form action="/ara" method="get" enctype="application/x-www-form-urlencoded">
                     <input id="searchgame" type="search" placeholder="Oyun Ara" autocomplete="off" name="query" value="{{query::input}}" />
                     <iron-ajax id="gamesearcher" url="/h/main" handle-as="json" debounce-duration="1000" on-response="_OnResponse"></iron-ajax>
                     <iron-icon icon="search" class="search"></iron-icon>

@@ -1,4 +1,7 @@
-﻿<dom-module id="content-searcher">
+﻿
+<link rel="import" href="../kal-scroll-threshold.html">
+
+<dom-module id="content-searcher">
     <template>
         <style include="shared-styles">
             :host {
@@ -174,7 +177,7 @@
                 display: block !important;
             }
 
-            iron-scroll-threshold {
+            kal-scroll-threshold {
                 height: calc(100vh - 300px);
                 box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
                 padding: 15px;
@@ -229,7 +232,7 @@
 
 
         <!-- IRON SCROLL THRESHOLD -->
-        <iron-scroll-threshold on-lower-threshold="_loadMore" id="threshold">
+        <kal-scroll-threshold on-lower-threshold="_loadMore" id="threshold">
             <iron-list scroll-target="threshold" items="[[response]]">
                 <template>
                     <div class="list-item">
@@ -246,7 +249,7 @@
             <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loading]]">
                 <loader-pac></loader-pac>
             </div>
-        </iron-scroll-threshold>
+        </kal-scroll-threshold>
         <!-- <paper-fab-scroll-to-top for-element="contentSearcherContainer" pin-bottom-right></paper-fab-scroll-to-top> -->
         <!--<scroll-top activateWhen="100">
             Scroll to Top

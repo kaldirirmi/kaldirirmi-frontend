@@ -68,6 +68,8 @@
             .continue-item {
                 @apply --layout-vertical;
                 padding-top: 5px;
+                color: #fff;
+                text-decoration: none;
             }
 
             /* Smartphones (portrait and landscape) ----------- */
@@ -181,9 +183,9 @@
                         <news-item item="[[item]]" extended is-mobile=[[isMobile]]></news-item>
                     </template>
                 </div>
-                <div class="continue-item">
+                <a class="continue-item" href="/news">
                     <paper-button raised>Devamı</paper-button>
-                </div>
+                </a>
             </paper-material>
         </div>
     </template>

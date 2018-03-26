@@ -17,6 +17,7 @@
 
         <iron-ajax id="getpricefromsteam" url="/h/main?fm=get-app-details&amp;a=[[gameappid]]" handle-as="json" on-response="_responseAppDetails"
             loading="{{loading}}" debounce-duration="300"></iron-ajax>
+            
         <template is="dom-if" if="[[!invisibleprice]]">
             <template is="dom-if" if="[[!loading]]">
                 <template is="dom-if" if="[[isfree]]">
@@ -34,15 +35,11 @@
                         </span>
                     </template>
                 </template>
-
             </template>
             <template is="dom-if" if="[[loading]]">
                 <paper-spinner-lite active="" class="orange"></paper-spinner-lite>
             </template>
         </template>
-
-
-
 
     </template>
 
@@ -68,7 +65,11 @@
              */
             static get properties() {
                 return {
-                    gameappid: Number,
+                    gameappid: {
+                        type: Number,
+                        observer: '_gameappidChanged'
+
+                    },
                     price: String,
                     loading: Boolean,
                     invisibleprice: Boolean,
@@ -79,6 +80,23 @@
                         value: '#fff',
                     }
                 };
+            }
+
+             _gameappidChanged(newVal, oldVal){
+                if(newVal !== undefined || this.gameappid != 0){
+                    this._generateRequest();
+                }
+                else{
+                    this.set('invisibleprice', true);
+                }
+            }
+
+            _generateRequest(){
+                if(this.$.getpricefromsteam.lastRequest){
+                    this.$.getpricefromsteam.lastRequest.abort();
+                }
+
+                this.$.getpricefromsteam.generateRequest();
             }
 
             /**
@@ -108,12 +126,6 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-
-                if (this.gameappid != 0)
-                    this.$.getpricefromsteam.generateRequest();
-                else
-                    this.set('invisibleprice', true);
-
             }
 
             _responseAppDetails(event) {

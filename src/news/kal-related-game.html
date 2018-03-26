@@ -364,7 +364,7 @@
             <template is="dom-repeat" items="{{relatedgame}}" as="item">
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
-                        <a class="relatedgame" href="/oyun/[[item.url]]" onclick="load();">
+                        <a class="relatedgame" href="/oyun/[[item.url]]">
                             <iron-image background src="[[item.background]]" sizing="cover" alt="[[item.name]]" preload fade></iron-image>
                             <!--<div class="relatedgame-title"><h4>[[item.name]]</h4></div>-->
                         </a>
@@ -392,7 +392,7 @@
                                 <b>[[gametitle]]</b> ile İlgili Haberler</h3>
                             <div id="relatednewslist">
                                 <template is="dom-repeat" items="{{relatednews}}" as="item">
-                                    <a class="relatednews" href="/news/[[item.url]]" onclick="load();">
+                                    <a class="relatednews" href="/news/[[item.url]]">
                                         <iron-image background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
                                         <div class="relatednews-title">
                                             <h6>[[item.title]]</h6>

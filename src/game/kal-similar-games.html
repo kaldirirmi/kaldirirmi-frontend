@@ -1,0 +1,257 @@
+<dom-module id="kal-similar-games">
+    <template>
+        <style>
+            :host {
+                width: 100%;
+                color: white;
+            }
+
+            .paper-tabs-games {
+                padding-top: 20px;
+            }
+
+            .paper-tab-games {
+                color: black;
+                background-color: white;
+                border: 1px solid gray;
+            }
+
+            #similargamelist {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+            }
+
+            .game {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                position: relative;
+                text-decoration: none;
+            }
+
+                .game iron-image {
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    transition: all ease-in .2s;
+                    opacity: .7;
+                    background-color: #222;
+                }
+
+            .game {
+                transition: all .3s;
+            }
+
+                .game:hover {
+                    transform: translateY(-40px);
+                    -webkit-transform: translateY(-40px);
+                    margin: 20px;
+                    transform: scale(1.5);
+                }
+
+                .game .game-title {
+                    @apply --layout-horizontal;
+                    @apply --layout-center;
+                    color: white;
+                    height: 44px;
+                    padding: 0 5px;
+                    background: #ff7800;
+                    width: 173px;
+                }
+
+                    .game .game-title span {
+                        width: 173px;
+                        @apply --paper-font-common-nowrap;
+                        text-align: center;
+                    }
+
+                .game:hover iron-image[background] {
+                    opacity: 1;
+                }
+
+            .similir {
+                width: 100%;
+                height: auto;
+            }
+
+                .similir paper-button {
+                    display: block;
+                    color: white;
+                    opacity: 0.77;
+                    margin: 0 auto;
+                    /*width: 50%;*/
+                    text-align:center;
+                    font-size: calc(0.5em + 1vmin);
+                    font-family: 'Roboto', 'Arial Narrow', Arial, sans-serif;
+                }
+
+            @media only screen and (min-width : 1024px) { /* zoom %175 */
+                #similargamelist {
+                    margin-bottom: 1px;
+                }
+
+                    #similargamelist .game {
+                        width: 70px;
+                        height: 101px;
+                    }
+
+                    #similargamelist #game3 {
+                        display: none;
+                    }
+
+                    #similargamelist #game4 {
+                        display: none;
+                    }
+            }
+
+            @media only screen and (min-width : 1224px) { /* zoom %150 */
+                #similargamelist {
+                    margin-bottom: 1px;
+                }
+
+                    #similargamelist .game {
+                        width: 89px;
+                        height: 106px;
+                    }
+            }
+
+            @media only screen and (min-width : 1440px) { /* zoom % 125*/
+
+                #similargamelist {
+                    margin-bottom: 6px;
+                }
+
+                    #similargamelist .game {
+                        width: 90px;
+                        height: 114px;
+                    }
+
+                    #similargamelist #game3 {
+                        display: block;
+                    }
+            }
+
+            @media only screen and (min-width : 1640px) { /* zoom %110*/
+                #similargamelist .game {
+                    width: 90px;
+                    height: 123px;
+                }
+            }
+
+            @media only screen and (min-width : 1824px) {
+                #similargamelist .game {
+                    width: 95px;
+                    height: 135px;
+                }
+
+                #similargamelist #game4 {
+                    display: block;
+                }
+            }
+        </style>
+
+        <iron-ajax id="getsimilargames" url="/h/main?fm=get-similar-games-via-genres&a=[[genre]]" method="get" handle-as="json" on-response="_response"></iron-ajax>
+        <div class="similir">
+            <paper-button id="btnSimilir" raised>Benzer oyunlar</paper-button>
+        </div>
+        <div id="similargamelist">
+            <template is="dom-repeat" items="{{games}}" as="item">
+                <a id="game{{index}}" class="game" href="/game/[[item.url]]">
+                    <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]" preload
+                        fade></iron-image>
+                </a>
+            </template>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-similar-games` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalSimilarGames extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-similar-games';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    genre: {
+                        type: "String",
+                        value: "Action", //default selected genre --> action
+                        observer: '_genreChanged'
+                    },
+                    games: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+
+            _genreChanged(newVal, oldVal){
+                if(newVal !== undefined){
+                    this._generateRequest();
+                }
+            }
+
+            _generateRequest(){
+                if(this.$.getsimilargames.lastRequest){
+                    this.$.getsimilargames.lastRequest.abort();
+                }
+
+                this.$.getsimilargames.generateRequest();
+            }
+            
+            _response(a) {
+                this.set('games', []);
+
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (game) {
+                        this.push('games', game);
+                    }, this);
+                }
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+                
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+        }
+
+        window.customElements.define(KalSimilarGames.is, KalSimilarGames);
+    </script>
+</dom-module>

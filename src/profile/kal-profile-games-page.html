@@ -456,7 +456,7 @@
                                 <div class="gamecard">
                                     <div class="card-header">
                                         <div class="card-header-title">
-                                            <a href="/game/[[games.url]]" onclick="load();" title="[[games.name]]">[[games.name]]</a>
+                                            <a href="/game/[[games.url]]" title="[[games.name]]">[[games.name]]</a>
                                         </div>
                                         <paper-button name="[[games.id]]" raised data-hover="Listeden Çıkart" class="btn-5 btn-5b icon-remove" id="pbCancelGameLikes"
                                             on-tap="_triggerCancelGameForm">
@@ -465,7 +465,7 @@
                                     </div>
                                     <div class="card-container">
                                         <div class="card-container-picture">
-                                            <a href="/game/[[games.url]]" onclick="load();">
+                                            <a href="/game/[[games.url]]">
                                                 <iron-image background src="//cdn.kaldirirmi.com/images/games/[[games.picture]]" sizing="cover" alt="[[games.name]]" preload
                                                     fade></iron-image>
                                             </a>
@@ -486,8 +486,8 @@
                                                     </template>
                                                 </template>
                                                 <template is="dom-if" if="[[!games.kaldirir.useradded]]">
-                                                    <paper-button onclick="load(); location.href = '/sistem-sihirbazi';" raised navs>Sistemini Sihirbazını Çalıştır</paper-button>
-                                                    <paper-button onclick="load(); location.href='/uye/sistemini-tanimla';" raised navs>Sistemini Elle Güncelle</paper-button>
+                                                    <paper-button onclick="location.href = '/sistem-sihirbazi';" raised navs>Sistemini Sihirbazını Çalıştır</paper-button>
+                                                    <paper-button onclick="location.href='/uye/sistemini-tanimla';" raised navs>Sistemini Elle Güncelle</paper-button>
                                                 </template>
 
                                             </div>

@@ -6,22 +6,71 @@
 
 <link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
-
 <link rel="import" href="../model/loader-pac.html">
 <link rel="import" href="../../bower_components/watsonlogic-parallax/watsonlogic-parallax.html">
-
 
 <link rel="import" href="./game-steam-price.html">
 <link rel="import" href="./user-buy-game.html">
 <link rel="import" href="./user-like-game.html">
-
-
+<link rel="import" href="./kal-similar-games.html">
 
 <dom-module id="kal-selected-game">
     <template>
         <style include="shared-styles">
             :host {
                 display: block;
+            }
+
+            :host([is-mobile]) #game-page #kalparallax {
+                height: 210px;
+            }
+
+            :host([is-mobile]) #game-page {
+                height: auto !important;
+            }
+
+            #game-page #kalparallax {
+                height: 45vh;
+            }
+
+
+            #game-page #kalparallax iron-image {
+                width: 100%;
+                height: 100%;
+            }
+            #game-page {
+                /* height: 100%; */
+                @apply --layout-vertical;
+                overflow-y: scroll !important;
+                height: calc(100vh - 192px);
+                /* @apply --layout-center-justified; */
+            }
+
+            .loader-pac-content {
+                position: relative;
+                min-height: 300px;
+            }
+
+            .loader-pac-content span {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                /* margin-top: 150px; */
+                /* margin-left: 20px; */
+                position: absolute;
+                top: 20%;
+                width: 100%;
+                text-align: center;
+            }
+
+            .game-is-not-exist {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                position: absolute;
+                width: 100%;
+                margin-top: 20px;
+                text-align: center;
             }
 
             app-toolbar {
@@ -31,7 +80,16 @@
                 color: white;
                 font-size: 18px;
                 z-index: 1;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: #222;
+                height: 45px;
+                padding: 0 30px;
+                @apply --shadow-elevation-12dp;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
             }
+
 
             app-toolbar a {
                 color: #fff;
@@ -39,12 +97,6 @@
 
             app-toolbar paper-icon-button {
                 --paper-icon-button-ink-color: white;
-            }
-
-            /* z-index problem due to parallax-element*/
-
-            iron-overlay-backdrop {
-                z-index: -5 !important;
             }
 
             #loader {
@@ -468,6 +520,7 @@
             }
 
             /* All content font sizes */
+
             p,
             h1,
             h2,
@@ -1090,16 +1143,16 @@
             }
 
             #gamecontent #poster .interaction .like-part {
-                flex-grow: 1;
+                /* flex-grow: 1; */
                 transition: .3s ease-in-out;
                 z-index: 1;
             }
 
             #poster .side-corner-tag {
-                width: 100%;
+                /* width: 100%; */
                 height: 100%;
                 position: relative;
-                color: #fff;
+                /* color: #fff; */
                 display: inline-block;
                 padding: 5px;
                 overflow: hidden;
@@ -1112,18 +1165,18 @@
             }
 
             #poster .side-corner-tag p span {
-                font-size: 12px;
-                height: 35px;
+                font-size: 11px;
+                height: 26px;
                 position: absolute;
                 display: inline-block;
-                right: -27px;
+                right: -43px;
                 box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2), inset 0px 5px 30px rgba(255, 255, 255, 0.2);
                 text-align: center;
                 text-transform: uppercase;
-                top: 6px;
+                top: 17px;
                 background: #d93131;
                 width: 100px;
-                padding: 4px 28px;
+                padding: 5px 28px;
                 -webkit-transform: rotate(45deg);
                 -moz-transform: rotate(45deg);
                 -o-transform: rotate(45deg);
@@ -1220,126 +1273,119 @@
 
         <iron-ajax id="getselectedgame" url="/h/main?fm=get-game-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
 
+        <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
+        <paper-dialog id="videoholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+            <div id="closevideo">
+                <paper-icon-button id="videoclose" icon="close" dialog-dismiss></paper-icon-button>
+            </div>
+            <div id="gamevideo">
+                <google-youtube id="gamevideoframe" video-id="[[_remakeVideo(gameinfo.video)]]" modestbranding="0" rel="0" showinfo="0" playsinline="0"
+                    iv_load_policy="3" hl="tr" cc_load_policy="0" autoplay="0" fs="0" fluid></google-youtube>
+            </div>
+        </paper-dialog>
+        <paper-dialog id="embedholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+            <div id="closeembed">
+                <paper-icon-button id="embedclose" icon="close" dialog-dismiss></paper-icon-button>
+            </div>
+            <paper-dialog-scrollable>
+                <div id="embed">
+                    <div class="title">
+                        Sitenize Ekleyin
+                    </div>
+                    <div class="description">
+                        Aşağıdaki kodu kullanarak [[gameinfo.name]] oyununun sistem gereksinimlerini sitenize ekleyebilirsiniz.
+                    </div>
+                    <div class="code">
+                        <paper-input id="embedvalue" value$="<iframe src='http://localhost:56920/embed/[[gameinfo.url]]' width='320' height='516' frameborder='0'></iframe>"></paper-input>
+                    </div>
+                </div>
+                <paper-toast id="copied" text="Kod kopyalandı" duration="3000" class="fit-bottom"></paper-toast>
+            </paper-dialog-scrollable>
+        </paper-dialog>
+
+        <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+
         <app-toolbar>
             <!-- <paper-icon-button icon="arrow-back" on-tap="_onBackToAllGames"></paper-icon-button> -->
             <a id="back" href="/game">
                 <paper-icon-button icon="icons:arrow-back" on-tap="_onBackToAllGames"></paper-icon-button>
             </a>
-            <span>Geri Dön</span>
+            <span>Tüm Oyunlar</span>
         </app-toolbar>
 
         <div hidden$=[[!loading]] class="loader-pac-content">
             <loader-pac></loader-pac>
+            <span>
+                Oyun Getiriyor..
+            </span>
         </div>
         <div hidden$="[[loading]]">
             <template is="dom-if" if={{isGame}}>
-                <!-- <parallax-element id="parallaxGamePage"> -->
-                <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
-                <paper-dialog id="videoholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
-                    <div id="closevideo">
-                        <paper-icon-button id="videoclose" icon="close" dialog-dismiss></paper-icon-button>
+                <div id="game-page">
+                    <!-- <watsonlogic-parallax parallax-image-height="400" parallax-text="You can pass text content into the <watsonlogic-parallax> component."
+                        parallax-image="[[gameinfo.background]]">
+                    </watsonlogic-parallax> -->
+                    <div id="kalparallax">
+                        <iron-image src="[[gameinfo.background]]" sizing="cover" preload fade alt="[[gameinfo.name]]"></iron-image>
                     </div>
-                    <div id="gamevideo">
-                        <google-youtube id="gamevideoframe" video-id="[[_remakeVideo(gameinfo.video)]]" modestbranding="0" rel="0" showinfo="0" playsinline="0"
-                            iv_load_policy="3" hl="tr" cc_load_policy="0" autoplay="0" fs="0" fluid></google-youtube>
-                    </div>
-                </paper-dialog>
-                <paper-dialog id="embedholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
-                    <div id="closeembed">
-                        <paper-icon-button id="embedclose" icon="close" dialog-dismiss></paper-icon-button>
-                    </div>
-                    <paper-dialog-scrollable>
-                        <div id="embed">
-                            <div class="title">
-                                Sitenize Ekleyin
+                    <div id="gamecontent">
+                        <div id="panel" style$="[[_getStyleOfClass(gameinfo)]]">
+                            <div id="options">
+                                <game-steam-price gameappid="[[gameinfo.steamappid]]"></game-steam-price>
                             </div>
-                            <div class="description">
-                                Aşağıdaki kodu kullanarak [[gameinfo.name]] oyununun sistem gereksinimlerini sitenize ekleyebilirsiniz.
-                            </div>
-                            <div class="code">
-                                <paper-input id="embedvalue" value$="<iframe src='http://localhost:56920/embed/[[gameinfo.url]]' width='320' height='516' frameborder='0'></iframe>"></paper-input>
-                            </div>
-                        </div>
-                        <paper-toast id="copied" text="Kod kopyalandı" duration="3000" class="fit-bottom"></paper-toast>
-                    </paper-dialog-scrollable>
-                </paper-dialog>
-                <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
-                <!-- <iron-image id="game_background_image" src="[[gameinfo.background]]" sizing="cover" preload fade></iron-image> -->
-
-                <watsonlogic-parallax parallax-image-height="400" parallax-text="You can pass text content into the <watsonlogic-parallax> component."
-                    parallax-image="[[gameinfo.background]]">
-                </watsonlogic-parallax>
-                <!-- <parallax-layers>
-                        <div depth="-0.5" class="fullbleed">
-                            <iron-image id="game_background_image" src="[[gameinfo.background]]" sizing="cover" preload fade></iron-image>
-                        </div>
-                    </parallax-layers> -->
-                <div id="gamecontent" itemscope itemtype="http://schema.org/VideoGame">
-                    <div id="panel" style="">
-                        <div id="options">
-                            <game-steam-price gameappid="[[gameinfo.steamappid]]"></game-steam-price>
-                        </div>
-                        <div id="panel-contents">
-                            <div id="poster-ad">
-                                <paper-card class="advertisement">
-                                    <div class="rate-content">
-                                        <div class="card-content">
-                                            <div class="reklam-header">OyunSatinAl.com</div>
-                                            <div class="reklam-content">%3 indirim</div>
-                                            <div class="reklam-cupone">
+                            <div id="panel-contents">
+                                <div id="poster-ad">
+                                    <paper-card class="advertisement">
+                                        <div class="rate-content">
+                                            <div class="card-content">
+                                                <div class="reklam-header">OyunSatinAl.com</div>
+                                                <div class="reklam-content">%3 indirim</div>
+                                                <div class="reklam-cupone">
+                                                </div>
+                                            </div>
+                                            <div class="card-actions">
+                                                <paper-button raised>Kuponu Kullan</paper-button>
                                             </div>
                                         </div>
-                                        <div class="card-actions">
-                                            <paper-button raised>Kuponu Kullan</paper-button>
+                                        <div class="advertisement-image"></div>
+                                    </paper-card>
+                                </div>
+                                <div id="poster" style$="[[_getStyleOfClass(gameinfo)]]">
+                                    <div class="side-corner-tag">
+                                        <iron-image id="game_poster_image" src="[[gameinfo.picture]]" sizing="cover" alt="[[gameinfo.name]]" preload fade></iron-image>
+                                        <div hidden$="[[_checkGameStatus(gameinfo.status)]]">
+                                            <p>
+                                                <span>[[_remakeStatus(gameinfo.status)]]</span>
+                                            </p>
                                         </div>
                                     </div>
-                                    <div class="advertisement-image"></div>
-                                </paper-card>
-                            </div>
-                            <div id="poster">
-                                <div class="side-corner-tag">
-                                    <iron-image id="game_poster_image" src="[[gameinfo.picture]]" sizing="cover" alt="[[gameinfo.name]]" preload fade></iron-image>
-
-                                    <div hidden$="[[_checkGameStatus(gameinfo.status)]]">
-                                        <p>
-                                            <span>[[gameinfo.status]]</span>
-                                        </p>
+                                    <div class="interaction">
+                                        <user-buy-game userid="[[storedUser.uid]]" gamename="[[gameinfo.name]]"></user-buy-game>
+                                        <div class="like-part">
+                                            <user-like-game bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" gid="[[gameinfo.id]]" username="[[storedUser.uid]]"></user-like-game>
+                                        </div>
                                     </div>
+                                    <!-- <div hidden$="[[_hasGameGallery(gameinfo.galleryurl)]]">
+                                        <a href="/gallery/[[gameinfo.galleryurl]]" target="_blank" id="gamegallerylink">
+                                            <paper-button raised>Galeriye Git</paper-button>
+                                        </a>
+                                    </div> -->
                                 </div>
-                                <div class="interaction">
-                                    <user-buy-game userid="[[userid]]" gamename="[[gameinfo.name]]"></user-buy-game>
-                                    <div class="like-part">
-                                        <user-like-game bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" gid="[[gameinfo.id]]" username="hakke"></user-like-game>
-                                    </div>
+                                <div id="metadata">
+                                    <h1 class="metagametitle" itemprop="name" style$="color: [[gameinfo.maincolor]]">[[gameinfo.name]]</h1>
+                                    <h4 itemprop="genre">[[_remakeGenres(gameinfo.genres)]]</h4>
                                 </div>
-
-                                <div hidden$="[[_hasGameGallery(gameinfo.galleryurl)]]">
-                                    <a href="/galeri/[[gameinfo.galleryurl]]" target="_blank" id="gamegallerylink">
-                                        <paper-button raised>Galeriye Git</paper-button>
-                                    </a>
+                                <div id="similargames">
+                                    <kal-similar-games genre="[[gameinfo.genres]]"></kal-similar-games>
                                 </div>
-
-                            </div>
-                            <div id="metadata">
-                                <h1 class="metagametitle" itemprop="name">[[gameinfo.name]]</h1>
-                                <h4 itemprop="genre">[[_remakeGenres(gameinfo.genres)]]</h4>
-                            </div>
-                            <div id="similargames">
-                                <kaldirirmi-similar-games genre="[[gameinfo.genres]]"></kaldirirmi-similar-games>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <!-- </parallax-element> -->
-
-
-
-
             </template>
-            <template is="dom-if" if={{!isGame}}>
-                <span>Böyle bir haber bulunmamaktadır!</span>
-            </template>
+            <div hidden$=[[isGame]]>
+                <span class="game-is-not-exist">Böyle bir oyun bulunmamaktadır!</span>
+            </div>
         </div>
     </template>
     <script>
@@ -1359,7 +1405,11 @@
                         type: Object,
                         value: null,
                     },
-
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    storedUser: Object
                 };
             }
 
@@ -1393,7 +1443,7 @@
              * receive this callback. 
              */
             attributeChangedCallback(attrName, oldVal, newVal) {
-                console.log('attributeChangedCallback', attrName);
+                // console.log('attributeChangedCallback', attrName);
             }
 
             /**
@@ -1420,26 +1470,29 @@
             }
 
             _selectedGameChanged(newVal, oldVal) {
-
+                // console.log('_selectedGameChanged', newVal);
                 // we are starting here..
                 this._clearState();
                 this._debounceWork();
-                console.log('CurrentUrl: ', newVal, oldVal);
+                // console.log('CurrentUrl: ', newVal, oldVal);
             }
 
             _onResponse(event) {
                 var response = event.detail.response;
 
-                console.log('kal-selected-game response: ', response);
+                // console.log('kal-selected-game response: ', response);
 
                 if (response !== null) {
                     this.set('isGame', true);
+                    response.background = 'https:' + response.background;
+                    response.picture = 'https:' + response.picture;
 
-                    var gameinfo = { ...response,
-                        background: 'https:' + response.background,
-                        picture: 'https:' + response.picture
-                    };
-                    this.set('gameinfo', gameinfo);
+                    // var gameinfo = { ...response,
+                    //     background: 'https:' + response.background,
+                    //     picture: 'https:' + response.picture
+                    // };
+
+                    this.set('gameinfo', response);
 
                 } else
                     this.set('isGame', false);
@@ -1468,19 +1521,33 @@
             }
 
             _onBackToAllGames(e) {
-                console.log('e', e);
+                // console.log('e', e);
                 this.dispatchEvent(new CustomEvent('backall', e.model));
             }
 
             _remakeVideo(video) {
+                // console.log('_remkaeVideo', video);
                 //gameinfo.video.Replace(" https://www.youtube.com/watch?v=", " ")
                 //console.log(video);
-
-                return video.split('=')[1];
+                var res = '';
+                if (video !== undefined) {
+                    res = video.split('=')[1];
+                }
+                return res;
             }
 
             _remakeGenres(genres) {
-                return genres.replace(',', '/');
+                var res = '';
+                if (genres !== undefined) {
+                    res = genres.replace(',', '/');
+                }
+                return res;
+            }
+
+            _remakeStatus(status) {
+                if (status == 0) return "Full Edition";
+                else if (status == 1) return "Early Access";
+                else if (status == 2) return "DLC";
             }
 
             _checkGameStatus(status) {
@@ -1491,8 +1558,18 @@
                 }
             }
 
+            _getStyleOfClass(gameinfo) {
+                var res = '';
+                // console.log('_getStyleOfClass', gameinfo);
+                if (gameinfo != null) {
+                    res = 'border-color: ' + gameinfo.backcolor + '; background-color: ' + gameinfo.backcolor +
+                    '; color: ' + gameinfo.maincolor;
+                }
+                return res;
+            }
+
             _hasGameGallery(gallery) {
-                console.log('fsafafas', !(gallery == null || gallery.length === 0));
+                // console.log('fsafafas', !(gallery == null || gallery.length === 0));
                 return !(gallery == null || gallery.length === 0);
             }
         }
