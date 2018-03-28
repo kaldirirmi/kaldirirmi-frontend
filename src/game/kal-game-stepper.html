@@ -1,0 +1,733 @@
+<dom-module id="kal-game-stepper">
+    <template>
+        <style is="custom-style">
+            :host {
+                @apply --shadow-elevation-8dp;
+
+                --paper-fab-background: #ff7800;
+            }
+
+            paper-radio-button.red {
+                --paper-radio-button-checked-color: var(--paper-red-500);
+                --paper-radio-button-checked-ink-color: var(--paper-red-500);
+                --paper-radio-button-unchecked-color: var(--paper-red-900);
+                --paper-radio-button-unchecked-ink-color: var(--paper-red-900);
+                --paper-radio-button-label-color: var(--paper-red-500);
+            }
+
+            paper-radio-button.green {
+                --paper-radio-button-checked-color: var(--paper-green-500);
+                --paper-radio-button-checked-ink-color: var(--paper-green-500);
+                --paper-radio-button-unchecked-color: var(--paper-green-900);
+                --paper-radio-button-unchecked-ink-color: var(--paper-green-900);
+                --paper-radio-button-label-color: var(--paper-green-500);
+            }
+
+
+            #stepper {
+                /*--paper-stepper-horizontal-opened-height: 300px;
+                        --paper-stepper-vertical-max-height: 200px;*/
+                --paper-stepper-horizontal-opening-transition-duration: 800ms;
+                margin: 0px 0px 20px 0px;
+                background: inherit !important;
+                --paper-stepper-horizontal-opened-height: 550px;
+            }
+
+            #stepper paper-step {
+                /*--paper-step-connector-line-background: red;*/
+                /*--paper-step-label-hover-background: blue;*/
+                --paper-step-ink-color: darkblue;
+            }
+
+            paper-toggle-button {
+                padding: 24px;
+            }
+
+            .sub-container {
+                @apply --shadow-elevation-4dp;
+                background-color: #222;
+                background-color: #222;
+                width: 25%;
+                margin: 10px;
+                color: white !important;
+                font-weight: 100;
+            }
+
+            .sub-container .sub-container-header {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                text-align: center;
+                padding: 7px;
+                font-size: calc(0.5em + 1vmin);
+                font-weight: bold;
+                min-height: 45px;
+            }
+
+            .sub-container .sub-container-image {
+                min-height: 70px;
+            }
+
+            .sub-container .sub-container-result {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                height: 50px;
+                font-size: 15px;
+                color: #ff7800;
+                font-weight: 400;
+                margin: 5px;
+                border-top: 2px solid #ff7800;
+                text-align: center;
+            }
+
+            .sub-container .sub-container-result paper-button {
+                text-transform: capitalize;
+            }
+
+            .sub-container .sub-container-result paper-button.updawn {
+                background: #ff7800;
+                color: #222;
+                font-weight: 500;
+            }
+
+            .sub-container .sub-container-result paper-button.downdawn {
+                color: #ff7800;
+                background: #222;
+            }
+
+            .sub-container .sub-container-user {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                padding: 5px 10px;
+            }
+
+            .sub-container .sub-container-user {
+                color: white;
+                min-height: 85px;
+                margin: 10px 0px;
+            }
+
+            .sub-container .sub-container-user input {
+                color: #fff;
+            }
+
+            .picuser {
+                --paper-input-container-color: white;
+                --paper-input-container-focus-color: #ff7800;
+                --paper-input-container-invalid-color: red;
+                --paper-input-container-input-color: #fff;
+            }
+
+            .maincolor {
+                color: #ff7800;
+            }
+
+            #feedbackpages {
+                min-height: 320px;
+            }
+
+            .saveFeedBackButton {
+                background: #222;
+                color: white;
+                width: 100%;
+                margin: 15px 5px;
+            }
+
+            .sub-container-result .sub-container-result-column {
+                width: 50%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #feedback-tabs paper-tab {
+                text-transform: uppercase;
+                font-size: 16px;
+            }
+
+            .sub-container-user paper-radio-group>* {
+                padding: 8px !important;
+            }
+
+            .alingcenter {
+                align-items: center;
+                -webkit-align-content: center;
+            }
+        </style>
+
+        <iron-ajax id="getfeedbackofuser" debounce-duration="300" url='/h/main?fm=get-feedbacks-of-user&a=[[gameid]]' handle-as="json"
+            on-response="_responseGetFeedbackOfUser"></iron-ajax>
+
+        <iron-ajax id="getaveragefeedbacksofgame" debounce-duration="300" url="/h/main?fm=get-avg-feedbacks-of-game&a=[[gameid]]"
+            handle-as="json" on-response="_responseAvgFeedbackOfGame">
+        </iron-ajax>
+
+        <neon-animated-pages id="feedbackpages" entry-animation="slide-from-left-animation" exit-animation="fade-out-animation" selected="[[selected]]">
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+                    <!-- gameestimatedprice -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Oyunun Gerçek Değeri</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/gameestimatedprice.svg" />
+                        <div class="sub-container-user">
+                            <paper-input class="picuser" id="paperInputEstimatedPrice" bind-value="{{gameestimatedprice}}" label="Sizce Oyunun Gerçek Değeri"
+                                auto-validate pattern="[0-9]*" error-message="Sadece Sayı Giriniz!" type="string" maxlength="4">
+                                <div suffix>TL</div>
+                            </paper-input>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showestimated]]">
+                                İlk Değerlendiren Sen Ol!
+                            </template>
+                            <template is="dom-if" if="[[showestimated]]">
+                                Ortalama [[avgfeedbacks.estimated]] TL
+                            </template>
+                        </div>
+                    </div>
+                    <!-- isworthgettinggame -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Almaya Değer mi?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/isworthgettinggame.svg" />
+
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{isworthgettinggame}}">
+                                <paper-radio-button name="yes" class="green">Alınmalı</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Asla!</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showworth]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showworth]]">
+                                <div class="sub-container-result-column" style="background-color: #ff7800; color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:arrow-upward"></iron-icon> ([[avgfeedbacks.worthyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:#ff7800; border-top: 4px solid #ff7800;">
+                                    <iron-icon icon="icons:arrow-downward"></iron-icon> ([[avgfeedbacks.worthno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- shoudupgradepc-->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Bilgisayarını Bu Oyun İçin Upgrade Yapar mısın?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/shouldupragepc.svg" />
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{shouldupgradepc}}">
+                                <paper-radio-button name="yes" class="green">Evet</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Hayır</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showupgrade]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showupgrade]]">
+                                <div class="sub-container-result-column" style="background-color: #ff7800; color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:arrow-upward"></iron-icon> ([[avgfeedbacks.upgradeyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:#ff7800; border-top: 4px solid #ff7800;">
+                                    <iron-icon icon="icons:arrow-downward"></iron-icon> ([[avgfeedbacks.upgradeno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+                    <!-- gamedifficulty -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Oyunun Zorluğu</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/gamedifficulty.svg" />
+                        <div class="sub-container-user">
+                            <div style="font-style: italic; font-size: 12px;">
+                                <b>1</b> = En Kolay /
+                                <b>10</b> = En Zor</div>
+                            <paper-slider id="ratings" pin snaps max="10" max-markers="10" step="1" value="{{gamedifficulty}}"></paper-slider>
+                            <div>Seçimin
+                                <span class="maincolor">
+                                    <b>{{gamedifficulty}}</b>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showdifficulty]]">
+                                İlk Değerlendiren Sen Ol!
+                            </template>
+                            <template is="dom-if" if="[[showdifficulty]]">
+                                <span>Zorluk Derecesi
+                                    <b>[[avgfeedbacks.difficulty]]</b>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- havingbugs -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Oyunda Bug Var mı?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/havingbugs.svg" />
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{havingbugs}}">
+                                <paper-radio-button name="yes" class="green">Oyun Alınmaya Hazır</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Eksikleri Var, Acele Etme</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showbugs]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showbugs]]">
+                                <div class="sub-container-result-column" style="background-color: #ff7800; color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:check-circle"></iron-icon> ([[avgfeedbacks.bugsyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:#ff7800; border-top: 4px solid #ff7800;">
+                                    <iron-icon icon="icons:report"></iron-icon> ([[avgfeedbacks.bugsno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- averagecompletetime -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Tahminen Kaç Saatte Bitirilebilir?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/averagecompletetime.svg" />
+
+                        <div class="sub-container-user">
+                            <paper-input class="picuser" id="paperInputCompleteTime" bind-value="{{averagecompletetime}}" label="Tahmini Tamamlama Süresi"
+                                auto-validate pattern="[0-9]*" error-message="Sadece Sayı Giriniz!" type="string" maxlength="4">
+                                <div suffix>Saat</div>
+                            </paper-input>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showcomplete]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showcomplete]]">
+                                Ortalama [[avgfeedbacks.completetime]] Saat
+                            </template>
+                        </div>
+                    </div>
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+
+                    <!--issurroundgame-->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Surround Ses İyi Mi?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/issurroundgame.svg" />
+
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{issurroundgame}}">
+                                <paper-radio-button name="yes" class="green">Evet</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Hayır</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showsurround]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showsurround]]">
+                                <div class="sub-container-result-column" style="background-color: #ff7800; color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:arrow-upward"></iron-icon> ([[avgfeedbacks.surroundyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:#ff7800; border-top: 4px solid #ff7800;">
+                                    <iron-icon icon="icons:arrow-downward"></iron-icon> ([[avgfeedbacks.surroundno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- bestcontroldevice -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>En iyi Kontrol Cihazı?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/bestcontroldevice.svg" />
+
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{bestcontroldevice}}">
+                                <paper-radio-button name="yes" class="green">Oyun Kolu</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Mouse</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showdevice]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showdevice]]">
+                                <div class="sub-container-result-column" style="background-color: #ff7800; color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="hardware:gamepad"></iron-icon> ([[avgfeedbacks.deviceyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:#ff7800; border-top: 4px solid #ff7800;">
+                                    <iron-icon icon="hardware:mouse"></iron-icon> ([[avgfeedbacks.deviceno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- isgoodinlowgraphics-->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Düşük Ayarlarda Oyun Zevkli mi?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/isgoodinlowgraphics.svg" />
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{isgoodinlowgraphics}}">
+                                <paper-radio-button name="yes" class="green">Evet</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Hayır</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showgraphics]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showgraphics]]">
+                                <div class="sub-container-result-column" style="background-color: #ff7800; color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:arrow-upward"></iron-icon> ([[avgfeedbacks.graphicsyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:#ff7800; border-top: 4px solid #ff7800;">
+                                    <iron-icon icon="icons:arrow-downward"></iron-icon> ([[avgfeedbacks.graphicsno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+                </div>
+
+            </neon-animatable>
+        </neon-animated-pages>
+
+        <div class="layout horizontal">
+            <paper-button class="saveFeedBackButton" raised on-tap="_saveFeedbacks">[[savetitle]]</paper-button>
+        </div>
+        <iron-form id="formAddUserFeedback" on-iron-form-response="_responseFormAddUserFeedback">
+            <form action="/h/main" method="post">
+                <input type="hidden" name="fm" value="add-user-game-feedback" />
+                <input type="hidden" name="gameestimatedprice" value="{{gameestimatedprice}}" />
+                <input type="hidden" name="isworthgettinggame" value="{{isworthgettinggame}}" />
+                <input type="hidden" name="shouldupgradepc" value="{{shouldupgradepc}}" />
+                <input type="hidden" name="gamedifficulty" value="{{gamedifficulty}}" />
+                <input type="hidden" name="havingbugs" value="{{havingbugs}}" />
+                <input type="hidden" name="averagecompletetime" value="{{averagecompletetime}}" />
+                <input type="hidden" name="issurroundgame" value="{{issurroundgame}}" />
+                <input type="hidden" name="bestcontroldevice" value="{{bestcontroldevice}}" />
+                <input type="hidden" name="isgoodinlowgraphics" value="{{isgoodinlowgraphics}}" />
+                <input type="hidden" name="gameid" value="[[gameid]]" />
+            </form>
+        </iron-form>
+    </template>
+
+    <script>
+        /**
+         * `kal-game-stepper` Description
+         *
+         * @summary Game Stepper gives the user to evaluate the current game according to the catalogs.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class PascalCaseName extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-game-stepper';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gameid: {
+                        type: Number,
+                        value: 0,
+                        observer: '_gameidChanged'
+                    },
+                    userid: {
+                        type: Number,
+                        value: 0,
+                    },
+                    gamename: {
+                        type: String,
+                        value: '',
+                    },
+                    userfeedbacks: {
+                        type: Object,
+                        notify: true
+                    },
+                    emptymessage: {
+                        type: String,
+                        value: 'Girilmemiş',
+                        notify: true
+                    },
+                    avgfeedbacks: {
+                        type: Object,
+                        notify: true
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    showestimated: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showdifficulty: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showcomplete: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showdevice: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showgraphics: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showsurround: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showbugs: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showupgrade: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    showworth: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    savetitle: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+            
+            _gameidChanged(newVal, oldVal)
+            {
+                if(newVal !== undefined){
+                    
+                    let iaFeedbackUser = this.$.getfeedbackofuser;
+                    let iaAverageFeedbackGame = this.$.getaveragefeedbacksofgame;
+                    
+                    if (this.userid != 0) {
+                        this.savetitle = "Feedback'leri Kaydet";
+                        
+                        this._checkLastRequest(iaFeedbackUser);
+                        iaFeedbackUser.generateRequest();
+                    }
+                    else {
+                        this.savetitle = "Feedback'leri Kaydetmek İçin Giriş Yapmalısın!";
+                    }
+
+                    this._checkLastRequest(iaAverageFeedbackGame);
+                    iaAverageFeedbackGame.generateRequest();
+                }
+            }
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+            
+            _checkLastRequest(element){
+                if(element.lastRequest)
+                    element.lastRequest.abort();
+            }
+
+            _responseGetFeedbackOfUser(event) {
+                var response = event.detail.response;
+                //console.log(response);
+
+                    this.set('userfeedbacks', response);
+                        
+                    this.gameestimatedprice = response.gameestimatedprice;
+                    this.averagecompletetime = response.averagecompletetime;
+                    this.bestcontroldevice = response.bestcontroldevice;
+                    this.gamedifficulty = response.gamedifficulty;
+                    this.havingbugs = response.havingbugs;
+                    this.isgoodinlowgraphics = response.isgoodinlowgraphics;
+                    this.issurroundgame = response.issurroundgame;
+                    this.shouldupgradepc = response.shouldupgradepc;
+                    this.isworthgettinggame = response.isworthgettinggame;
+
+
+
+            }
+            _saveFeedbacks() {
+
+                if (this.userid != 0) {
+
+                    if (this.$.paperInputEstimatedPrice.validate() && this.$.paperInputCompleteTime.validate()) {
+                        // document.getElementById('formAddUserFeedback').submit();
+                        this.$.formAddUserFeedback.submit();
+                    }
+
+                }
+                else {
+                                        this._toaster('Feedback Eklemek İçin Giriş Yapmalısınız!');
+
+                }
+            }
+
+            _toaster(message){
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                    text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
+            _responseFormAddUserFeedback(event) {
+                var response = event.detail.response;
+                //console.log(response);
+                if (response.success) {
+                    this._toaster(response.message);
+
+                    if (this.$.getfeedbackofuser.lastRequest) {
+                        this.$.getfeedbackofuser.lastRequest.abort();
+                    }
+                    this.$.getfeedbackofuser.generateRequest();
+
+                    if (this.$.getaveragefeedbacksofgame.lastRequest) {
+                        this.$.getaveragefeedbacksofgame.lastRequest.abort();
+                    }
+                    this.$.getaveragefeedbacksofgame.generateRequest();
+
+                }
+            }
+            _responseAvgFeedbackOfGame(event) {
+                var response = event.detail.response;
+                //console.log(response);
+                if (response != null) {
+                    this.set('avgfeedbacks', response);
+
+                    if (response.estimated != 0) {
+                        this.showestimated = true;
+                    }
+
+                    if (response.gamedifficulty != -1) {
+                        this.showdifficulty = true;
+                    }
+
+                    if (response.completetime != 0) {
+                        this.showcomplete = true;
+                    }
+
+                    if (response.bugsno == 0 && response.bugsyes == 0) {
+                        this.showbugs = false;
+                    }
+                    else {
+                        this.showbugs = true;
+                    }
+
+                    if (response.deviceno == 0 && response.deviceyes == 0) {
+                        this.showdevice = false;
+                    }
+                    else {
+                        this.showdevice = true;
+                    }
+
+                    if (response.graphicsno == 0 && response.graphicsyes == 0) {
+                        this.showgraphics = false;
+                    }
+                    else {
+                        this.showgraphics = true;
+                    }
+
+                    if (response.surroundno == 0 && response.surroundyes == 0) {
+                        this.showsurround = false;
+                    }
+                    else {
+                        this.showsurround = true;
+                    }
+                    
+                    if (response.upgradeno == 0 && response.upgradeyes == 0) {
+                        this.showupgrade = false;
+                    }
+                    else {
+                        this.showupgrade = true;
+                    }
+
+                    if (response.worthno == 0 && response.worthyes == 0) {
+                        this.showworth = false;
+                    }
+                    else {
+                        this.showworth = true;
+                    }
+                }
+            }
+            _remakeNos(yes) {
+                return 100 - yes;
+            }
+            _ironSelectFeedbacks() {
+                var selected = event.target.selected;
+                this.$.feedbackpages.select(selected);
+            }
+            _goLeft() {
+                this.$.feedbackpages.selectNext();
+                // document.getElementById('feedbackpages').selectNext();
+            }
+            _goRight() {
+                this.$.feedbackpages.selectPrevious();
+                // document.getElementById('feedbackpages').selectPrevious();
+            }
+        }
+
+        window.customElements.define(PascalCaseName.is, PascalCaseName);
+    </script>
+</dom-module>

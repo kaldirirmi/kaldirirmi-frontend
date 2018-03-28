@@ -14,7 +14,11 @@
 <link rel="import" href="./user-like-game.html">
 <link rel="import" href="./kal-similar-games.html">
 <link rel="import" href="./game-kaldirir-mi.html">
-
+<link rel="import" href="./kal-game-stepper.html">
+<link rel="import" href="./game-streaming-list.html">
+<link rel="import" href="./kal-game-dlc.html">
+<link rel="import" href="./kal-game-guides.html">
+<link rel="import" href="./kal-other-games-in-series.html">
 
 <dom-module id="kal-selected-game">
     <template>
@@ -40,6 +44,7 @@
                 width: 100%;
                 height: 100%;
             }
+
             #game-page {
                 /* height: 100%; */
                 @apply --layout-vertical;
@@ -1381,9 +1386,11 @@
                                     <kal-similar-games genre="[[gameinfo.genres]]"></kal-similar-games>
                                 </div>
                             </div>
-                        </div><!-- panel -->
-                    </div><!--gamecontent -->
-                    
+                        </div>
+                        <!-- panel -->
+                    </div>
+                    <!--gamecontent -->
+
                     <div id="user-system">
                         <template is="dom-if" if={{storedUser.loggedin}}>
                             <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
@@ -1391,27 +1398,149 @@
                         <template is="dom-if" if={{!storedUser.loggedin}}>
                             <paper-material elevation="0" id="usersysteminfo" role="listbox">
                                 <paper-item heading>
-                                  <div style="flex-grow: 2;"><h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2></div>
-                                  <div>
-                                 <div class="buttons">
-                                  <login-button></login-button>
-                                </div>    
-                                  </div>
+                                    <div style="flex-grow: 2;">
+                                        <h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2>
+                                    </div>
+                                    <div>
+                                        <div class="buttons">
+                                            <login-button></login-button>
+                                        </div>
+                                    </div>
                                 </paper-item>
                                 <paper-item empty-info>
-                                  <div>Hemen kayıt olup giriş yap, sistemini ekle ve bilgisayarının bu oyunu açıp açmayacağını gör.</div>
+                                    <div>Hemen kayıt olup giriş yap, sistemini ekle ve bilgisayarının bu oyunu açıp açmayacağını
+                                        gör.
+                                    </div>
                                 </paper-item>
-                              </paper-material>
+                            </paper-material>
                         </template>
                     </div>
+                    <!-- user-system -->
+                    <div requirements>
+                        <div minimum id="minimum" role="listbox">
+                            <paper-item heading>
+                                Minimum Gereksinimler
+                            </paper-item>
+                            <paper-item>
+                                <div class="pi_hardwarename">İşlemci</div>
+                                <div>[[gameinfo.minimumcpus]]
+                                    <!-- <%= string.Join("<br>", gameinfo.minimumcpus.Select(x => x.name)) %> -->
+                                </div>
+                            </paper-item>
+                            <paper-item>
+                                <div class="pi_hardwarename">Ekran Kartı</div>
+                                <div>
+                                    <!-- <%= string.Join("<br>", gameinfo.minimumgpus.Select(x => x.name)) %> -->
+                                    <div>[[gameinfo.minimumgpus]]
+                                    </div>
+                            </paper-item>
+                            <paper-item>
+                                <div class="pi_hardwarename">İşletim Sistemi</div>
+                                <div itemprop="operatingSystem">
+                                    [[gameinfo.minimumoss]]
+                                    <!-- <%= string.Join("<br>", gameinfo.minimumoss.Select(x => x.name)) %> -->
+                                </div>
+                            </paper-item>
+                            <paper-item>
+                                <div class="pi_hardwarename">Hard Disk Alanı</div>
+                                <div itemprop="storageRequirements">
+                                    [[gameinfo.minimumhdd]] GB</div>
+                            </paper-item>
+                        </div>
+                        <div suggested id="suggested" role="listbox" hidden$=[[_isSuggestedListActive(gameinfo)]]>
+                                <paper-item heading>
+                                    Önerilen Gereksinimler
+                                </paper-item>
+                                <paper-item>
+                                    <div>İşlemci</div>
+                                    <div>
+                                        [[gameinfo.suggestedcpus]]
+                                        <!-- <%= string.Join("<br>", gameinfo.suggestedcpus.Select(x => x.name)) %> -->
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div>Ekran Kartı</div>
+                                    <div>
+                                        [[gameinfo.suggestedgpus]]
+                                        <!-- <%= string.Join("<br>", gameinfo.suggestedgpus.Select(x => x.name)) %> -->
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div>İşletim Sistemi</div>
+                                    <div>
+                                        [[gameinfo.suggestedoss]]
+                                        <!-- <%= string.Join("<br>", gameinfo.suggestedoss.Select(x => x.name)) %> -->
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div>Ram</div>
+                                    <div>
+                                        [[gameinfo.suggestedram]] GB
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div>Hard Disk Alanı</div>
+                                    <div>
+                                        [[gameinfo.suggestedhdd]] GB
+                                    </div>
+                                </paper-item>
+                        </div>
+                    </div>
+                    <!-- requirements -->
 
+                    <paper-item heading id="stepperheading">
+                            Kullanıcı-Oyun FeedBack
+                     </paper-item>
+                     <div id="kalstepper">
+                            <kal-game-stepper 
+                                userid="[[storedUser.uid]]" 
+                                gameid="[[gameinfo.id]]" 
+                                gamename="[[gameinfo.name]]"
+                                ></kal-game-stepper>
+                      </div>
 
+                      <div id="twitch">
+                            <game-streaming-list
+                            mc="[[gameinfo.maincolor]]"
+                            bc="[[gameinfo.backcolor]]"
+                            bca="[[gameinfo.backcoloropacity]]"
+                            gamename="[[gameinfo.name]]">
+                        </game-streaming-list>
+                
+                        </div>
+                        <%  if (gameinfo.seriesid != 0)
+                            {]]
+                            <div id="series">
+                                <kal-other-games-in-series
+                                    gamename="[[gameinfo.name]]"
+                                    bc="[[gameinfo.backcolor]]"
+                                    mc="[[gameinfo.maincolor]]"
+                                    bca="[[gameinfo.backcoloropacity]]">
+                                 </kal-other-games-in-series>
+                            </div> 
+                         <% } ]]
+                
+                        <kal-game-dlc 
+                            gameid="[[gameinfo.id]]"
+                            bc="[[gameinfo.backcolor]]"
+                            mc="[[gameinfo.maincolor]]"
+                            bca="[[gameinfo.backcoloropacity]]"
+                            >
+                        </kal-game-dlc>
+                
+                        <kal-game-guides 
+                            gameid="[[gameinfo.id]]"
+                            bc="[[gameinfo.backcolor]]"
+                            mc="[[gameinfo.maincolor]]"
+                            bca="[[gameinfo.backcoloropacity]]"
+                            >
+                        </kal-game-guides>
                 </div>
             </template>
             <div hidden$=[[isGame]]>
                 <span class="game-is-not-exist">Böyle bir oyun bulunmamaktadır!</span>
             </div>
-        </div>
+            </div>
     </template>
     <script>
         class KalSelectedGame extends Polymer.Element {
@@ -1588,7 +1717,7 @@
                 // console.log('_getStyleOfClass', gameinfo);
                 if (gameinfo != null) {
                     res = 'border-color: ' + gameinfo.backcolor + '; background-color: ' + gameinfo.backcolor +
-                    '; color: ' + gameinfo.maincolor;
+                        '; color: ' + gameinfo.maincolor;
                 }
                 return res;
             }
@@ -1596,6 +1725,10 @@
             _hasGameGallery(gallery) {
                 // console.log('fsafafas', !(gallery == null || gallery.length === 0));
                 return !(gallery == null || gallery.length === 0);
+            }
+
+            _isSuggestedListActive(gameinfo) {
+                return gameinfo.suggestedcpus != null ? true : false;
             }
         }
         window.customElements.define(KalSelectedGame.is, KalSelectedGame);

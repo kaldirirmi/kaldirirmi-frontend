@@ -1,0 +1,176 @@
+<link rel="import" href="../../bower_components/streaming-list/streaming-list.html">
+
+<dom-module id="game-streaming-list">
+    <template>
+        <style>
+            paper-input,
+            paper-dropdown-menu {
+                display: inline-block;
+                cursor: pointer;
+            }
+
+            paper-item[heading] {
+                font-size: 20px !important;
+            }
+
+            paper-item[heading] div h2 {
+                font-size: 20px !important;
+                font-weight: 100;
+            }
+
+            paper-item[heading] paper-button {
+                font-size: 14px;
+            }
+
+            paper-item[empty-info] {
+
+                font-size: 16px;
+                padding: 20px;
+            }
+
+            paper-item[empty-info] {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            paper-item[empty-info] div {
+                width: calc(100% - 40px);
+                @apply --layout-horizontal;
+                @apply --layout-start-justified;
+            }
+
+            paper-item div {
+                font-weight: 100;
+            }
+
+            paper-item .pi_hardwarename {
+                font-weight: bold !important;
+            }
+
+            #pdmLanguage {
+                --paper-input-container-label: {
+                    color: var(--paper-pink-500);
+                    text-align: center;
+                    font-weight: bold;
+                }
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                }
+                /* no underline */
+                --paper-input-container-underline: {
+                    display: none;
+                }
+            }
+
+            #online-twitch {
+                width: 100%;
+            }
+        </style>
+        
+        <paper-material elevation="0" id="online-twitch" role="listbox">
+            <paper-item heading style$="background-color: [[bca]]; color: [[mc]]">
+                <div style="flex-grow: 2;">
+                    <h2>[[gamename]] - Twitch
+                        <iron-icon style="height: calc(1.3em + 1vmin); width: calc(1.3em + 1vmin);" icon="av:videocam"></iron-icon>
+                    </h2>
+                </div>
+                <paper-dropdown-menu id="pdmLanguage" style$="margin-bottom:20px; color: [[mc]]" label="Dil Seçeneği">
+                    <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{language}}" style$="background-color:[[bc]]; color: [[mc]]">
+                        <paper-item value="all">Tüm Yayınlar</paper-item>
+                        <paper-item value="tr">Türkçe Yayınlar</paper-item>
+                        <paper-item value="en">İngilizce Yayınlar</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+            </paper-item>
+            <paper-item empty-info style$="background-color:[[bc]]; color:[[mc]];">
+                <streaming-list lang="{{language}}" width="{{size}}" client-id="{{clientId}}" key="{{key}}" service="{{service}}" game="{{gamename}}">
+                </streaming-list>
+            </paper-item>
+        </paper-material>
+    </template>
+    <script>
+        /**
+         * `game-streaming-list` Description
+         *
+         * @summary Getting twitch live sessions via twitch api.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GameStreamingList extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'game-streaming-list';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gamename: {
+                        type: String,
+                        value: "",
+                        notify: true
+                    },
+                    language: {
+                        type: String,
+                        value: "all"
+                    },
+                    size: {
+                        type: Number,
+                        value: 250
+                    },
+                    service: {
+                        type: String,
+                        value: "twitch"
+                    },
+                    clientId: {
+                        type: String,
+                        value: "573me5izesw34qm13u7j1h8km5fnpwz"
+                    },
+                    key: {
+                        type: String,
+                        value: "AIzaSyDMAAk08_eOgNAj12gQ3wb3liY0KJgb5kI"
+                    },
+                    mc: {
+                        type: String
+                    },
+                    bc: {
+                        type: String
+                    },
+                    bca: {
+                        type: String
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+        }
+
+        window.customElements.define(GameStreamingList.is, GameStreamingList);
+    </script>
+</dom-module>
