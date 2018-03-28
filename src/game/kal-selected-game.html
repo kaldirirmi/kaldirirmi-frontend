@@ -1388,66 +1388,63 @@
                             </div>
                         </div>
                         <!-- panel -->
-                    </div>
-                    <!--gamecontent -->
-
-                    <div id="user-system">
-                        <template is="dom-if" if={{storedUser.loggedin}}>
-                            <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
-                        </template>
-                        <template is="dom-if" if={{!storedUser.loggedin}}>
-                            <paper-material elevation="0" id="usersysteminfo" role="listbox">
-                                <paper-item heading>
-                                    <div style="flex-grow: 2;">
-                                        <h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2>
-                                    </div>
-                                    <div>
-                                        <div class="buttons">
-                                            <login-button></login-button>
+                        <div id="user-system">
+                            <template is="dom-if" if={{storedUser.loggedin}}>
+                                <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
+                            </template>
+                            <template is="dom-if" if={{!storedUser.loggedin}}>
+                                <paper-material elevation="0" id="usersysteminfo" role="listbox">
+                                    <paper-item heading>
+                                        <div style="flex-grow: 2;">
+                                            <h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2>
                                         </div>
-                                    </div>
-                                </paper-item>
-                                <paper-item empty-info>
-                                    <div>Hemen kayıt olup giriş yap, sistemini ekle ve bilgisayarının bu oyunu açıp açmayacağını
-                                        gör.
-                                    </div>
-                                </paper-item>
-                            </paper-material>
-                        </template>
-                    </div>
-                    <!-- user-system -->
-                    <div requirements>
-                        <div minimum id="minimum" role="listbox">
-                            <paper-item heading>
-                                Minimum Gereksinimler
-                            </paper-item>
-                            <paper-item>
-                                <div class="pi_hardwarename">İşlemci</div>
-                                <div>[[gameinfo.minimumcpus]]
-                                    <!-- <%= string.Join("<br>", gameinfo.minimumcpus.Select(x => x.name)) %> -->
-                                </div>
-                            </paper-item>
-                            <paper-item>
-                                <div class="pi_hardwarename">Ekran Kartı</div>
-                                <div>
-                                    <!-- <%= string.Join("<br>", gameinfo.minimumgpus.Select(x => x.name)) %> -->
-                                    <div>[[gameinfo.minimumgpus]]
-                                    </div>
-                            </paper-item>
-                            <paper-item>
-                                <div class="pi_hardwarename">İşletim Sistemi</div>
-                                <div itemprop="operatingSystem">
-                                    [[gameinfo.minimumoss]]
-                                    <!-- <%= string.Join("<br>", gameinfo.minimumoss.Select(x => x.name)) %> -->
-                                </div>
-                            </paper-item>
-                            <paper-item>
-                                <div class="pi_hardwarename">Hard Disk Alanı</div>
-                                <div itemprop="storageRequirements">
-                                    [[gameinfo.minimumhdd]] GB</div>
-                            </paper-item>
+                                        <div>
+                                            <div class="buttons">
+                                                <login-button></login-button>
+                                            </div>
+                                        </div>
+                                    </paper-item>
+                                    <paper-item empty-info>
+                                        <div>Hemen kayıt olup giriş yap, sistemini ekle ve bilgisayarının bu oyunu açıp açmayacağını
+                                            gör.
+                                        </div>
+                                    </paper-item>
+                                </paper-material>
+                            </template>
                         </div>
-                        <div suggested id="suggested" role="listbox" hidden$=[[_isSuggestedListActive(gameinfo)]]>
+                        <!-- user-system -->
+                        <div requirements>
+                            <div minimum id="minimum" role="listbox">
+                                <paper-item heading>
+                                    Minimum Gereksinimler
+                                </paper-item>
+                                <paper-item>
+                                    <div class="pi_hardwarename">İşlemci</div>
+                                    <div>[[gameinfo.minimumcpus]]
+                                        <!-- <%= string.Join("<br>", gameinfo.minimumcpus.Select(x => x.name)) %> -->
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div class="pi_hardwarename">Ekran Kartı</div>
+                                    <div>
+                                        <!-- <%= string.Join("<br>", gameinfo.minimumgpus.Select(x => x.name)) %> -->
+                                        [[gameinfo.minimumgpus]]
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div class="pi_hardwarename">İşletim Sistemi</div>
+                                    <div itemprop="operatingSystem">
+                                        [[gameinfo.minimumoss]]
+                                        <!-- <%= string.Join("<br>", gameinfo.minimumoss.Select(x => x.name)) %> -->
+                                    </div>
+                                </paper-item>
+                                <paper-item>
+                                    <div class="pi_hardwarename">Hard Disk Alanı</div>
+                                    <div itemprop="storageRequirements">
+                                        [[gameinfo.minimumhdd]] GB</div>
+                                </paper-item>
+                            </div>
+                            <div suggested id="suggested" role="listbox" hidden$=[[_isSuggestedListActive(gameinfo)]]>
                                 <paper-item heading>
                                     Önerilen Gereksinimler
                                 </paper-item>
@@ -1484,63 +1481,46 @@
                                         [[gameinfo.suggestedhdd]] GB
                                     </div>
                                 </paper-item>
+                            </div>
                         </div>
-                    </div>
-                    <!-- requirements -->
-
-                    <paper-item heading id="stepperheading">
+                        <!-- requirements -->
+    
+                        <paper-item heading id="stepperheading">
                             Kullanıcı-Oyun FeedBack
-                     </paper-item>
-                     <div id="kalstepper">
-                            <kal-game-stepper 
-                                userid="[[storedUser.uid]]" 
-                                gameid="[[gameinfo.id]]" 
-                                gamename="[[gameinfo.name]]"
-                                ></kal-game-stepper>
-                      </div>
-
-                      <div id="twitch">
-                            <game-streaming-list
-                            mc="[[gameinfo.maincolor]]"
-                            bc="[[gameinfo.backcolor]]"
-                            bca="[[gameinfo.backcoloropacity]]"
-                            gamename="[[gameinfo.name]]">
-                        </game-streaming-list>
-                
+                        </paper-item>
+                        <div id="kalstepper">
+                            <kal-game-stepper userid="[[storedUser.uid]]" gameid="[[gameinfo.id]]" gamename="[[gameinfo.name]]"></kal-game-stepper>
                         </div>
-                        <%  if (gameinfo.seriesid != 0)
-                            {]]
+    
+                        <div id="twitch">
+                            <game-streaming-list mc="[[gameinfo.maincolor]]" bc="[[gameinfo.backcolor]]" bca="[[gameinfo.backcoloropacity]]" gamename="[[gameinfo.name]]">
+                            </game-streaming-list>
+                        </div>
+    
+                        <template is="dom-if" if={{_isSeriesAvailable(gameinfo.seriesid)}}>
                             <div id="series">
-                                <kal-other-games-in-series
-                                    gamename="[[gameinfo.name]]"
-                                    bc="[[gameinfo.backcolor]]"
-                                    mc="[[gameinfo.maincolor]]"
-                                    bca="[[gameinfo.backcoloropacity]]">
-                                 </kal-other-games-in-series>
-                            </div> 
-                         <% } ]]
-                
-                        <kal-game-dlc 
-                            gameid="[[gameinfo.id]]"
-                            bc="[[gameinfo.backcolor]]"
-                            mc="[[gameinfo.maincolor]]"
-                            bca="[[gameinfo.backcoloropacity]]"
-                            >
+                                <kal-other-games-in-series gamename="[[gameinfo.name]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                                </kal-other-games-in-series>
+                            </div>
+                        </template>
+    
+                        <kal-game-dlc gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
                         </kal-game-dlc>
-                
-                        <kal-game-guides 
-                            gameid="[[gameinfo.id]]"
-                            bc="[[gameinfo.backcolor]]"
-                            mc="[[gameinfo.maincolor]]"
-                            bca="[[gameinfo.backcoloropacity]]"
-                            >
+    
+                        <kal-game-guides gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
                         </kal-game-guides>
+
+
+                    </div>
+                    <!--gamecontent -->
+
+                   
                 </div>
             </template>
             <div hidden$=[[isGame]]>
                 <span class="game-is-not-exist">Böyle bir oyun bulunmamaktadır!</span>
             </div>
-            </div>
+        </div>
     </template>
     <script>
         class KalSelectedGame extends Polymer.Element {
@@ -1648,8 +1628,170 @@
 
                     this.set('gameinfo', response);
 
-                } else
-                    this.set('isGame', false);
+                } else {
+                    //isGame false
+
+                    let trail = {
+                        "id": 1000001,
+                        "mincpu": "10074,10808",
+                        "sugcpu": "10310,10816",
+                        "mingpu": "10531,10753",
+                        "suggpu": "10007,10480",
+                        "minos": "10000",
+                        "sugos": "10005",
+                        "searchkeywords": "(lol),(lo),(ol),(league of legends)",
+                        "url": "league-of-legends",
+                        "name": "League Of Legends",
+                        "picture": "//cdn.kaldirirmi.com/images/games/league-of-legends-logo.jpg",
+                        "background": "//cdn.kaldirirmi.com/images/games/league-of-legends-background.jpg",
+                        "video": "https://www.youtube.com/watch?v=vzHrjOMfHPY",
+                        "minimumcpus": [{
+                            "id": 10074,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "AMD Athlon 64 X2 Dual Core 4000+",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }, {
+                            "id": 10808,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "Intel Core2 Duo E4400 @ 2.00GHz",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }],
+                        "minimumgpus": [{
+                            "id": 10531,
+                            "passmarkid": 0,
+                            "name": "GeForce FX 5950 Ultra",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }, {
+                            "id": 10753,
+                            "passmarkid": 0,
+                            "name": "RADEON 9500 PRO / 9700",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }],
+                        "minimumoss": [{
+                            "id": 10000,
+                            "rank": 0,
+                            "type": 0,
+                            "name": "Windows XP 32bit"
+                        }],
+                        "suggestedcpus": [{
+                            "id": 10310,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "AMD Phenom II X2 555",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }, {
+                            "id": 10816,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "Intel Core2 Duo E6850 @ 3.00GHz",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }],
+                        "suggestedgpus": [{
+                            "id": 10007,
+                            "passmarkid": 0,
+                            "name": "Radeon HD 3870",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }, {
+                            "id": 10480,
+                            "passmarkid": 0,
+                            "name": "GeForce 8800 GT",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }],
+                        "suggestedoss": [{
+                            "id": 10005,
+                            "rank": 0,
+                            "type": 0,
+                            "name": "Windows 7 64bit"
+                        }],
+                        "minimumram": 1,
+                        "minimumhdd": 8,
+                        "suggestedram": 4,
+                        "suggestedhdd": 12,
+                        "genres": "MMO,Strategy",
+                        "developer": "Riot Games",
+                        "publisher": "Riot Games",
+                        "releasedate": "\/Date(1256594400000)\/",
+                        "seriesid": 0,
+                        "backcolor": "rgb(62,68,64)",
+                        "maincolor": "rgb(220,197,167)",
+                        "backcoloropacity": "rgba(62,68,64, 0.5)",
+                        "kaldirir": null,
+                        "status": 0,
+                        "releasedateoptions": "",
+                        "releasedatestr": null,
+                        "steamappid": 0,
+                        "galleryurl": ""
+                    };
+
+                    this.set('gameinfo', trail);
+                    this.set('isGame', true);
+                }
 
             }
 
@@ -1729,6 +1871,10 @@
 
             _isSuggestedListActive(gameinfo) {
                 return gameinfo.suggestedcpus != null ? true : false;
+            }
+
+            _isSeriesAvailable(seriesid) {
+                return seriesid != 0 ? true : false;
             }
         }
         window.customElements.define(KalSelectedGame.is, KalSelectedGame);

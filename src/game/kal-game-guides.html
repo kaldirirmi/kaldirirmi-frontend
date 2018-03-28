@@ -1,0 +1,597 @@
+
+<link rel="import" href="../model/pdf-browser-viewer.html">
+
+<dom-module id="kal-game-guides">
+    <template>
+        <style>
+            /* local DOM styles go here */
+
+            :host {
+                width: 100%;
+                color: white;
+            }
+
+            #gamedlclist {
+                @apply --layout-horizontal;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                margin-left: 50px;
+                margin-top: 20px;
+            }
+
+            .game {
+                @apply --layout-vertical;
+                @apply --layout-centerl;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: 183px;
+                height: 300px;
+                position: relative;
+                text-decoration: none;
+            }
+
+            .game iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .game .game-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                height: calc(2.2em + 1vmin);
+                padding: 7px 0px;
+            }
+
+            .game .game-title span {
+                white-space: normal;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: center;
+                align-self: center;
+            }
+
+            .game:hover iron-image[background] {
+                opacity: 1;
+            }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            .paper-tab-games paper-button {
+                width: 100%;
+            }
+
+            .paper-tab-games {
+                background-color: #ff7800;
+                border-color: #d66300;
+                color: white;
+            }
+
+            .release-date-title {
+                color: white;
+                font-family: inherit;
+                text-decoration: solid;
+                margin: 0 auto;
+                display: block;
+                background-color: inherit;
+                width: 40%;
+                font-size: 22px;
+                border-style: solid;
+                border-width: 1px;
+            }
+
+            paper-item[heading] {
+                color: white;
+                font-size: 20px;
+            }
+
+            paper-item[heading] paper-button {
+                font-size: 14px;
+            }
+
+            paper-item[empty-info],
+            paper-item[info] {
+                color: white;
+                font-size: 16px;
+                padding-bottom: 20px;
+            }
+
+            paper-item[info] {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            .tb {
+                color: white;
+                font-size: 20px;
+            }
+
+            #pap-mat-dlc-of-games {
+                padding: 10px 0px;
+            }
+
+            .pb_heading {
+                display: flex;
+                text-transform: none;
+                margin-left: -10px;
+                padding: 0;
+                font-size: 20px;
+                margin-left: 0px;
+            }
+
+            .pb_heading .ic_heading {
+                padding-top: 0;
+                padding-left: 0;
+            }
+
+
+
+            /* Custom, iPhone Retina */
+
+            @media only screen and (min-width: 320px) {
+                .game {
+                    width: 109px;
+                    height: 220px;
+                }
+
+                .game .game-title {
+                    height: calc(4em + 1vmin);
+                }
+
+                .game .game-title span {
+                    font-size: calc(0.5em + 1vmin) !important;
+                    padding-left: 5px;
+                }
+
+                #gamedlclist {
+                    margin-top: 15px;
+                    margin-left: 0px;
+                }
+            }
+
+            /* Custom, Galaxy S5 */
+
+            @media only screen and (min-width: 360px) {
+                .game {
+                    width: 128px !important;
+                    height: 220px !important;
+                }
+
+                .game .game-title {
+                    height: calc(3.5em + 1vmin) !important;
+                }
+
+                .game .game-title span {
+                    font-size: calc(0.6em + 1vmin);
+                }
+            }
+
+            /* Iphone 6s plus */
+
+            @media only screen and (min-width: 412px) {
+                .game {
+                    width: 145px !important;
+                    height: 236px !important;
+                }
+
+                #gamedlclist {
+                    margin-top: 20px !important;
+                    margin-left: 15px !important;
+                }
+            }
+
+            /* Extra Small Devices, Phones */
+
+            @media only screen and (min-width: 480px) {
+                .game {
+                    width: 151px !important;
+                    height: 240px !important;
+                }
+
+                #gamedlclist {
+                    margin-left: 65px !important;
+                    margin-top: 25px !important;
+                }
+            }
+
+            /* Small Devices, Tablets */
+
+            @media only screen and (min-width: 768px) {
+                .game {
+                    width: 170px !important;
+                    height: 275px !important;
+                }
+
+                .game .game-title span {
+                    FONT-SIZE: calc(0.44em + 1vmin);
+                }
+
+                #gamedlclist {
+                    margin-left: 126px !important;
+                    margin-top: 25px !important;
+                }
+            }
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                .game {
+                    width: 183px !important;
+                    height: 300px !important;
+                }
+
+                #gamedlclist {
+                    margin-left: 50px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #gamedlclist {
+                    margin-left: 5px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                #gamedlclist {
+                    margin-left: 95px !important;
+                }
+            }
+
+
+            .openDialog {
+                display: block !important;
+            }
+
+            #game-guides-container {
+                @apply --layout-horizontal;
+                padding: 0;
+                margin: 0;
+            }
+
+            #game-guides-container .guides-image {
+                border: 4px solid;
+                height: 180px;
+                width: 130px;
+            }
+
+            #game-guides-container .guides-image iron-image {
+                width: 100%;
+                height: 100%;
+            }
+
+            #game-guides-container .game-guides-details {
+                @apply --layout-vertical;
+                @apply --layout-flex;
+                /*padding-left: 10px;*/
+            }
+
+            #game-guides-container .game-guides-details .game-guides-title {
+                @apply --layout-vertical;
+                font-size: 20px;
+                flex-grow: 1;
+                align-items: center;
+                border-bottom: 2px solid;
+                font-weight: 400;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+
+            #game-guides-container .game-guides-details .game-guides-content {
+                font-size: 18px;
+                flex-grow: 5;
+            }
+
+            game-steam-price {
+                position: relative !important;
+                left: 0px !important;
+                margin: 7px 0px;
+            }
+
+            #guidesdialog {
+                width: 80%;
+            }
+
+            #guidesdialog paper-toolbar {
+                margin: 0 !important;
+                background: #E65100 !important;
+            }
+
+            #guidesdialog paper-toolbar .guidetoolbar {
+                align-items: center;
+                display: flex;
+                font-size: 18px;
+            }
+
+            #guidesdialog paper-dropdown-menu.pdm {
+                line-height: 0 !important;
+
+                --paper-input-container-label: {
+                    color: white;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: calc(0.45em + 1vmin);
+                }
+                ;
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                    font-size: calc(0.45em + 1vmin);
+
+                }
+                ;
+                --paper-input-container-focus-color: white;
+                --paper-input-container-underline: {
+                    display: none;
+                }
+                ;
+            }
+
+            #guidesdialog paper-dropdown-menu.pdm paper-listbox {
+                --paper-listbox-background-color: #E65100 !important;
+                --paper-listbox-color: #fff !important;
+            }
+
+            #guidesdialog paper-toolbar .rightnavigation {
+                position: absolute;
+                top: 10px;
+                right: -15px;
+            }
+
+            #guideopen {
+                color: #fff !important;
+            }
+
+            paper-tooltip.nav-tooltip {
+                /*--paper-tooltip-background: #ff7800;*/
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+        </style>
+        <iron-ajax id="getgameguides" url="/h/main?fm=get-game-guides&gameid=[[gameid]]" method="get" handle-as="json" on-response="_response"></iron-ajax>
+        <paper-material elevation="0" id="pap-mat-game-guides-of-games" role="listbox">
+            <template is="dom-if" if="[[visibility]]">
+                <paper-item heading style$="background-color:{{bca}}; color:{{mc}}">
+                    <paper-button class="pb_heading" style="font-size:18px" on-click="_showOrHidePanel">
+                        <p>Rehberler</p>
+                    </paper-button>
+                </paper-item>
+                <paper-item info style="display:flex" id="paperItemGameGuides" style$="background-color:{{bc}}; color:{{mc}}">
+                    <div id="gamedlclist">
+                        <template is="dom-repeat" items="{{gameguides}}" as="item">
+                            <div class="game" style$="background-color: {{mc}}" on-tap="_openguidesdialog">
+                                <iron-image background src="https://cdn.kaldirirmi.com/pdfs/gameguides/[[item.picture]]" sizing="contain" alt="[[item.name]]"
+                                    preload fade></iron-image>
+                                <div class="game-title" style$="background-color: {{mc}}; color: {{bc}};">
+                                    <span>[[item.name]]</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </paper-item>
+            </template>
+        </paper-material>
+
+
+        <paper-dialog id="guidesdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+            <paper-toolbar>
+                <div class="guidetoolbar">
+                    <span>Oyun Rehberi</span>
+                </div>
+                <div class="flex">
+                    <paper-dropdown-menu label="Rehber Seçiniz" class="pdm">
+                        <paper-listbox class="dropdown-content" slot="dropdown-content" attr-for-selected="value" selected="{{selectedid}}">
+                            <template is="dom-repeat" items="[[gameguides]]">
+                                <paper-item value$="[[item.id]]">[[item.name]]</paper-item>
+                            </template>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                </div>
+                <div class="rightnavigation">
+                    <template is="dom-repeat" items="{{gameguides}}" filter="{{computeFilter(selectedid)}}">
+                        <a id="guideopen" href="https://cdn.kaldirirmi.com/pdfs/gameguides/[[item.pdfurl]]" target="_blank">
+                            <paper-icon-button icon="icons:launch"></paper-icon-button>
+                        </a>
+
+                    </template>
+                    <paper-tooltip class="nav-tooltip" for="guideopen">Yeni Sekmede Aç</paper-tooltip>
+                    <paper-icon-button id="guideclose" class="guideclose" icon="close" dialog-dismiss></paper-icon-button>
+                    <paper-tooltip class="nav-tooltip" for="guideclose">Kapat</paper-tooltip>
+                </div>
+            </paper-toolbar>
+            <template is="dom-repeat" items="{{gameguides}}" filter="{{computeFilter(selectedid)}}">
+                <div id="game-guides-container">
+                    <div class="game-guides-details">
+                        <div class="game-guides-content">
+                            <pdf-browser-viewer file="https://cdn.kaldirirmi.com/pdfs/gameguides/[[item.pdfurl]]" width="100%" height="600px">
+                            </pdf-browser-viewer>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </paper-dialog>
+
+
+    </template>
+
+    <script>
+        /**
+         * `kal-game-guides` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalGameGuides extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-game-guides';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gameid: {
+                        type: Number,
+                        observer: '_gameidChanged'
+                    },
+                    visibility: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    gameguides: {
+                        type: Array,
+                        value: []
+                    },
+                    bc: {
+                        type: String,
+                        value: 'rgb(255,255,255)',
+                        notify: true
+                    },
+                    bca: {
+                        type: String,
+                        value: 'rgba(255,255,255, 0.6)',
+                        notify: true
+                    },
+                    mc: {
+                        type: String,
+                        value: 'rgb(0,0,0)',
+                        notify: true
+                    },
+                    selectedid: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                };
+            }
+
+            _gameidChanged(newVal, oldVal) {
+                if (newVal !== undefined) {
+
+                    if (this.$.getgameguides.lastRequest) {
+                        this.$.getgameguides.lastRequest.abort();
+                    }
+                    this.$.getgameguides.generateRequest();
+                }
+            }
+
+            computeFilter(selectedid) {
+                if (!selectedid) {
+                    // set filter to null to disable filtering
+                    return null;
+                } else {
+                    // return a filter function for the current search string
+                    return function (item) {
+                        return (item.id == selectedid);
+                    };
+                }
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _response(a) {
+                this.set('gameguides', []);
+                //console.log(a.detail.response);
+                if (a.detail.response.length > 0) {
+                    this.visibility = true;
+                    a.detail.response.forEach(function (guide) {
+                        this.push('gameguides', guide);
+                    }, this);
+                } else
+                    this.visibility = false;
+            }
+            _showOrHidePanel() {
+                var item = document.getElementById('paperItemGameGuides');
+                if (item && item.style.display == 'none')
+                    item.style.display = 'flex';
+                else
+                    item.style.display = 'none';
+
+            }
+            _openguidesdialog(event) {
+                var currObject = event.model.item;
+                this.selectedid = currObject.id;
+                //this.$.dialog2.open();
+                this.$.guidesdialog.open();
+                //$('#dialog2').toggle();
+                //document.getElementById('dialog2').toggle();
+                //this.$.dialog2.toggle();
+
+                //document.getElementById("options_share_buttons").scrollIntoView();
+
+            }
+            _remakeContent(content) {
+                //console.log(content);
+                if (content.includes('<p><br></p>') || content == '<br>' || content == '<br/>') {
+                    return 'This content will fill in the future.';
+                } else {
+                    return content;
+                }
+            }
+
+        }
+
+        window.customElements.define(KalGameGuides.is, KalGameGuides);
+    </script>
+</dom-module>

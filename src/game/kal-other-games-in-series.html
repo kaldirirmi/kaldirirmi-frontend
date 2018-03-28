@@ -1,0 +1,386 @@
+<dom-module id="kal-other-games-in-series">
+    <template>
+        <style>
+            /* local DOM styles go here */
+
+            :host {
+                width: 100%;
+                color: white;
+            }
+
+            #othergamesinseries {
+                @apply --layout-horizontal;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                margin-left: 50px;
+                margin-top: 20px;
+            }
+
+            .game {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: 183px;
+                height: 300px;
+                position: relative;
+                text-decoration: none;
+            }
+
+            .game iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .game .game-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                height: calc(2.2em + 1vmin);
+                padding: 7px 0px;
+            }
+
+            .game .game-title span {
+                white-space: normal;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: center;
+                align-self: center;
+            }
+
+            .game:hover iron-image[background] {
+                opacity: 1;
+            }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            .paper-tab-games paper-button {
+                width: 100%;
+            }
+
+            .paper-tab-games {
+                background-color: #ff7800;
+                border-color: #d66300;
+                color: white;
+            }
+
+            .release-date-title {
+                color: white;
+                font-family: inherit;
+                text-decoration: solid;
+                margin: 0 auto;
+                display: block;
+                background-color: inherit;
+                width: 40%;
+                font-size: 22px;
+                border-style: solid;
+                border-width: 1px;
+            }
+
+            paper-item[heading] {
+                color: white;
+                font-size: 20px;
+            }
+
+            paper-item[heading] paper-button {
+                font-size: 14px;
+            }
+
+            paper-item[empty-info],
+            paper-item[info] {
+                color: white;
+                font-size: 16px;
+                padding-bottom: 20px;
+            }
+
+            paper-item[info] {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            .tb {
+                color: white;
+                font-size: 20px;
+            }
+
+            #pap-mat-other-games {
+                padding: 10px 0px;
+            }
+
+            .pb_heading {
+                display: flex;
+                text-transform: none;
+                margin-left: -10px;
+                padding: 0;
+                font-size: 20px;
+                margin-left: 0px;
+            }
+
+            .pb_heading .ic_heading {
+                padding-top: 0;
+                padding-left: 0;
+            }
+
+
+
+            /* Custom, iPhone Retina */
+
+            @media only screen and (min-width: 320px) {
+                .game {
+                    width: 109px;
+                    height: 220px;
+                }
+
+                .game .game-title {
+                    height: calc(4em + 1vmin);
+                }
+
+                .game .game-title span {
+                    font-size: calc(0.5em + 1vmin) !important;
+                    padding-left: 5px;
+                }
+
+                #othergamesinseries {
+                    margin-top: 15px;
+                    margin-left: 0px;
+                }
+            }
+
+            /* Custom, Galaxy S5 */
+
+            @media only screen and (min-width: 360px) {
+                .game {
+                    width: 128px !important;
+                    height: 220px !important;
+                }
+
+                .game .game-title {
+                    height: calc(3.5em + 1vmin) !important;
+                }
+
+                .game .game-title span {
+                    font-size: calc(0.6em + 1vmin);
+                }
+            }
+
+            /* Iphone 6s plus */
+
+            @media only screen and (min-width: 412px) {
+                .game {
+                    width: 145px !important;
+                    height: 236px !important;
+                }
+
+                #othergamesinseries {
+                    margin-top: 20px !important;
+                    margin-left: 15px !important;
+                }
+            }
+
+            /* Extra Small Devices, Phones */
+
+            @media only screen and (min-width: 480px) {
+                .game {
+                    width: 151px !important;
+                    height: 240px !important;
+                }
+
+                #othergamesinseries {
+                    margin-left: 65px !important;
+                    margin-top: 25px !important;
+                }
+            }
+
+            /* Small Devices, Tablets */
+
+            @media only screen and (min-width: 768px) {
+                .game {
+                    width: 170px !important;
+                    height: 275px !important;
+                }
+
+                .game .game-title span {
+                    FONT-SIZE: calc(0.44em + 1vmin);
+                }
+
+                #othergamesinseries {
+                    margin-left: 126px !important;
+                    margin-top: 25px !important;
+                }
+            }
+
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                .game {
+                    width: 183px !important;
+                    height: 300px !important;
+                }
+
+                #othergamesinseries {
+                    margin-left: 50px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                #othergamesinseries {
+                    margin-left: 5px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                #othergamesinseries {
+                    margin-left: 95px !important;
+                }
+            }
+        </style>
+
+        <iron-ajax id="getothergamesinseries" url="/h/main?fm=get-other-games-in-series&a=[[gamename]]" method="get" handle-as="json"
+            on-response="_response"></iron-ajax>
+            
+        <paper-material elevation="0" id="pap-mat-other-games" role="listbox">
+            <template is="dom-if" if="[[visibility]]">
+                <paper-item heading style$="background-color:{{bca}}; color:{{mc}}">
+                    <paper-button class="pb_heading" style="font-size:18px" on-click="_showOrHidePanel">
+                        <p>Serinin Diğer Oyunları</p>
+                        <!--<iron-icon class="ic_heading" icon="add-circle-outline"></iron-icon>-->
+                    </paper-button>
+
+                </paper-item>
+                <paper-item info style="display:flex" id="paperItemOtherGames" style$="background-color:{{bc}}; color:{{mc}}">
+                    <div id="othergamesinseries">
+                        <template is="dom-repeat" items="{{games}}" as="item">
+                            <a class="game" href="/oyun/[[item.url]]" onclick="load();" style$="background-color: {{mc}}">
+                                <iron-image background src="//cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]" preload
+                                    fade></iron-image>
+                                <div class="game-title" style$="background-color: {{mc}}; color: {{bc}};">
+                                    <span>[[item.name]]</span>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+            </template>
+        </paper-material>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-other-games-in-series` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalOtherGamesInSeries extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-other-games-in-series';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gamename: {
+                    type: "String",
+                    value: "Action",
+                    observer: '_gamenameChanged'
+                },
+                visibility: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                games: {
+                    type: Array,
+                    value: []
+                },
+                bc: {
+                    type: String,
+                    value: 'rgb(255,255,255)',
+                    notify: true
+                },
+                bca: {
+                    type: String,
+                    value: 'rgba(255,255,255, 0.6)',
+                    notify: true
+                },
+                mc: {
+                    type: String,
+                    value: 'rgb(0,0,0)',
+                    notify: true
+                },
+                };
+            }
+            
+            _gamenameChanged(newVal, oldVal){
+                if(newVal !== undefined){
+
+                    if(this.$.getothergamesinseries.lastRequest){
+                        this.$.getothergamesinseries.lastRequest.abort();
+                    }
+                    this.$.getothergamesinseries.generateRequest();
+                }
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+        }
+
+        window.customElements.define(KalOtherGamesInSeries.is, KalOtherGamesInSeries);
+    </script>
+</dom-module>

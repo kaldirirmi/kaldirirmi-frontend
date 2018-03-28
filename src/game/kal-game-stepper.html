@@ -1,6 +1,12 @@
+
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+
 <dom-module id="kal-game-stepper">
     <template>
-        <style is="custom-style">
+        <style>
             :host {
                 @apply --shadow-elevation-8dp;
 
@@ -412,7 +418,6 @@
                     </div>
                     <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
                 </div>
-
             </neon-animatable>
         </neon-animated-pages>
 
@@ -445,7 +450,7 @@
          * @polymer
          * @extends {Polymer.Element}
          */
-        class PascalCaseName extends Polymer.Element {
+        class KalGameStepper extends Polymer.Element {
             /**
              * String providing the tag name to register the element under.
              */
@@ -549,21 +554,19 @@
             constructor() {
                 super();
             }
-            
-            _gameidChanged(newVal, oldVal)
-            {
-                if(newVal !== undefined){
-                    
+
+            _gameidChanged(newVal, oldVal) {
+                if (newVal !== undefined) {
+
                     let iaFeedbackUser = this.$.getfeedbackofuser;
                     let iaAverageFeedbackGame = this.$.getaveragefeedbacksofgame;
-                    
+
                     if (this.userid != 0) {
                         this.savetitle = "Feedback'leri Kaydet";
-                        
+
                         this._checkLastRequest(iaFeedbackUser);
                         iaFeedbackUser.generateRequest();
-                    }
-                    else {
+                    } else {
                         this.savetitle = "Feedback'leri Kaydetmek İçin Giriş Yapmalısın!";
                     }
 
@@ -580,9 +583,9 @@
 
                 });
             }
-            
-            _checkLastRequest(element){
-                if(element.lastRequest)
+
+            _checkLastRequest(element) {
+                if (element.lastRequest)
                     element.lastRequest.abort();
             }
 
@@ -590,17 +593,17 @@
                 var response = event.detail.response;
                 //console.log(response);
 
-                    this.set('userfeedbacks', response);
-                        
-                    this.gameestimatedprice = response.gameestimatedprice;
-                    this.averagecompletetime = response.averagecompletetime;
-                    this.bestcontroldevice = response.bestcontroldevice;
-                    this.gamedifficulty = response.gamedifficulty;
-                    this.havingbugs = response.havingbugs;
-                    this.isgoodinlowgraphics = response.isgoodinlowgraphics;
-                    this.issurroundgame = response.issurroundgame;
-                    this.shouldupgradepc = response.shouldupgradepc;
-                    this.isworthgettinggame = response.isworthgettinggame;
+                this.set('userfeedbacks', response);
+
+                this.gameestimatedprice = response.gameestimatedprice;
+                this.averagecompletetime = response.averagecompletetime;
+                this.bestcontroldevice = response.bestcontroldevice;
+                this.gamedifficulty = response.gamedifficulty;
+                this.havingbugs = response.havingbugs;
+                this.isgoodinlowgraphics = response.isgoodinlowgraphics;
+                this.issurroundgame = response.issurroundgame;
+                this.shouldupgradepc = response.shouldupgradepc;
+                this.isworthgettinggame = response.isworthgettinggame;
 
 
 
@@ -614,19 +617,18 @@
                         this.$.formAddUserFeedback.submit();
                     }
 
-                }
-                else {
-                                        this._toaster('Feedback Eklemek İçin Giriş Yapmalısınız!');
+                } else {
+                    this._toaster('Feedback Eklemek İçin Giriş Yapmalısınız!');
 
                 }
             }
 
-            _toaster(message){
+            _toaster(message) {
                 var event = new CustomEvent('toaster', {
                     bubbles: true,
                     composed: true,
                     detail: {
-                    text: message
+                        text: message
                     }
                 });
                 this.dispatchEvent(event);
@@ -670,43 +672,37 @@
 
                     if (response.bugsno == 0 && response.bugsyes == 0) {
                         this.showbugs = false;
-                    }
-                    else {
+                    } else {
                         this.showbugs = true;
                     }
 
                     if (response.deviceno == 0 && response.deviceyes == 0) {
                         this.showdevice = false;
-                    }
-                    else {
+                    } else {
                         this.showdevice = true;
                     }
 
                     if (response.graphicsno == 0 && response.graphicsyes == 0) {
                         this.showgraphics = false;
-                    }
-                    else {
+                    } else {
                         this.showgraphics = true;
                     }
 
                     if (response.surroundno == 0 && response.surroundyes == 0) {
                         this.showsurround = false;
-                    }
-                    else {
+                    } else {
                         this.showsurround = true;
                     }
-                    
+
                     if (response.upgradeno == 0 && response.upgradeyes == 0) {
                         this.showupgrade = false;
-                    }
-                    else {
+                    } else {
                         this.showupgrade = true;
                     }
 
                     if (response.worthno == 0 && response.worthyes == 0) {
                         this.showworth = false;
-                    }
-                    else {
+                    } else {
                         this.showworth = true;
                     }
                 }
@@ -728,6 +724,6 @@
             }
         }
 
-        window.customElements.define(PascalCaseName.is, PascalCaseName);
+        window.customElements.define(KalGameStepper.is, KalGameStepper);
     </script>
 </dom-module>
