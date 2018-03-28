@@ -13,6 +13,8 @@
 <link rel="import" href="./user-buy-game.html">
 <link rel="import" href="./user-like-game.html">
 <link rel="import" href="./kal-similar-games.html">
+<link rel="import" href="./game-kaldirir-mi.html">
+
 
 <dom-module id="kal-selected-game">
     <template>
@@ -1379,8 +1381,31 @@
                                     <kal-similar-games genre="[[gameinfo.genres]]"></kal-similar-games>
                                 </div>
                             </div>
-                        </div>
+                        </div><!-- panel -->
+                    </div><!--gamecontent -->
+                    
+                    <div id="user-system">
+                        <template is="dom-if" if={{storedUser.loggedin}}>
+                            <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
+                        </template>
+                        <template is="dom-if" if={{!storedUser.loggedin}}>
+                            <paper-material elevation="0" id="usersysteminfo" role="listbox">
+                                <paper-item heading>
+                                  <div style="flex-grow: 2;"><h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2></div>
+                                  <div>
+                                 <div class="buttons">
+                                  <login-button></login-button>
+                                </div>    
+                                  </div>
+                                </paper-item>
+                                <paper-item empty-info>
+                                  <div>Hemen kayıt olup giriş yap, sistemini ekle ve bilgisayarının bu oyunu açıp açmayacağını gör.</div>
+                                </paper-item>
+                              </paper-material>
+                        </template>
                     </div>
+
+
                 </div>
             </template>
             <div hidden$=[[isGame]]>

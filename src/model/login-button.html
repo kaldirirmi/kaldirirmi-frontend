@@ -57,7 +57,10 @@
              */
             static get properties() {
                 return {
-                    storedUser: Object,
+                    storedUser: {
+                        type: Object,
+                        value: null
+                    },
                     notification: String,
                     disabled: Boolean
                 };

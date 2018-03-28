@@ -1,0 +1,134 @@
+
+
+<link rel="import" href="./game-animated-grid.html">
+<link rel="import" href="./game-fullsize-page-with-card.html">
+
+
+<dom-module id="game-kaldirir-mi">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+
+               #usersystem {
+                  margin-bottom: 0px !important;
+              }
+        </style>
+
+        <iron-ajax id="iaKaldirirMi" auto="[[auto]]" 
+             url="/h/main?fm=kaldirir-mi&a=[[gameinfo.url]]"
+             method="get"
+             handle-as="json" 
+             last-response="{{kaldirir}}"
+             ></iron-ajax>
+
+
+             <neon-animated-pages id="pages" selected="0">
+                <game-animated-grid
+                     gamename ="[[gameinfo.name]]"
+                     kaldirir="{{kaldirir}}" 
+                     selectedInstance="{{selectedInstance}}"
+                     kalnotes="{{kaldirir.notes}}"
+                     hardwaretype="{{hardwaretype}}" 
+                     on-tile-click="_onTileClick"  
+                     bc="[[gameinfo.backcoloropacity]]"
+                     mc="[[gameinfo.maincolor]]"
+                      ></game-animated-grid>
+                      
+                <game-fullsize-page-with-card
+                     bc="[[gameinfo.backcolor]]"
+                     mc="[[gameinfo.maincolor]]"
+                     gamename="[[gameinfo.name]]"
+                     hardwaretype="{{hardwaretype}}" 
+                     selectedInstance="{{selectedInstance}}"
+                     id="fullsize-card">
+                </game-fullsize-page-with-card>
+           </neon-animated-pages>
+
+         
+    </template>
+
+    <script>
+        /**
+         * `game-kaldirir-mi` Description
+         *
+         * @summary . GameInfo Objesine göre oyunu kaldırıp kaldıramayacağını gösteren animated pages 
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GameKaldirirmi extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'game-kaldirir-mi';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gameinfo: {
+                        type: Object,
+                        observers: '_gameinfoChanged'
+                    },
+                };
+            }
+            
+            _gameinfoChanged(newVal, oldVal){
+                console.log('_gameinfoChanged', newVal);
+
+                if(newVal !== 'undefined'){
+                    this._generateRequest();
+                }
+            }
+
+            _generateRequest(){
+                if(this.$.iaKaldirirMi.lastRequest){
+                    this.$.iaKaldirirMi.lastRequest.abort();
+                }
+                
+                this.$.iaKaldirirMi.generateRequest();
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+            _onTileClick(event){
+                console.log('_onTileClick',event);
+                //this.$['fullsize-card'].hardwaretype = event.detail.data.hardwaretype; <- bu da olur fakat farklı olsun diye dom bind kullanıyorum.
+                this.$['fullsize-card'].data = event.detail.data;
+
+                //document.getElementById('getgalleryofgame').generateRequest();
+                this.$.pages.selected = 1;
+            }
+
+
+
+
+
+        }
+
+        window.customElements.define(GameKaldirirmi.is, GameKaldirirmi);
+    </script>
+</dom-module>

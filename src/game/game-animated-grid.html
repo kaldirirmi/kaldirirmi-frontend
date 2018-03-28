@@ -1,0 +1,1002 @@
+<dom-module id="game-animated-grid">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background-color: #222;
+            }
+
+            .tile {
+                cursor: copy;
+                width: 100%;
+                position: relative;
+                display: inline-block;
+                float: left;
+                vertical-align: top;
+                height: calc(100% / 2);
+                transition: .4s all;
+                color: #292929;
+                @apply --paper-font-title;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                box-shadow: 0 0 5px black inset, 0 0 2px 1px black;
+            }
+
+            .tile iron-image {
+                width: 130px;
+                height: 130px;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .tile .game-title {
+                width: 100%;
+                color: white;
+                font-weight: 100;
+                text-align: center;
+                font-size: calc(0.45em + 1vmin) !important;
+                line-height: calc(1.2em + 1vmin) !important;
+                opacity: 0.8;
+                white-space: normal !important;
+            }
+
+            /* tile container costum design*/
+
+            div[tile-container] {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                width: 80%;
+                white-space: normal !important;
+            }
+
+            div[tile-container] .game-headline {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                position: absolute;
+                top: 0;
+                color: white !important;
+                font-weight: 100;
+            }
+
+            div[tile-container] .game-headline h2 {
+                font-size: calc(0.6em + 1vmin);
+            }
+
+            div[tile-container] .game-headline p {
+                font-size: calc(0.15em + 1vmin);
+                font-style: italic;
+                padding-left: 8px;
+            }
+
+
+            div[tile-container] .game-headline iron-icon {
+                width: calc(1.2em + 1vmin);
+                color: white;
+                height: calc(1.2em + 1vmin);
+                padding-left: 5px;
+            }
+
+            div[tile-container] iron-icon {
+                position: absolute;
+                top: calc(0.2em + 1vmin);
+                right: calc(3em + 1vmin);
+                width: calc(1.2em + 1vmin);
+                color: white;
+                height: calc(1.2em + 1vmin);
+            }
+
+
+            div[tile-container] .tile_container_image {
+                width: 40%;
+            }
+
+            div[tile-container] .tile_container_content {
+                width: 60%;
+            }
+
+
+            .tile:nth-of-type(1) .tile_container_image img {
+                width: 70%;
+            }
+
+            .tile:nth-of-type(4) .tile_container_image img {
+                MARGIN-LEFT: 15%;
+                width: 60%;
+                transform: rotateZ(90deg);
+            }
+
+            .tile:nth-of-type(2) .tile_container_image img,
+            .tile:nth-of-type(3) .tile_container_image img {
+                width: 90%;
+            }
+
+            #kal-man {
+                border-radius: 50%;
+                position: absolute;
+                --paper-fab-background: var(--paper-grey-300);
+                --paper-fab-keyboard-focus-background: var(--paper-grey-500);
+            }
+
+            #kal-man[icon="favorite"] {
+                color: var(--paper-blue-grey-700);
+            }
+
+
+            /* PAPER ITEM STYLE */
+
+            #usersysteminfo {
+                display: inline !important;
+                /*padding: 10px 10px 0 10px;*/
+            }
+
+            paper-item[heading] h2 {
+                font-weight: 100;
+                font-size: 20px;
+            }
+
+            paper-item[heading] paper-button {
+                font-size: 14px;
+            }
+
+            paper-item[empty-info],
+            paper-item[info] {
+                background-color: #c0c0c0;
+                font-size: 16px;
+            }
+
+            paper-item[info] {
+                @apply --layout-horizontal;
+            }
+
+            paper-item[info] div {
+                width: calc(100% - 40px);
+                @apply --layout-horizontal;
+                @apply --layout-start-justified;
+            }
+
+            paper-item[info] div.success:before {
+                content: '+';
+                padding-right: 10px;
+                color: green;
+            }
+
+            paper-item[info] div.warning:before {
+                content: '!';
+                padding-right: 10px;
+                color: yellow;
+            }
+
+            paper-item[info] div.fail:before {
+                content: 'x';
+                padding-right: 10px;
+                color: red;
+            }
+
+            paper-item[info] div.native:before {
+                content: '*';
+                padding-right: 10px;
+            }
+
+            .ksuccess paper-icon-button {
+                color: #008744;
+            }
+
+            .kfail paper-icon-button {
+                color: #DB3236;
+            }
+
+
+
+
+            .pb_nav_left {
+                margin: 20px 0px 10px 0px;
+            }
+
+            .pb_nav_right {
+                margin: 0px 0px;
+            }
+
+            .pb_nav_left,
+            .pb_nav_right {
+                background-color: #E0e0e0;
+                transition: all ease-in-out .3s;
+                display: inline-table;
+                position: relative;
+                width: 100%;
+                font-size: calc(1em + 1vmin);
+                top: 0 !important;
+                left: 0 !important;
+            }
+
+            .pb_nav_left:hover,
+            .pb_nav_right:hover {
+                transform: scale(1.1);
+            }
+
+            paper-tooltip {
+                --paper-tooltip-background: #222;
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+
+            @media only screen and (min-width: 320px) {}
+
+            @media only screen and (min-width: 360px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 300px;
+                }
+            }
+
+            @media only screen and (min-width: 412px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 350px;
+                }
+            }
+
+            @media only screen and (min-width: 480px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 400px;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 180px;
+                    left: 173px;
+                }
+
+                .pb_nav_left {
+                    top: 180px;
+                    left: 470px;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 768px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 400px;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 180px;
+                    left: 173px;
+                }
+
+                .pb_nav_left {
+                    top: 180px;
+                    left: 470px;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 150px !important;
+                }
+
+                #usersysteminfo paper-item[heading] {
+                    flex-direction: row !important;
+                    -webkit-flex-direction: row !important;
+                }
+
+                #usersysteminfo paper-item[heading] .piheader {
+                    align-self: flex-start !important;
+                }
+
+                #kal-man {
+                    width: 13%;
+                    height: 22%;
+                    top: 53%;
+                    left: 43.5%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 147px !important;
+                    left: 113px !important;
+                }
+
+                .pb_nav_left {
+                    top: 147px !important;
+                    left: 370px !important;
+                    margin: 0px 0px !important;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    position: absolute !important;
+                    width: 30% !important;
+                    min-width: 250px !important;
+                    font-size: calc(0.15em + 1vmin) !important;
+                }
+
+
+                /* tile */
+                .tile {
+                    width: calc(100% / 2) !important;
+                }
+
+                .colon-image img {
+                    width: calc(5em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-title {
+                    font-size: calc(0.25em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon {
+                    -webkit-flex-direction: row !important;
+                    flex-direction: row !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-header p {
+                    font-size: calc(0.15em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-header h2 {
+                    font-size: calc(0.6em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .hdd-control-box {
+                    bottom: 0 !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .hdd-control-box p {
+                    font-size: calc(0.14em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                div[tile-container] .game-headline {
+                    left: 33%;
+                }
+
+                #kal-man {
+                    width: 10%;
+                    height: 22%;
+                    top: 53%;
+                    left: 45%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 180px !important;
+                    left: 173px !important;
+                }
+
+                .pb_nav_left {
+                    top: 180px !important;
+                    left: 470px !important;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+
+                /* tile */
+                .colon-image img {
+                    width: calc(8em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-title {
+                    font-size: calc(0.45em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                div[tile-container] .game-headline {
+                    left: 37%;
+                }
+
+                #kal-man {
+                    width: 10%;
+                    height: 26%;
+                    top: 50%;
+                    left: 45%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 175px !important;
+                    left: 188px !important;
+                }
+
+                .pb_nav_left {
+                    top: 175px !important;
+                    left: 532px !important;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.5em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                div[tile-container] .game-headline {
+                    left: 39%;
+                }
+
+                #kal-man {
+                    width: 9%;
+                    height: 26%;
+                    top: 50%;
+                    left: 45.5%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 181px !important;
+                    left: 260px !important;
+                }
+
+                .pb_nav_left {
+                    top: 181px !important;
+                    left: 630px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1824px) {
+                div[tile-container] .game-headline {
+                    left: 40%;
+                }
+
+                #kal-man {
+                    width: 9%;
+                    height: 28%;
+                    top: 50%;
+                    left: 45.5%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 181px !important;
+                    left: 272px !important;
+                }
+
+                .pb_nav_left {
+                    top: 181px !important;
+                    left: 693px !important;
+                }
+            }
+
+
+            /* paper - item heading  */
+
+            #usersysteminfo paper-item[heading] {
+                @apply --layout-vertical;
+            }
+
+            #usersysteminfo paper-item[heading] .piheader {
+                display: flex;
+                flex-grow: 2;
+                align-self: center;
+                /* +1024 =>  flex-start */
+                align-items: center;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                min-width: 250px;
+                z-index: 100;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button {
+                width: 100%;
+            }
+
+
+            div[tile-flex] {
+                @apply --layout-vertical;
+            }
+
+            div[tile-flex] .tile-flex-colon {
+                @apply --layout-vertical;
+                justify-content: center;
+                height: 100%;
+                /*margin: 0px calc(1em + 1vmin) -5px calc(1.5em + 1vmin);*/
+                margin: -5px 20px;
+                padding-right: 25px;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white !important;
+                font-weight: 100;
+                justify-content: center;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header h2 {
+                font-size: calc(0.9em + 1vmin);
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header p {
+                font-size: calc(0.45em + 1vmin);
+                font-style: italic;
+                padding-left: 8px;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header iron-icon {
+                width: calc(1.2em + 1vmin);
+                color: white;
+                height: calc(1.2em + 1vmin);
+                padding-left: 5px;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-image {
+                align-self: center;
+                flex-grow: 1;
+            }
+
+
+            div[tile-flex] .tile-flex-colon .hdd-control-box {
+                @apply --layout-vertical;
+                position: absolute;
+                right: 10px;
+                color: white;
+                bottom: 18px;
+            }
+
+            div[tile-flex] .tile-flex-colon .hdd-control-box p {
+                font-style: oblique;
+                font-weight: 500;
+                /*font-size: calc(0.14em + 1vmin);*/
+                font-size: calc(0.4em + 1vmin);
+            }
+
+            .colon-image img {
+                width: calc(8em + 1vmin);
+                height: calc(4.5em + 1vmin);
+            }
+
+
+            div[tile-flex] .tile-flex-colon .colon-title {
+                min-width: 200px;
+                flex-grow: 2;
+                width: 100%;
+                color: white;
+                font-weight: 100;
+                text-align: center;
+                font-size: calc(0.45em + 1vmin);
+                line-height: calc(1.2em + 1vmin) !important;
+                opacity: 0.8;
+                white-space: normal !important;
+            }
+
+            div.tile .iiExpand {
+                position: absolute;
+                right: 5%;
+                top: 5%;
+                color: #fff !important;
+                width: 25px;
+                height: 25px;
+                transition: all ease-in-out .3s;
+            }
+
+            div.tile .iiExpand:hover {
+                width: 33px;
+                height: 33px;
+            }
+
+            .systemCreatorButtons {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                background-image: url(/assets/img/kaldirirmi-header-2.png);
+                background-color: white;
+                height: 100%;
+                background-repeat: no-repeat;
+                background-size: cover;
+                color: white !important;
+            }
+
+            .systemCreatorButtons paper-button {
+                font-size: calc(.75em + 1vmin);
+                font-weight: bold;
+                background: #ff7800;
+                color: black;
+                text-transform: capitalize;
+                margin: 12px;
+                transition: all ease-in-out 0.3s;
+            }
+
+            .systemCreatorButtons paper-button:hover {
+                transform: scale(1.1);
+            }
+        </style>
+        <!-- Local Dom here.. -->
+        <template is="dom-if" if="[[kaldirir.gameadded]]">
+            <paper-material elevation="0" id="usersysteminfo" role="listbox">
+                <template is="dom-if" if="[[kaldirir.useradded]]">
+                    <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
+                        <div class="piheader" style="flex-grow: 2;">
+                            <div>
+                                <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
+                            </div>
+                            <div class="ksuccess" hidden$="[[!kaldirir.kaldirirmi]]">
+                                <paper-icon-button id="kaldiririnfo" icon="check-circle"></paper-icon-button>
+                                <paper-tooltip position="top" animation-delay="150" offset="2" for="kaldiririnfo">Kaldırır</paper-tooltip>
+                            </div>
+                            <div class="kfail" hidden$="[[kaldirir.kaldirirmi]]">
+                                <paper-icon-button id="kaldirmazinfo" icon="cancel"></paper-icon-button>
+                                <paper-tooltip position="top" animation-delay="150" offset="2" for="kaldirmazinfo">Kaldırmaz</paper-tooltip>
+                            </div>
+                        </div>
+                        <div class="buttons">
+                            <!--<paper-button raised onclick="load(); location.href='/sistem-sihirbazi'; ">Sistem Sihirbazını Çalıştır</paper-button>-->
+                            <paper-button raised onclick="load(); location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
+                        </div>
+                    </paper-item>
+                    <!-- Dom repeat -->
+                    <template is="dom-repeat" items="{{kalnotes}}" as="item">
+                        <div class="tile" id="part{{index}}">
+                            <iron-icon icon="open-with" class="iiExpand"></iron-icon>
+                            <div tile-flex>
+                                <div class="tile-flex-colon">
+                                    <div class="colon-header">
+                                        <h2>[[item.name]]</h2>
+                                        <p>[[item.userhardware]]</p>
+                                        <iron-icon style$="color: [[item.color]]" icon$="[[item.icon]]"></iron-icon>
+                                    </div>
+                                </div>
+                                <div class="tile-flex-colon">
+                                    <div class="colon-image">
+                                        <img src="/assets/img/gamepage-icon/[[item.image]]" />
+                                    </div>
+                                    <div class="colon-title">
+                                        <span> [[item.message]]</span>
+                                    </div>
+                                    <!-- Bu div Hdd Tarama kontrolü ile ilgilidir-->
+                                    <template is="dom-if" if="[[item.isHdd]]">
+                                        <!-- isHdd sadece hdd partında doğrudur-->
+                                        <div class="hdd-control-box">
+                                            <template is="dom-if" if="[[item.upToDate]]">
+                                                <!-- sistem son güncellemesi bugün yapılmıssa-->
+                                                <p style$="color:[[item.color]]">Son güncelleme bugün içinde yapılmış.</p>
+                                            </template>
+                                            <template is="dom-if" if="[[!item.upToDate]]">
+                                                <!-- sistem güncellemesi üzerinden 1den fazla gün geçmiş ise -->
+                                                <p style$="color:[[item.color]]">Son tarama zamanı : [[item.lastScanTime]]</p>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- tile -->
+                    </template>
+
+                </template>
+                <!-- eğer üye olunmuş fakat sistem tanımlanmamışsa burası çıkar -->
+                <template is="dom-if" if="[[!kaldirir.useradded]]">
+                    <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
+                        <div style="flex-grow: 2;">
+                            <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
+                        </div>
+                        <div>
+                            <paper-button onClick="location.href='/sistem-sihirbazi'; ">Sistem Sihirbazını Çalıştır</paper-button>
+                            <paper-button onclick="location.href='/uye/sistemini-tanimla';">Sistemini Elle Tanımla</paper-button>
+                        </div>
+                    </paper-item>
+                    <div class="systemCreatorButtons">
+                        <paper-button raised onClick="location.href = '/sistem-sihirbazi';">
+                            <iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
+                        <paper-button raised onClick="location.href = '/uye/sistemini-tanimla';">Sistemini Elle Tanımla
+                            <iron-icon icon="icons:fingerprint"></iron-icon>
+                        </paper-button>
+                    </div>
+                    <!--<paper-button class="pb_nav_left" onClick="load(); location.href='/sistem-sihirbazi'; "><iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
+            <paper-button class="pb_nav_right" onclick="load(); location.href='/uye/sistemini-tanimla';">Sistemini Elle Tanımla <iron-icon icon="icons:fingerprint"></iron-icon></paper-button>-->
+
+                </template>
+                <!-- end üye fakat sistem tanımlı değil -->
+            </paper-material>
+        </template>
+
+
+    </template>
+
+    <script>
+        /**
+         * `game-animated-grid` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GameAnimatedGrid extends Polymer.MixinBehaviors([Polymer.NeonSharedElementAnimatableBehavior], Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'game-animated-grid';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    kalnotes: {
+                        type: Object,
+                        value: [],
+                        notify: true
+                    },
+                    kaldirir: {
+                        type: Object,
+                        value: [],
+                        notify: true
+                    },
+                    page: {
+                        type: Number,
+                        value: 0
+                    },
+                    hardwaretype: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    query: {
+                        type: String,
+                        value: ''
+                    },
+                    gamename: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    loadinggames: {
+                        type: Boolean,
+                        value: false
+                    },
+                    games: {
+                        type: Array,
+                        value: []
+                    },
+                    bc: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    mc: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    config: {
+                        type: Array,
+                        value: function () {
+                            return [{
+                                    value: 1,
+                                    color: 'blue'
+                                },
+                                {
+                                    value: 2,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 3,
+                                    color: 'blue'
+                                },
+                                {
+                                    value: 4,
+                                    color: 'green'
+                                },
+                                {
+                                    value: 5,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 6,
+                                    color: 'blue'
+                                },
+                                {
+                                    value: 7,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 8,
+                                    color: 'green'
+                                },
+                                {
+                                    value: 9,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 10,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 11,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 12,
+                                    color: 'blue'
+                                },
+                                {
+                                    value: 13,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 14,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 15,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 16,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 17,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 18,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 19,
+                                    color: 'green'
+                                },
+                                {
+                                    value: 20,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 21,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 22,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 23,
+                                    color: 'blue'
+                                },
+                                {
+                                    value: 24,
+                                    color: 'red'
+                                },
+                                {
+                                    value: 25,
+                                    color: 'green'
+                                },
+                                {
+                                    value: 26,
+                                    color: 'yellow'
+                                },
+                                {
+                                    value: 27,
+                                    color: 'red'
+                                },
+                            ]
+                        }
+                    },
+
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'exit': [{
+                                    name: 'ripple-animation',
+                                    id: 'ripple',
+                                    fromPage: this
+                                }, {
+                                    name: 'hero-animation',
+                                    id: 'hero',
+                                    fromPage: this
+                                }]
+                            }
+                        }
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                this.addEventListener('click', (e) => this._onClick(e));
+
+                super.ready();
+
+                // window.addEventListener('some-event', () => this.someFunction());
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _computeTileClass(color) {
+                return 'tile ' + color + '-300';
+            }
+            _onClick(event) {
+                if (this.kaldirir.useradded) {
+                    //console.log('_onClick');
+                    var target = event.target;
+                    while (target !== this && !target._templateInstance) {
+                        target = target.parentNode;
+                    }
+                    /* FULLSIZE ' a gönderilecek datalar */
+                    this.hardwaretype = target._templateInstance.item.hardwaretype;
+                    this.selectedInstance = target._templateInstance.item;
+
+                    //console.log('selectedImage: ' + this.selectedInstance.image);
+
+                    // configure the page animation
+                    this.sharedElements = {
+                        'hero': target,
+                        'ripple': target
+                    };
+                    this.animationConfig['exit'][0].gesture = {
+                        x: event.x || event.pageX,
+                        y: event.y || event.pageY
+                    };
+
+                    // this.fire('tile-click', {
+                    //     tile: target,
+                    //     data: target._templateInstance.item
+                    // });
+                    
+                    var detail = {
+                        tile: target,
+                        data: target._templateInstance.item
+                    }
+
+                    this.fireEvent('tile-click', detail, false, false);
+                }
+            }
+
+            fireEvent(eventName, detailObject, bubblesBoolean, composedBoolean){
+                var event = new CustomEvent(eventName, {
+                    bubbles: bubblesBoolean,
+                    composed: composedBoolean,
+                    detail: detailObject
+                });
+                this.dispatchEvent(event);
+            }
+
+        }
+
+        window.customElements.define(GameAnimatedGrid.is, GameAnimatedGrid);
+    </script>
+</dom-module>
