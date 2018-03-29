@@ -51,7 +51,10 @@
     "paper-autocomplete": "^3.6.0",
     "streaming-list": "^4.0.0",
     "paper-styles": "PolymerElements/paper-styles#^2.1.0",
-    "paper-tooltip": "PolymerElements/paper-tooltip#^2.1.1"
+    "paper-tooltip": "PolymerElements/paper-tooltip#^2.1.1",
+    "paper-radio-group": "PolymerElements/paper-radio-group#^2.2.0",
+    "paper-progress": "PolymerElements/paper-progress#^2.1.0",
+    "iron-range-behavior": "PolymerElements/iron-range-behavior#^2.1.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"

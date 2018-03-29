@@ -2,7 +2,11 @@
 
 <dom-module id="user-buy-game">
     <template>
-        <style is="custom-style">
+        <style>
+            :host{
+                display: block;
+            }
+
             #buydialog {
                 overflow: auto;
                 min-height: 250px;
@@ -13,13 +17,15 @@
             }
 
             #pbBuyButton {
+                @apply --layout-vertical;
                 background: #ff7800;
                 color: white;
                 text-transform: capitalize;
                 border-radius: 0px;
                 margin: 0;
-                margin-right: 2px;
-                width: 100px;
+                margin: 0px 5px;
+                height: 42px;
+
             }
 
             #pbBuyButton span {

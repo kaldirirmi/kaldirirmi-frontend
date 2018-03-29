@@ -13,12 +13,15 @@
                 height: var(--kal-gamepage-height);
                 /* this.updateStyles({'--my-dynamic-property': 'red'}); */
             }
+
+            :host([is-mobile]) kal-scroll-threshold{
+                height: calc(100vh - 150px);
+            }
+
             kal-scroll-threshold {
                 height: calc(100vh - 280px);
                 box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
                 /* padding: 15px; */
-
-
             }
             #navButtons .paper-tabs-games {
                 border-top: 3px solid #ff7800;

@@ -222,6 +222,13 @@
             
             _response(a) {
                 this.set('games', []);
+                
+                if(a.detail.response != null){
+
+                }
+                else{
+                    
+                }
 
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (game) {

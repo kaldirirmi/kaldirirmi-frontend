@@ -3,6 +3,10 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../model/paper-slider.html">
+
 
 <dom-module id="kal-game-stepper">
     <template>
@@ -12,6 +16,24 @@
 
                 --paper-fab-background: #ff7800;
             }
+            
+            .alingcenter {
+                align-items: center;
+                -webkit-align-content: center;
+            }
+            
+            .layout.vertical{
+                @apply --layout-vertical;
+            }
+
+            .layout.horizontal{
+                @apply --layout-horizontal;
+            }
+            
+            .center-justified{
+                @apply --layout-center-center;
+            }
+
 
             paper-radio-button.red {
                 --paper-radio-button-checked-color: var(--paper-red-500);
@@ -129,6 +151,7 @@
 
             #feedbackpages {
                 min-height: 320px;
+                @apply --shadow-elevation-2dp;
             }
 
             .saveFeedBackButton {
@@ -155,10 +178,7 @@
                 padding: 8px !important;
             }
 
-            .alingcenter {
-                align-items: center;
-                -webkit-align-content: center;
-            }
+            
         </style>
 
         <iron-ajax id="getfeedbackofuser" debounce-duration="300" url='/h/main?fm=get-feedbacks-of-user&a=[[gameid]]' handle-as="json"
@@ -618,8 +638,9 @@
                     }
 
                 } else {
+                        
                     this._toaster('Feedback Eklemek İçin Giriş Yapmalısınız!');
-
+                    this._openLoginModal();
                 }
             }
 
@@ -629,6 +650,17 @@
                     composed: true,
                     detail: {
                         text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+            
+            _openLoginModal(){
+                var event = new CustomEvent('loginmodaler', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: 'Login'
                     }
                 });
                 this.dispatchEvent(event);

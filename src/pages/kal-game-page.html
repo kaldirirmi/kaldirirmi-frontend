@@ -3,6 +3,8 @@
 <link rel="import" href="../model/game-item.html">
 <link rel="import" href="../game/kal-selected-game.html">
 <link rel="import" href="../game/kal-all-games.html">
+<link rel="import" href="../thirdparty/moment.html">
+
 
 <dom-module id="kal-game-page">
   <template>
@@ -18,6 +20,10 @@
 
         overflow: hidden !important;
         height: calc(100vh - 192px);
+      }
+
+      :host([is-mobile]){
+        height: auto !important;
       }
 
       :host([is-mobile]) #allgames {

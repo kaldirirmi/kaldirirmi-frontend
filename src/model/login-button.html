@@ -5,7 +5,9 @@
     <template>
         <style>
             :host {
-                display: block
+                display: block;
+                --login-button-background-color: #ffffff;
+                --login-button-color: #ff7800;
             }
 
             a {
@@ -13,8 +15,8 @@
             }
 
             paper-button[login-button] {
-                background: white;
-                color: #ff7800;
+                background: var(--login-button-background-color);
+                color: var(--login-button-color);
                 letter-spacing: .7px;
                 text-transform: capitalize;
                 font-weight: 600;
