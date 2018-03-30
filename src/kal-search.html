@@ -50,7 +50,8 @@
             .header-search input {
                 width: 85%;
                 height: 100%;
-                background: rgba(255, 120, 0, 0.5) !important;
+                /* background: rgba(255, 120, 0, 0.5) !important; */
+                background: var(--app-theme-color-fifty) !important;
                 padding: 12px 0;
                 border-radius: 2px;
                 color: inherit;
@@ -82,7 +83,7 @@
             }
 
             #searchlayer #searching {
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             #searchlayer {
@@ -133,7 +134,7 @@
                 align-items: center;
                 padding: calc(0.1em + 1vmin) calc(0.3em + 1vmin);
                 cursor: pointer;
-                border-left: 4px solid #ff7800;
+                border-left: 4px solid var(--app-theme-color);
                 box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.4);
                 margin-bottom: 10px;
 
@@ -181,7 +182,7 @@
                 text-decoration: none;
                 padding: 15px 20px;
                 color: white;
-                border-left: 4px solid #ff7800;
+                border-left: 4px solid var(--app-theme-color);
             }
 
             #searchlayer #defaultsearch a iron-icon {

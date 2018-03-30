@@ -50,14 +50,14 @@
             .loadingIndicator {
                 text-align: center;
                 height: 40px;
-                color: white;
+                color: var(--app-theme-color);
             }
 
             .loadingIndicator paper-spinner-lite {
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
         </style>
 
@@ -67,7 +67,7 @@
         <!-- shadow dom elements here-->
         <div id='tagcloud'></div>
 
-        <div class="loadingIndicator" style="color:#FF7800" hidden$="[[!loadingtags]]">
+        <div class="loadingIndicator" hidden$="[[!loadingtags]]">
             <paper-spinner-lite active></paper-spinner-lite>
         </div>
         

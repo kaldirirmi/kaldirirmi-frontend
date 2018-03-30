@@ -14,6 +14,10 @@
                 user-select: none;
                 width: 100%;
             }
+            
+            .indicator{
+                color: var(--app-theme-color);
+            }
 
             #streams {
                 @apply --layout-wrap;
@@ -86,7 +90,7 @@
 
         <iron-ajax auto id="ajaxGetFollowdVideos" url="/auth/twitch/kalapi?fm=get-followed-videos&a=[[limit]]&b=[[streamtype]]&c=[[offset]]"
             handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
-        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+        <div class="indicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
         <div id="streams">

@@ -35,7 +35,8 @@
 
             .main-catalog .advert-catalog {
                 @apply --layout-flex-3;
-                background: blue;
+                background: var(--app-theme-color);
+                opacity: 0.3;
                 padding: 10px;
             }
 
@@ -68,6 +69,7 @@
             .continue-item {
                 @apply --layout-vertical;
                 padding-top: 5px;
+                background-color: var(--app-theme-color);
                 color: #fff;
                 text-decoration: none;
             }
@@ -184,7 +186,7 @@
                     </template>
                 </div>
                 <a class="continue-item" href="/news">
-                    <paper-button raised>Devamı</paper-button>
+                    <paper-button raised>Daha Fazlası</paper-button>
                 </a>
             </paper-material>
         </div>

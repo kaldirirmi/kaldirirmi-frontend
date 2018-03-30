@@ -44,7 +44,7 @@
                 @apply --layout-center;
                 color: white;
                 height: 35%;
-                background: #ff7800;
+                background: var(--app-theme-color);
                 width: 100%;
             }
 
@@ -70,20 +70,21 @@
                 text-align: center;
                 height: 40px;
                 color: white;
+                color:var(--app-theme-color);
             }
 
             .loadingIndicator paper-spinner-lite {
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             h3 {
                 font-weight: 100;
                 color: white;
                 padding: 10px;
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
             }
 
             /*shine effect*/
@@ -215,7 +216,7 @@
                 </template>
             </div>
 
-            <div class="loadingIndicator" style="color:#FF7800" hidden$="[[!loadingnews]]">
+            <div class="loadingIndicator" hidden$="[[!loadingnews]]">
                 <paper-spinner-lite active></paper-spinner-lite>
             </div>
     </template>

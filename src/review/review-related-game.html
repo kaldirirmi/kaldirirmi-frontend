@@ -188,7 +188,7 @@
                 @apply --layout-center;
                 color: white;
                 height: 52px;
-                background: #ff7800;
+                background: var(--app-theme-color);
                 width: 100%;
             }
 
@@ -210,7 +210,7 @@
             }
 
             #pbGoGame {
-                background-color: #FF7800;
+                background-color: var(--app-theme-color);
                 font-size: 15px;
                 min-width: 100%;
             }
@@ -317,14 +317,14 @@
             .loadingIndicator {
                 text-align: center;
                 height: 40px;
-                color: white;
+                color: var(--app-theme-color);
             }
 
             .loadingIndicator paper-spinner-lite {
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
         </style>
 
@@ -364,7 +364,7 @@
                 </div>
             </template>
         </div>
-        <div class="loadingIndicator" style="color:#FF7800" hidden$="[[!loading]]">
+        <div class="loadingIndicator" hidden$="[[!loading]]">
             <paper-spinner-lite active></paper-spinner-lite>
         </div>
     </template>

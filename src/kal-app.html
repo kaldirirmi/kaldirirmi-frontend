@@ -51,7 +51,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 :host {
                     --app-primary-color: #4285f4;
                     --app-secondary-color: #eee;
-                    --app-theme-color: #ff7600;
+                    /* --app-theme-color: #ff7800; */
+                    /* --app-theme-color-fifty: rgba(255, 120, 0, 0.5) !important; */
+                    /* --app-theme-darker-color: #e65100; */
+                    
+                     --app-theme-color: #d32f2f; 
+                     --app-theme-color-fifty: rgb(211, 47, 47, 0.5) !important;
+                     --app-theme-darker-color: #b71c1c;
+
                     --app-drawer-width: 200px;
                     display: block;
                 }
@@ -90,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
 
                 app-drawer div[main-logo] {
-                    background-color: #ff7800;
+                    background-color: var(--app-theme-color);
                     height: 64px;
                     @apply --layout-horizontal;
                     @apply --layout-center;
@@ -178,13 +185,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     position: fixed;
                     top: 20px;
                     left: 20px;
-                    --paper-fab-background: #ff7800;
-                    --paper-fab-keyboard-focus-background: #e65100;
+                    --paper-fab-background: var(--app-theme-color);
+                    --paper-fab-keyboard-focus-background: var(--app-theme-darker-color);
                     color: #000;
                 }
 
                 iron-overlay-backdrop {
-                    --iron-overlay-backdrop-background-color: #ff7800 !important;
+                    --iron-overlay-backdrop-background-color: var(--app-theme-color) !important;
                 }
 
                 login-modal {

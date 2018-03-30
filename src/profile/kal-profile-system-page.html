@@ -6,7 +6,7 @@
             }
 
             paper-item[heading] {
-                background: #ff7800;
+                background: var(--app-theme-color);
                 color: white;
                 font-size: calc(0.80em + 1vmin);
                 font-weight: 100;
@@ -99,13 +99,14 @@
                 padding: 10px;
                 font-size: calc(0.3em + 1vmin);
                 min-height: 350px !important;
+                color: var(--app-theme-color);
             }
 
             .loadingIndicatorUserSystem paper-spinner-lite {
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             @media only screen and (min-width: 1024px) {
@@ -133,7 +134,7 @@
             <paper-item heading>
                 Sistemin
             </paper-item>
-            <div class="loadingIndicatorUserSystem" style="color:#FF7800" hidden$="[[!loadingsystem]]">
+            <div class="loadingIndicatorUserSystem" hidden$="[[!loadingsystem]]">
                 <loader-pac></loader-pac>
                 <p>Sistemin Yükleniyor</p>
             </div>

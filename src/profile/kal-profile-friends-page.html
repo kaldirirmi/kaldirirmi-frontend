@@ -9,7 +9,7 @@
                 /* Label and underline color when the input is not focused */
                 --paper-input-container-color: white;
                 /* Label and underline color when the input is focused */
-                --paper-input-container-focus-color: #ff7800;
+                --paper-input-container-focus-color: var(--app-theme-color);
                 /* Label and underline color when the input is invalid */
                 --paper-input-container-invalid-color: #EA4335;
                 /* Input foreground color */
@@ -22,7 +22,7 @@
             }
 
             paper-item[heading] {
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 border-top: 3px solid #222222;
                 border-bottom: 3px solid #222222;
                 font-size: calc(0.80em + 1vmin);
@@ -64,7 +64,7 @@
 
             #profileform .buttons paper-icon-button,
             #passwordform .buttons paper-icon-button {
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 color: white;
             }
 
@@ -115,9 +115,9 @@
                 @apply --layout-center;
                 color: white;
                 height: calc(1.45em + 1vmin);
-                /*background: #ff7800;*/
+                /*background: var(--app-theme-color);*/
                 width: 100%;
-                border-top: 2px solid #ff7800;
+                border-top: 2px solid var(--app-theme-color);
             }
 
             .friend .friend-title span {
@@ -149,7 +149,7 @@
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             .friend a {
@@ -194,7 +194,7 @@
 
             #addsystemalert {
                 color: #222 !important;
-                background-color: #ff7800 !important;
+                background-color: var(--app-theme-color) !important;
                 font-weight: bold;
             }
 
@@ -251,7 +251,7 @@
             .btn-5 {
                 font-weight: bold;
                 background: #222;
-                color: #ff7800;
+                color: var(--app-theme-color);
                 width: calc(10em + 1vmin);
                 line-height: 24px;
                 text-align: center;

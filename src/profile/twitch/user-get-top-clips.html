@@ -81,6 +81,10 @@
             .firstMessageFor {
                 font-weight: 100;
             }
+
+             .indicator{
+                color: var(--app-theme-color);
+            }
         </style>
 
         <iron-ajax auto id="ajaxGetTopClips" url="/auth/twitch/kalapi?fm=get-top-clips&a=[[game]]&b=[[channel]]&c=[[period]]&d=[[trending]]&e=[[limit]]"
@@ -92,7 +96,7 @@
                          d = context.Request.QueryString["trending"],
                          e = context.Request.QueryString["limit"];-->
 
-        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+        <div class="indicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
         <div id="streams">

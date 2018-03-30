@@ -69,7 +69,7 @@
             }
 
             paper-tooltip.custom-tooltip {
-                --paper-tooltip-background: #ff7800;
+                --paper-tooltip-background: var(--app-theme-color);
                 --paper-tooltip-text-color: #fff;
                 width: 160px;
                 --paper-tooltip: {
@@ -102,12 +102,12 @@
                 @apply --shadow-elevation-8dp;
                 --paper-tabs-selection-bar-color: #222;
                 --paper-menu-selected-item: {
-                    color: #ff7800;
+                    color: var(--app-theme-color);
                 }
             }
 
             paper-tabs#main-navigation paper-tab.iron-selected {
-                color: #ff7800 !important;
+                color: var(--app-theme-color) !important;
                 font-size: 18px;
             }
 

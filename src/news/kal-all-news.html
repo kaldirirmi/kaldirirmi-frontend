@@ -88,6 +88,16 @@
                     /*max-height: 200px;*/
                 }
             }
+            .loadingindicator{
+                position: relative;
+                margin: 10px 20px;
+            }
+            .loadingindicator paper-spinner-lite {
+                --paper-spinner-color: var(--app-theme-color);
+            }
+            .loadingindicator span{
+                padding: 10px;
+            }
         </style>
 
         <iron-ajax auto id="getnews" url="/h/main?fm=get-populer-content-default&a=[[datatable]]&b=[[itemsize]]" method="get" handle-as="json"
@@ -95,8 +105,10 @@
 
         <div id="allnews">
             <div class="loadingindicator" hidden$="[[!loading]]">
-                <paper-spinner-lite active$="[[loading]]" class="orange"></paper-spinner-lite>
+                    <paper-spinner-lite active$="[[loading]]" class="orange"></paper-spinner-lite>
+                    <span>Tüm Haberler Getiriliyor</span>
             </div>
+        
             <div class="main">
                 <template is="dom-repeat" items={{items}}>
                     <div class="item">

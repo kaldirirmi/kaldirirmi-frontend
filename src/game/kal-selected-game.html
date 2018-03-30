@@ -19,6 +19,7 @@
 <link rel="import" href="./kal-game-dlc.html">
 <link rel="import" href="./kal-game-guides.html">
 <link rel="import" href="./kal-other-games-in-series.html">
+<link rel="import" href="../kal-copyright.html">
 
 <dom-module id="kal-selected-game">
     <template>
@@ -37,6 +38,30 @@
 
             :host([is-mobile]) #game-page {
                 height: auto !important;
+            }
+
+             :host([is-mobile]) #usersysteminfo paper-item[heading] {
+              @apply --layout-vertical;
+            }
+
+            :host([is-mobile]) #usersysteminfo paper-item[heading] div.buttons{
+                @apply --layout-vertical;
+                align-items: center;
+            }
+
+            :host([is-mobile]) #panel-contents #metadata h1{
+                font-size: calc(1.5em + 1vmin) !important;  
+                line-height: calc(1.5em + 1vmin);
+            }
+
+            :host([is-mobile]) #panel-contents #metadata h4 {
+                font-size: calc(1.2em + 1vmin) !important;
+                line-height: 20px;
+            }
+
+            :host([is-mobile]) #panel-contents #metadata h6 {
+                font-size: calc(0.9em + 1vmin) !important;
+                line-height: 15px;
             }
 
             /* Dynamic Styles */
@@ -85,7 +110,6 @@
 
             paper-item:hover{
                 @apply --shadow-elevation-2dp;
-
             }
 
 
@@ -135,7 +159,7 @@
             }
 
             app-toolbar {
-                background-color: #E65100;
+                background-color: var(--app-theme-darker-color);
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
                 font-weight: bold;
                 color: white;
@@ -212,7 +236,7 @@
 
             #gamecontent #panel {
                 position: relative;
-                background: #ff7800;
+                background: var(--app-theme-color);
                 color: white;
             }
 
@@ -253,7 +277,7 @@
                 align-self: center;
                 -ms-align-self: center;
                 -webkit-align-self: center;
-                /*border: 16px solid #ff7800;*/
+                /*border: 16px solid var(--app-theme-color);*/
                 width: 160px;
                 height: 224px;
                 transition: all ease-in .2s;
@@ -264,7 +288,7 @@
                 width: 100%;
                 height: auto;
                 min-height: 100%;
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 z-index: 5;
             }
 
@@ -306,7 +330,7 @@
             }
 
 
-            #gamecontent div[requirements] {
+            #gamecontent section[requirements] {
                 @apply --layout-horizontal;
 
                 /* color: white; */
@@ -314,33 +338,46 @@
                 /* flex-flow: column wrap; */
             }
 
-            :host([is-mobile]) #gamecontent div[requirements] {
+            :host([is-mobile]) #gamecontent section[requirements] {
                 @apply --layout-vertical;
             }
 
-            #gamecontent div[requirements] div[role="listbox"] {
+            #gamecontent section[requirements] div[role="listbox"] {
                 padding: 10px 0px;
             }
 
-            #gamecontent div[requirements] div[minimum],
-            #gamecontent div[requirements] div[suggested] {
+            #gamecontent section[requirements] div[minimum],
+            #gamecontent section[requirements] div[suggested] {
                 /* min-width: calc(50% - 10px); */
                 /* width: 100%; */
                 @apply --layout-flex-6;
             }
+            
+            #gamecontent section{
+                @apply --shadow-elevation-6dp;
+                @apply --shadow-transition;
+            }
+            #gamecontent section:hover{
+                @apply --shadow-elevation-2dp;
+            }
+
+            #gamecontent section[copyright]{
+                margin-bottom: 50px;
+            }
+
 
             paper-item[content] p {
                 margin: 0;
             }
 
-            #gamecontent div[requirements] div[role="listbox"] paper-item[heading] {
+            #gamecontent section[requirements] div[role="listbox"] paper-item[heading] {
                 /* background: rgba(255, 120, 0, .8); */
                 /* padding: 10px 15px; */
                 font-size: 20px;
                 font-weight: 100 !important;
             }
 
-            #gamecontent div[requirements] div[role="listbox"] paper-item:not([heading]) {
+            #gamecontent section[requirements] div[role="listbox"] paper-item:not([heading]) {
                 /*@apply(--layout-vertical);*/
                 display: -ms-flexbox;
                 display: -webkit-flex;
@@ -355,7 +392,7 @@
                 align-items: flex-start;
             }
 
-            #gamecontent div[requirements] div[role="listbox"] paper-item:not([heading]) div:first-child {
+            #gamecontent section[requirements] div[role="listbox"] paper-item:not([heading]) div:first-child {
                 font-size: 22px;
                 padding-bottom: 5px;
                 margin-bottom: 5px;
@@ -484,7 +521,7 @@
 
             #poster-ad {
                 display: none;
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 position: absolute;
                 width: 290px;
                 visibility: hidden;
@@ -567,17 +604,18 @@
             }
 
             #usersysteminfo paper-item[heading] {
-                /*@apply(--layout-vertical);*/
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: column;
-                -webkit-flex-direction: column;
-                flex-direction: column;
+              @apply --layout-horizontal;
+            }
+
+            #usersysteminfo paper-item[heading] div[title]{
+                @apply --layout-flex;
+            }
+
+            #usersysteminfo paper-item[empty-info] {
+                padding: 10px;
             }
 
             /* All content font sizes */
-
             p,
             h1,
             h2,
@@ -624,27 +662,12 @@
                 height: 400px;
             }
 
-
-            /* Metadata font costumizations */
-
-            #panel-contents #metadata h1 {
-                font-size: calc(1.2em + 1vmin) !important;
-            }
-
-            #panel-contents #metadata h4 {
-                font-size: calc(0.8em + 1vmin) !important;
-            }
-
-            #panel-contents #metadata h6 {
-                font-size: calc(0.6em + 1vmin) !important;
-            }
-
             #usersysteminfo paper-item[heading] div h2 {
                 text-align: center;
             }
 
             #usersysteminfo paper-item[heading] .buttons paper-button {
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 padding: 0 10px;
                 z-index: 10;
                 min-height: 4em;
@@ -681,7 +704,7 @@
             }
 
             #panel #options .anchors .anchors-link paper-button {
-                background: #E65100 !important;
+                background: var(--app-theme-darker-color) !important;
                 padding: 9px;
                 margin: 0;
                 text-transform: capitalize;
@@ -723,7 +746,7 @@
 
 
 
-                #gamecontent div[requirements] div[role="listbox"] {
+                #gamecontent section[requirements] div[role="listbox"] {
                     width: calc(100%);
                 }
 
@@ -764,18 +787,6 @@
             /* Iphone 6s plus */
 
             @media only screen and (min-width: 412px) {
-                #panel-contents #metadata h1 {
-                    font-size: calc(1.1em + 1vmin) !important;
-                }
-
-                #panel-contents #metadata h4 {
-                    font-size: calc(0.8em + 1vmin) !important;
-                }
-
-                #panel-contents #metadata h6 {
-                    font-size: calc(0.6em + 1vmin) !important;
-                }
-
                 #gamecontent #poster {
                     align-self: center;
                     width: 57%;
@@ -899,11 +910,11 @@
                 }
                 #panel-contents #metadata h1 {
                     /*font-size: calc(1.1em + 1vmin) !important;*/
-                    font-size: calc(0.5em + 1vmin) !important;
+                    font-size: calc(0.7em + 1vmin) !important;
                 }
 
                 #panel-contents #metadata h4 {
-                    font-size: calc(0.7em + 1vmin) !important;
+                    font-size: calc(0.5em + 1vmin) !important;
                 }
 
                 #panel-contents #metadata h6 {
@@ -965,7 +976,7 @@
                     margin-bottom: 70px !important;
                 }
 
-                #gamecontent div[requirements] {
+                #gamecontent section[requirements] {
                     flex-flow: row;
                 }
 
@@ -1187,7 +1198,7 @@
 
             #gamecontent #poster .interaction paper-button {
                 /* color: #222;
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 text-transform: capitalize;
                 font-weight: 500;
                 flex-grow: 2;
@@ -1282,7 +1293,7 @@
             }
 
             paper-tooltip.nav-tooltip {
-                /*--paper-tooltip-background: #ff7800;*/
+                /*--paper-tooltip-background: var(--app-theme-color);*/
                 --paper-tooltip-text-color: #fff;
                 width: 160px;
                 --paper-tooltip: {
@@ -1308,7 +1319,7 @@
             }
 
             #navButtons paper-icon-button {
-                /*color: #E65100 !important;*/
+                /*color: var(--app-theme-darker-color) !important;*/
                 height: 60px;
                 width: 60px;
                 transition: all ease-in-out .4s;
@@ -1402,7 +1413,7 @@
                         <iron-image src="[[gameinfo.background]]" sizing="cover" preload fade alt="[[gameinfo.name]]"></iron-image>
                     </div>
                     <div id="gamecontent">
-                        <div id="panel" style$="[[_getStyleOfClass(gameinfo)]]">
+                        <section id="panel" style$="[[_getStyleOfClass(gameinfo)]]">
                             <div id="options">
                                 <game-steam-price gameappid="[[gameinfo.steamappid]]"></game-steam-price>
                             </div>
@@ -1453,22 +1464,20 @@
                                     <kal-similar-games genre="[[gameinfo.genres]]"></kal-similar-games>
                                 </div>
                             </div>
-                        </div>
+                        </section>
                         <!-- panel -->
-                        <div id="user-system">
+                        <section id="user-system">
                             <template is="dom-if" if={{storedUser.loggedin}}>
                                 <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
                             </template>
                             <template is="dom-if" if={{!storedUser.loggedin}}>
                                 <paper-material elevation="0" id="usersysteminfo" role="listbox">
                                     <paper-item heading>
-                                        <div style="flex-grow: 2;">
+                                        <div title>
                                             <h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2>
                                         </div>
-                                        <div>
-                                            <div class="buttons">
-                                                <login-button></login-button>
-                                            </div>
+                                        <div class="buttons">
+                                            <login-button></login-button>
                                         </div>
                                     </paper-item>
                                     <paper-item empty-info>
@@ -1478,9 +1487,9 @@
                                     </paper-item>
                                 </paper-material>
                             </template>
-                        </div>
+                        </section>
                         <!-- user-system -->
-                        <div requirements>
+                        <section requirements>
                             <div minimum id="minimum" role="listbox">
                                 <paper-item heading>
                                     Minimum Gereksinimler
@@ -1562,39 +1571,47 @@
                                     </div>
                                 </paper-item>
                             </div>
-                        </div>
+                        </section>
                         <!-- requirements -->
 
-                        <paper-item heading id="stepperheading">
-                            Kullanıcı-Oyun FeedBack
-                        </paper-item>
-                        <div id="kalstepper">
-                            <kal-game-stepper userid="[[storedUser.uid]]" gameid="[[gameinfo.id]]" gamename="[[gameinfo.name]]"></kal-game-stepper>
-                        </div>
+                        <section stepper>
+                            <paper-item heading id="stepperheading">
+                                Kullanıcı-Oyun FeedBack
+                            </paper-item>
+                            <div id="kalstepper">
+                                <kal-game-stepper userid="[[storedUser.uid]]" gameid="[[gameinfo.id]]" gamename="[[gameinfo.name]]"></kal-game-stepper>
+                            </div>
+                        </section>
 
-                        <div id="twitch">
+                        <section id="twitch">
                             <game-streaming-list mc="[[gameinfo.maincolor]]" bc="[[gameinfo.backcolor]]" bca="[[gameinfo.backcoloropacity]]" gamename="[[gameinfo.name]]">
                             </game-streaming-list>
-                        </div>
+                        </section>
 
-                        <template is="dom-if" if={{_isSeriesAvailable(gameinfo.seriesid)}}>
-                            <div id="series">
-                                <kal-other-games-in-series gamename="[[gameinfo.name]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
-                                </kal-other-games-in-series>
-                            </div>
-                        </template>
+                        <section series>
+                            <template is="dom-if" if={{_isSeriesAvailable(gameinfo.seriesid)}}>
+                                <div id="series">
+                                    <kal-other-games-in-series gamename="[[gameinfo.name]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                                    </kal-other-games-in-series>
+                                </div>
+                            </template>
+                        </section>
 
-                        <kal-game-dlc gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
-                        </kal-game-dlc>
-
-                        <kal-game-guides gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
-                        </kal-game-guides>
-
-
+                        <section dlc>
+                            <kal-game-dlc gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                            </kal-game-dlc>
+                        </section>
+                        
+                        <section guides>
+                            <kal-game-guides gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                            </kal-game-guides>
+                        </section>
+                        
+                        <section copyright>
+                            <kal-copyright gameinfo=[[_remakeGameForCopyright(gameinfo)]]></kal-copyright>
+                        </section>
                     </div>
                     <!--gamecontent -->
-
-
                 </div>
             </template>
             <div hidden$=[[isGame]]>
@@ -1942,7 +1959,7 @@
             _remakeReleaseDate(gameinfo) {
 
                 let res = "";
-                console.log('gameinfo', gameinfo);
+                // console.log('gameinfo', gameinfo);
                 if (gameinfo != null) {
 
                     let {
@@ -2007,6 +2024,18 @@
             _isSuggestedListActive(gameinfo) {
                 if (gameinfo != null) {
                     return gameinfo.suggestedcpus != null ? true : false;
+                }
+                return null;
+            }
+
+            _remakeGameForCopyright(gameinfo){
+                if(gameinfo != null){
+                    return {
+                        isExist: true,
+                        publisher: gameinfo.publisher,
+                        name: gameinfo.name,
+                        developer: gameinfo.developer
+                    }
                 }
                 return null;
             }

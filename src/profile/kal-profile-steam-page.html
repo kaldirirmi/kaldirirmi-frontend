@@ -27,7 +27,7 @@
             }
 
             paper-item[heading] {
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 border-top: 3px solid #222222;
                 border-bottom: 3px solid #222222;
                 color: white;
@@ -95,7 +95,7 @@
             .pdmHeader {
                 line-height: 0 !important;
                 --paper-input-container-label: {
-                    color: #ff7800;
+                    color: var(--app-theme-color);
                     text-align: center;
                     font-weight: bold;
                 }
@@ -106,7 +106,7 @@
                     text-transform: uppercase;
                 }
 
-                --paper-input-container-focus-color: #ff7800;
+                --paper-input-container-focus-color: var(--app-theme-color);
                 --paper-input-container-underline: {
                     display: none;
                 }
@@ -138,7 +138,7 @@
             .item .item-column span[name] {
                 font-weight: bold;
                 font-size: 18px;
-                color: #ff7800;
+                color: var(--app-theme-color);
             }
 
             .item .item-column span[version] {
@@ -153,7 +153,7 @@
             }
 
             .item .item-column paper-button[profilelink] {
-                background: #ff7800;
+                background: var(--app-theme-color);
             }
 
             .item .item-column paper-button[profilelink] a {
@@ -170,7 +170,7 @@
             }
 
             .item .item-column .benchmark {
-                background: #E65100;
+                background: var(--app-theme-darker-color);
                 border-radius: 40%;
                 padding: 10px;
                 margin-right: 10px;
@@ -208,7 +208,7 @@
                 justify-content: space-between !important;
                 margin: 15px 0px;
                 padding-bottom: 5px;
-                border-bottom: 3px solid #ff7800;
+                border-bottom: 3px solid var(--app-theme-color);
                 font-size: 18px;
                 color: white;
                 font-weight: 100;
@@ -229,6 +229,10 @@
 
             .makeVisible {
                 display: none !important;
+            }
+
+            .loadingIndicator{
+                color: var(--app-theme-color);
             }
         </style>
 
@@ -283,7 +287,7 @@
                                     </div>
                                 </template>
                             </iron-list>
-                            <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loadingFriendList]]">
+                            <div class="loadingIndicator" hidden$="[[!loadingFriendList]]">
                                 <loader-pac></loader-pac>
                             </div>
                             <div class="empty-message" hidden$="[[!emptyfriendlist]]">
@@ -315,7 +319,7 @@
                                     </div>
                                 </template>
                             </iron-list>
-                            <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loadingRecently]]">
+                            <div class="loadingIndicator" style="color:var(--app-theme-color);" hidden$="[[!loadingRecently]]">
                                 <loader-pac></loader-pac>
                             </div>
                             <div class="empty-message" hidden$="[[!emptyrecentlygames]]">
@@ -351,7 +355,7 @@
                                     </div>
                                 </template>
                             </iron-list>
-                            <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loadingOwned]]">
+                            <div class="loadingIndicator" hidden$="[[!loadingOwned]]">
                                 <loader-pac></loader-pac>
                             </div>
                             <div class="empty-message" hidden$="[[!emptyownedgames]]">

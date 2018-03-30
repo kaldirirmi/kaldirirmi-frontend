@@ -1,4 +1,3 @@
-
 <link rel="import" href="../model/pdf-browser-viewer.html">
 
 <dom-module id="kal-game-guides">
@@ -73,7 +72,7 @@
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             .paper-tab-games paper-button {
@@ -81,7 +80,7 @@
             }
 
             .paper-tab-games {
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 border-color: #d66300;
                 color: white;
             }
@@ -326,7 +325,7 @@
 
             #guidesdialog paper-toolbar {
                 margin: 0 !important;
-                background: #E65100 !important;
+                background: var(--app-theme-darker-color) !important;
             }
 
             #guidesdialog paper-toolbar .guidetoolbar {
@@ -361,7 +360,7 @@
             }
 
             #guidesdialog paper-dropdown-menu.pdm paper-listbox {
-                --paper-listbox-background-color: #E65100 !important;
+                --paper-listbox-background-color: var(--app-theme-darker-color) !important;
                 --paper-listbox-color: #fff !important;
             }
 
@@ -376,7 +375,7 @@
             }
 
             paper-tooltip.nav-tooltip {
-                /*--paper-tooltip-background: #ff7800;*/
+                /*--paper-tooltip-background: var(--app-theme-color);*/
                 --paper-tooltip-text-color: #fff;
                 width: 160px;
                 --paper-tooltip: {
@@ -488,29 +487,24 @@
                     bc: {
                         type: String,
                         value: 'rgb(255,255,255)',
-                        notify: true
                     },
                     bca: {
                         type: String,
                         value: 'rgba(255,255,255, 0.6)',
-                        notify: true
                     },
                     mc: {
                         type: String,
                         value: 'rgb(0,0,0)',
-                        notify: true
                     },
                     selectedid: {
                         type: Number,
                         value: 0,
-                        notify: true
                     },
                 };
             }
 
             _gameidChanged(newVal, oldVal) {
                 if (newVal !== undefined) {
-
                     if (this.$.getgameguides.lastRequest) {
                         this.$.getgameguides.lastRequest.abort();
                     }
@@ -553,13 +547,20 @@
             _response(a) {
                 this.set('gameguides', []);
                 //console.log(a.detail.response);
-                if (a.detail.response.length > 0) {
-                    this.visibility = true;
-                    a.detail.response.forEach(function (guide) {
-                        this.push('gameguides', guide);
-                    }, this);
-                } else
-                    this.visibility = false;
+
+                let response = a.detail.response;
+                if (response != null) {
+                    if (response.length > 0) {
+                        this.set('visibility', true);
+                        response.forEach((guide) => {
+                            this.push('gameguides', guide);
+                        });
+                    } else {
+                        this.set('visibility', false);
+                    }
+                } else {
+                    this.set('visibility', false);
+                }
             }
             _showOrHidePanel() {
                 var item = document.getElementById('paperItemGameGuides');

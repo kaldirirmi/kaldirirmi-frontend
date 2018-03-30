@@ -6,9 +6,7 @@
             :host {
                 display: block
             }
-        </style>
-
-        <style is="custom-style">
+       
             #sitecopyright {
                 margin-bottom: 20px !important;
                 display: flex;
@@ -48,30 +46,30 @@
 
             #sitecopyright .copyright-message b {
                 font-weight: 500;
-                color: #ff7800;
+                color: var(--app-theme-color);
             }
         </style>
 
-        <div hidden$=[[!isgamepage]]>
+        <div hidden$=[[!gameinfo.isExist]]>
             <div id="sitecopyright">
                 <div>
-                    {{_remakeDate()}}&nbsp;&copy;&nbsp;
-                    <a href="http://oktosoft.com" target="_blank">Oktosoft</a>
+                    [[_getCurrentYear()]]&nbsp;&copy;&nbsp;
+                    <a href="https://oktosoft.com" target="_blank">Oktosoft</a>
                     <a href="/legal/kaldirirmi.com-uyelik-sozlesmesi.pdf" target="_blank">Üyelik Sözleşmesi</a>
                 </div>
                 <div class="copyright-message">
-                    <b>[[gamename]]</b>,
-                    <b>[[gamedeveloper]]</b> tarafından geliştirilip,
-                    <b>[[gamepublisher]]</b> tarafından yayınlanmıştır. Tüm hakları saklıdır. Kullanılan diğer tüm markalar
+                    <b>[[gameinfo.name]]</b>,
+                    <b>[[gameinfo.developer]]</b> tarafından geliştirilip,
+                    <b>[[gameinfo.publisher]]</b> tarafından yayınlanmıştır. Tüm hakları saklıdır. Kullanılan diğer tüm markalar
                     gerçek sahiplerine aittir.
                 </div>
             </div>
         </div>
-        <div hidden$=[[isgamepage]]>
+        <div hidden$=[[gameinfo.isExist]]>
             <div id="sitecopyright" data-step="3" data-intro="^-^">
                 <div>
-                    {{_remakeDate()}}&nbsp;
-                    <a href="http://oktosoft.com" target="_blank">Oktosoft&trade;</a>
+                    [[_getCurrentYear()]]&nbsp;
+                    <a href="https://oktosoft.com" target="_blank">Oktosoft&trade;</a>
                     <a href="/legal/kaldirirmi.com-uyelik-sozlesmesi.pdf" target="_blank">Üyelik Sözleşmesi</a>
 
                 </div>
@@ -103,24 +101,32 @@
              */
             static get properties() {
                 return {
-                    isgamepage: {
-                        type: Boolean,
-                        value: false,
-                        notify: true
-                    },
-                    gamename: {
-                        type: String,
-                        value: '',
-                    },
-                    gamedeveloper: {
-                        type: String,
-                        value: '',
-                    },
-                    gamepublisher: {
-                        type: String,
-                        value: '',
+                    gameinfo: {
+                        type: Object,
+                        value: function(){
+                            return{
+                                isExist: false,
+                                publisher: null,
+                                name: null,
+                                developer: null
+                            }
+                        }
                     },
                 };
+            }
+            /**
+              * Array of strings describing multi-property observer methods and their
+              * dependant properties
+              */
+            static get observers() {
+                return [
+                    '_gameInfoChanged(gameinfo)'
+                ];
+            }
+            
+            _gameInfoChanged(newVal, oldVal){
+                if(newVal !== undefined){
+                }
             }
 
             /**
@@ -156,7 +162,7 @@
                 }
             }
 
-             _remakeDate() {
+             _getCurrentYear() {
                 return new Date().getFullYear();
             }
 

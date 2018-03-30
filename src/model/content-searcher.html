@@ -10,7 +10,7 @@
             }
 
             app-toolbar {
-                background-color: #E65100;
+                background-color: var(--app-theme-darker-color);
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
                 font-weight: bold;
                 color: white;
@@ -33,6 +33,7 @@
                 right: 0;
                 position: relative;
                 top: 5em;
+                color: var(--app-theme-color);
             }
 
             paper-dropdown-menu {
@@ -94,7 +95,7 @@
                 }
 
             .empty-message {
-                color: #ff7800;
+                color: var(--app-theme-color);
                 text-align: center;
                 font-size: 1.2em;
             }
@@ -122,7 +123,7 @@
                 border-radius: 0px;
                 position: absolute;
                 top: 10px;
-                background: #E65100;
+                background: var(--app-theme-darker-color);
                 left: 60px;
             }
 
@@ -144,7 +145,7 @@
                 border-radius: 0px;
                 position: absolute;
                 top: 5px;
-                background: #E65100;
+                background: var(--app-theme-darker-color);
                 left: 55px;
             }
 
@@ -191,7 +192,11 @@
             }
 
             #fab {
-                background: #ff7800 !important;
+                background: var(--app-theme-color) !important;
+            }
+            paper-listbox {
+                --paper-listbox-background-color: var(--app-theme-darker-color);
+                --paper-listbox-color: #fff;
             }
         </style>
 
@@ -209,7 +214,7 @@
                 <input id="mobileSearchInput" class$="[[_getClassFromIconButton(mobileSearchIcon)]]" type="search" placeholder="[[title]] Ara" value="{{query::input}}">
             </div>
             <paper-dropdown-menu class="pdmHeader" label="Sıralama">
-                <paper-listbox slot="dropdown-content" style="background-color:#E65100; color:white"
+                <paper-listbox slot="dropdown-content"
                                class="dropdown-content"
                                attr-for-selected="value"
                                selected="{{order}}">
@@ -220,7 +225,6 @@
             </paper-dropdown-menu>
             <paper-dropdown-menu class="pdmHeader" label="Kriter">
                 <paper-listbox slot="dropdown-content"
-                               style="background-color:#E65100; color:white"
                                class="dropdown-content"
                                attr-for-selected="value"
                                selected="{{criter}}">
@@ -246,7 +250,7 @@
                     </div>
                 </template>
             </iron-list>
-            <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loading]]">
+            <div class="loadingIndicator" hidden$="[[!loading]]">
                 <loader-pac></loader-pac>
             </div>
         </kal-scroll-threshold>

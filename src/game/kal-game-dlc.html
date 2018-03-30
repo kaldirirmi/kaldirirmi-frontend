@@ -76,7 +76,7 @@
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             .paper-tab-games paper-button {
@@ -84,7 +84,7 @@
             }
 
             .paper-tab-games {
-                background-color: #ff7800;
+                background-color: var(--app-theme-color);
                 border-color: #d66300;
                 color: white;
             }
@@ -277,7 +277,7 @@
 
             #dlcdialog paper-toolbar {
                 margin: 0 !important;
-                background: #E65100 !important;
+                background: var(--app-theme-darker-color) !important;
             }
 
             #dlcdialog paper-toolbar .dlctoolbar {
@@ -314,7 +314,7 @@
             }
 
             #dlcdialog paper-dropdown-menu.pdm paper-listbox {
-                --paper-listbox-background-color: #E65100 !important;
+                --paper-listbox-background-color: var(--app-theme-darker-color) !important;
                 --paper-listbox-color: #fff !important;
             }
 
@@ -329,7 +329,7 @@
             }
 
             paper-tooltip.nav-tooltip {
-                /*--paper-tooltip-background: #ff7800;*/
+                /*--paper-tooltip-background: var(--app-theme-color);*/
                 --paper-tooltip-text-color: #fff;
                 width: 160px;
                 --paper-tooltip: {
@@ -501,22 +501,18 @@
                     bc: {
                         type: String,
                         value: 'rgb(255,255,255)',
-                        notify: true
                     },
                     bca: {
                         type: String,
                         value: 'rgba(255,255,255, 0.6)',
-                        notify: true
                     },
                     mc: {
                         type: String,
                         value: 'rgb(0,0,0)',
-                        notify: true
                     },
                     selectedid: {
                         type: Number,
                         value: 0,
-                        notify: true
                     }
                 };
             }
@@ -553,19 +549,20 @@
 
             _response(a) {
                 this.set('gamedlcs', []);
-
-                //console.log(a);
-                if (a.detail.response.length > 0) {
-                    this.visibility = true;
-                    a.detail.response.forEach(function (dlc) {
-                        this.push('gamedlcs', dlc);
-                    }, this);
+                
+                let response = a.detail.response;
+                if (response != null) {
+                    if (response.length > 0) {
+                        this.set('visibility', true);
+                        response.forEach((dlc) => {
+                            this.push('gamedlcs', dlc);
+                        });
+                    } else {
+                        this.set('visibility', false);
+                    }
+                } else {
+                    this.set('visibility', false);
                 }
-                else
-                    this.visibility = false;
-
-
-                //console.log(this.gamedlcs);
             }
 
             computeFilter(selectedid) {

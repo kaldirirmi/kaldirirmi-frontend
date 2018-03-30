@@ -62,7 +62,7 @@
                     color: white;
                     height: 44px;
                     padding: 0 5px;
-                    background: #ff7800;
+                    background: var(--app-theme-color);
                     width: 173px;
                 }
 
@@ -90,6 +90,7 @@
                     text-align:center;
                     font-size: calc(0.5em + 1vmin);
                     font-family: 'Roboto', 'Arial Narrow', Arial, sans-serif;
+                    text-transform: capitalize;
                 }
 
             @media only screen and (min-width : 1024px) { /* zoom %175 */
@@ -155,19 +156,38 @@
                     display: block;
                 }
             }
+
+            paper-spinner-lite{
+                --paper-spinner-color: var(--app-theme-color);
+            }
+
         </style>
 
-        <iron-ajax id="getsimilargames" url="/h/main?fm=get-similar-games-via-genres&a=[[genre]]" method="get" handle-as="json" on-response="_response"></iron-ajax>
+        <iron-ajax id="getsimilargames" url="/h/main?fm=get-similar-games-via-genres&a=[[genre]]"
+            method="get"
+            handle-as="json"
+            on-response="_response"
+            loading={{loading}}
+        ></iron-ajax>
+
         <div class="similir">
-            <paper-button id="btnSimilir" raised>Benzer oyunlar</paper-button>
+            <paper-button id="btnSimilir" raised>[[_remakeTitle(loading)]]</paper-button>
         </div>
         <div id="similargamelist">
             <template is="dom-repeat" items="{{games}}" as="item">
                 <a id="game{{index}}" class="game" href="/game/[[item.url]]">
-                    <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]" preload
+                    <iron-image 
+                        background 
+                        src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]"
+                        sizing="cover" 
+                        alt="[[item.name]]" 
+                        preload
                         fade></iron-image>
                 </a>
             </template>
+            <div hidden$=[[!loading]]>
+                <paper-spinner-lite active=[[loading]] class="orange"></paper-spinner-lite>
+            </div>
         </div>
 
     </template>
@@ -223,18 +243,24 @@
             _response(a) {
                 this.set('games', []);
                 
-                if(a.detail.response != null){
+                let response = a.detail.response;
 
+                if(response != null){
+                    if(response.length > 0){
+                        response.forEach((game) => {
+                            this.push('games', game);
+                        });
+                    }
                 }
                 else{
                     
                 }
 
-                if (a.detail.response.length > 0) {
-                    a.detail.response.forEach(function (game) {
-                        this.push('games', game);
-                    }, this);
-                }
+                // if (a.detail.response.length > 0) {
+                //     a.detail.response.forEach(function (game) {
+                //         this.push('games', game);
+                //     }, this);
+                // }
             }
 
             /**
@@ -255,6 +281,10 @@
                 Polymer.RenderStatus.afterNextRender(this, function () {
 
                 });
+            }
+
+            _remakeTitle(loading){
+                return loading == true ? 'Benzer oyunlar getiriliyor..' : 'Benzer oyunlar' 
             }
 
         }

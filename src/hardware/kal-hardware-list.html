@@ -11,7 +11,7 @@
             }
 
             app-toolbar {
-                background-color: #E65100;
+                background-color: var(--app-theme-darker-color);
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
                 font-weight: bold;
                 color: white;
@@ -36,6 +36,7 @@
                 right: 0;
                 position: relative;
                 top: 6em;
+                color: var(--app-theme-color);
             }
 
             #hardware-list-container {
@@ -52,7 +53,7 @@
                     font-weight: bold;
                     font-size: calc(0.45em + 1vmin);
                 }
-                ;
+                
 
                 --paper-input-container-input: {
                     color: white;
@@ -61,13 +62,13 @@
                     font-size: calc(0.45em + 1vmin);
 
                 }
-                ;
+                
 
                 --paper-input-container-focus-color: white;
                 --paper-input-container-underline: {
                     display: none;
                 }
-                ;
+                
 
 
             }
@@ -112,7 +113,7 @@
             }
 
             .empty-message {
-                color: #ff7800;
+                color: var(--app-theme-color);
                 text-align: center;
                 font-size: 1.2em;
             }
@@ -141,7 +142,7 @@
                 border-radius: 0px;
                 position: absolute;
                 top: 10px;
-                background: #E65100;
+                background: var(--app-theme-darker-color);
                 left: 60px;
             }
 
@@ -169,6 +170,12 @@
                 box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
                 padding: 15px;
             }
+            
+            paper-listbox {
+                --paper-listbox-background-color: var(--app-theme-darker-color);
+                --paper-listbox-color: #fff;
+            }
+
         </style>
 
         <iron-ajax id="gethardwarelist" debounce="3000" url="/h/main?fm=get-hardware-list&a=[[hardware]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]&g=[[classtype]]"
@@ -181,7 +188,7 @@
                 <input id="mobileSearchInput" type="search" placeholder="[[title]] Ara" value="{{query::input}}" />
             </div>
             <paper-dropdown-menu class="pdmHeader" label="Sınıf">
-                <paper-listbox style="background-color:#E65100; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
                     selected="{{classtype}}">
                     <paper-item value="all">Tümü</paper-item>
                     <paper-item value="laptop">Laptop</paper-item>
@@ -190,7 +197,7 @@
                 </paper-listbox>
             </paper-dropdown-menu>
             <paper-dropdown-menu class="pdmHeader" label="Sıralama">
-                <paper-listbox style="background-color:#E65100; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
                     selected="{{order}}">
                     <paper-item value="benchmarkscore">Benchmark Score</paper-item>
                     <paper-item value="name">Ürün Adı</paper-item>
@@ -199,7 +206,7 @@
                 </paper-listbox>
             </paper-dropdown-menu>
             <paper-dropdown-menu class="pdmHeader" label="Kriter">
-                <paper-listbox style="background-color:#E65100; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
                     selected="{{criter}}">
                     <paper-item value="desc">Azalan</paper-item>
                     <paper-item value="asc">Artan</paper-item>
@@ -216,7 +223,7 @@
                     </div>
                 </template>
             </iron-list>
-            <div class="loadingIndicator" style="color:#FF7800;" hidden$="[[!loading]]">
+            <div class="loadingIndicator"hidden$="[[!loading]]">
                 <loader-pac></loader-pac>
             </div>
             <div class="empty-message" hidden$="[[!empty]]">

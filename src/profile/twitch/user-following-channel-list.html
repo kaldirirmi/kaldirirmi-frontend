@@ -88,11 +88,14 @@
             #errorMessage iron-icon {
                 color: #6441a5;
             }
+            .loadingindicator{
+                color: var(--app-theme-color);
+            }
         </style>
 
         <iron-ajax auto id="ajaxUserFollowingChannels" debounce-duration="30" url="/auth/twitch/kalapi?fm=get-user-following-channels&a=[[limit]]&b=[[offset]]"
             handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
-        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+        <div class="loadingindicator"hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
         <div id="streams">

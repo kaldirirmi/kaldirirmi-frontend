@@ -93,12 +93,15 @@
                 width: 100%;
                 text-align: left;
             }
+            .indicator{
+                color: var(--app-theme-color);
+            }
         </style>
         <iron-ajax auto id="ajaxGetFriendFollowingChannels" debounce-duration="30" url="/auth/twitch/kalapi?fm=get-user-friend-following-channel&a=[[channel]]"
             handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
 
 
-        <div class="indicator" style="color:#FF7800" hidden$="[[!loading]]">
+        <div class="indicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
         <!--<paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>-->

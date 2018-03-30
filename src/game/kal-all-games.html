@@ -24,7 +24,8 @@
                 /* padding: 15px; */
             }
             #navButtons .paper-tabs-games {
-                border-top: 3px solid #ff7800;
+                border-top: 3px solid;
+                border-color: var(--app-theme-color);
                 margin-bottom: 1.5em;
                 top: 64px;
                 z-index: 3;
@@ -37,7 +38,7 @@
             }
 
             #navButtons .paper-tabs-games .iron-selected {
-                color: #ff7800 !important;
+                color: var(--app-theme-color) !important;
                 font-size: 20px;
                 font-weight: bold;
             }
@@ -78,7 +79,7 @@
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             .release-date-title {
