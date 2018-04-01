@@ -1,0 +1,130 @@
+<link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
+
+<dom-module id="game-video-holder">
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 95%;
+                margin: 0 !important;
+                padding: 0 !important;
+
+            }
+
+            #closevideo {
+                width: calc(100% - 20px);
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
+            }
+
+            #closevideo paper-icon-button {
+                --paper-icon-button-ink-color: white;
+                color: white;
+            }
+
+            #gamevideo {
+                width: calc(100% - 48px);
+                height: calc(100% - 108px);
+            }
+
+            #gamevideo google-youtube {
+                height: 100%;
+            }
+        </style>
+
+        <div id="closevideo" on-tap="_closeVideo">
+            <paper-icon-button id="videoclose" icon="close" on-tap="_closeVideo" dialog-dismiss></paper-icon-button>
+        </div>
+        <div id="gamevideo">
+            <google-youtube id="gamevideoframe"
+            on-google-youtube-state-change="_youtubeStateChange"
+            video-id="[[_remakeVideo(detail.video)]]" modestbranding="0" rel="0" showinfo="0" playsinline="0"
+                iv_load_policy="3" hl="tr" cc_load_policy="0" autoplay="0" fs="0" fluid></google-youtube>
+        </div>
+
+
+    </template>
+
+    <script>
+        /**
+         * `game-video-holder` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GameVideoHolder extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'game-video-holder';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    detail: {
+                        type: Object,
+                        observer: '_gameDetailChanged'
+                    },
+                };
+            }
+
+            _gameDetailChanged(newVal, oldVal) {
+                if (newVal != null) {
+                    // console.log(newVal);
+                    this.$.gamevideoframe.play();
+                }
+            }
+
+            _closeVideo() {
+                this.$.gamevideoframe.pause();
+            }
+
+            _youtubeStateChange(e){
+                if (e.detail.data == 0)
+                    this._closeVideo();
+            }
+
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+
+            _remakeVideo(video) {
+                // console.log('_remkaeVideo', video);
+                //gameinfo.video.Replace(" https://www.youtube.com/watch?v=", " ")
+                //console.log(video);
+                var res = '';
+                if (video !== undefined) {
+                    res = video.split('=')[1];
+                }
+                return res;
+            }
+
+        }
+
+        window.customElements.define(GameVideoHolder.is, GameVideoHolder);
+    </script>
+</dom-module>

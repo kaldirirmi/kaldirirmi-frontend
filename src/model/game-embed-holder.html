@@ -1,0 +1,226 @@
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<dom-module id="game-embed-holder">
+    <template>
+        <style>
+            :host {
+                margin: 0 !important;
+                padding: 0 !important;
+                @apply --layout-vertical;
+            }
+
+            app-toolbar {
+                margin: 0 !important;
+                background-color: var(--app-theme-darker-color) !important;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+                @apply --layout-horizontal;
+            }
+
+            app-toolbar .title {
+                @apply --layout-flex;
+                margin: 0px 10px;
+            }
+
+            #closeembed {
+                /* width: calc(100% - 20px); */
+                /*@apply(--layout-horizontal);
+                @apply(--layout-end-justified);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-pack: end;
+                -webkit-justify-content: flex-end;
+                justify-content: flex-end;
+            }
+
+            paper-dialog-scrollable {
+                width: calc(100% - 48px);
+                height: calc(100% - 108px);
+            }
+
+            #embed {
+                padding: 10px;
+            }
+
+            #embed .title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            #embed .description {
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+
+            #embed .code {
+                padding: 15px 10px;
+                font-size: 15px;
+            }
+
+            #embed .code input {
+                position: relative;
+                outline: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+                background: transparent;
+                border: none;
+                color: var(--paper-input-container-input-color, var(--primary-text-color));
+                -webkit-appearance: none;
+                text-align: inherit;
+                vertical-align: bottom;
+                min-width: 0;
+                font-family: var(--paper-font-subhead_-_font-family);
+                -webkit-font-smoothing: var(--paper-font-subhead_-_-webkit-font-smoothing);
+                font-size: var(--paper-font-subhead_-_font-size);
+                font-weight: var(--paper-font-subhead_-_font-weight);
+                line-height: var(--paper-font-subhead_-_line-height);
+                color: var(--paper-input-container-input_-_color, var(--paper-input-container-input-color, var(--primary-text-color)));
+                text-align: var(--paper-input-container-input_-_text-align, apply-shim-inherit);
+                text-transform: var(--paper-input-container-input_-_text-transform);
+                font-size: var(--paper-input-container-input_-_font-size, var(--paper-font-subhead_-_font-size));
+                overflow: var(--paper-input-container-input_-_overflow);
+                white-space: var(--paper-input-container-input_-_white-space);
+                text-overflow: var(--paper-input-container-input_-_text-overflow);
+                max-width: var(--paper-input-container-input_-_max-width, 100%);
+                box-sizing: var(--paper-input-container-input_-_box-sizing);
+                cursor: var(--paper-input-container-input_-_cursor);
+                border-bottom: 2px solid #222;
+            }
+
+            paper-button {
+                background: var(--app-theme-color);
+                color: #fff;
+            }
+
+            @media screen and (max-width: 767px){
+                #embed {
+                    @apply --layout-vertical;
+                }
+            }
+
+
+        </style>
+
+        <app-toolbar>
+            <div class="title">
+                Sitenize Ekleyin
+            </div>
+            <div id="closeembed">
+                <paper-icon-button id="embedclose" icon="close" dialog-dismiss></paper-icon-button>
+            </div>
+        </app-toolbar>
+
+        <div id="embed">
+            <div class="description">
+                Aşağıdaki kodu kullanarak [[detail.name]] oyununun sistem gereksinimlerini sitenize ekleyebilirsiniz.
+            </div>
+            <div class="code">
+                <!-- <paper-input id="embedvalue" on-focus="_focusOn" value$="<iframe src='http://localhost:56920/embed/[[detail.url]]' width='320' height='516' frameborder='0'></iframe>"></paper-input> -->
+                <input type="text" id="embedvalue" value$="<iframe src='http://localhost:56920/embed/[[detail.url]]' width='320' height='516' frameborder='0'></iframe>">
+
+            </div>
+            <paper-button raised on-tap="_copyCode">Kodu Kopyala</paper-button>
+        </div>
+        <paper-toast id="copied" text="Kod kopyalandı" duration="3000" class="fit-bottom"></paper-toast>
+
+    </template>
+
+    <script>
+        /**
+         * `game-embed-holder` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GameEmbedHolder extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'game-embed-holder';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    detail: Object,
+                    hook: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _copyCode() {
+                this.$.embedvalue.select();
+                document.execCommand('copy');
+
+                var message = "Kod kopyalandı";
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
+            _focusOn(e) {
+
+                if (this.hook) {
+                    this.$.myText.select();
+                    this.hook = !this.hook;
+
+                }
+                document.execCommand('copy');
+
+                var message = "Kod kopyalandı";
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+        }
+
+        window.customElements.define(GameEmbedHolder.is, GameEmbedHolder);
+    </script>
+</dom-module>

@@ -33,6 +33,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./model/logout-button.html">
 <link rel="import" href="./model/login-modal.html">
 <link rel="import" href="./model/game-guides-dialog.html">
+<link rel="import" href="./model/game-video-holder.html">
+<link rel="import" href="./model/game-embed-holder.html">
+
 
 <!-- Fragments -->
 <link rel="lazy-import" href="./pages/kal-home-page.html">
@@ -57,15 +60,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     /* --app-theme-color: #ff7800; */
                     /* --app-theme-color-fifty: rgba(255, 120, 0, 0.5) !important; */
                     /* --app-theme-darker-color: #e65100; */
-                    
-                     --app-theme-color: #d32f2f; 
-                     --app-theme-color-fifty: rgb(211, 47, 47, 0.5) !important;
-                     --app-theme-darker-color: #b71c1c;
+                    --app-theme-color: #d32f2f;
+                    --app-theme-color-fifty: rgb(211, 47, 47, 0.5) !important;
+                    --app-theme-darker-color: #b71c1c;
 
                     --app-drawer-width: 200px;
                     display: block;
                 }
-              
+
                 a {
                     text-decoration: none;
                 }
@@ -116,7 +118,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     @apply --layout-center-justified;
 
                 }
-                app-drawer div[main-logo] login-button{
+
+                app-drawer div[main-logo] login-button {
                     margin-left: 20px;
                 }
 
@@ -180,6 +183,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
                 /* dialog login */
+
                 #_loginDialog {
                     background: #222;
                 }
@@ -202,10 +206,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
 
                 /* game guides dialog style */
-                #guidesdialog{
-                    width: 80%;
-                }    
 
+                #guidesdialog {
+                    width: 80%;
+                }
+
+                #gamevideoholder {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #000;
+                    color: white;
+                    display: -ms-flexbox;
+                    display: -webkit-flex;
+                    display: flex;
+                    -ms-flex-direction: column;
+                    -webkit-flex-direction: column;
+                    flex-direction: column;
+                    -ms-flex-align: center;
+                    -webkit-align-items: center;
+                    align-items: center;
+                    -ms-flex-pack: center;
+                    -webkit-justify-content: center;
+                    justify-content: center;
+                    perspective: 2px;
+                }
             </style>
         </custom-style>
 
@@ -275,11 +304,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </app-toolbar>
                 </app-header>
 
-                <iron-pages id="ironpages"
-                    selected="[[page]]"
-                    attr-for-selected="name"
-                    fallback-selection="view404"
-                    role="main">
+                <iron-pages id="ironpages" selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
                     <kal-playground-page name="playground" is-mobile=[[isMobile]] route="{{subroute}}"></kal-playground-page>
                     <kal-game-page name="game" is-mobile=[[isMobile]] route="{{route}}"></kal-game-page>
@@ -301,7 +326,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <h2>Dialog Title</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
                 magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat.</p>
+                consequat.
+            </p>
             <div class="buttons">
             </div>
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
@@ -311,7 +337,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-dialog>
 
         <paper-dialog id="guidesdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
-            <game-guides-dialog detail=[[guidesdetail]]></game-guides-dialog>
+            <game-guides-dialog detail=[[guidesdialogdetail]]></game-guides-dialog>
+        </paper-dialog>
+
+        <paper-dialog id="gamevideoholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+            <game-video-holder detail=[[videodialogdetail]]></game-video-holder>
+        </paper-dialog>
+        <paper-dialog id="gameembedholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+            <game-embed-holder detail=[[embeddialogdetail]]></game-embed-holder>
         </paper-dialog>
     </template>
 
@@ -352,10 +385,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         observer: '_uidChanged'
                     },
                     uname: String,
-                    guidesdetail: {
+                    guidesdialogdetail: {
                         type: Object,
                         notify: true
-                    }
+                    },
+                    videodialogdetail: {
+                        type: Object,
+                        notify: true
+                    },
+                    embeddialogdetail: {
+                        type: Object,
+                        notify: true
+                    },
                 };
             }
 
@@ -385,6 +426,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addEventListener('toaster', this._toasterFire);
                 this.addEventListener('loginmodaler', this._toggleLoginDialog);
                 this.addEventListener('gameguidesdialog', this._toggleGameGuidesDialog);
+                this.addEventListener('gamevideodialog', this._toggleGameVideoDialog);
+                this.addEventListener('gameembeddialog', this._toggleGameEmbedDialog);
 
                 super.ready();
                 // console.log('ready kal-app');
@@ -505,11 +548,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // this._announce('Item added to the cart');
             }
 
-            _toggleGameGuidesDialog(e){
-                
-                console.log(e.detail);
-                this.set('guidesdetail', e.detail);
+            _toggleGameGuidesDialog(e) {
+                this.set('guidesdialogdetail', null);
+                this.set('guidesdialogdetail', e.detail);
                 this.$.guidesdialog.open();
+            }
+
+            _toggleGameVideoDialog(e) {
+                this.set('videodialogdetail', null);
+                this.set('videodialogdetail', e.detail);
+                this.$.gamevideoholder.open();
+            }
+
+            _toggleGameEmbedDialog(e) {
+                this.set('embeddialogdetail', null);
+                this.set('embeddialogdetail', e.detail);
+                this.$.gameembedholder.open();
             }
         }
 

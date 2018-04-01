@@ -96,7 +96,7 @@
             <paper-item empty-info style$="background-color:[[bc]]; color:[[mc]];">
                 
                 <template is="dom-if" if={{isEmpty}}>
-                    <span empty-span>Şu anda [[gamename]] oyununun canlı yayını bulunmamaktadır.</span>
+                    <span empty-span>Aradığınız kriterlerde, [[gamename]] oyununun canlı yayını bulunmamaktadır.</span>
                 </template>
                 
                 <template is="dom-if" if={{!isEmpty}}>
@@ -137,7 +137,8 @@
                     },
                     language: {
                         type: String,
-                        value: ""
+                        value: "",
+                        observer: '_languageChanged'
                     },
                     size: {
                         type: Number,
@@ -190,10 +191,17 @@
 
                 });
             }
+
+            _languageChanged(newVal, oldVal){
+                if(newVal !== undefined){
+
+                    this.set('isEmpty', false);
+                }
+            }
             
             _streamingListResponse(e) {
                 var scope = this;
-                // console.log(e);
+                 console.log(e);
                 if(e.detail != null){
                     if(e.detail._total == 0){
                         this.set('isEmpty', true);

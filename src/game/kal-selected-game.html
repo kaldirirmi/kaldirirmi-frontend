@@ -4,8 +4,6 @@
 <link rel="import" href="../../bower_components//iron-ajax/iron-ajax.html">
 -->
 
-<link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
-<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../model/loader-pac.html">
 <link rel="import" href="../../bower_components/watsonlogic-parallax/watsonlogic-parallax.html">
 
@@ -40,17 +38,17 @@
                 height: auto !important;
             }
 
-             :host([is-mobile]) #usersysteminfo paper-item[heading] {
-              @apply --layout-vertical;
+            :host([is-mobile]) #usersysteminfo paper-item[heading] {
+                @apply --layout-vertical;
             }
 
-            :host([is-mobile]) #usersysteminfo paper-item[heading] div.buttons{
+            :host([is-mobile]) #usersysteminfo paper-item[heading] div.buttons {
                 @apply --layout-vertical;
                 align-items: center;
             }
 
-            :host([is-mobile]) #panel-contents #metadata h1{
-                font-size: calc(1.5em + 1vmin) !important;  
+            :host([is-mobile]) #panel-contents #metadata h1 {
+                font-size: calc(1.5em + 1vmin) !important;
                 line-height: calc(1.5em + 1vmin);
             }
 
@@ -102,16 +100,16 @@
             paper-item[content] {
                 min-height: 11vh;
             }
-            
-            paper-item{
+
+            paper-item {
                 @apply --shadow-elevation-6dp;
                 @apply --shadow-transition;
             }
 
-            paper-item:hover{
+            paper-item:hover {
                 @apply --shadow-elevation-2dp;
             }
-            
+
             #game-page::-webkit-scrollbar {
                 width: 10px !important;
             }
@@ -189,12 +187,16 @@
                 border-bottom: 3px solid #222222;
             }
 
-
-            app-toolbar a {
-                color: #fff;
+            app-toolbar .navigation {
+                @apply --layout-flex;
             }
 
-            app-toolbar paper-icon-button {
+            app-toolbar .navigation a {
+                color: #fff;
+                text-decoration: none;
+            }
+
+            app-toolbar .navigation paper-icon-button {
                 --paper-icon-button-ink-color: white;
             }
 
@@ -366,16 +368,17 @@
                 /* width: 100%; */
                 @apply --layout-flex-6;
             }
-            
-            #gamecontent section{
+
+            #gamecontent section {
                 @apply --shadow-elevation-6dp;
                 @apply --shadow-transition;
             }
-            #gamecontent section:hover{
+
+            #gamecontent section:hover {
                 @apply --shadow-elevation-2dp;
             }
 
-            #gamecontent section[copyright]{
+            #gamecontent section[copyright] {
                 margin-bottom: 50px;
             }
 
@@ -413,123 +416,7 @@
                 border-bottom: 4px solid rgba(255, 255, 255, .2);
             }
 
-            #videoholder {
-                /*@apply(--layout-vertical);
-            @apply(--layout-center-center);*/
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                margin: 0;
-                padding: 0;
-                background-color: #000;
-                color: white;
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: column;
-                -webkit-flex-direction: column;
-                flex-direction: column;
-                -ms-flex-align: center;
-                -webkit-align-items: center;
-                align-items: center;
-                -ms-flex-pack: center;
-                -webkit-justify-content: center;
-                justify-content: center;
-                perspective: 2px;
 
-            }
-
-
-
-            #videoholder #closevideo {
-                width: calc(100% - 20px);
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: row;
-                -webkit-flex-direction: row;
-                flex-direction: row;
-                -ms-flex-pack: end;
-                -webkit-justify-content: flex-end;
-                justify-content: flex-end;
-                /*@apply(--layout-horizontal);
-                @apply(--layout-end-justified);*/
-            }
-
-            #videoholder #closevideo paper-icon-button {
-                --paper-icon-button-ink-color: white;
-                color: white;
-            }
-
-            #videoholder #gamevideo {
-                width: calc(100% - 48px);
-                height: calc(100% - 108px);
-            }
-
-            #videoholder #gamevideo google-youtube {
-                height: 100%;
-            }
-
-            #embedholder {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                margin: 0;
-                padding: 0;
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: column;
-                -webkit-flex-direction: column;
-                flex-direction: column;
-                -ms-flex-align: center;
-                -webkit-align-items: center;
-                align-items: center;
-                -ms-flex-pack: center;
-                -webkit-justify-content: center;
-                justify-content: center;
-                /*@apply(--layout-vertical);
-                @apply(--layout-center-center);*/
-            }
-
-            #embedholder #closeembed {
-                width: calc(100% - 20px);
-                /*@apply(--layout-horizontal);
-                @apply(--layout-end-justified);*/
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: row;
-                -webkit-flex-direction: row;
-                flex-direction: row;
-                -ms-flex-pack: end;
-                -webkit-justify-content: flex-end;
-                justify-content: flex-end;
-            }
-
-            #embedholder paper-dialog-scrollable {
-                width: calc(100% - 48px);
-                height: calc(100% - 108px);
-            }
-
-            #embedholder #embed .title {
-                font-size: 24px;
-                margin-bottom: 30px;
-            }
-
-            #embedholder #embed .description {
-                font-size: 20px;
-                margin-bottom: 30px;
-            }
-
-            #embedholder #embed .code {
-                padding: 5px 10px;
-                font-size: 15px;
-            }
 
             /* Poster arkasından çıkan Reklam Card Ayarları*/
 
@@ -618,10 +505,10 @@
             }
 
             #usersysteminfo paper-item[heading] {
-              @apply --layout-horizontal;
+                @apply --layout-horizontal;
             }
 
-            #usersysteminfo paper-item[heading] div[title]{
+            #usersysteminfo paper-item[heading] div[title] {
                 @apply --layout-flex;
             }
 
@@ -630,6 +517,7 @@
             }
 
             /* All content font sizes */
+
             p,
             h1,
             h2,
@@ -1372,43 +1260,24 @@
         <iron-ajax id="getselectedgame" url="/h/main?fm=get-game-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
 
         <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
-        <paper-dialog id="videoholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
-            <div id="closevideo">
-                <paper-icon-button id="videoclose" icon="close" dialog-dismiss></paper-icon-button>
-            </div>
-            <div id="gamevideo">
-                <google-youtube id="gamevideoframe" video-id="[[_remakeVideo(gameinfo.video)]]" modestbranding="0" rel="0" showinfo="0" playsinline="0"
-                    iv_load_policy="3" hl="tr" cc_load_policy="0" autoplay="0" fs="0" fluid></google-youtube>
-            </div>
-        </paper-dialog>
-        <paper-dialog id="embedholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
-            <div id="closeembed">
-                <paper-icon-button id="embedclose" icon="close" dialog-dismiss></paper-icon-button>
-            </div>
-            <paper-dialog-scrollable>
-                <div id="embed">
-                    <div class="title">
-                        Sitenize Ekleyin
-                    </div>
-                    <div class="description">
-                        Aşağıdaki kodu kullanarak [[gameinfo.name]] oyununun sistem gereksinimlerini sitenize ekleyebilirsiniz.
-                    </div>
-                    <div class="code">
-                        <paper-input id="embedvalue" value$="<iframe src='http://localhost:56920/embed/[[gameinfo.url]]' width='320' height='516' frameborder='0'></iframe>"></paper-input>
-                    </div>
-                </div>
-                <paper-toast id="copied" text="Kod kopyalandı" duration="3000" class="fit-bottom"></paper-toast>
-            </paper-dialog-scrollable>
-        </paper-dialog>
 
         <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
 
         <app-toolbar>
             <!-- <paper-icon-button icon="arrow-back" on-tap="_onBackToAllGames"></paper-icon-button> -->
-            <a id="back" href="/game">
-                <paper-icon-button icon="icons:arrow-back" on-tap="_onBackToAllGames"></paper-icon-button>
-            </a>
-            <span>Tüm Oyunlar</span>
+            <div class="navigation">
+                <a id="back" href="/game">
+                    <paper-icon-button icon="icons:arrow-back" on-tap="_onBackToAllGames"></paper-icon-button>
+                    <span>Tüm Oyunlar</span>
+                </a>
+            </div>
+            <div hidden$="[[!isGame]]">
+                <paper-icon-button id="playvideo" icon="av:play-circle-filled" on-tap="_playVideo"></paper-icon-button>
+                <paper-tooltip class="nav-tooltip" position="left" animation-delay="150" offset="5" for="playvideo">Videosunu izle</paper-tooltip>
+                <paper-icon-button id="showembed" icon="code" on-tap="_showEmbed"></paper-icon-button>
+                <paper-tooltip class="nav-tooltip" position="left" animation-delay="150" offset="5" for="showembed">Sitenize Ekleyin</paper-tooltip>
+            </div>
+
         </app-toolbar>
 
         <div hidden$=[[!loading]] class="loader-pac-content">
@@ -1615,12 +1484,12 @@
                             <kal-game-dlc gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
                             </kal-game-dlc>
                         </section>
-                        
+
                         <section guides>
                             <kal-game-guides gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
                             </kal-game-guides>
                         </section>
-                        
+
                         <section copyright>
                             <kal-copyright gameinfo=[[_remakeGameForCopyright(gameinfo)]]></kal-copyright>
                         </section>
@@ -1945,16 +1814,7 @@
                 this.dispatchEvent(new CustomEvent('backall', e.model));
             }
 
-            _remakeVideo(video) {
-                // console.log('_remkaeVideo', video);
-                //gameinfo.video.Replace(" https://www.youtube.com/watch?v=", " ")
-                //console.log(video);
-                var res = '';
-                if (video !== undefined) {
-                    res = video.split('=')[1];
-                }
-                return res;
-            }
+
 
             _remakeGenres(genres) {
                 var res = '';
@@ -2042,8 +1902,8 @@
                 return null;
             }
 
-            _remakeGameForCopyright(gameinfo){
-                if(gameinfo != null){
+            _remakeGameForCopyright(gameinfo) {
+                if (gameinfo != null) {
                     return {
                         isExist: true,
                         publisher: gameinfo.publisher,
@@ -2057,6 +1917,32 @@
             _isSeriesAvailable(seriesid) {
                 // console.log('_isSeriesAvailable',seriesid);
                 return seriesid != 0 ? true : false;
+            }
+
+            _playVideo() {
+
+                //dialog is listening in the app root page
+                var event = new CustomEvent('gamevideodialog', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.gameinfo
+                });
+                this.dispatchEvent(event);
+
+                // this.$.videoholder.open();
+                // this.$.gamevideoframe.play();
+            }
+
+
+            _showEmbed() {
+                var event = new CustomEvent('gameembeddialog', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.gameinfo
+                });
+                this.dispatchEvent(event);
+
+                // this.$.embedholder.open();
             }
         }
         window.customElements.define(KalSelectedGame.is, KalSelectedGame);
