@@ -100,7 +100,7 @@
                 </template>
                 
                 <template is="dom-if" if={{!isEmpty}}>
-                        <kal-streaming-list lang="{{language}}" width="{{size}}" client-id="{{clientId}}" key="{{key}}" service="{{service}}" game="{{gamename}}"
+                        <kal-streaming-list selected-gamepage="true" lang="{{language}}" width="{{size}}" client-id="{{clientId}}" key="{{key}}" service="{{service}}" game="{{gamename}}"
                         on-streaming-list-response="_streamingListResponse">
                         </kal-streaming-list>
                 </template>

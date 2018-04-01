@@ -62,7 +62,7 @@ Example:
       on-response="_onResponse" on-request="_onRequest" on-error="_onError" debounce-duration="30">
     </iron-ajax>
     <div id="region">
-      <kal-scroll-threshold on-lower-threshold="_loadMore" id="threshold" lower-threshold="500" type="twitch">
+      <kal-scroll-threshold on-lower-threshold="_loadMore" id="threshold" lower-threshold="500" type="twitch" selected-gamepage="[[selectedGamepage]]">
         <div id="streams" scroll-target="threshold">
           <template is="dom-repeat" items="[[response.streams]]" scroll-target="threshold">
             <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
@@ -202,10 +202,13 @@ Example:
             notify: true
           },
 
+          /* kal custom styles */
           firstInit: {
             type: Boolean,
             value: true
-          }
+          },
+          
+          selectedGamepage: Boolean
         };
       }
 

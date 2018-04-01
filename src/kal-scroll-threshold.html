@@ -106,6 +106,10 @@ triggered property.
         right: 20px;
       }
 
+      .selectedGamePage{
+        display: none !important;
+      }
+
       paper-fab {
         --paper-fab-background: var(--app-theme-color);
         --paper-fab-keyboard-focus-background: var(--app-theme-darker-color);
@@ -114,7 +118,7 @@ triggered property.
 
     <slot></slot>
 
-    <div hidden$=[[!fabhidden]] class="fab-container">
+    <div hidden$=[[!fabhidden]] class$="fab-container [[_checkSelectedGamePage(selectedGamepage)]]" >
       <paper-fab id="fab" icon="expand-less" title="To top" on-tap="_scrollToTop"></paper-fab>
     </div>
   </template>
@@ -195,9 +199,8 @@ triggered property.
         value: 0
       },
 
-      type: String
-
-
+      type: String,
+      selectedGamepage: Boolean
     },
 
     behaviors: [
@@ -208,6 +211,10 @@ triggered property.
       '_setOverflow(scrollTarget)',
       '_initCheck(horizontal, isAttached)'
     ],
+
+    _checkSelectedGamePage(selectedGamepage){
+      return selectedGamepage ? 'selectedGamePage' : '';
+    },
 
     _scrollToTop() {
       // console.log('_scrollToTop');

@@ -32,6 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./model/login-button.html">
 <link rel="import" href="./model/logout-button.html">
 <link rel="import" href="./model/login-modal.html">
+<link rel="import" href="./model/game-guides-dialog.html">
 
 <!-- Fragments -->
 <link rel="lazy-import" href="./pages/kal-home-page.html">
@@ -199,6 +200,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 login-modal {
                     z-index: 2;
                 }
+
+                /* game guides dialog style */
+                #guidesdialog{
+                    width: 80%;
+                }    
+
             </style>
         </custom-style>
 
@@ -302,6 +309,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
                 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </paper-dialog>
+
+        <paper-dialog id="guidesdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+            <game-guides-dialog detail=[[guidesdetail]]></game-guides-dialog>
+        </paper-dialog>
     </template>
 
     <script>
@@ -340,7 +351,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         notify: true,
                         observer: '_uidChanged'
                     },
-                    uname: String
+                    uname: String,
+                    guidesdetail: {
+                        type: Object,
+                        notify: true
+                    }
                 };
             }
 
@@ -369,6 +384,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 //Custom Listeners
                 this.addEventListener('toaster', this._toasterFire);
                 this.addEventListener('loginmodaler', this._toggleLoginDialog);
+                this.addEventListener('gameguidesdialog', this._toggleGameGuidesDialog);
 
                 super.ready();
                 // console.log('ready kal-app');
@@ -487,6 +503,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // // this.$.cart.addItem(event.detail);
                 this._loginModal.open();
                 // this._announce('Item added to the cart');
+            }
+
+            _toggleGameGuidesDialog(e){
+                
+                console.log(e.detail);
+                this.set('guidesdetail', e.detail);
+                this.$.guidesdialog.open();
             }
         }
 
