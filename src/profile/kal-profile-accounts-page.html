@@ -82,11 +82,11 @@
                 </div>
                 <div class="options">
                     <template is="dom-if" if="[[!auths.steam.linked]]">
-                        <paper-icon-button id="steamauthbtn" onclick="load(); location.href='/auth/steam/login';" icon="add-circle"></paper-icon-button>
+                        <paper-icon-button id="steamauthbtn" onclick="location.href='/auth/steam/login';" icon="add-circle"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="steamauthbtn" position="left" offset="5" animation-delay="0">Steam hesabını bağla</paper-tooltip>
                     </template>
                     <template is="dom-if" if="[[auths.steam.linked]]">
-                        <paper-icon-button id="steamauthbtn" onclick="load(); location.href = '/auth/steam/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-icon-button id="steamauthbtn" onclick="location.href = '/auth/steam/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="steamauthbtn" position="left" offset="5" animation-delay="0">Steam hesabını kaldır</paper-tooltip>
                     </template>
                 </div>
@@ -102,11 +102,11 @@
                 </div>
                 <div class="options">
                     <template is="dom-if" if="[[!auths.google.linked]]">
-                        <paper-icon-button id="googleauthbtn" onclick="load(); location.href='/auth/google/login';" icon="add-circle"></paper-icon-button>
+                        <paper-icon-button id="googleauthbtn" onclick="location.href='/auth/google/login';" icon="add-circle"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="googleauthbtn" position="left" offset="5" animation-delay="0">Google hesabını bağla</paper-tooltip>
                     </template>
                     <template is="dom-if" if="[[auths.google.linked]]">
-                        <paper-icon-button id="googleauthbtn" onclick="load(); location.href='/auth/google/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-icon-button id="googleauthbtn" onclick="location.href='/auth/google/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="googleauthbtn" position="left" offset="5" animation-delay="0">Google hesabını kaldır</paper-tooltip>
                     </template>
                 </div>
@@ -121,11 +121,11 @@
                 </div>
                 <div class="options">
                     <template is="dom-if" if="[[!auths.twitch.linked]]">
-                        <paper-icon-button id="twitchauthbtn" onclick="load(); location.href='/auth/twitch/login';" icon="add-circle"></paper-icon-button>
+                        <paper-icon-button id="twitchauthbtn" onclick="location.href='/auth/twitch/login';" icon="add-circle"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="twitchauthbtn" position="left" offset="5" animation-delay="0">Twitch hesabını bağla</paper-tooltip>
                     </template>
                     <template is="dom-if" if="[[auths.twitch.linked]]">
-                        <paper-icon-button id="twitchauthbtn" onclick="load(); location.href='/auth/twitch/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-icon-button id="twitchauthbtn" onclick="location.href='/auth/twitch/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="twitchauthbtn" position="left" offset="5" animation-delay="0">Twitch hesabını kaldır</paper-tooltip>
                     </template>
                 </div>
@@ -139,11 +139,11 @@
                 </div>
                 <div class="options">
                     <template is="dom-if" if="[[!auths.facebook.linked]]">
-                        <paper-icon-button id="facebookauthbtn" onclick="load(); location.href='/auth/facebook/login';" icon="add-circle"></paper-icon-button>
+                        <paper-icon-button id="facebookauthbtn" onclick="location.href='/auth/facebook/login';" icon="add-circle"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="facebookauthbtn" position="left" offset="5" animation-delay="0">Facebook hesabını bağla</paper-tooltip>
                     </template>
                     <template is="dom-if" if="[[auths.facebook.linked]]">
-                        <paper-icon-button id="facebookauthbtn" onclick="load(); location.href='/auth/facebook/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
+                        <paper-icon-button id="facebookauthbtn" onclick="location.href='/auth/facebook/logout';" icon="icons:remove-circle-outline"></paper-icon-button>
                         <paper-tooltip class="custom-tooltip" for="facebookauthbtn" position="left" offset="5" animation-delay="0">Facebook hesabını kaldır</paper-tooltip>
                     </template>
                 </div>

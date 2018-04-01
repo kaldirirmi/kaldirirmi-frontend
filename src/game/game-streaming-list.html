@@ -1,4 +1,4 @@
-<link rel="import" href="../../bower_components/streaming-list/streaming-list.html">
+<link rel="import" href="../model/kal-streaming-list.html">
 
 <dom-module id="game-streaming-list">
     <template>
@@ -23,9 +23,12 @@
             }
 
             paper-item[empty-info] {
-
                 font-size: 16px;
-                padding: 20px;
+                padding: 0;
+            }
+
+            span[empty-span]{
+                margin: 10px;
             }
 
             paper-item[empty-info] {
@@ -77,16 +80,31 @@
                     </h2>
                 </div>
                 <paper-dropdown-menu id="pdmLanguage" style$="margin-bottom:20px; color: [[mc]]" label="Dil Seçeneği">
-                    <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{language}}" style$="background-color:[[bc]]; color: [[mc]]">
-                        <paper-item value="all">Tüm Yayınlar</paper-item>
+                    <paper-listbox 
+                        slot="dropdown-content"
+                        class="dropdown-content"
+                        attr-for-selected="value" 
+                        selected="{{language}}" 
+                        style$="background-color:[[bc]]; color: [[mc]]"
+                        >
+                        <paper-item value="">Tüm Yayınlar</paper-item>
                         <paper-item value="tr">Türkçe Yayınlar</paper-item>
                         <paper-item value="en">İngilizce Yayınlar</paper-item>
                     </paper-listbox>
                 </paper-dropdown-menu>
             </paper-item>
             <paper-item empty-info style$="background-color:[[bc]]; color:[[mc]];">
-                <streaming-list lang="{{language}}" width="{{size}}" client-id="{{clientId}}" key="{{key}}" service="{{service}}" game="{{gamename}}">
-                </streaming-list>
+                
+                <template is="dom-if" if={{isEmpty}}>
+                    <span empty-span>Şu anda [[gamename]] oyununun canlı yayını bulunmamaktadır.</span>
+                </template>
+                
+                <template is="dom-if" if={{!isEmpty}}>
+                        <kal-streaming-list lang="{{language}}" width="{{size}}" client-id="{{clientId}}" key="{{key}}" service="{{service}}" game="{{gamename}}"
+                        on-streaming-list-response="_streamingListResponse">
+                        </kal-streaming-list>
+                </template>
+              
             </paper-item>
         </paper-material>
     </template>
@@ -119,11 +137,11 @@
                     },
                     language: {
                         type: String,
-                        value: "all"
+                        value: ""
                     },
                     size: {
                         type: Number,
-                        value: 250
+                        value: 225
                     },
                     service: {
                         type: String,
@@ -145,6 +163,10 @@
                     },
                     bca: {
                         type: String
+                    },
+                    isEmpty: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -167,6 +189,26 @@
                 Polymer.RenderStatus.afterNextRender(this, function () {
 
                 });
+            }
+            
+            _streamingListResponse(e) {
+                var scope = this;
+                // console.log(e);
+                if(e.detail != null){
+                    if(e.detail._total == 0){
+                        this.set('isEmpty', true);
+                    }
+                }
+                else{
+                    this.set('isEmpty', false);
+                }
+
+
+                // console.log(e);
+                // if (e.detail) {
+                //     scope.$.toaster.text = e.detail.text;
+                //     scope.$.toaster.open();
+                // }
             }
 
         }

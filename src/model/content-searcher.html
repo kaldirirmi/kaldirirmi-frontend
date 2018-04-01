@@ -201,7 +201,7 @@
         </style>
 
         <iron-ajax id="getnewslist"
-                   debounce="3000"
+                   debounce-duration="300"
                    url="/h/main?fm=get-newsreviews-list&a=[[tablename]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]"
                    handle-as="json"
                    on-response="_response"></iron-ajax>
@@ -240,7 +240,6 @@
             <iron-list scroll-target="threshold" items="[[response]]">
                 <template>
                     <div class="list-item">
-
                         <template is="dom-if" if={{isNews}}>
                             <news-item item="[[item]]" extended is-mobile=[[isMobile]]></news-item>
                         </template>
@@ -364,7 +363,7 @@
             }
 
             _loadMore() {
-                //console.log('_loadMore', this.loading);
+                console.log('_loadMore', this.loading);
                 this.loading = true;
                 if (this.$.getnewslist.lastRequest) {
                     this.$.getnewslist.lastRequest.abort();

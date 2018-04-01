@@ -375,9 +375,9 @@
         </style>
 
         <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
-        <iron-ajax auto="{{go}}" id="getfriendlist" debounce="3000" url="/h/main?fm=get-friendlist-of-current-user" handle-as="json"
+        <iron-ajax auto="{{go}}" id="getfriendlist" debounce-duration="300" url="/h/main?fm=get-friendlist-of-current-user" handle-as="json"
             on-response="_responseFriendList" loading="{{loadingfriends}}"></iron-ajax>
-        <iron-ajax auto="{{go}}" id="getpendinglist" debounce="3000" url="/h/main?fm=get-pending-of-current-user" handle-as="json"
+        <iron-ajax auto="{{go}}" id="getpendinglist" debounce-duration="300" url="/h/main?fm=get-pending-of-current-user" handle-as="json"
             on-response="_responsePendingList" loading="{{loadingpending}}"></iron-ajax>
 
         <iron-form id="formAcceptRequest" on-iron-form-response="_onFormAcceptResponse">
@@ -413,7 +413,7 @@
                     <template is="dom-repeat" items="{{response.friendList}}" as="item">
                         <paper-card class="u-card" elevation="3">
                             <div class="u-content">
-                                <a href="/u/[[item.url]]" onclick="load();">
+                                <a href="/u/[[item.url]]">
                                     <div class="card-content">
                                         <div class="u-header">
                                             <span>[[item.username]]</span>
@@ -451,7 +451,7 @@
                     <template is="dom-repeat" items="{{response.pendingList}}" as="item">
                         <paper-card class="u-card" elevation="3">
                             <div class="u-content">
-                                <a href="/u/[[item.url]]" onclick="load();">
+                                <a href="/u/[[item.url]]">
                                     <div class="card-content">
                                         <div class="u-header">
                                             <span>[[item.username]]</span>

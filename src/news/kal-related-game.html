@@ -364,7 +364,7 @@
             <template is="dom-repeat" items="{{relatedgame}}" as="item">
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
-                        <a class="relatedgame" href="/oyun/[[item.url]]">
+                        <a class="relatedgame" href="/news/[[item.url]]">
                             <iron-image background src="[[item.background]]" sizing="cover" alt="[[item.name]]" preload fade></iron-image>
                             <!--<div class="relatedgame-title"><h4>[[item.name]]</h4></div>-->
                         </a>
@@ -471,23 +471,27 @@
             _responseGame(a) {
                 this.set('relatedgame', []);
 
-                if (a.detail.response.length > 0) {
-                    a.detail.response.forEach(function (game) {
-                        this.push('relatedgame', game);
-                        this.set('gametitle', game.name);
-                        // this.gametitle = game.name;
-                    }, this);
-
+                var response = a.detail.response;
+                if (response.length != 0) {
+                    if (a.detail.response.length > 0) {
+                        a.detail.response.forEach(function (game) {
+                            this.push('relatedgame', game);
+                            this.set('gametitle', game.name);
+                            // this.gametitle = game.name;
+                        }, this);
+                    }
                 }
             }
             _responseNews(a) {
                 this.set('relatednews', []);
-
-                if (a.detail.response.length > 0) {
-                    this.newsActive = true;
-                    a.detail.response.forEach(function (news) {
-                        this.push('relatednews', news);
-                    }, this);
+                var response = a.detail.response;
+                if (response != null) {
+                    if (a.detail.response.length > 0) {
+                        this.newsActive = true;
+                        a.detail.response.forEach(function (news) {
+                            this.push('relatednews', news);
+                        }, this);
+                    }
                 }
             }
         }

@@ -135,12 +135,27 @@
             li {
                 color: white;
             }
-
+            
             #review-page {
                 @apply --layout-vertical;
                 overflow-y: scroll !important;
                 height: calc(100vh - 192px);
 
+            }
+
+            #review-page::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            #review-page::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            #review-page::-webkit-scrollbar-track {
+                background-color: #000;
             }
 
             #review-page-header {
@@ -1026,9 +1041,9 @@
             _onResponse(event) {
                 var response = event.detail.response;
 
-                // console.log('kal-selected-review response: ', response);
+                console.log('kal-selected-review response: ', response);
 
-                if (response !== null) {
+                if (response.id != 0) {
                     this.set('isReview', true);
                     // console.log(response);
                     this.set('reviewinfo', response);
@@ -1050,7 +1065,7 @@
                         title: "Forest inceleme",
                         url: "forest-inceleme"
                     };
-                    this.set('reviewinfo', myobj);
+                    // this.set('reviewinfo', myobj);
                     this.set('isReview', false);
                 }
 

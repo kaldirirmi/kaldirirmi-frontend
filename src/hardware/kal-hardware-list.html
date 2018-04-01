@@ -178,7 +178,7 @@
 
         </style>
 
-        <iron-ajax id="gethardwarelist" debounce="3000" url="/h/main?fm=get-hardware-list&a=[[hardware]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]&g=[[classtype]]"
+        <iron-ajax id="gethardwarelist" debounce-duration="300" url="/h/main?fm=get-hardware-list&a=[[hardware]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]&g=[[classtype]]"
             handle-as="json" on-response="_response"></iron-ajax>
 
         <app-toolbar>

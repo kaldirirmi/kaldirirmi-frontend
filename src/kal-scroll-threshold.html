@@ -84,23 +84,48 @@ triggered property.
       :host {
         display: block;
       }
+
+      :host::-webkit-scrollbar {
+        width: 10px !important;
+      }
+
+      :host::-webkit-scrollbar-thumb {
+        background-color: #333;
+        border-radius: 5px;
+        border: 2px solid #000;
+        min-height: 50px;
+      }
+
+      :host::-webkit-scrollbar-track {
+        background-color: #000;
+      }
+
+      .fab-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+      }
+
+      paper-fab {
+        --paper-fab-background: var(--app-theme-color);
+        --paper-fab-keyboard-focus-background: var(--app-theme-darker-color);
+      }
     </style>
 
     <slot></slot>
 
-    <div hidden$=[[!fabhidden]] style="position:absolute; bottom:20px; right: 20px;">
-        <paper-fab id="fab" icon="expand-less" title="To top" on-tap="_scrollToTop"></paper-fab>
+    <div hidden$=[[!fabhidden]] class="fab-container">
+      <paper-fab id="fab" icon="expand-less" title="To top" on-tap="_scrollToTop"></paper-fab>
     </div>
   </template>
 </dom-module>
 
 <script>
-
   //t = current time
   //b = start value
   //c = change in value
   //d = duration
-  
+
 
   Polymer({
 
@@ -170,6 +195,8 @@ triggered property.
         value: 0
       },
 
+      type: String
+
 
     },
 
@@ -181,42 +208,42 @@ triggered property.
       '_setOverflow(scrollTarget)',
       '_initCheck(horizontal, isAttached)'
     ],
-    
-    _scrollToTop(){
+
+    _scrollToTop() {
       // console.log('_scrollToTop');
       // this._setXScrollTop(0);
       this.scrollTop = 0;
       // console.log(this.scrollTop);
 
-      this.scrollTo(this.scrollTop, 0, 1250);   
+      this.scrollTo(this.scrollTop, 0, 1250);
 
     },
 
     scrollTo(element, to, duration) {
       var start = element.scrollTop,
-          change = to - start,
-          currentTime = 0,
-          increment = 20;
+        change = to - start,
+        currentTime = 0,
+        increment = 20;
 
       var _self = this;
 
-      var animateScroll = function(){        
-          currentTime += increment;
-          var val = _self.easeInOutQuad(currentTime, start, change, duration);
-          element.scrollTop = val;
-          if(currentTime < duration) {
-              setTimeout(animateScroll, increment);
-          }
+      var animateScroll = function () {
+        currentTime += increment;
+        var val = _self.easeInOutQuad(currentTime, start, change, duration);
+        element.scrollTop = val;
+        if (currentTime < duration) {
+          setTimeout(animateScroll, increment);
+        }
       };
       animateScroll();
     },
-    
+
 
     easeInOutQuad(t, b, c, d) {
-      t /= d/2;
-      if (t < 1) return c/2*t*t + b;
+      t /= d / 2;
+      if (t < 1) return c / 2 * t * t + b;
       t--;
-      return -c/2 * (t*(t-2) - 1) + b;
+      return -c / 2 * (t * (t - 2) - 1) + b;
     },
 
     get _defaultScrollTarget() {
@@ -264,24 +291,39 @@ triggered property.
      * @method checkScrollThresholds
      */
     checkScrollThresholds: function () {
-      if (!this.scrollTarget || (this.lowerTriggered && this.upperTriggered)) {
-        return;
-      }
-      var upperScrollValue = this.horizontal ? this._scrollLeft : this._scrollTop;
-      var lowerScrollValue = this.horizontal ?
-        this.scrollTarget.scrollWidth - this._scrollTargetWidth - this._scrollLeft :
-        this.scrollTarget.scrollHeight - this._scrollTargetHeight - this._scrollTop;
 
-      // Detect upper threshold
-      if (upperScrollValue <= this.upperThreshold && !this.upperTriggered) {
-        this._setUpperTriggered(true);
-        this.fire('upper-threshold');
+      if (this.type == "twitch") {
+        var lowerScrollValue = this.horizontal ? this.scrollTarget.scrollWidth - this._scrollTargetWidth - this._scrollLeft :
+          this.scrollTarget.scrollHeight - this._scrollTargetHeight - this._scrollTop;
+
+        if (lowerScrollValue <= this.lowerThreshold) {
+          // console.log('fire lower');
+          this._setLowerTriggered(true);
+          this.fire('lower-threshold');
+        }
+
+
+      } else {
+        if (!this.scrollTarget || (this.lowerTriggered && this.upperTriggered)) {
+          return;
+        }
+        var upperScrollValue = this.horizontal ? this._scrollLeft : this._scrollTop;
+        var lowerScrollValue = this.horizontal ?
+          this.scrollTarget.scrollWidth - this._scrollTargetWidth - this._scrollLeft :
+          this.scrollTarget.scrollHeight - this._scrollTargetHeight - this._scrollTop;
+
+        // Detect upper threshold
+        if (upperScrollValue <= this.upperThreshold && !this.upperTriggered) {
+          this._setUpperTriggered(true);
+          this.fire('upper-threshold');
+        }
+        // Detect lower threshold
+        if (lowerScrollValue <= this.lowerThreshold && !this.lowerTriggered) {
+          this._setLowerTriggered(true);
+          this.fire('lower-threshold');
+        }
       }
-      // Detect lower threshold
-      if (lowerScrollValue <= this.lowerThreshold && !this.lowerTriggered) {
-        this._setLowerTriggered(true);
-        this.fire('lower-threshold');
-      }
+
     },
 
     checkScrollThesholds: function () {
@@ -311,8 +353,8 @@ triggered property.
      * @event upper-threshold
      */
 
-     
-      
-      
-       });
+
+
+
+  });
 </script>

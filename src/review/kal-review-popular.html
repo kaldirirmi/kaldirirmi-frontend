@@ -195,7 +195,7 @@
 
         <div itemscope itemtype="http://schema.org/Game" id="populerreviewlist">
             <template is="dom-repeat" items="{{reviewcast}}" as="item">
-                <a itemprop="url" class="populerreview" href="/inceleme/[[item.url]]" onclick="load();">
+                <a itemprop="url" class="populerreview" href="/inceleme/[[item.url]]">
                     <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
                     <div itemprop="interactionCount" class="populerreview-viewcount">
                         <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>

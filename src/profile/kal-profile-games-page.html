@@ -441,7 +441,7 @@
             </form>
         </iron-form>
 
-        <iron-ajax auto="{{likedGo}}" loading="{{loadinglikes}}" id="ironAjaxGetLikedGames" debounce="3000" url="/h/main?fm=get-liked-games-of-user"
+        <iron-ajax auto="{{likedGo}}" loading="{{loadinglikes}}" id="ironAjaxGetLikedGames" debounce-duration="300" url="/h/main?fm=get-liked-games-of-user"
             handle-as="json" on-response="_responseLikedGames"></iron-ajax>
         <!-- dom elements here-->
         <paper-material elevation="0" id="profilelikedgames" role="listbox">

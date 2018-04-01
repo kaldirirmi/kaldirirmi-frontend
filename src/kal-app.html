@@ -15,8 +15,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- Import All Polymer Elements -->
 <link rel="import" href="./kal-polymer-imports.html">
 
+<link rel="import" href="./kal-header-layout.html">
 <!-- Custom Imports -->
 <link rel="import" href="../bower_components/animated-content-placeholder/animated-content-placeholder.html">
+
 <link rel="import" href="./thirdparty/jquery.html">
 <link rel="import" href="./splash-screen.html">
 <link rel="import" href="./kal-global-variable.html">
@@ -67,10 +69,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     text-decoration: none;
                 }
 
-                app-header-layout {
+                kal-header-layout {
                     background: #222;
                     color: #fff;
                 }
+
 
                 app-drawer-layout:not([narrow]) [drawer-toggle] {
                     display: none;
@@ -176,7 +179,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
                 /* dialog login */
-
                 #_loginDialog {
                     background: #222;
                 }
@@ -199,10 +201,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             </style>
         </custom-style>
-
-        <!--<div class="loadingIndicator" hidden$="[[!loading]]">
-            <paper-spinner-lite active$="[[loading]]" class="orange"></paper-spinner-lite>
-        </div>-->
 
         <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="500" icon-size="200"
             spinner-sub="-5"></splash-screen>
@@ -249,7 +247,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-drawer>
 
             <!-- Main content -->
-            <app-header-layout has-scrolling-region>
+            <kal-header-layout has-scrolling-region>
                 <app-header slot="header" condenses fixed effects="waterfall blend-background parallax-background">
                     <template is="dom-if" if="[[isDesktop]]">
                         <app-toolbar></app-toolbar>
@@ -270,17 +268,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </app-toolbar>
                 </app-header>
 
-                <!-- <kal-header is-desktop="[[isDesktop]]"></kal-header> -->
-                <!--   POLYMER DECLARED PROPERTIES *********************
-                     is-desktop maps to isDesktop
-                    isDesktop maps to isdesktop -->
-
                 <iron-pages id="ironpages"
                     selected="[[page]]"
                     attr-for-selected="name"
                     fallback-selection="view404"
-                    role="main"
-                    >
+                    role="main">
                     <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
                     <kal-playground-page name="playground" is-mobile=[[isMobile]] route="{{subroute}}"></kal-playground-page>
                     <kal-game-page name="game" is-mobile=[[isMobile]] route="{{route}}"></kal-game-page>
@@ -293,13 +285,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <kal-profile-page name="profile" is-mobile=[[isMobile]] route="{{route}}"></kal-profile-page>
                     <kal-view404-page name="view404"></kal-view404-page>
                 </iron-pages>
-
-                <!-- <div empty-content></div> -->
-            </app-header-layout>
+            </kal-header-layout>
         </app-drawer-layout>
 
         <paper-toast id="toaster" text=""></paper-toast>
-
         <paper-dialog id="_loginDialog" modal entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
             <paper-fab icon="close" dialog-confirm autofocus close-dialog-button>Tap me to close</paper-fab>
             <h2>Dialog Title</h2>

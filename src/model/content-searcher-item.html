@@ -281,7 +281,7 @@
         </style>
 
 
-        <iron-ajax id="getnewslist" debounce="3000" url="/h/main?fm=get-newsreviews-list&a=[[tablename]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]"
+        <iron-ajax id="getnewslist" debounce-duration="300" url="/h/main?fm=get-newsreviews-list&a=[[tablename]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]"
             handle-as="json" on-response="_response"></iron-ajax>
 
         <app-toolbar>

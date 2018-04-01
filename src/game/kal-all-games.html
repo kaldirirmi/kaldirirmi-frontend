@@ -316,10 +316,6 @@
                     height: 260px;
                 }
 
-                #gamelist .game .game-title {
-                    height: 12%;
-                }
-
             }
 
             @media only screen and (min-width: 1440px) {
@@ -340,10 +336,6 @@
                     height: 300px;
                 }
 
-                #gamelist .game .game-title {
-                    height: 13%;
-                }
-
             }
 
             @media only screen and (min-width: 1640px) {
@@ -359,9 +351,6 @@
                     height: 280px;
                 }
 
-                #gamelist .game .game-title {
-                    height: 14%;
-                }
 
             }
 
@@ -377,9 +366,6 @@
                     height: 300px;
                 }
 
-                #gamelist .game .game-title {
-                    height: 20%;
-                }
 
             }
         </style>
@@ -392,8 +378,14 @@
                 <paper-tab on-tap="handleAdventure">Macera</paper-tab>
             </paper-tabs>
         </div>
-        <iron-ajax id="getgames" timeout="500" url="/h/main?fm=get-games-via-category-and-release&a=[[start]]&b=[[end]]&c=[[mySelection]]"
-            handle-as="json" on-response="_response" loading="{{loadinggames}}"></iron-ajax>
+        <iron-ajax id="getgames" 
+            debounce-duration="300"
+             url="/h/main?fm=get-games-via-category-and-release&a=[[start]]&b=[[end]]&c=[[mySelection]]"
+            handle-as="json" 
+            on-response="_response" 
+            loading="{{loadinggames}}"
+            ></iron-ajax>
+
         <div id="region"> 
                 <div class="loadingIndicator" hidden$="[[!loadinggames]]">
                         <paper-spinner-lite active$="[[loadinggames]]"></paper-spinner-lite> Yükleniyor
@@ -410,7 +402,7 @@
                             </div>
                             <div id="gamelist" itemscope itemtype="http://schema.org/VideoGame">
                                 <template is="dom-repeat" items="{{games18}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();" itemprop="url">
+                                    <a class="game" href="/game/[[item.url]]" itemprop="url">
                                         <iron-image itemprop="image" background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title" itemprop="name">
@@ -434,7 +426,7 @@
                             </div>
                             <div id="gamelist" itemscope itemtype="http://schema.org/VideoGame">
                                 <template is="dom-repeat" items="{{games17}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();" itemprop="url">
+                                    <a class="game" href="/game/[[item.url]]" itemprop="url">
                                         <iron-image itemprop="image" background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title" itemprop="name">
@@ -458,7 +450,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games16}}" as="item" itemscope itemtype="http://schema.org/VideoGame">
-                                    <a itemprop="url" class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a itemprop="url" class="game" href="/game/[[item.url]]">
                                         <iron-image itemprop="image" background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title" itemprop="name">
@@ -483,7 +475,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games15}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -504,7 +496,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games14}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -525,7 +517,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games13}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -545,7 +537,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games12}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
 
@@ -566,7 +558,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games11}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -586,7 +578,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games10}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -606,7 +598,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games9}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -626,7 +618,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games8}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -646,7 +638,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games7}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -666,7 +658,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games6}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -686,7 +678,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games5}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -706,7 +698,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games4}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -726,7 +718,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games3}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -746,7 +738,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games2}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -766,7 +758,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games1}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
 
@@ -787,7 +779,7 @@
                             </div>
                             <div id="gamelist">
                                 <template is="dom-repeat" items="{{games0}}" as="item">
-                                    <a class="game" href="/game/[[item.url]]" onclick="load();">
+                                    <a class="game" href="/game/[[item.url]]">
                                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
                                             preload fade></iron-image>
                                         <div class="game-title">
@@ -1059,9 +1051,8 @@
 
             _response(a) {
 
+                // console.log('_response' , a);
                 // this.loadinggames = !this.loadinggames;
-
-                // console.log('response');
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (game) {
 

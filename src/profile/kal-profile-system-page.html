@@ -161,8 +161,8 @@
                         <div>[[system.free_hdd]] GB</div>
                     </paper-item>
                     <div class="button-panel">
-                        <paper-button onclick="load(); location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
-                        <paper-button onclick="load(); location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
+                        <paper-button onclick="location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
+                        <paper-button onclick="location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
                     </div>
                 </template>
                 <template is="dom-if" if="[[!system.added]]">
@@ -172,8 +172,8 @@
                             <div>Henüz sistemini tanımlamamışsın</div>
                         </div>
                         <div class="empty-panel">
-                            <paper-button onclick="load(); location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
-                            <paper-button onclick="load(); location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
+                            <paper-button onclick="location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>
+                            <paper-button onclick="location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
                         </div>
                     </div>
                 </template>

@@ -1,0 +1,444 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/streaming-list/twitchtv-card.html">
+<link rel="import" href="../../bower_components/streaming-list/youtube-card.html">
+<link rel="import" href="../kal-scroll-threshold.html">
+
+<!--
+A webcomponent written with Polymer to list Twitch and (in future) Youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.
+
+Example:
+    <streaming-list lang="pt" game="Dota 2"></streaming-list>
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="kal-streaming-list">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        @apply --layout-vertical;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      #streams {
+        @apply --layout-horizontal;
+        justify-content: center;
+        position: relative;
+        margin-bottom: 2em;
+        @apply --layout-wrap;
+      }
+
+      twitchtv-card,
+      youtube-card {
+        margin: 10px;
+      }
+
+      paper-spinner-lite {
+        --paper-spinner-color: var(--app-theme-color);
+        margin: 16px auto;
+      }
+
+      kal-scroll-threshold {
+        height: calc(100vh - 256px);
+        /* box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4); */
+        padding: 15px;
+      }
+    </style>
+    <iron-ajax id="ajax" url="[[_getApiUrl(service, twitchApiUrl, youtubeApiUrl)]]" headers='[[_concatHeaders(clientId)]]' handle-as="json"
+      on-response="_onResponse" on-request="_onRequest" on-error="_onError" debounce-duration="30">
+    </iron-ajax>
+    <div id="region">
+      <kal-scroll-threshold on-lower-threshold="_loadMore" id="threshold" lower-threshold="500" type="twitch">
+        <div id="streams" scroll-target="threshold">
+          <template is="dom-repeat" items="[[response.streams]]" scroll-target="threshold">
+            <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
+          </template>
+          <template is="dom-repeat" items="[[response.items]]">
+            <youtube-card game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
+          </template>
+        </div>
+        <paper-spinner-lite id="spinnerBottom" alt="Loading more streams" active={{spinnerStatus}}></paper-spinner-lite>
+      </kal-scroll-threshold>
+    </div>
+  </template>
+
+  <script>
+    class KalStreamingList extends Polymer.Element {
+
+      static get is() {
+        return 'kal-streaming-list';
+      }
+
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          /**
+           * `twitchApiUrl` indicates the URL of twitch API to list streams
+           */
+          twitchApiUrl: {
+            type: String,
+            value: "https://api.twitch.tv/kraken/streams"
+          },
+
+          /**
+           * `youtubeApiUrl` indicates the URL of youtube API to list streams
+           */
+          youtubeApiUrl: {
+            type: String,
+            value: "https://www.googleapis.com/youtube/v3/search"
+          },
+
+          /**
+           * `service` indicates the service to fetch data, can be the string youtube or twitch
+           */
+          service: {
+            type: String,
+            value: "twitch"
+          },
+
+          /**
+           * `clientId` Client-ID, required for twitch service (register your app at https://www.twitch.tv/settings/connections)
+           */
+          clientId: {
+            type: String,
+            value: null
+          },
+
+          /**
+           * `key` API Key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
+           */
+          key: {
+            type: String,
+            value: null
+          },
+
+          /**
+           * `limit` Used to define the number of itens on each page
+           */
+          limit: {
+            type: Number,
+            notify: true,
+            value: 10
+          },
+
+          /**
+           * `pages` Number of pages to maintain cached, can cause performance degradation
+           */
+          pages: {
+            type: Number,
+            value: 2
+          },
+
+          /**
+           * `width` If you define width (in pixels) the container layout will be changed to wrap and the card size will be fixed with the given width
+           */
+          width: {
+            type: Number,
+            notify: true,
+            value: null
+          },
+
+          /**
+           * `lang` Used to filter the language of the videos
+           */
+          lang: {
+            type: String,
+            notify: true,
+            value: ""
+          },
+
+          /**
+           * `game` Used to filter videos from a specific game
+           */
+          game: {
+            type: String,
+            notify: true,
+            value: null
+          },
+
+          /**
+           * `response` Cached data retrieved from the server
+           */
+          response: {
+            type: Object,
+            value: function () {
+              return {
+                streams: [],
+                items: []
+              };
+            },
+            notify: true
+          },
+
+          /**
+           * `currentPage` Current page
+           */
+          currentPage: {
+            type: Number,
+            readOnly: true,
+            notify: true,
+            value: 0
+          },
+
+          spinnerStatus: {
+            type: Boolean,
+            value: true,
+            notify: true
+          },
+
+          firstInit: {
+            type: Boolean,
+            value: true
+          }
+        };
+      }
+
+      /**
+       * Array of strings describing multi-property observer methods and their
+       * dependant properties
+       */
+      static get observers() {
+        return [
+          'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId, key)'
+        ];
+      }
+      /**
+       * Use for one-time configuration of your component after local DOM is
+       * initialized.
+       */
+      ready() {
+        super.ready();
+        // console.log('connectedCallback streaming-list');
+
+        // When possible, use afterNextRender to defer non-critical
+        // work until after first paint.
+        Polymer.RenderStatus.afterNextRender(this, function () {
+          this.className = 'layout horizontal wrap';
+        });
+
+      }
+
+      _getApiUrl() {
+        if (this.service === 'twitch') return this.twitchApiUrl;
+        if (this.service === 'youtube') return this.youtubeApiUrl;
+        throw Error('missing or wrong service');
+      }
+
+      _concatParams() {
+        if (this.service === 'twitch') {
+          return {
+            limit: this.limit,
+            language: this.lang,
+            game: this.game,
+            offset: (this.currentPage * this.limit) || 0
+          };
+        }
+
+        if (this.service === 'youtube') {
+          return {
+            part: 'snippet',
+            eventType: 'live',
+            maxResults: this.limit,
+            order: 'viewCount',
+            q: this.game,
+            relevanceLanguage: this.lang,
+            type: 'video',
+            videoCategoryId: 20, // Gaming category
+            key: this.key
+          };
+        }
+
+        throw Error('missing or wrong service');
+      }
+
+      _concatHeaders() {
+        if (this.service === 'twitch') {
+          return {
+            'Client-ID': this.clientId
+          };
+        }
+
+        return {};
+      }
+
+      _onRequest(event) {
+        this.$.spinnerBottom.active = true;
+        this.dispatchEvent(new CustomEvent('streaming-list-request', event.detail));
+        // this.fire('streaming-list-request', event.detail);
+      }
+
+      _onResponse(event) {
+        if (!this.spinnerStatus) this.spinnerStatus = true;
+        let _total = event.detail.response._total;
+
+        if (_total == 0) {
+          if (this.spinnerStatus) this.spinnerStatus = false;
+          var message = "Aradığınız kriterlerde şu anda canlı yayın bulunamadı!";
+          var event = new CustomEvent('toaster', {
+            bubbles: true,
+            composed: true,
+            detail: {
+              text: message
+            }
+          });
+          this.dispatchEvent(event);
+
+          this.dispatchEvent(new CustomEvent('streaming-list-response', {
+            detail: {
+              _total: _total
+            }
+          }));
+
+        } else {
+          // console.log(event.detail.response);
+          var oldStreams;
+          var response = event.detail.response;
+
+          // set old streams concated with new streams
+          if (this.service === 'twitch') {
+            oldStreams = this.response.streams;
+            this.set('response.streams', oldStreams.concat(response.streams));
+          }
+
+          if (this.service === 'youtube') {
+            oldStreams = this.response.items;
+            this.set('response.items', oldStreams.concat(response.items));
+          }
+          this.dispatchEvent(new CustomEvent('streaming-list-response', event.detail));
+          if (this.spinnerStatus) this.spinnerStatus = false;
+        }
+
+
+        // this.fire('streaming-list-response', event.detail);
+      }
+
+      _onError(event) {
+        this.dispatchEvent(new CustomEvent('streaming-list-error', event.detail));
+        // this.fire('streaming-list-error', event.detail);
+      }
+
+      _loadMore(event) {
+        // console.log('_loadMore', event);
+        // this.$.scroll.stopObserve();
+        // this._scrollListening = false;
+
+        // if(this.firstInit){
+        //   this.firstInit = false;
+        //   console.log('this.firstInit', this.firstInit);
+        //           }else{
+        //   this._setCurrentPage(this.currentPage + 1);
+        //   this.generateRequest();
+        // }
+
+        this._setCurrentPage(this.currentPage + 1);
+        this.generateRequest();
+      }
+
+      /**
+       * Fires loaded event when all cards has been loaded after the request
+       * @param  Event event loaded event of each card
+       * @return null
+       */
+      _cardLoaded(event) {
+        this.doneCards = this.doneCards || [];
+        this.doneCards.push(event.detail);
+        //console.log(this.doneCards.length, 'of', this.limit);
+
+        if (this.doneCards.length >= this.limit) {
+          //console.log('all cards loaded');
+          //console.log(this.response.streams);
+
+          // remove old cards
+          this._removeOldCards();
+
+          // reset spinner
+          this.$.spinnerBottom.active = false;
+          this.dispatchEvent(new CustomEvent('streaming-list-rendered', event.detail));
+          // this.fire('streaming-list-rendered', this.doneCards);
+          this.doneCards = [];
+        }
+      }
+
+      _observeScroll(event) {
+        // Listen for scroll event-infinite-scroll
+        if (!this._scrollListening) {
+          this.$.scroll.startObserve();
+          this._scrollListening = true;
+        }
+        this.dispatchEvent(new CustomEvent('streaming-list-ready', event.detail));
+
+        // this.fire('streaming-list-ready');
+      }
+
+      _removeOldCards(event) {
+        /* Pending implementation */
+        /*
+        if(!this.pages) return;
+        if(this.response.streams.length > this.limit * this.pages) {
+          //this.splice('response.streams', 0, this.limit);
+
+          // Scroll to bottom - offset -1
+          //this._scrollUp();
+        }
+        //console.log(this.response.streams.length);
+        */
+      }
+
+      /**
+       * Scroll to middle of page
+       */
+      _scrollBottom() {
+        if (this.body) {
+          var top = document.body.scrollHeight,
+            left = window.pageX || document.documentElement.scrollLeft;
+          // console.log('scrolling to', left, top);
+          window.scrollTo(left, top);
+        }
+      }
+
+      /**
+       * Reset state of the application (pagination and cards)
+       */
+      _resetState() {
+        //console.log('reseting state');
+        // this.$.scroll.stopObserve();
+        // this._scrollListening = false;
+
+        this.set('response.streams', []);
+        this.set('response.items', []);
+        this._setCurrentPage(0);
+      }
+
+      /**
+       * Performs an AJAX iron-ajax-request to the streaming server
+       * @returns {!IronRequestElement} Returns !IronRequestElement
+       */
+      generateRequest() {
+        // Clear application state before, if generateRequest has arguments (observer)
+        if (arguments.length > 0) this._resetState();
+
+        this.$.ajax.params = this._concatParams();
+        //console.trace(this.$.ajax.params);
+        return this.$.ajax.generateRequest();
+      }
+    }
+
+    window.customElements.define(KalStreamingList.is, KalStreamingList);
+  </script>
+</dom-module>

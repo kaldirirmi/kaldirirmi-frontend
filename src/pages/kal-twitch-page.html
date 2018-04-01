@@ -2,22 +2,34 @@
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
 <link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete-suggestions.html">
-<link rel="import" href="../../bower_components/streaming-list/streaming-list.html">
+<link rel="import" href="../model/kal-streaming-list.html">
+<link rel="import" href="../game/kal-all-games.html">
 
 <dom-module id="kal-twitch-page">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
-        padding: 10px;
+        /* padding: 10px; */
         font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
         line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
-      }
-
-      :host {
-        display: block;
+        overflow: hidden !important;
+        height: calc(100vh - 192px);
         @apply --paper-font-common-base;
       }
+
+      :host([is-mobile]){
+        height: auto !important;
+      }
+
+      /* kal-streaming-list {
+        overflow-y: scroll;
+        height: calc(100vh - 260px);
+      }
+
+      :host([is-mobile]) kal-streaming-list {
+        height: calc(100vh - 130px);
+      } */
 
       app-toolbar {
         background-color: #6441A4;
@@ -31,8 +43,7 @@
       paper-autocomplete#allgames {
         --paper-input-container-label: {
           color: #fff;
-        };
-
+        }
         --paper-input-container-color: #fff;
         --paper-input-container-focus-color: #fff;
         --paper-input-container-invalid-color: green;
@@ -41,9 +52,7 @@
         --paper-autocomplete-suggestions-wrapper: {
           background-color: #6441A4;
           color: #fff;
-        };
-        
-
+        }
       }
 
       paper-autocomplete#allgames #suggestionsWrapper {
@@ -62,19 +71,22 @@
           text-align: center;
           font-weight: bold;
           font-size: calc(0.45em + 1vmin);
-        };
+        }
+
         --paper-input-container-input: {
           color: white;
           text-align: center;
           text-transform: uppercase;
           font-size: calc(0.45em + 1vmin);
 
-        };
+        }
+
 
         --paper-input-container-focus-color: white;
         --paper-input-container-underline: {
           display: none;
-        };
+        }
+
       }
 
       app-toolbar .toolbarautocomplete {
@@ -98,35 +110,29 @@
         <iron-icon icon="kaldirirmi:twitch"></iron-icon>
       </div>
       <div class="flex toolbarautocomplete">
-          <paper-autocomplete
-                            label="Oyun Adı"
-                            placeholder="Oyun Adı Girerek Filtreleme Yapabilirsin"
-                            id="allgames"
-                            min-length="2"
-                            source="[[allgames]]"
-                            on-autocomplete-selected="_selectedGame"
-                            on-autocomplete-reset-blur="_resetSelection">
+        <paper-autocomplete label="Oyun Adı" placeholder="Oyun Adı Girerek Filtreleme Yapabilirsin" id="allgames" min-length="2"
+          source="[[allgames]]" on-autocomplete-selected="_selectedGame" on-autocomplete-reset-blur="_resetSelection">
         </paper-autocomplete>
       </div>
       <paper-dropdown-menu class="pdm" label="Dil Seçeneği">
-          <paper-listbox slot="dropdown-content"
-                         class="dropdown-content"
-                         attr-for-selected="value"
-                         selected="{{language}}">
-                         <paper-item value="tr">Türkçe</paper-item>
-                         <paper-item value="en">İngilizce</paper-item>
-                         <paper-item value="fr">Fransızca</paper-item>
-          </paper-listbox>
+        <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{language}}">
+          <paper-item value="tr">Türkçe</paper-item>
+          <paper-item value="en">İngilizce</paper-item>
+          <paper-item value="fr">Fransızca</paper-item>
+        </paper-listbox>
       </paper-dropdown-menu>
       <paper-button on-tap="_resetSettings">
         Sıfırla
       </paper-button>
     </app-toolbar>
-    <streaming-list lang="{{language}}" width="{{size}}" service="twitch" client-id="{{clientId}}" key="{{key}}" game="{{game}}">
-    </streaming-list>
 
+    <!-- <kal-all-games is-mobile=[[isMobile]]></kal-all-games> -->
+
+
+        <kal-streaming-list limit="20" lang="{{language}}" width="{{size}}" service="twitch" client-id="{{clientId}}" key="{{key}}" game="{{game}}">
+          </kal-streaming-list>
+    
   </template>
-
   <script>
     class KalTwitchPage extends Polymer.Element {
       static get is() {
@@ -184,7 +190,7 @@
         // console.log('_selectedGame');
         this.game = event.detail.option.text;
       }
-      
+
 
       _resetSelection(event) {
         this.game = '';

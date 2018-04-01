@@ -268,7 +268,7 @@
 
         <iron-ajax id="getothergamesinseries" url="/h/main?fm=get-other-games-in-series&a=[[gamename]]" method="get" handle-as="json"
             on-response="_response"></iron-ajax>
-            
+
         <paper-material elevation="0" id="pap-mat-other-games" role="listbox">
             <template is="dom-if" if="[[visibility]]">
                 <paper-item heading style$="background-color:{{bca}}; color:{{mc}}">
@@ -281,8 +281,8 @@
                 <paper-item info style="display:flex" id="paperItemOtherGames" style$="background-color:{{bc}}; color:{{mc}}">
                     <div id="othergamesinseries">
                         <template is="dom-repeat" items="{{games}}" as="item">
-                            <a class="game" href="/oyun/[[item.url]]" onclick="load();" style$="background-color: {{mc}}">
-                                <iron-image background src="//cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]" preload
+                            <a class="game" href="/game/[[item.url]]" style$="background-color: {{mc}}">
+                                <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]" preload
                                     fade></iron-image>
                                 <div class="game-title" style$="background-color: {{mc}}; color: {{bc}};">
                                     <span>[[item.name]]</span>
@@ -318,41 +318,44 @@
             static get properties() {
                 return {
                     gamename: {
-                    type: "String",
-                    value: "Action",
-                    observer: '_gamenameChanged'
-                },
-                visibility: {
-                    type: Boolean,
-                    value: false,
-                    notify: true
-                },
-                games: {
-                    type: Array,
-                    value: []
-                },
-                bc: {
-                    type: String,
-                    value: 'rgb(255,255,255)',
-                    notify: true
-                },
-                bca: {
-                    type: String,
-                    value: 'rgba(255,255,255, 0.6)',
-                    notify: true
-                },
-                mc: {
-                    type: String,
-                    value: 'rgb(0,0,0)',
-                    notify: true
-                },
+                        type: "String",
+                        value: "Action",
+                        observer: '_gamenameChanged'
+                    },
+                    visibility: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    games: {
+                        type: Array,
+                        value: []
+                    },
+                    bc: {
+                        type: String,
+                        value: 'rgb(255,255,255)',
+                        notify: true
+                    },
+                    bca: {
+                        type: String,
+                        value: 'rgba(255,255,255, 0.6)',
+                        notify: true
+                    },
+                    mc: {
+                        type: String,
+                        value: 'rgb(0,0,0)',
+                        notify: true
+                    },
                 };
             }
-            
-            _gamenameChanged(newVal, oldVal){
-                if(newVal !== undefined){
 
-                    if(this.$.getothergamesinseries.lastRequest){
+            _gamenameChanged(newVal, oldVal) {
+
+                console.log('_gamenameChanged', newVal);
+
+                if (newVal !== undefined) {
+
+                    if (this.$.getothergamesinseries.lastRequest) {
                         this.$.getothergamesinseries.lastRequest.abort();
                     }
                     this.$.getothergamesinseries.generateRequest();
@@ -379,6 +382,33 @@
                 });
             }
 
+
+            _response(a) {
+                this.set('games', []);
+                
+                let response = a.detail.response;
+                if (response != null) {
+                    if (response.length > 0) {
+                        this.set('visibility', true);
+                        response.forEach((game) => {
+                            this.push('games', game);
+                        });
+                    } else {
+                        this.set('visibility', false);
+                    }
+                } else {
+                    this.set('visibility', false);
+                }
+            }
+
+            _showOrHidePanel() {
+                var item = this.$.paperItemOtherGames;
+                if (item && item.style.display == 'none')
+                    item.style.display = 'flex';
+                else
+                    item.style.display = 'none';
+
+            } //_showOrHidePanel
         }
 
         window.customElements.define(KalOtherGamesInSeries.is, KalOtherGamesInSeries);

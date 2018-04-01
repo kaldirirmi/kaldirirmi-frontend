@@ -220,7 +220,7 @@
             </svg>
         </div>
 
-        <iron-ajax id="iaGetNavContents" debounce="3000" url="/h/main?fm=get-nav-contents&a=[[dataid]]&b=[[datatable]]" handle-as="json"
+        <iron-ajax id="iaGetNavContents" debounce-duration="300" url="/h/main?fm=get-nav-contents&a=[[dataid]]&b=[[datatable]]" handle-as="json"
             on-response="_onResponse"></iron-ajax>
         <nav class="nav-reveal">
             <a class="prev" href$="{{_remakeUrl(response.left.url, datatable)}}">

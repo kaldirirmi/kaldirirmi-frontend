@@ -334,7 +334,7 @@
                 <span itemprop="name" hidden>[[item.name]]</span>
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
-                        <a itemprop="url" class="relatedgame" href="/oyun/[[item.url]]" onclick="load();">
+                        <a itemprop="url" class="relatedgame" href="/oyun/[[item.url]]">
                             <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.name]]" preload fade></iron-image>
                         </a>
                     </div>
@@ -342,7 +342,7 @@
                         <h3 class="card-content-category" itemprop="publisher">[[item.publisher]]</h3>
                         <h2 class="card-content-title" itemprop="genre">[[item.genres]]</h2>
                         <paper-button id="pbGoGame" raised>
-                            <a itemprop="isBasedOnUrl" href="/oyun/[[item.url]]" onclick="load();">[[item.name]] oyununa git</a>
+                            <a itemprop="isBasedOnUrl" href="/oyun/[[item.url]]">[[item.name]] oyununa git</a>
                         </paper-button>
                     </div>
                     <div class="card-footer">

@@ -205,7 +205,7 @@
             
             <div id="populernewslist" itemscope itemtype="http://schema.org/Game">
                 <template is="dom-repeat" items="{{newscast}}" as="item">
-                    <a itemprop="url" class="populernews" href="/haber/[[item.url]]" onclick="load();">
+                    <a itemprop="url" class="populernews" href="/news/[[item.url]]" >
                         <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
                         <div itemprop="interactionCount" class="populernews-viewcount">
                             <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>
