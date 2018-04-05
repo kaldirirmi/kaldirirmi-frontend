@@ -1,0 +1,206 @@
+<link rel="import" href="../kal-scroll-threshold.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/ripple-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+
+<dom-module id="gallery-animated-grid">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+        <iron-ajax id="getgallerieshavegallery" url="/h/main?fm=get-games-have-gallery&a=[[page]]&b=[[itemperpage]]&c=[[query]]" handle-as="json"
+            on-response="_response" loading="{{loadinggalleries}}"></iron-ajax>
+
+        <kal-scroll-threshold on-lower-threshold="_loadmoregallery" id="threshold" lower-threshold="500">
+            <section id="cd-timeline" class="cd-container" scroll-target="threshold">
+                <template is="dom-repeat" items="{{galleries}}">
+                    <div class="tile" id="part{{index}}" itemprop="articleBody">
+                        <iron-image background src="htttps://cdn.kaldirirmi.com/images/games/[[item.background]]" sizing="cover" alt="[[item.name]]"
+                            preload fade></iron-image>
+                        <img style="display:none" src="https://cdn.kaldirirmi.com/images/games/[[item.background]]" alt="[[item.name]]" itemprop="image"
+                        />
+                        <div class="game-title">
+                            <span>[[item.name]] Oyun Galerisi</span>
+                        </div>
+                        <a style="display:none" href="[[item.url]]" itemprop="url"></a>
+                        <h4 itemprop="publisher" hidden>Kaldırırmı</h4>
+                        <h5 itemprop="author" hidden>Hakke</h5>
+                    </div>
+                </template>
+            </section>
+        </kal-scroll-threshold>
+
+        <!-- <iron-scroll-threshold lower-threshold="25" on-lower-threshold="_loadmoregame" id="gallerythreshold">
+            <template is="dom-repeat" items="{{games}}">
+                <div class="tile" id="part{{index}}" itemprop="articleBody">
+                    <iron-image background src="//cdn.kaldirirmi.com/images/games/[[item.background]]" sizing="cover" alt="[[item.name]]" preload
+                        fade></iron-image>
+                    <img style="display:none" src="//cdn.kaldirirmi.com/images/games/[[item.background]]" alt="[[item.name]]" itemprop="image"
+                    />
+                    <div class="game-title">
+                        <span>[[item.name]] Oyun Galerisi</span>
+                    </div>
+                    <a style="display:none" href="[[item.url]]" itemprop="url"></a>
+                    <h4 itemprop="publisher" hidden>Kaldırırmı</h4>
+                    <h5 itemprop="author" hidden>Hakke</h5>
+                </div>
+            </template>
+        </iron-scroll-threshold> -->
+
+    </template>
+
+    <script>
+        /**
+         * `gallery-animated-grid` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class GalleryAnimatedGrid extends Polymer.mixinBehaviors([Polymer.NeonSharedElementAnimatableBehavior], Polymer
+            .Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'gallery-animated-grid';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    gamename: {
+                        type: String,
+                        notify: true
+                    },
+                    page: {
+                        type: Number,
+                        value: 0
+                    },
+                    itemperpage: {
+                        type: Number,
+                        value: 10
+                    },
+                    query: {
+                        type: String,
+                        value: ''
+                    },
+                    loadinggalleries: {
+                        type: Boolean,
+                        value: false
+                    },
+                    galleries: {
+                        type: Array,
+                        value: []
+                    },
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'exit': [{
+                                    name: 'ripple-animation',
+                                    id: 'ripple',
+                                    fromPage: this
+                                }, {
+                                    name: 'hero-animation',
+                                    id: 'hero',
+                                    fromPage: this
+                                }]
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                this.addEventListener('click', this._onClick());
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _loadmoregallery() {
+                //console.log('_loadmoregallery');
+
+                if (this.$.getgallerieshavegallery.lastRequest) {
+                    this.$.getgallerieshavegallery.lastRequest.abort();
+                }
+
+                this.page++;
+                this.$.getgallerieshavegallery.generateRequest();
+            }
+            _response(a) {
+                //console.log('_response');
+                if (a.detail.response.length > 0) {
+                    a.detail.response.forEach(function (game) {
+                        this.push('galleries', game);
+                    }, this);
+                    this.$.threshold.clearTriggers();
+                }
+            }
+            _computeTileClass(color) {
+                return 'tile ' + color + '-300';
+            }
+
+            _onClick(event) {
+                //console.log('_onClick');
+                //console.log(event);
+                var target = event.target;
+                while (target !== this && !target._templateInstance) {
+                    target = target.parentNode;
+                }
+
+                //console.log(target._templateInstance.item.name);
+                this.gamename = target._templateInstance.item.name;
+                // configure the page animation
+                this.sharedElements = {
+                    'hero': target,
+                    'ripple': target
+                };
+                this.animationConfig['exit'][0].gesture = {
+                    x: event.x || event.pageX,
+                    y: event.y || event.pageY
+                };
+                
+                this.dispatchEvent(new CustomEvent('tile-click', {
+                    detail: {
+                        tile: target,
+                        data: target._templateInstance.item
+                    }
+                }));
+
+                // this.fire('tile-click', {
+                //     tile: target,
+                //     data: target._templateInstance.item
+                // });
+            }
+
+
+        }
+
+        window.customElements.define(GalleryAnimatedGrid.is, GalleryAnimatedGrid);
+    </script>
+</dom-module>

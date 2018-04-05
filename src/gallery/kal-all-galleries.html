@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="./gallery-animated-grid.html">
+<link rel="import" href="./gallery-fullsize-page-with-card.html">
+
+<dom-module id="kal-all-galleries">
+    <template>
+        <style>
+            :host {
+                width: 100%;
+                color: white;
+                --kal-tabs-height: 192px;
+                --kal-gallerypage-height: calc(100vh - 300px);
+                height: var(--kal-gallerypage-height);
+            }
+
+            :host([is-mobile]) kal-scroll-threshold {
+                height: calc(100vh - 150px);
+            }
+
+            kal-scroll-threshold {
+                height: calc(100vh - 280px);
+                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+            }
+
+            neon-animated-pages {
+                height: 100%;
+            }
+        </style>
+
+        <neon-animated-pages id="pages" selected="0">
+            <gallery-animated-grid gamename="{{gamename}}" on-tile-click="_onTileClick"></gallery-animated-grid>
+            <gallery-fullsize-page-with-card gamename="{{gamename}}" id="fullsize-card">
+            </gallery-fullsize-page-with-card>
+        </neon-animated-pages>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-all-galleries` Description
+         *
+         * @summary getting all galleries for /gallery page.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalAllGalleries extends Polymer.Element {
+            static get is() {
+                return 'kal-all-galleries';
+            }
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+
+                    loadinggalleries: {
+                        type: Boolean,
+                        value: true
+                    },
+                    galleries: {
+                        type: Array,
+                        value: []
+                    },
+                };
+            }
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+            }
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {});
+            }
+
+        }
+
+        window.customElements.define(KalAllGalleries.is, KalAllGalleries);
+    </script>
+</dom-module>

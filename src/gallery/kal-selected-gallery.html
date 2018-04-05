@@ -1,0 +1,1950 @@
+<!--<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components//iron-ajax/iron-ajax.html">
+-->
+
+<link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../../bower_components/watsonlogic-parallax/watsonlogic-parallax.html">
+
+<link rel="import" href="./game-steam-price.html">
+<link rel="import" href="./user-buy-game.html">
+<link rel="import" href="./user-like-game.html">
+<link rel="import" href="./kal-similar-games.html">
+<link rel="import" href="./game-kaldirir-mi.html">
+<link rel="import" href="./kal-game-stepper.html">
+<link rel="import" href="./game-streaming-list.html">
+<link rel="import" href="./kal-game-dlc.html">
+<link rel="import" href="./kal-game-guides.html">
+<link rel="import" href="./kal-other-games-in-series.html">
+<link rel="import" href="../kal-copyright.html">
+
+<dom-module id="kal-selected-game">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                --game-main-color: #fff;
+                --game-back-color: rgba(255, 120, 0, 1);
+                --game-back-color-opacity: rgba(255, 120, 0, .8);
+            }
+
+            :host([is-mobile]) #game-page #kalparallax {
+                height: 210px;
+            }
+
+            :host([is-mobile]) #game-page {
+                height: auto !important;
+            }
+
+            :host([is-mobile]) #usersysteminfo paper-item[heading] {
+                @apply --layout-vertical;
+            }
+
+            :host([is-mobile]) #usersysteminfo paper-item[heading] div.buttons {
+                @apply --layout-vertical;
+                align-items: center;
+            }
+
+            :host([is-mobile]) #panel-contents #metadata h1 {
+                font-size: calc(1.5em + 1vmin) !important;
+                line-height: calc(1.5em + 1vmin);
+            }
+
+            :host([is-mobile]) #panel-contents #metadata h4 {
+                font-size: calc(1.2em + 1vmin) !important;
+                line-height: 20px;
+            }
+
+            :host([is-mobile]) #panel-contents #metadata h6 {
+                font-size: calc(0.9em + 1vmin) !important;
+                line-height: 15px;
+            }
+
+            /* Dynamic Styles */
+
+            paper-item[empty-info],
+            paper-item[info],
+            #minimum paper-item[content],
+            #suggested paper-item[content],
+            .buttons paper-button {
+                background: var(--game-back-color);
+            }
+
+            paper-item[empty-info],
+            paper-item[info],
+            #minimum paper-item div,
+            #suggested paper-item,
+            .buttons paper-button {
+                color: var(--game-main-color);
+            }
+
+            paper-item[heading],
+            #usersysteminfo paper-item[heading] {
+                background: var(--game-back-color-opacity);
+                color: var(--game-main-color);
+            }
+
+            .game .game-title {
+                background-color: var(--game-main-color);
+                color: var(--game-back-color);
+            }
+
+            login-button {
+                --login-button-background-color: var(--game-back-color);
+                --login-button-color: var(--game-main-color);
+                font-size: 18px;
+            }
+
+            paper-item[content] {
+                min-height: 11vh;
+            }
+
+            paper-item {
+                @apply --shadow-elevation-6dp;
+                @apply --shadow-transition;
+            }
+
+            paper-item:hover {
+                @apply --shadow-elevation-2dp;
+            }
+
+            #game-page::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            #game-page::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            #game-page::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
+            #game-page #kalparallax {
+                height: 45vh;
+            }
+
+
+            #game-page #kalparallax iron-image {
+                width: 100%;
+                height: 100%;
+            }
+
+            #game-page {
+                /* height: 100%; */
+                @apply --layout-vertical;
+                overflow-y: scroll !important;
+                height: calc(100vh - 192px);
+                /* @apply --layout-center-justified; */
+            }
+
+            .loader-pac-content {
+                position: relative;
+                min-height: 300px;
+            }
+
+            .loader-pac-content span {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                /* margin-top: 150px; */
+                /* margin-left: 20px; */
+                position: absolute;
+                top: 20%;
+                width: 100%;
+                text-align: center;
+            }
+
+            .game-is-not-exist {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                position: absolute;
+                width: 100%;
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            app-toolbar {
+                background-color: var(--app-theme-darker-color);
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: #222;
+                height: 45px;
+                padding: 0 30px;
+                @apply --shadow-elevation-12dp;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+            app-toolbar .navigation {
+                @apply --layout-flex;
+            }
+
+            app-toolbar .navigation a {
+                color: #fff;
+                text-decoration: none;
+            }
+
+            app-toolbar .navigation paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            #loader {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                z-index: 1;
+            }
+
+
+            parallax-layers {
+                position: relative;
+                width: 100%;
+                min-height: 50%;
+                z-index: -1;
+            }
+
+            parallax-layers iron-image {
+                width: 100%;
+                height: 100%;
+                background-color: #222;
+            }
+
+            parallax-element::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            parallax-element::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            parallax-element::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
+            #gamecontent {
+                width: 94%;
+                margin-left: 15px;
+                position: relative;
+                box-sizing: border-box;
+                min-height: 500px;
+                background: #222;
+            }
+
+            #gamecontent #panel {
+                position: relative;
+                background: var(--app-theme-color);
+                color: white;
+            }
+
+            #gamecontent #panel-contents {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            #gamecontent #options {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-pack: end;
+                -webkit-justify-content: flex-end;
+                justify-content: flex-end;
+                background: rgba(0, 0, 0, 0.5);
+                position: absolute;
+                left: 0;
+                right: 0;
+                padding: 0 10px;
+                height: auto;
+                align-items: center;
+            }
+
+            #gamecontent #poster {
+                /*@apply(--layout-flex-none);*/
+                -ms-flex: none;
+                -webkit-flex: none;
+                flex: none;
+                align-self: center;
+                -ms-align-self: center;
+                -webkit-align-self: center;
+                /*border: 16px solid var(--app-theme-color);*/
+                width: 160px;
+                height: 224px;
+                transition: all ease-in .2s;
+                position: relative;
+            }
+
+            #gamecontent #poster .side-corner-tag iron-image {
+                width: 100%;
+                height: auto;
+                min-height: 100%;
+                background-color: var(--app-theme-color);
+                z-index: 5;
+            }
+
+            #gamecontent #metadata {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                flex-grow: 2 !important;
+                margin-left: 0.5em;
+            }
+
+            #gamecontent #metadata h1 {
+                overflow: hidden;
+                margin: 0 0 4px;
+                font-weight: normal;
+                pointer-events: none;
+                /*@apply(--paper-font-common-base);
+                       @apply(--paper-font-common-nowrap);
+                       width: 300px;*/
+            }
+
+            #gamecontent #metadata h4 {
+                margin: 0;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            #gamecontent #metadata h6 {
+                margin: 5px 0 0 0;
+                font-weight: normal;
+                pointer-events: none;
+            }
+
+            #similargames {
+                /*@apply(--layout-horizontal);
+            @apply(--layout-justify-center);*/
+                flex-direction: row;
+                align-items: center;
+                display: none;
+            }
+
+
+            #gamecontent section[requirements] {
+                @apply --layout-horizontal;
+
+                /* color: white; */
+                /* justify-content: space-between; */
+                /* flex-flow: column wrap; */
+            }
+
+            :host([is-mobile]) #gamecontent section[requirements] {
+                @apply --layout-vertical;
+            }
+
+            #gamecontent section[requirements] div[role="listbox"] {
+                padding: 10px 0px;
+            }
+
+            #gamecontent section[requirements] div[minimum],
+            #gamecontent section[requirements] div[suggested] {
+                /* min-width: calc(50% - 10px); */
+                /* width: 100%; */
+                @apply --layout-flex-6;
+            }
+
+            #gamecontent section {
+                @apply --shadow-elevation-6dp;
+                @apply --shadow-transition;
+            }
+
+            #gamecontent section:hover {
+                @apply --shadow-elevation-2dp;
+            }
+
+            #gamecontent section[copyright] {
+                margin-bottom: 50px;
+            }
+
+
+            paper-item[content] p {
+                margin: 0;
+            }
+
+            #gamecontent section[requirements] div[role="listbox"] paper-item[heading] {
+                /* background: rgba(255, 120, 0, .8); */
+                /* padding: 10px 15px; */
+                font-size: 20px;
+                font-weight: 100 !important;
+            }
+
+            #gamecontent section[requirements] div[role="listbox"] paper-item:not([heading]) {
+                /*@apply(--layout-vertical);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                justify-content: flex-start;
+                flex-flow: column wrap;
+                /* background: rgba(255, 120, 0, .7); */
+                padding: 15px 20px;
+                align-items: flex-start;
+            }
+
+            #gamecontent section[requirements] div[role="listbox"] paper-item:not([heading]) div:first-child {
+                font-size: 22px;
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+                border-bottom: 4px solid rgba(255, 255, 255, .2);
+            }
+
+
+
+            /* Poster arkasından çıkan Reklam Card Ayarları*/
+
+            #poster-ad {
+                display: none;
+                background-color: var(--app-theme-color);
+                position: absolute;
+                width: 290px;
+                visibility: hidden;
+            }
+
+            paper-card.advertisement {
+                width: 100%;
+                height: 100%;
+                /*@apply(--layout-horizontal);*/
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                background-color: inherit;
+            }
+
+            paper-card.advertisement .card-actions {
+                padding: 0 1em !important;
+                width: 120%;
+                margin-top: 3px;
+            }
+
+            paper-card.advertisement .card-actions paper-button {
+                font-size: calc(0.45em +1vmin) !important;
+            }
+
+            .advertisement-image {
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+            }
+
+            .rate-content {
+                /*@apply(--layout-flex);*/
+                -ms-flex: 1 1 0.000000001px;
+                -webkit-flex: 1;
+                flex: 1;
+                -webkit-flex-basis: 0.000000001px;
+                flex-basis: 0.000000001px;
+                float: left;
+            }
+
+            .rate-content .card-content {
+                padding: 8px !important;
+            }
+
+            .rate-content div {
+                padding-bottom: 5px;
+            }
+
+            .rate-content .reklam-header {
+                border-bottom: 1px solid white;
+                padding-top: 5px;
+                font-size: calc(0.7em + 1vmin);
+            }
+
+            .rate-content .reklam-content {
+                font-size: calc(1.2em + 1vmin);
+            }
+
+            .rate-content .reklam-cupone img {
+                width: 100%;
+            }
+
+            .user-like-part {
+                position: absolute;
+                right: 4%;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons {
+                min-width: 115px;
+                margin-bottom: 10px;
+                margin-top: 10px;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button {
+                justify-content: center;
+            }
+
+            #usersysteminfo paper-item[heading] {
+                @apply --layout-horizontal;
+            }
+
+            #usersysteminfo paper-item[heading] div[title] {
+                @apply --layout-flex;
+            }
+
+            #usersysteminfo paper-item[empty-info] {
+                padding: 10px;
+            }
+
+            /* All content font sizes */
+
+            p,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-weight: normal;
+            }
+
+            h1 {
+                font-size: calc(1.2em + 1vmin) !important;
+            }
+
+            h2 {
+                font-size: calc(0.75em + 1vmin) !important;
+            }
+
+            h3 {
+                font-size: calc(0.65em + 1vmin) !important;
+            }
+
+            h4 {
+                font-size: calc(0.50em + 1vmin) !important;
+            }
+
+            h5 {
+                font-size: calc(0.35em + 1vmin) !important;
+            }
+
+            h6 {
+                font-size: calc(0.25em + 1vmin) !important;
+            }
+
+            /*neon animated pages */
+
+            #usersystem {
+                margin-top: 25px;
+                margin-bottom: 560px;
+                margin-top: 20px;
+            }
+
+            neon-animated-pages {
+                height: 400px;
+            }
+
+            #usersysteminfo paper-item[heading] div h2 {
+                text-align: center;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button {
+                background-color: var(--app-theme-color);
+                padding: 0 10px;
+                z-index: 10;
+                min-height: 4em;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button h3 {
+                font-size: calc(1em + 1vmin) !important;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button iron-icon {
+                padding: 0 !important;
+            }
+
+            #usersysteminfo paper-item[empty-info] div {
+                text-align: center;
+            }
+
+
+            #panel #options {
+                justify-content: center !important;
+            }
+
+            #panel #options .anchors {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                justify-content: flex-start;
+            }
+
+            #panel #options .anchors .anchors-link {
+                text-decoration: none;
+                margin: 5px;
+                width: 100%;
+                /*margin: 0px 5px;*/
+            }
+
+            #panel #options .anchors .anchors-link paper-button {
+                background: var(--app-theme-darker-color) !important;
+                padding: 9px;
+                margin: 0;
+                text-transform: capitalize;
+                color: #222;
+                font-weight: bold;
+                opacity: 0.7;
+                transition: all ease-in-out 0.2s;
+                width: 100%;
+            }
+
+            #panel #options .anchors .anchors-link paper-button:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+
+
+
+            @media only screen and (min-width: 320px) {
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 70%;
+                    height: 300px;
+                    border-width: 2px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 400px;
+                }
+
+                #gamecontent #options {
+                    bottom: 400px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+
+
+                #gamecontent section[requirements] div[role="listbox"] {
+                    width: calc(100%);
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 250px;
+                }
+            }
+
+            /* Custom, Galaxy S5 */
+
+            @media only screen and (min-width: 360px) {
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 60%;
+                    height: 340px;
+                    border-width: 2px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 440px;
+                }
+
+                #gamecontent #options {
+                    bottom: 440px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 280px;
+                }
+            }
+
+            /* Iphone 6s plus */
+
+            @media only screen and (min-width: 412px) {
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 57%;
+                    height: 350px;
+                    border-width: 2px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 445px;
+                }
+
+                #gamecontent #options {
+                    bottom: 460px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 330px;
+                }
+            }
+
+            /* Extra Small Devices, Phones */
+
+            @media only screen and (min-width: 480px) {
+
+
+                #gamecontent #poster {
+                    align-self: center;
+                    width: 50%;
+                    height: 350px;
+                    border-width: 2px;
+
+                }
+
+                #gamecontent #panel-contents {
+                    height: 460px;
+                }
+
+                #gamecontent #options {
+                    bottom: 480px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 55px;
+                    height: 55px;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 380px;
+                }
+            }
+
+            /* Small Devices, Tablets */
+
+            @media only screen and (min-width: 768px) {
+                #navButtons {
+                    display: flex !important;
+                }
+
+                #gamecontent #panel-contents {
+                    flex-direction: row !important;
+                }
+
+                #gamecontent #metadata {
+                    align-items: flex-start;
+                    -webkit-align-items: flex-start;
+                }
+
+
+                #gamecontent #poster {
+                    width: 150px;
+                    height: 240px;
+                    border-width: 8px;
+                    align-self: flex-end !important;
+                    -ms-align-self: flex-end !important;
+                    -webkit-align-self: flex-end !important;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 90px;
+                }
+
+                #gamecontent #options {
+                    height: 33px;
+                    bottom: 90px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 38px;
+                    height: 38px;
+                }
+                /* user like button */
+                #panel-contents .user-like-part {
+                    margin: 8px;
+                    margin-top: 8px;
+                    right: 2%;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 450px;
+                }
+                /* anchors */
+                #panel #options .anchors {
+                    flex-direction: row !important;
+                }
+                #panel #options .anchors .anchors-link paper-button {
+                    padding: 5px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                #usersysteminfo paper-item[heading] .buttons paper-button h3 {
+                    font-size: calc(0.65em + 1vmin) !important;
+                }
+                #usersysteminfo paper-item[heading] div h2 {
+                    text-align: left;
+                }
+                #panel-contents #metadata h1 {
+                    /*font-size: calc(1.1em + 1vmin) !important;*/
+                    font-size: calc(0.7em + 1vmin) !important;
+                }
+
+                #panel-contents #metadata h4 {
+                    font-size: calc(0.5em + 1vmin) !important;
+                }
+
+                #panel-contents #metadata h6 {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+
+                #usersysteminfo paper-item[heading] {
+                    -ms-flex-direction: row;
+                    -webkit-flex-direction: row;
+                    flex-direction: row;
+                }
+
+                #gamecontent {
+                    width: 75%;
+                }
+
+                #gamecontent #poster {
+                    width: 155px;
+                    height: 250px;
+                    border-width: 10px;
+                    border-width: 10px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 75px;
+                }
+
+                #gamecontent #options {
+                    height: 37px;
+                    bottom: 75px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                #gamecontent div[role="listbox"]:nth-last-child(2),
+                #gamecontent div[role="listbox"]:nth-last-child(2)~div {
+                    width: calc(50% - 20px);
+                }
+
+
+                #similargames {
+                    display: flex !important;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 38.5%;
+                    margin-top: 15px !important;
+                }
+
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 115px;
+                }
+
+                #usersystem {
+                    margin-bottom: 70px !important;
+                }
+
+                #gamecontent section[requirements] {
+                    flex-flow: row;
+                }
+
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                parallax-layers {
+                    min-height: 82%;
+                }
+
+                #gamecontent #poster {
+                    /*width: 150px;
+                height: 216px;*/
+                    border-width: 12px;
+                    width: 165px;
+                    height: 270px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 75px;
+                }
+
+                #gamecontent #options {
+                    height: 37px;
+                    bottom: 75px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                #gamecontent div[role="listbox"]:nth-last-child(2),
+                #gamecontent div[role="listbox"]:nth-last-child(2)~div {
+                    width: calc(50% - 20px);
+                }
+
+                #gamecontent div[role="listbox"]:nth-last-child(1),
+                #gamecontent div[role="listbox"]:nth-last-child(1)~div {
+                    width: calc(100% - 20px);
+                }
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 128px;
+                    top: -165px;
+                    left: -21px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 13px;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 46%;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                parallax-layers {
+                    min-height: 90%;
+                }
+
+                #gamecontent #poster {
+                    width: 175px;
+                    height: 270px;
+                    border-width: 14px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 85px;
+                }
+
+                #gamecontent #options {
+                    height: 41px;
+                    bottom: 85px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 43px;
+                    height: 43px;
+                }
+
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 136px;
+                    top: -177px;
+                    /*left: 213px !important;*/
+                    left: -2px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 15px;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 48%;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                parallax-layers {
+                    min-height: 95%;
+                }
+
+                #gamecontent #poster {
+                    width: 175px;
+                    height: 270px;
+                    border-width: 15px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 90px;
+                }
+
+                #gamecontent #options {
+                    height: 43px;
+                    bottom: 90px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 45px;
+                    height: 45px;
+                }
+
+
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 136px;
+                    top: -179px;
+                    left: 8px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 15px;
+                }
+
+                /* user like button */
+                #panel-contents .user-like-part {
+                    right: 57%;
+                }
+            }
+
+            @media only screen and (min-width: 1824px) {
+                parallax-layers {
+                    min-height: 100%;
+                }
+
+                #gamecontent #poster {
+                    width: 196px;
+                    height: 290px;
+                    border-width: 16px;
+                }
+
+                #gamecontent #panel-contents {
+                    height: 100px;
+                }
+
+                #gamecontent #options {
+                    height: 45px;
+                    bottom: 100px;
+                }
+
+                #gamecontent #options paper-icon-button {
+                    width: 45px;
+                    height: 45px;
+                }
+
+
+                /* poster advertisement config*/
+                #poster-ad {
+                    height: 143px;
+                    top: -188px;
+                    left: 20px;
+                }
+
+                paper-card.advertisement .card-actions paper-button {
+                    font-size: 16px;
+                }
+            }
+
+            #gamecontent #options paper-icon-button {
+                color: white;
+                --paper-icon-button-ink-color: white;
+            }
+
+            #gamecontent #poster {
+                @apply --layout-vertical;
+            }
+
+            #gamecontent #poster .interaction {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+                -webkit-justify-content: space-between;
+                justify-content: space-between;
+                height: 20% !important;
+                padding: 0px 6px 6px 6px;
+            }
+
+            #gamecontent #poster .interaction user-buy-game {
+                @apply --layout-flex-9;
+            }
+
+            #gamecontent #poster .interaction user-like-game {
+                @apply --layout-flex-3;
+            }
+
+
+            #gamecontent #poster .interaction paper-button {
+                /* color: #222;
+                background-color: var(--app-theme-color);
+                text-transform: capitalize;
+                font-weight: 500;
+                flex-grow: 2;
+                border-radius: 0 !important;
+                margin-left: 0 !important;
+                transition: all .5s;
+                z-index: 10;
+                opacity: 0.8; */
+            }
+
+            #gamecontent #poster .interaction paper-button a {
+                /* text-decoration: none;
+                color: #222; */
+            }
+
+
+            @media only screen and (min-width: 1000px) {
+                /* #gamecontent #poster .interaction paper-button:hover {
+                    position: absolute;
+                    opacity: 1;
+                    width: 93%;
+                }
+                #gamecontent #poster .interaction paper-button:hover~.like-part {
+                    opacity: 0;
+                } */
+            }
+
+            #gamecontent #poster .interaction .like-part {
+                /* flex-grow: 1; */
+                /* transition: .3s ease-in-out;
+                z-index: 1; */
+            }
+
+            #poster .side-corner-tag {
+                /* width: 100%; */
+                height: 100%;
+                position: relative;
+                /* color: #fff; */
+                display: inline-block;
+                padding: 5px;
+                overflow: hidden;
+                font-family: Arial, sans-serif;
+                font-weight: 900;
+            }
+
+            #poster .side-corner-tag p {
+                display: inline;
+            }
+
+            #poster .side-corner-tag p span {
+                font-size: 11px;
+                height: 26px;
+                position: absolute;
+                display: inline-block;
+                right: -43px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2), inset 0px 5px 30px rgba(255, 255, 255, 0.2);
+                text-align: center;
+                text-transform: uppercase;
+                top: 17px;
+                background: #d93131;
+                width: 100px;
+                padding: 5px 28px;
+                -webkit-transform: rotate(45deg);
+                -moz-transform: rotate(45deg);
+                -o-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                z-index: 6;
+            }
+
+            #poster .side-corner-tag p:before {
+                content: "";
+                z-index: 4;
+                width: 0;
+                height: 0;
+                position: absolute;
+                top: -17px;
+                right: 55px;
+                border: 17px solid;
+                border-color: transparent transparent #662121 transparent;
+            }
+
+            #poster .side-corner-tag p:after {
+                z-index: 4;
+                content: "";
+                width: 0;
+                height: 0;
+                position: absolute;
+                top: 61px;
+                right: -10px;
+                border: 18px solid;
+                border-color: #662121 transparent transparent transparent;
+            }
+
+            paper-tooltip.nav-tooltip {
+                /*--paper-tooltip-background: var(--app-theme-color);*/
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+
+            #navButtons {
+                @apply --layout-vertical;
+                position: fixed;
+                top: 222px;
+                right: 10px;
+                z-index: 111;
+                border-top-left-radius: 50%;
+                border-bottom-left-radius: 50%;
+                padding-left: 20px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                background: rgb(60, 51, 36);
+                border-right: 3px solid;
+                z-index: 9;
+                display: none;
+            }
+
+            #navButtons paper-icon-button {
+                /*color: var(--app-theme-darker-color) !important;*/
+                height: 60px;
+                width: 60px;
+                transition: all ease-in-out .4s;
+            }
+
+            #navButtons paper-icon-button:hover {
+                transform: scale(1.3);
+            }
+
+            #kalstepper paper-item[heading] {
+                padding: 10px 15px;
+                font-size: 20px;
+                font-weight: 100 !important;
+            }
+
+            #stepperheading {
+                padding: 10px 15px;
+                font-size: 20px;
+                font-weight: 100 !important;
+            }
+
+            #gamegallerylink {
+                text-decoration: none;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #gamegallerylink paper-button {
+                text-transform: capitalize;
+                padding: 20px;
+                margin: 5px;
+                font-weight: bold;
+            }
+        </style>
+
+        <iron-ajax id="getselectedgame" url="/h/main?fm=get-game-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
+
+        <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
+
+        <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+
+        <app-toolbar>
+            <!-- <paper-icon-button icon="arrow-back" on-tap="_onBackToAllGames"></paper-icon-button> -->
+            <div class="navigation">
+                <a id="back" href="/game">
+                    <paper-icon-button icon="icons:arrow-back" on-tap="_onBackToAllGames"></paper-icon-button>
+                    <span>Tüm Oyunlar</span>
+                </a>
+            </div>
+            <div hidden$="[[!isGame]]">
+                <paper-icon-button id="playvideo" icon="av:play-circle-filled" on-tap="_playVideo"></paper-icon-button>
+                <paper-tooltip class="nav-tooltip" position="left" animation-delay="150" offset="5" for="playvideo">Videosunu izle</paper-tooltip>
+                <paper-icon-button id="showembed" icon="code" on-tap="_showEmbed"></paper-icon-button>
+                <paper-tooltip class="nav-tooltip" position="left" animation-delay="150" offset="5" for="showembed">Sitenize Ekleyin</paper-tooltip>
+            </div>
+
+        </app-toolbar>
+
+        <div hidden$=[[!loading]] class="loader-pac-content">
+            <loader-pac></loader-pac>
+            <span>
+                Oyun Getiriyor..
+            </span>
+        </div>
+        <div hidden$="[[loading]]">
+            <template is="dom-if" if={{isGame}}>
+                <div id="game-page">
+                    <!-- <watsonlogic-parallax parallax-image-height="400" parallax-text="You can pass text content into the <watsonlogic-parallax> component."
+                        parallax-image="[[gameinfo.background]]">
+                    </watsonlogic-parallax> -->
+                    <div id="kalparallax">
+                        <iron-image src="[[gameinfo.background]]" sizing="cover" preload fade alt="[[gameinfo.name]]"></iron-image>
+                    </div>
+                    <div id="gamecontent">
+                        <section id="panel" style$="[[_getStyleOfClass(gameinfo)]]">
+                            <div id="options">
+                                <game-steam-price gameappid="[[gameinfo.steamappid]]"></game-steam-price>
+                            </div>
+                            <div id="panel-contents">
+                                <div id="poster-ad">
+                                    <paper-card class="advertisement">
+                                        <div class="rate-content">
+                                            <div class="card-content">
+                                                <div class="reklam-header">OyunSatinAl.com</div>
+                                                <div class="reklam-content">%3 indirim</div>
+                                                <div class="reklam-cupone">
+                                                </div>
+                                            </div>
+                                            <div class="card-actions">
+                                                <paper-button raised>Kuponu Kullan</paper-button>
+                                            </div>
+                                        </div>
+                                        <div class="advertisement-image"></div>
+                                    </paper-card>
+                                </div>
+                                <div id="poster" style$="[[_getStyleOfClass(gameinfo)]]">
+                                    <div class="side-corner-tag">
+                                        <iron-image id="game_poster_image" src="[[gameinfo.picture]]" sizing="cover" alt="[[gameinfo.name]]" preload fade></iron-image>
+                                        <div hidden$="[[_checkGameStatus(gameinfo.status)]]">
+                                            <p>
+                                                <span>[[_remakeStatus(gameinfo.status)]]</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="interaction">
+                                        <user-buy-game userid="[[storedUser.uid]]" gamename="[[gameinfo.name]]"></user-buy-game>
+                                        <user-like-game bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" gid="[[gameinfo.id]]" username="[[storedUser.uid]]"></user-like-game>
+                                    </div>
+                                    <!-- <div hidden$="[[_hasGameGallery(gameinfo.galleryurl)]]">
+                                        <a href="/gallery/[[gameinfo.galleryurl]]" target="_blank" id="gamegallerylink">
+                                            <paper-button raised>Galeriye Git</paper-button>
+                                        </a>
+                                    </div> -->
+                                </div>
+                                <div id="metadata">
+                                    <h1 class="metagametitle" itemprop="name" style$="color: [[gameinfo.maincolor]]">[[gameinfo.name]]</h1>
+                                    <h4 itemprop="genre">[[_remakeGenres(gameinfo.genres)]]</h4>
+                                    <h6>[[_remakeReleaseDate(gameinfo)]]</h6>
+
+
+                                </div>
+                                <div id="similargames">
+                                    <kal-similar-games genre="[[gameinfo.genres]]"></kal-similar-games>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- panel -->
+                        <section id="user-system">
+                            <template is="dom-if" if={{storedUser.loggedin}}>
+                                <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
+                            </template>
+                            <template is="dom-if" if={{!storedUser.loggedin}}>
+                                <paper-material elevation="0" id="usersysteminfo" role="listbox">
+                                    <paper-item heading>
+                                        <div title>
+                                            <h2>Sistemin [[gameinfo.name]] oyununu kaldırır mı?</h2>
+                                        </div>
+                                        <div class="buttons">
+                                            <login-button></login-button>
+                                        </div>
+                                    </paper-item>
+                                    <paper-item empty-info>
+                                        <div>Hemen kayıt olup giriş yap, sistemini ekle ve bilgisayarının bu oyunu açıp açmayacağını
+                                            gör.
+                                        </div>
+                                    </paper-item>
+                                </paper-material>
+                            </template>
+                        </section>
+                        <!-- user-system -->
+                        <section requirements>
+                            <div minimum id="minimum" role="listbox">
+                                <paper-item heading>
+                                    Minimum Gereksinimler
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">İşlemci</div>
+                                    <div>
+                                        <template is="dom-repeat" items={{gameinfo.minimumcpus}}>
+                                            <p>[[item.name]]</p>
+                                        </template>
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">Ekran Kartı</div>
+                                    <div>
+                                        <template is="dom-repeat" items={{gameinfo.minimumgpus}}>
+                                            <p>[[item.name]]</p>
+                                        </template>
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">İşletim Sistemi</div>
+                                    <div itemprop="operatingSystem">
+                                        <template is="dom-repeat" items={{gameinfo.minimumoss}}>
+                                            <p>[[item.name]]</p>
+                                        </template>
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div>Ram</div>
+                                    <div>
+                                        [[gameinfo.minimumram]] GB
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">Hard Disk Alanı</div>
+                                    <div itemprop="storageRequirements">
+                                        [[gameinfo.minimumhdd]] GB</div>
+                                </paper-item>
+                            </div>
+                            <div suggested id="suggested" role="listbox" hidden$=[[!_isSuggestedListActive(gameinfo)]]>
+                                <paper-item heading>
+                                    Önerilen Gereksinimler
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">İşlemci</div>
+                                    <div>
+                                        <template is="dom-repeat" items={{gameinfo.suggestedcpus}}>
+                                            <p>[[item.name]]</p>
+                                        </template>
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">Ekran Kartı</div>
+                                    <div>
+                                        <template is="dom-repeat" items={{gameinfo.suggestedgpus}}>
+                                            <p>[[item.name]]</p>
+                                        </template>
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">İşletim Sistemi</div>
+                                    <div>
+                                        <template is="dom-repeat" items={{gameinfo.suggestedoss}}>
+                                            <p>[[item.name]]</p>
+                                        </template>
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">Ram</div>
+                                    <div>
+                                        [[gameinfo.suggestedram]] GB
+                                    </div>
+                                </paper-item>
+                                <paper-item content>
+                                    <div class="pi_hardwarename">Hard Disk Alanı</div>
+                                    <div>
+                                        [[gameinfo.suggestedhdd]] GB
+                                    </div>
+                                </paper-item>
+                            </div>
+                        </section>
+                        <!-- requirements -->
+
+                        <section stepper>
+                            <paper-item heading id="stepperheading">
+                                Kullanıcı-Oyun FeedBack
+                            </paper-item>
+                            <div id="kalstepper">
+                                <kal-game-stepper userid="[[storedUser.uid]]" gameid="[[gameinfo.id]]" gamename="[[gameinfo.name]]"></kal-game-stepper>
+                            </div>
+                        </section>
+
+                        <section id="twitch">
+                            <game-streaming-list mc="[[gameinfo.maincolor]]" bc="[[gameinfo.backcolor]]" bca="[[gameinfo.backcoloropacity]]" gamename="[[gameinfo.name]]">
+                            </game-streaming-list>
+                        </section>
+
+                        <section series>
+                            <template is="dom-if" if={{_isSeriesAvailable(gameinfo.seriesid)}}>
+                                <div id="series">
+                                    <kal-other-games-in-series gamename="[[gameinfo.name]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                                    </kal-other-games-in-series>
+                                </div>
+                            </template>
+                        </section>
+
+                        <section dlc>
+                            <kal-game-dlc gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                            </kal-game-dlc>
+                        </section>
+
+                        <section guides>
+                            <kal-game-guides gameid="[[gameinfo.id]]" bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" bca="[[gameinfo.backcoloropacity]]">
+                            </kal-game-guides>
+                        </section>
+
+                        <section copyright>
+                            <kal-copyright gameinfo=[[_remakeGameForCopyright(gameinfo)]]></kal-copyright>
+                        </section>
+                    </div>
+                    <!--gamecontent -->
+                </div>
+            </template>
+            <div hidden$=[[isGame]]>
+                <span class="game-is-not-exist">Böyle bir oyun bulunmamaktadır!</span>
+            </div>
+        </div>
+    </template>
+    <script>
+        class KalSelectedGame extends Polymer.Element {
+            static get is() {
+                return 'kal-selected-game';
+            }
+
+            static get properties() {
+                return {
+                    url: {
+                        type: String,
+                        notify: true
+                    },
+                    isGame: Boolean,
+                    gameinfo: {
+                        type: Object,
+                        value: null,
+                    },
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    storedUser: Object
+                };
+            }
+
+
+            static get observers() {
+                return [
+                    '_selectedGameChanged(url)',
+                    '_gameInfoChanged(gameinfo)'
+                ]
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is
+             * initialized.
+             */
+            ready() {
+                super.ready();
+
+                // When possible, use afterNextRender to defer non-critical
+                // work until after first paint.
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    // console.log('ready', this.url)
+                    moment.locale("tr");
+                });
+
+            }
+
+            /**
+             * An attribute was added, removed, updated, or replaced. Also called for
+             * initial values when an element is created by the parser, or upgraded.
+             * Note: only attributes listed in the observedAttributes property will
+             * receive this callback. 
+             */
+            attributeChangedCallback(attrName, oldVal, newVal) {
+                // console.log('attributeChangedCallback', attrName);
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                // console.log('connectedCallback', this.url)
+
+
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Useful for initializing
+             * state, set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+                // console.log('constructor', this.url)
+            }
+
+            _selectedGameChanged(newVal, oldVal) {
+                // console.log('_selectedGameChanged', newVal);
+                // we are starting here..
+                this._clearState();
+                this._debounceWork();
+                // console.log('CurrentUrl: ', newVal, oldVal);
+            }
+
+            _gameInfoChanged(newVal, oldVal) {
+                if (newVal !== undefined && newVal != null) {
+
+                    this.updateStyles({
+                        '--game-main-color': newVal.maincolor,
+                        '--game-back-color': newVal.backcolor,
+                        '--game-back-color-opacity': newVal.backcoloropacity
+                    });
+
+                }
+            }
+
+            _onResponse(event) {
+                var response = event.detail.response;
+
+                //  console.log('kal-selected-game response: ', response);
+
+                if (response.id != 0) {
+                    this.set('isGame', true);
+                    response.background = 'https:' + response.background;
+                    response.picture = 'https:' + response.picture;
+
+                    // var gameinfo = { ...response,
+                    //     background: 'https:' + response.background,
+                    //     picture: 'https:' + response.picture
+                    // };
+
+                    this.set('gameinfo', response);
+
+                } else {
+                    //isGame false
+
+                    let trail = {
+                        "id": 1000001,
+                        "mincpu": "10074,10808",
+                        "sugcpu": "10310,10816",
+                        "mingpu": "10531,10753",
+                        "suggpu": "10007,10480",
+                        "minos": "10000",
+                        "sugos": "10005",
+                        "searchkeywords": "(lol),(lo),(ol),(league of legends)",
+                        "url": "league-of-legends",
+                        "name": "League Of Legends",
+                        "picture": "https://cdn.kaldirirmi.com/images/games/league-of-legends-logo.jpg",
+                        "background": "https://cdn.kaldirirmi.com/images/games/league-of-legends-background.jpg",
+                        "video": "https://www.youtube.com/watch?v=vzHrjOMfHPY",
+                        "minimumcpus": [{
+                            "id": 10074,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "AMD Athlon 64 X2 Dual Core 4000+",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }, {
+                            "id": 10808,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "Intel Core2 Duo E4400 @ 2.00GHz",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }],
+                        "minimumgpus": [{
+                            "id": 10531,
+                            "passmarkid": 0,
+                            "name": "GeForce FX 5950 Ultra",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }, {
+                            "id": 10753,
+                            "passmarkid": 0,
+                            "name": "RADEON 9500 PRO / 9700",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }],
+                        "minimumoss": [{
+                            "id": 10000,
+                            "rank": 0,
+                            "type": 0,
+                            "name": "Windows XP 32bit"
+                        }],
+                        "suggestedcpus": [{
+                            "id": 10310,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "AMD Phenom II X2 555",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }, {
+                            "id": 10816,
+                            "passmarkid": 0,
+                            "brand": null,
+                            "name": "Intel Core2 Duo E6850 @ 3.00GHz",
+                            "socket": null,
+                            "cpuClass": null,
+                            "clockSpeed": 0,
+                            "cores": 0,
+                            "maxTDP": null,
+                            "benchmarkscore": 0,
+                            "type": null
+                        }],
+                        "suggestedgpus": [{
+                            "id": 10007,
+                            "passmarkid": 0,
+                            "name": "Radeon HD 3870",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }, {
+                            "id": 10480,
+                            "passmarkid": 0,
+                            "name": "GeForce 8800 GT",
+                            "busInterface": null,
+                            "gpuClass": null,
+                            "coreClock": 0,
+                            "memoryClock": 0,
+                            "memorySize": 0,
+                            "directx": null,
+                            "openGL": null,
+                            "MAXTDP": null,
+                            "benchmarkscore": 0,
+                            "directxvalue": 0,
+                            "type": null
+                        }],
+                        "suggestedoss": [{
+                            "id": 10005,
+                            "rank": 0,
+                            "type": 0,
+                            "name": "Windows 7 64bit"
+                        }],
+                        "minimumram": 1,
+                        "minimumhdd": 8,
+                        "suggestedram": 4,
+                        "suggestedhdd": 12,
+                        "genres": "MMO,Strategy",
+                        "developer": "Riot Games",
+                        "publisher": "Riot Games",
+                        "releasedate": "\/Date(1256594400000)\/",
+                        "seriesid": 0,
+                        "backcolor": "rgb(62,68,64)",
+                        "maincolor": "rgb(220,197,167)",
+                        "backcoloropacity": "rgba(62,68,64, 0.5)",
+                        "kaldirir": null,
+                        "status": 0,
+                        "releasedateoptions": "",
+                        "releasedatestr": null,
+                        "steamappid": 0,
+                        "galleryurl": ""
+                    };
+
+                    // this.set('gameinfo', trail);
+                    this.set('isGame', false);
+                }
+
+            }
+
+            _debounceWork() {
+                //Polymer.Async.timeOut.after(400)
+                this._debounceJob = Polymer.Debouncer.debounce(
+                    this._debounceJob,
+                    Polymer.Async.microTask,
+                    () => {
+                        this._generateRequest();
+                    });
+            }
+
+            _clearState() {
+                this.set('gameinfo', null);
+            }
+
+            _generateRequest() {
+                if (this.$.getselectedgame.lastRequest) {
+                    this.$.getselectedgame.lastRequest.abort();
+                }
+                this.$.getselectedgame.generateRequest();
+            }
+
+            _onBackToAllGames(e) {
+                // console.log('e', e);
+                this.dispatchEvent(new CustomEvent('backall', e.model));
+            }
+
+
+
+            _remakeGenres(genres) {
+                var res = '';
+                if (genres !== undefined) {
+                    res = genres.replace(',', '/');
+                }
+                return res;
+            }
+
+            _remakeStatus(status) {
+                if (status == 0) return "Full Edition";
+                else if (status == 1) return "Early Access";
+                else if (status == 2) return "DLC";
+            }
+
+            _remakeReleaseDate(gameinfo) {
+
+                let res = "";
+                // console.log('gameinfo', gameinfo);
+                if (gameinfo != null) {
+
+                    let {
+                        releasedateoptions,
+                        releasedate
+                    } = gameinfo;
+                    let releasedateTR = moment(releasedate).format('DD/MM/YYYY');
+                    releasedate = moment(releasedate).format('L');
+
+                    let now = new Date().toISOString();
+                    if (releasedateoptions.includes("onlyyear")) {
+                        let onlyyear = releasedate.year();
+                        res = `${onlyyear} yılında yayınlanacak`;
+                    } else {
+
+                        if (releasedate > Date.now()) {
+                            res = `${releasedateTR} tarihinde yayınlanacak.`;
+                        } else {
+                            res = `${releasedateTR} tarihinde yayınlandı.`;
+                        }
+                    }
+                    if (releasedateoptions.includes("unconfirmed"))
+                        res += " Kesin Değil";
+                }
+                return res;
+            }
+
+            _checkGameStatus(status) {
+                if (status != 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            _getStyleOfClass(gameinfo) {
+                var res = '';
+                // console.log('_getStyleOfClass', gameinfo);
+                if (gameinfo != null) {
+                    res = 'border-color: ' + gameinfo.backcolor + '; background-color: ' + gameinfo.backcolor +
+                        '; color: ' + gameinfo.maincolor;
+                }
+                return res;
+            }
+
+            _getMinimumFeatures(feature) {
+                let res = "";
+                if (feature != null) {
+                    feature.forEach(element => {
+                        res += element.name + ' \r';
+                    });
+
+                }
+                return res;
+            }
+
+            _hasGameGallery(gallery) {
+                // console.log('fsafafas', !(gallery == null || gallery.length === 0));
+                return !(gallery == null || gallery.length === 0);
+            }
+
+            _isSuggestedListActive(gameinfo) {
+                if (gameinfo != null) {
+                    return gameinfo.suggestedcpus != null ? true : false;
+                }
+                return null;
+            }
+
+            _remakeGameForCopyright(gameinfo) {
+                if (gameinfo != null) {
+                    return {
+                        isExist: true,
+                        publisher: gameinfo.publisher,
+                        name: gameinfo.name,
+                        developer: gameinfo.developer
+                    }
+                }
+                return null;
+            }
+
+            _isSeriesAvailable(seriesid) {
+                // console.log('_isSeriesAvailable',seriesid);
+                return seriesid != 0 ? true : false;
+            }
+
+            _playVideo() {
+
+                //dialog is listening in the app root page
+                var event = new CustomEvent('gamevideodialog', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.gameinfo
+                });
+                this.dispatchEvent(event);
+
+                // this.$.videoholder.open();
+                // this.$.gamevideoframe.play();
+            }
+
+
+            _showEmbed() {
+                var event = new CustomEvent('gameembeddialog', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.gameinfo
+                });
+                this.dispatchEvent(event);
+
+                // this.$.embedholder.open();
+            }
+        }
+        window.customElements.define(KalSelectedGame.is, KalSelectedGame);
+    </script>
+</dom-module>

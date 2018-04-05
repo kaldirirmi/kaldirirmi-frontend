@@ -1,29 +1,50 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../gallery/kal-selected-gallery.html">
+<link rel="import" href="../gallery/kal-all-galleries.html">
 
 <dom-module id="kal-gallery-page">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
-        padding: 10px;
         font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
         line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+        overflow: hidden !important;
+        height: calc(100vh - 192px);
+      }
 
+      :host([is-mobile]) {
+        height: auto !important;
       }
     </style>
 
+    <app-route route="{{route}}" pattern="/gallery/:galleryUrl" data="{{data}}" active="{{selectedGalleryActive}}"></app-route>
 
-    <h1>gallery</h1>
+    <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
+    <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
+
+    <!-- Selected Gallery Page -->
+    <template is="dom-if" if={{selectedGalleryActive}}>
+      <kal-selected-gallery stored-user=[[storedUser]] url="[[data.galleryUrl]]" is-mobile=[[isMobile]] on-backall="_handleBackButton"></kal-selected-gallery>
+    </template>
+
+    <!-- All Gallery Page -->
+    <template is="dom-if" if={{!selectedGalleryActive}}>
+      <kal-all-galleries is-mobile=[[isMobile]]></kal-all-galleries>
+    </template>
+
 
   </template>
 
   <script>
     class KalGalleryPage extends Polymer.Element {
-      static get is() { return 'kal-gallery-page'; }
+      static get is() {
+        return 'kal-gallery-page';
+      }
       /**
-        * Object describing property-related metadata used by Polymer features
-        */
+       * Object describing property-related metadata used by Polymer features
+       */
       static get properties() {
         return {
           isMobile: {
@@ -33,6 +54,15 @@
           route: {
             type: Object,
           },
+          data: {
+            type: Object,
+            observer: '_selectedGalleryChanged'
+          },
+          selectedGalleryActive: {
+            type: Boolean,
+            reflectToAttribute: true,
+            observer: '_selectedGalleryActiveChanged'
+          },
         };
       }
 
@@ -40,6 +70,16 @@
       connectedCallback() {
         super.connectedCallback();
 
+      }
+
+      _selectedGalleryActiveChanged(selectedGalleryActive, previousValue) {
+      }
+
+      _selectedGalleryChanged(selectedGallery, previousValue) {
+        if (Object.keys(selectedGallery).length !== 0) {
+          if (selectedGallery.galleryUrl.length === 0)
+            this.selectedGalleryActive = false;
+        }
       }
 
     }
