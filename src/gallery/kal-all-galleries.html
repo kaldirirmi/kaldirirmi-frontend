@@ -29,7 +29,7 @@
 
         <neon-animated-pages id="pages" selected="0">
             <gallery-animated-grid gamename="{{gamename}}" on-tile-click="_onTileClick"></gallery-animated-grid>
-            <gallery-fullsize-page-with-card gamename="{{gamename}}" id="fullsize-card">
+            <gallery-fullsize-page-with-card gamename="{{gamename}}" id="fullsize-card" ajax-triggered=[[ajaxTriggered]] on-tile-reset="_onTileReset">
             </gallery-fullsize-page-with-card>
         </neon-animated-pages>
 
@@ -63,6 +63,11 @@
                         type: Array,
                         value: []
                     },
+                    ajaxTriggered: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
                 };
             }
             constructor() {
@@ -77,6 +82,22 @@
 
                 Polymer.RenderStatus.afterNextRender(this, function () {});
             }
+
+            _onTileReset(event){
+                console.log('_onTileReset', event);
+                const selected = event.detail.selected;
+                this.$.pages.selected = 0;
+            }
+
+            _onTileClick(event){
+                console.log('_onTileClick', event.detail);
+
+                this.shadowRoot.querySelector('#fullsize-card').color = 'orange';
+                
+                this.set('ajaxTriggered', true);
+
+                this.$.pages.selected = 1;
+            }   
 
         }
 

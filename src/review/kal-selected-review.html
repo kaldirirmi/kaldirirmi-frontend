@@ -9,12 +9,13 @@
 <link rel="import" href="./review-user-vote.html">
 
 <link rel="import" href="./kal-review-popular.html">
+<link rel="import" href="../shared-styles.html">
 
 <!-- <link rel="import" href="../thirdparty/jqwidgets/jqwidget-imports.html"> -->
 
 <dom-module id="kal-selected-review">
     <template>
-        <style>
+        <style include="shared-styles">
             :host {
                 display: block;
                 /* --header-image: url('/frontend/images/nouseradded.jpg'); */
@@ -88,43 +89,6 @@
                 text-align: center;
             }
 
-            .review-is-not-exist {
-                font-size: 19px;
-                font-weight: 300;
-                letter-spacing: 1.3px;
-                position: absolute;
-                width: 100%;
-                margin-top: 20px;
-                text-align: center;
-            }
-
-            app-toolbar {
-                background-color: var(--app-theme-darker-color);
-                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-                font-weight: bold;
-                color: white;
-                font-size: 18px;
-                z-index: 1;
-                @apply --layout-horizontal;
-                @apply --layout-center;
-                background: #222;
-                height: 45px;
-                padding: 0 30px;
-                @apply --shadow-elevation-12dp;
-                border-top: 3px solid #222222;
-                border-bottom: 3px solid #222222;
-            }
-
-
-            app-toolbar a {
-                color: #fff;
-            }
-
-            app-toolbar paper-icon-button {
-                --paper-icon-button-ink-color: white;
-            }
-
-
             p,
             h1,
             h2,
@@ -135,7 +99,7 @@
             li {
                 color: white;
             }
-            
+
             #review-page {
                 @apply --layout-vertical;
                 overflow-y: scroll !important;
@@ -773,8 +737,7 @@
             }
         </style>
 
-        <iron-ajax id="getselectedreview" url="/h/main?fm=get-review-info&a=[[url]]" handle-as="json" on-response="_onResponse"
-            loading="{{loading}}"></iron-ajax>
+        <iron-ajax id="getselectedreview" url="/h/main?fm=get-review-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
         <iron-ajax id="getgamekpinfo" url="/h/main?fm=get-gamekp-info&a=[[reviewinfo.relatedgames]]" handle-as="json" on-response="_onResponseKpInfo"
             loading="{{loading}}"></iron-ajax>
 
@@ -786,12 +749,13 @@
             </form>
         </iron-form>
 
-        <app-toolbar>
-            <!-- <paper-icon-button icon="arrow-back" on-tap="onBackToAll"></paper-icon-button> -->
-            <a id="back" href="/reviews">
-                <paper-icon-button icon="icons:arrow-back" on-tap="onBackToAll"></paper-icon-button>
-            </a>
-            <span>Tüm İncelemeler</span>
+        <app-toolbar class="selected-page-toolbar">
+            <div class="navigation">
+                <a id="back" href="/reviews">
+                    <paper-icon-button icon="icons:arrow-back"></paper-icon-button>
+                    <span>Tüm İncelemeler</span>
+                </a>
+            </div>
         </app-toolbar>
 
         <div hidden$=[[!loading]] class="loader-pac-content">
@@ -926,7 +890,7 @@
                 </div>
             </template>
             <div hidden$=[[isReview]]>
-                <span class="review-is-not-exist">Böyle bir inceleme bulunmamaktadır!</span>
+                <span class="item-is-not-exist">Böyle bir inceleme bulunmamaktadır!</span>
             </div>
         </div>
 

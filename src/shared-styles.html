@@ -101,6 +101,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 right: 0;
                 height: 10%;
             }
+
+
+            /* alltoolbar customization ->  selected sub page style */
+            
+            app-toolbar.selected-page-toolbar {
+                background-color: var(--app-theme-darker-color);
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: #222;
+                height: 45px;
+                padding: 0 30px;
+                @apply --shadow-elevation-12dp;
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+            app-toolbar.selected-page-toolbar .navigation {
+                @apply --layout-flex;
+            }
+
+            app-toolbar.selected-page-toolbar .navigation a {
+                color: #fff;
+                text-decoration: none;
+            }
+
+            app-toolbar.selected-page-toolbar .navigation paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            .item-is-not-exist {
+                font-size: 19px;
+                font-weight: 300;
+                letter-spacing: 1.3px;
+                position: absolute;
+                width: 100%;
+                margin-top: 20px;
+                text-align: center;
+            }
+
     </style>
   </template>
 </dom-module>

@@ -439,7 +439,7 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-
+                console.log(this.route);
                 if (!this.route || !this.route.path) {
                     this.set('route.path', '/general/');
                 }
@@ -457,7 +457,7 @@
 
             _subPageChanged(subpage) {
                 // console.log('_subPageChanged', subpage);
-
+                
                 //Change the route path according to tab selection
                 //but, do not add view404 to the url path
                 if(subpage != 'view404'){
