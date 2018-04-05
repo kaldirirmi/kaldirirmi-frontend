@@ -9,17 +9,8 @@
                 width: 100%;
                 color: white;
                 --kal-tabs-height: 192px;
-                --kal-gallerypage-height: calc(100vh - 300px);
+               
                 height: var(--kal-gallerypage-height);
-            }
-
-            :host([is-mobile]) kal-scroll-threshold {
-                height: calc(100vh - 150px);
-            }
-
-            kal-scroll-threshold {
-                height: calc(100vh - 280px);
-                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
             }
 
             neon-animated-pages {
@@ -28,7 +19,7 @@
         </style>
 
         <neon-animated-pages id="pages" selected="0">
-            <gallery-animated-grid gamename="{{gamename}}" on-tile-click="_onTileClick"></gallery-animated-grid>
+            <gallery-animated-grid is-mobile=[[isMobile]] gamename="{{gamename}}" on-tile-click="_onTileClick"></gallery-animated-grid>
             <gallery-fullsize-page-with-card gamename="{{gamename}}" id="fullsize-card" ajax-triggered=[[ajaxTriggered]] on-tile-reset="_onTileReset">
             </gallery-fullsize-page-with-card>
         </neon-animated-pages>
@@ -84,15 +75,15 @@
             }
 
             _onTileReset(event){
-                console.log('_onTileReset', event);
+                // console.log('_onTileReset', event);
                 const selected = event.detail.selected;
                 this.$.pages.selected = 0;
             }
 
             _onTileClick(event){
-                console.log('_onTileClick', event.detail);
+                // console.log('_onTileClick', event.detail);
 
-                this.shadowRoot.querySelector('#fullsize-card').color = 'orange';
+                // this.shadowRoot.querySelector('#fullsize-card').color = 'orange';
                 
                 this.set('ajaxTriggered', true);
 

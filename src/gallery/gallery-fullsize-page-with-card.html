@@ -1,9 +1,15 @@
-
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/ripple-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/transform-animation.html">
+
 
 <dom-module id="gallery-fullsize-page-with-card">
     <template>
@@ -13,12 +19,26 @@
                 font-family: inherit;
             }
 
+            .orange-100 {
+                background: #c5c5c5;
+            }
+            #card{
+                @apply --shadow-elevation-12dp;
+            }
+
+            @media screen and (min-width: 769px){
+                #card{
+                    margin: 5rem
+                }
+            }
             .fixed {
                 position: fixed;
                 top: 0;
                 left: 0;
                 height: 100vh;
                 width: 100vw;
+                background-color: var(--app-theme-color);
+                opacity: 0.5;
             }
 
             .card {
@@ -31,7 +51,7 @@
                 position: absolute;
                 right: 0;
                 top: 0;
-                color: #ff7800;
+                color: var(--app-theme-color);
                 transition: all ease-in-out .3s;
                 height: 50px;
                 width: 50px;
@@ -44,7 +64,7 @@
                 top: 0;
                 height: 50px;
                 width: 50px;
-                color: #ff7800;
+                color: var(--app-theme-color);
                 transition: all ease-in-out .3s;
 
             }
@@ -93,7 +113,7 @@
                 color: white;
                 height: 44px;
                 padding: 0 5px;
-                background: #ff7800;
+                background: var(--app-theme-color);
                 width: 173px;
             }
 
@@ -121,17 +141,22 @@
                 width: 20px;
                 height: 20px;
                 margin-right: 10px;
-                --paper-spinner-color: #ff7800;
+                --paper-spinner-color: var(--app-theme-color);
             }
 
             #gallery-container {
-                width: 100%;
                 display: flex;
                 flex-direction: column;
                 -ms-flex-pack: center;
                 -webkit-justify-content: center;
                 justify-content: center;
                 /*flex-flow: row wrap;*/
+            }
+
+            @media screen and (min-width: 769px) {
+                #gallery-container {
+                    width: 98%;
+                }
             }
 
             #gallery-container .gallery-part {
@@ -152,12 +177,12 @@
             #gallery-container .gallery-part a {
                 text-decoration: none;
                 font-weight: 500;
+                @apply --layout-vertical;
             }
 
             #gallery-container .gallery-part a paper-button {
-                background-color: white;
-                width: 100%;
-                color: #222;
+                background-color: var(--app-theme-color);
+                color: #fff;
                 font-weight: bold;
             }
 
@@ -333,7 +358,7 @@
                     <div id="gallerylist">
                         <template is="dom-repeat" items="{{gamegallery}}" as="item">
                             <div class="gallery">
-                                    <iron-image background src="[[item.gallerypicture]]" sizing="cover" alt="[[item.gallerytitle]]" preload fade></iron-image>
+                                <iron-image background src="[[item.gallerypicture]]" sizing="cover" alt="[[item.gallerytitle]]" preload fade></iron-image>
                             </div>
                         </template>
                     </div>
@@ -357,9 +382,8 @@
          * @polymer
          * @extends {Polymer.Element}
          */
-        class PascalCaseName extends Polymer.mixinBehaviors([
-            Polymer.NeonSharedElementAnimatableBehavior
-        ], Polymer.Element) {
+        class GalleryFullsizePageWithCard extends Polymer.mixinBehaviors([Polymer.NeonSharedElementAnimatableBehavior],
+            Polymer.Element) {
             /**
              * String providing the tag name to register the element under.
              */
@@ -415,58 +439,29 @@
                     loadinggames: Boolean,
                     animationConfig: {
                         type: Object,
-                       
+
                     }
                 };
             }
-            
-            _ajaxTriggeredChanged(newVal, oldVal){
-                
-                if(newVal == true)
-                {
-                    this.set('ajaxTriggered', false);
-                    
 
+            _ajaxTriggeredChanged(newVal, oldVal) {
+                // console.log('ajaxTriggerred', newVal);
+                // console.log('gamename', this.gamename);
+                if (newVal == true) {
+                    this.set('ajaxTriggered', false);
+                    this._debounceWork();
                 }
 
             }
 
             /**
-              * Called every time the element is inserted into the DOM. Useful for 
-              * running setup code, such as fetching resources or rendering.
-              * Generally, you should try to delay work until this time.
-              */
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
             connectedCallback() {
                 super.connectedCallback();
 
-                this.set('sharedElements', {
-                        'hero': this.$.card,
-                        'ripple': this.$.fixed
-                        });
-                
-                this.set('animationConfig', {
-                                'entry': [{
-                                    name: 'ripple-animation',
-                                    id: 'ripple',
-                                    toPage: this,
-                                }, {
-                                    name: 'hero-animation',
-                                    id: 'hero',
-                                    toPage: this,
-                                    timing: {
-                                        delay: 150
-                                    }
-                                }],
-                                'exit': [{
-                                    name: 'fade-out-animation',
-                                    node: this.$.fixed
-                                }, {
-                                    name: 'transform-animation',
-                                    transformFrom: 'none',
-                                    transformTo: 'translate(0px,-200vh) scale(0.9,1)',
-                                    node: this.$.card
-                                }]
-                        });
             }
 
             /**
@@ -485,8 +480,52 @@
                 super.ready();
 
                 Polymer.RenderStatus.afterNextRender(this, function () {
+                    this.sharedElements = {
+                        'hero': this.$.card,
+                        'ripple': this.$.fixed
+                    };
 
+                    this.animationConfig = {
+                        'entry': [{
+                            name: 'ripple-animation',
+                            id: 'ripple',
+                            toPage: this,
+                        }, {
+                            name: 'hero-animation',
+                            id: 'hero',
+                            toPage: this,
+                            timing: {
+                                delay: 150
+                            }
+                        }],
+                        'exit': [{
+                            name: 'fade-out-animation',
+                            node: this.$.fixed
+                        }, {
+                            name: 'transform-animation',
+                            transformFrom: 'none',
+                            transformTo: 'translate(0px,-200vh) scale(0.9,1)',
+                            node: this.$.card
+                        }]
+                    };
                 });
+                
+            }
+
+            _debounceWork() {
+                this._debounceJob = Polymer.Debouncer.debounce(
+                    this._debounceJob,
+                    Polymer.Async.microTask,
+                    () => {
+                        this._generateRequest();
+                    });
+            }
+
+            _generateRequest() {
+                if (this.$.getgalleryofgame.lastRequest) {
+                    this.$.getgalleryofgame.lastRequest.abort();
+                }
+                this.$.getgalleryofgame.generateRequest();
             }
 
             _response(a) {
@@ -497,8 +536,6 @@
                         if (cnt == 0) {
                             this.bigpicture = gallery.gallerypicture;
                             this.galleryurl = 'gallery/' + gallery.galleryurl;
-
-
                         } else if (cnt >= 1 && cnt < 5) {
                             this.push('gamegallery', gallery);
                         }
@@ -525,49 +562,14 @@
                 return cls;
             }
             _onFullsizeClick() {
-                
+
                 this.dispatchEvent(new CustomEvent('tile-reset', {
                     detail: {
                         selected: 0
                     }
                 }));
-
-                // document.getElementById('pages').selected = 0;
             }
             _downloadGallery() {
-                //var item1 = this.get(['gallery', 0]);
-                //var item2 = this.get(['gallery', 1]);
-                //console.log(item1);
-                //console.log(item2);
-
-                //var zip = new window.JSZip();
-                //var unlocked = false;
-
-                //var xhr = new XMLHttpRequest();
-                //xhr.open('GET', item1.gallerypicture, true);
-                //xhr.responseType = "arraybuffer";
-                //xhr.onreadystatechange = function (evt) {
-                //    if (xhr.readyState === 4) {
-                //        if (xhr.status === 200) {
-                //            var zip = new JSZip();
-                //            zip.file("images/img1.png", xhr.response, { binary: true});
-                //            unlocked = true;
-                //            console.log(zip);
-
-                //        }
-                //    }
-                //};
-                //xhr.send();
-
-                //setInterval(function () {
-                //    if (unlocked) {
-                //        zip.generateAsync({ type: "blob" })
-                //            .then(function (content) {
-                //                window.saveAs(content, "example.zip");
-                //            });
-                //        unlocked = false;
-                //    }
-                //},1000);
 
                 var zipper = new window.JSZip();
                 var images = zipper.folder("images");
@@ -577,33 +579,6 @@
                 var currentGame = "";
                 this.gallery.forEach(function (pic) {
                     pic.gallerypicture = "https:" + pic.gallerypicture;
-                    //this.toDataUrl(pic.gallerypicture, function (base64Img) {
-                    //    images.file("Picture " + ind + " of " + pic.gameurl, base64Img, { base64: true });
-                    //});
-                    //var img = new Image();
-
-                    //img.setAttribute('crossOrigin', 'anonymous');
-
-                    //img.onload = function () {
-                    //    var canvas = document.createElement("canvas");
-                    //    canvas.width = this.width;
-                    //    canvas.height = this.height;
-
-                    //    var ctx = canvas.getContext("2d");
-                    //    ctx.drawImage(this, 0, 0);
-
-                    //    var dataURL = canvas.toDataURL("image/png");
-
-                    //    //alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
-
-                    //    images.file("Picture " + ind + " of " + pic.gameurl + ".jpg", dataURL.replace(/^data:image\/(png|jpg);base64,/, ""), { base64: true });
-                    //};
-
-                    //img.src = pic.gallerypicture;
-
-                    //images.file("Picture " + ind + " of " + pic.gameurl, this.getBase64FromImageUrl(pic.gallerypicture), { base64: true });
-
-
                     this.toDataUrl(pic.gallerypicture, function (dataURL) {
 
                         images.file("Picture " + ind + " of " + pic.gameurl + ".jpg", dataURL.replace(
@@ -673,9 +648,9 @@
                 }
             }
             zipper(zip, images) {
-                console.log('ziiipign');
+                // console.log('ziiipign');
                 var deferred = $.Deferred();
-                console.log(deferred);
+                // console.log(deferred);
                 var ind = 0;
                 var currentGame = "";
                 this.gallery.forEach(function (pic) {
@@ -696,10 +671,10 @@
                 return deferred.promise();
             }
             downloader(zip, images) {
-                console.log('downloadingg');
+                // console.log('downloadingg');
                 var promise = this.zipper(zip, images);
                 promise.then(function () {
-                    console.log('yo');
+                    // console.log('yo');
                     zipper.generateAsync({
                         type: "blob"
                     }).then(function (content) {
@@ -725,6 +700,6 @@
 
         }
 
-        window.customElements.define(PascalCaseName.is, PascalCaseName);
+        window.customElements.define(GalleryFullsizePageWithCard.is, GalleryFullsizePageWithCard);
     </script>
 </dom-module>

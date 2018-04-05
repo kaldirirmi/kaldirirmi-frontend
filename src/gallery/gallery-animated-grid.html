@@ -12,7 +12,16 @@
             :host {
                 display: block;
                 background: #222;
-                border-top: 3px solid #ff7800;
+                border-top: 3px solid var(--app-theme-color);
+            }
+
+            /* :host([is-mobile]) kal-scroll-threshold {
+                height: var(--kal-gallerypage-height);
+            } */
+
+            kal-scroll-threshold {
+                height: var(--kal-gallerypage-height);
+                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
             }
 
             .tile {
@@ -143,8 +152,8 @@
 
         <kal-scroll-threshold on-lower-threshold="_loadmoregallery" id="threshold" lower-threshold="500">
             <section id="cd-timeline" class="cd-container" scroll-target="threshold">
-                <template is="dom-repeat" items="{{galleries}}">
-                    <div class="tile" id="part{{index}}" itemprop="articleBody">
+                <template is="dom-repeat" items="{{galleries}}" id="galleryList">
+                    <div class="tile" id="part{{index}}" itemprop="articleBody" on-tap="_onClick">
                         <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.background]]" sizing="cover" alt="[[item.name]]"
                             preload fade></iron-image>
                         <img style="display:none" src="https://cdn.kaldirirmi.com/images/games/[[item.background]]" alt="[[item.name]]" itemprop="image"
@@ -202,6 +211,10 @@
              */
             static get properties() {
                 return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
                     gamename: {
                         type: String,
                         notify: true
@@ -258,7 +271,7 @@
              * Use for one-time configuration of your component after local DOM is initialized. 
              */
             ready() {
-                this.addEventListener('click', this._onClick());
+                // this.addEventListener('click', this._onClick);
                 super.ready();
 
                 Polymer.RenderStatus.afterNextRender(this, function () {
@@ -272,7 +285,6 @@
                 if (this.$.getgallerieshavegallery.lastRequest) {
                     this.$.getgallerieshavegallery.lastRequest.abort();
                 }
-
                 this.page++;
                 this.$.getgallerieshavegallery.generateRequest();
             }
@@ -290,15 +302,20 @@
             }
 
             _onClick(event) {
-                //console.log('_onClick');
-                //console.log(event);
+                console.log('_onClick');
+                // var model = this.shadowRoot.querySelector('#galleryList').modelForElement(event.target);
+                // console.log('event model', model);
+                
+                var model = event.model;
+                this.gamename = model.item.name;
                 var target = event.target;
-                while (target !== this && !target._templateInstance) {
-                    target = target.parentNode;
-                }
+                // console.log(target);
 
-                //console.log(target._templateInstance.item.name);
-                this.gamename = target._templateInstance.item.name;
+                // while (target !== this && !target._templateInstance) {
+                //     target = target.parentNode;
+                // }
+                // this.gamename = target._templateInstance.item.name;
+
                 // configure the page animation
                 this.sharedElements = {
                     'hero': target,
@@ -312,7 +329,8 @@
                 this.dispatchEvent(new CustomEvent('tile-click', {
                     detail: {
                         tile: target,
-                        data: target._templateInstance.item
+                        // data: target._templateInstance.item
+                        data: model.item
                     }
                 }));
 

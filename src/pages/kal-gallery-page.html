@@ -14,11 +14,12 @@
         font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
         line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
         overflow: hidden !important;
-        height: calc(100vh - 192px);
+        --kal-gallerypage-height: calc(100vh - 192px);
+        height: var(--kal-gallerypage-height);
       }
 
       :host([is-mobile]) {
-        height: auto !important;
+        --kal-gallerypage-height: calc(100vh - 64px);
       }
     </style>
 
@@ -75,8 +76,7 @@
 
       }
 
-      _selectedGalleryActiveChanged(selectedGalleryActive, previousValue) {
-      }
+      _selectedGalleryActiveChanged(selectedGalleryActive, previousValue) {}
 
       _selectedGalleryChanged(selectedGallery, previousValue) {
         if (Object.keys(selectedGallery).length !== 0) {
