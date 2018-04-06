@@ -275,12 +275,12 @@
                 width: 70%;
             }
 
-            #dlcdialog paper-toolbar {
+            #dlcdialog app-toolbar {
                 margin: 0 !important;
                 background: var(--app-theme-darker-color) !important;
             }
 
-            #dlcdialog paper-toolbar .dlctoolbar {
+            #dlcdialog app-toolbar .dlctoolbar {
                 align-items: center;
                 display: flex;
                 font-size: 18px;
@@ -297,7 +297,6 @@
                     font-weight: bold;
                     font-size: calc(0.45em + 1vmin);
                 }
-                ;
                 --paper-input-container-input: {
                     color: white;
                     text-align: center;
@@ -305,12 +304,10 @@
                     font-size: calc(0.45em + 1vmin);
 
                 }
-                ;
                 --paper-input-container-focus-color: white;
                 --paper-input-container-underline: {
                     display: none;
                 }
-                ;
             }
 
             #dlcdialog paper-dropdown-menu.pdm paper-listbox {
@@ -318,7 +315,7 @@
                 --paper-listbox-color: #fff !important;
             }
 
-            #dlcdialog paper-toolbar .rightnavigation {
+            #dlcdialog app-toolbar .rightnavigation {
                 position: absolute;
                 top: 10px;
                 right: 10px;
@@ -422,7 +419,7 @@
 
         <paper-dialog id="dlcdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
             <paper-dialog-scrollable>
-                <paper-toolbar>
+                <app-toolbar>
                     <div class="dlctoolbar">
                         <span>Oyun DLC</span>
                     </div>
@@ -439,7 +436,7 @@
                         <paper-icon-button id="dlcclose" class="dlcclose" icon="close" dialog-dismiss></paper-icon-button>
                         <paper-tooltip class="nav-tooltip" for="dlcclose">Kapat</paper-tooltip>
                     </div>
-                </paper-toolbar>
+                </app-toolbar>
 
                 <template is="dom-repeat" items="{{gamedlcs}}" filter="{{computeFilter(selectedid)}}">
                     <paper-material elevation="2" id="dlc-container">

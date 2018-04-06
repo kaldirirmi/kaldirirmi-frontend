@@ -7,10 +7,36 @@
 <link rel="import" href="../model/loader-pac.html">
 <link rel="import" href="../kal-copyright.html">
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../thirdparty/swiper-custom/iron-swiper/iron-swiper.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+
 
 <dom-module id="kal-selected-gallery">
     <template>
         <style include="shared-styles">
+            :host {
+                display: block;
+                height: var(--kal-gallerypage-height);
+                /* overflow: scroll; */
+            }
+
+            .swiper-container {
+                padding: 10px;
+
+            }
+
+            .swiper-container iron-swiper {
+                height: calc(100vh - 350px);
+            }
+
+
+            app-toolbar.selected-page-toolbar a {
+                text-decoration: none;
+                color: #fff;
+            }
+
         </style>
 
         <iron-ajax id="getselectedgallery" url="/h/main?fm=get-game-gallery-info&a=[[url]]" handle-as="json" on-response="_onResponse"
@@ -23,6 +49,12 @@
                     <span>Tüm Galeriler</span>
                 </a>
             </div>
+            <div hidden$=[[!isGallery]]>
+                <a id="back" href="/game/[[gameinfo.url]]">
+                    <span>[[_remakeNavigationTitle(gameinfo, isMobile)]]</span>
+                    <paper-icon-button icon="icons:arrow-forward"></paper-icon-button>
+                </a>
+            </div>
         </app-toolbar>
 
         <div hidden$=[[!loading]] class="loader-pac-content">
@@ -33,7 +65,34 @@
         </div>
         <div hidden$="[[loading]]">
             <template is="dom-if" if={{isGallery}}>
+                <!-- selected gallery content here -->
+                <!-- <gallery-main-slider gallery=[[galleryinfo]] galleryurl="[[gameinfo.galleryUrl]]"></gallery-main-slider> -->
+                <div class="swiper-container">
+                    <iron-swiper pagination navigation-buttons a11y keyboard-control pagination-clickable>
+                        <template is="dom-repeat" items="{{galleryinfo}}" as="item">
+                            <div class="gallery">
+                                <!--<iron-image background src="//cdn.kaldirirmi.com/images/games/[[item.gallerypicture]]" data-hash="gallery{{index}}" sizing="cover" alt="[[item.gallerytitle]]" preload fade></iron-image>-->
+                                <img src="[[item.gallerypicture]]" alt="[[item.gamename]] Galeri Resmi [[index]]" />
+                                <div id="download-image">
+                                    <a href="[[item.gallerypicture]]" download="picture.jpg" style="text-decoration:none;">
+                                        <paper-button id="{{_makePbId(index)}}" on-click="_acceptItem" class="pb_heading pbDownloader" style="font-size:18px; padding:0 10px;"
+                                            raised>
+                                            <iron-icon class="ic_heading" icon="icons:file-download"></iron-icon>
+                                            <p>İndir</p>
+                                        </paper-button>
+                                    </a>
+                                    <paper-button onclick$="window.open('[[item.gallerypicture]]')" class="pb_heading" style="font-size:18px; padding:0 10px;"
+                                        raised>
+                                        <iron-icon class="ic_heading" icon="icons:open-in-new"></iron-icon>
+                                        <p>Aç</p>
+                                    </paper-button>
+                                </div>
+                            </div>
+                        </template>
+                    </iron-swiper>
+                </div>
 
+                <kal-copyright></kal-copyright>
 
             </template>
             <div hidden$=[[isGallery]]>
@@ -42,7 +101,7 @@
         </div>
     </template>
     <script>
-        class KalSelectedGame extends Polymer.Element {
+        class KalSelectedGallery extends Polymer.Element {
             static get is() {
                 return 'kal-selected-gallery';
             }
@@ -58,6 +117,7 @@
                         type: Object,
                         value: null,
                     },
+                    gameinfo: Object,
                     isMobile: {
                         type: Boolean,
                         reflectToAttribute: true
@@ -72,6 +132,10 @@
                     '_selectedGameChanged(url)',
                     '_galleryInfoChanged(galleryinfo)'
                 ]
+            }
+
+            _makePbId(index) {
+                return "_pbId" + index;
             }
 
             /**
@@ -139,12 +203,18 @@
             _onResponse(event) {
                 var response = event.detail.response;
 
-                console.log('kal-selected-gallery-gallery response: ', response);
+                // console.log('kal-selected-gallery-gallery response: ', response);
                 if (response != null) {
                     if (response.id != 0) {
                         this.set('isGallery', true);
-                        // response.background = 'https:' + response.background;
-                        // response.picture = 'https:' + response.picture;
+
+
+                        this.set('gameinfo', {
+                            'name': response[0].gamename,
+                            'url': response[0].gameurl,
+                            'galleryUrl': response[0].galleryurl
+                        })
+
                         this.set('galleryinfo', response);
 
                     } else {
@@ -153,6 +223,16 @@
                 } else {
                     this.set('isGallery', false);
                 }
+            }
+
+            _remakeNavigationTitle(gameinfo, isMobile) {
+                var str = 'Oyun Sayfası';
+                if (!isMobile) {
+                    if (gameinfo !== undefined) {
+                        str = gameinfo.name + ' ' + str;
+                    }
+                }
+                return str;
             }
 
             _debounceWork() {
@@ -176,6 +256,6 @@
                 this.$.getselectedgallery.generateRequest();
             }
         }
-        window.customElements.define(KalSelectedGame.is, KalSelectedGame);
+        window.customElements.define(KalSelectedGallery.is, KalSelectedGallery);
     </script>
 </dom-module>

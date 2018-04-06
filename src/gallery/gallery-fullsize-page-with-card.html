@@ -19,18 +19,39 @@
                 font-family: inherit;
             }
 
+            :host([is-mobile]) {
+                /*  */
+            }
+            :host([is-mobile]) #gallery-container .gallery-part:nth-of-type(2n+1){
+                margin-top: 60px;
+            }
+            :host([is-mobile]) #gallery-container .gallery-part:nth-of-type(2n){
+                @apply --layout-vertical;
+                flex-direction: column-reverse;
+            }
+            :host([is-mobile]) #gallery-container .gallery-part a paper-button {
+                background-color: var(--app-theme-color);
+                color: #222;
+                font-weight: bold;
+                font-size: 15px;
+                min-height: 50px;
+            }
+
+
             .orange-100 {
                 background: #c5c5c5;
             }
-            #card{
+
+            #card {
                 @apply --shadow-elevation-12dp;
             }
 
-            @media screen and (min-width: 769px){
-                #card{
+            @media screen and (min-width: 769px) {
+                #card {
                     margin: 5rem
                 }
             }
+
             .fixed {
                 position: fixed;
                 top: 0;
@@ -51,7 +72,8 @@
                 position: absolute;
                 right: 0;
                 top: 0;
-                color: var(--app-theme-color);
+                background: var(--app-theme-color);
+                color: #222;
                 transition: all ease-in-out .3s;
                 height: 50px;
                 width: 50px;
@@ -363,7 +385,7 @@
                         </template>
                     </div>
                     <a href$="[[galleryurl]]">
-                        <paper-button raised>[[gamename]] Galerisinin devamı için tıklayınız.</paper-button>
+                        <paper-button raised>[[gamename]] Galerisini Görüntüle</paper-button>
                     </a>
                 </div>
 
@@ -396,17 +418,18 @@
              */
             static get properties() {
                 return {
-                    ajaxTriggered: {
+                    isMobile: {
                         type: Boolean,
-                        observer: '_ajaxTriggeredChanged'
+                        reflectToAttribute: true
                     },
                     gamecount: {
                         type: Number,
-                        value: 12,
+                        value: 5,
                     },
                     gamename: {
                         type: String,
-                        notify: true
+                        notify: true,
+                        observer: '_gameNameChanged'
                     },
                     bigpicture: {
                         type: String,
@@ -429,12 +452,6 @@
                     },
                     sharedElements: {
                         type: Object,
-                        // value: function () {
-                        //     return {
-                        //         'hero': this.$.card,
-                        //         'ripple': this.$.fixed
-                        //     }
-                        // }
                     },
                     loadinggames: Boolean,
                     animationConfig: {
@@ -444,11 +461,11 @@
                 };
             }
 
-            _ajaxTriggeredChanged(newVal, oldVal) {
-                // console.log('ajaxTriggerred', newVal);
-                // console.log('gamename', this.gamename);
-                if (newVal == true) {
-                    this.set('ajaxTriggered', false);
+            _gameNameChanged(newVal, oldVal) {
+                //  console.log('_gameNameChanged newVal', newVal);
+                //  console.log('gamename', this.gamename);
+
+                if (newVal !== undefined) {
                     this._debounceWork();
                 }
 
@@ -509,12 +526,13 @@
                         }]
                     };
                 });
-                
+
             }
 
             _debounceWork() {
-                this._debounceJob = Polymer.Debouncer.debounce(
-                    this._debounceJob,
+                // console.log('girdii')
+                this._debounceJobGetGallery = Polymer.Debouncer.debounce(
+                    this._debounceJobGetGallery,
                     Polymer.Async.microTask,
                     () => {
                         this._generateRequest();
@@ -529,6 +547,7 @@
             }
 
             _response(a) {
+                // console.log('response', a.detail.response);
                 this.gamegallery = [];
                 if (a.detail.response.length > 0) {
                     var cnt = 0;
