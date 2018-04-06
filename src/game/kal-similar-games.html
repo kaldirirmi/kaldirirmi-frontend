@@ -228,6 +228,7 @@
 
             _genreChanged(newVal, oldVal){
                 if(newVal !== undefined){
+                    this._reset();
                     this._generateRequest();
                 }
             }
@@ -240,8 +241,11 @@
                 this.$.getsimilargames.generateRequest();
             }
             
-            _response(a) {
+            _reset(){
                 this.set('games', []);
+            }
+
+            _response(a) {
                 
                 let response = a.detail.response;
 

@@ -74,9 +74,9 @@
             }
 
             _onTileReset(event){
-                console.log('_onTileReset', event);
-                const selected = event.detail.selected;
-                this.$.pages.selected = 0;
+                // console.log('_onTileReset', event);
+                // const selected = event.detail.selected;
+                this.$.pages.selected = event.detail.selected;
             }
 
             _onTileClick(event){

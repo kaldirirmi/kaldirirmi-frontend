@@ -654,7 +654,7 @@
                     </paper-item>
                     <!-- Dom repeat -->
                     <template is="dom-repeat" items="{{kalnotes}}" as="item">
-                        <div class="tile" id="part{{index}}">
+                        <div class="tile" id="part{{index}}" on-tap="_onClick">
                             <iron-icon icon="open-with" class="iiExpand"></iron-icon>
                             <div tile-flex>
                                 <div class="tile-flex-colon">
@@ -939,7 +939,7 @@
              * Use for one-time configuration of your component after local DOM is initialized. 
              */
             ready() {
-                this.addEventListener('click', (e) => this._onClick(e));
+                // this.addEventListener('click', (e) => this._onClick(e));
 
                 super.ready();
 
@@ -954,17 +954,19 @@
                 return 'tile ' + color + '-300';
             }
             _onClick(event) {
+                // console.log(event);
                 if (this.kaldirir.useradded) {
-                    //console.log('_onClick');
+                    var model = event.model;
                     var target = event.target;
-                    while (target !== this && !target._templateInstance) {
-                        target = target.parentNode;
-                    }
-                    /* FULLSIZE ' a gönderilecek datalar */
-                    this.hardwaretype = target._templateInstance.item.hardwaretype;
-                    this.selectedInstance = target._templateInstance.item;
+                    // while (target !== this && !target._templateInstance) {
+                    //     target = target.parentNode;
+                    // }
 
-                    //console.log('selectedImage: ' + this.selectedInstance.image);
+                    /* FULLSIZE ' a gönderilecek datalar */
+                    // this.hardwaretype = target._templateInstance.item.hardwaretype;
+                    // this.selectedInstance = target._templateInstance.item;
+                    this.hardwaretype = model.item.hardwaretype;
+                    this.selectedInstance = model.item;
 
                     // configure the page animation
                     this.sharedElements = {
@@ -983,7 +985,8 @@
                     
                     var detail = {
                         tile: target,
-                        data: target._templateInstance.item
+                        // data: target._templateInstance.item
+                        data: model.item
                     }
 
                     this.fireEvent('tile-click', detail, false, false);

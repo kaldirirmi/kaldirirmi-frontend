@@ -3,6 +3,8 @@
 <link rel="import" href="./game-animated-grid.html">
 <link rel="import" href="./game-fullsize-page-with-card.html">
 
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 
 <dom-module id="game-kaldirir-mi">
     <template>
@@ -10,10 +12,13 @@
             :host {
                 display: block
             }
-
                #usersystem {
                   margin-bottom: 0px !important;
               }
+              
+              neon-animated-pages {
+                height: 400px;
+            }
         </style>
 
         <iron-ajax id="iaKaldirirMi" auto="[[auto]]" 
@@ -22,7 +27,6 @@
              handle-as="json" 
              last-response="{{kaldirir}}"
              ></iron-ajax>
-
 
              <neon-animated-pages id="pages" selected="0">
                 <game-animated-grid
@@ -42,7 +46,9 @@
                      gamename="[[gameinfo.name]]"
                      hardwaretype="{{hardwaretype}}" 
                      selectedInstance="{{selectedInstance}}"
-                     id="fullsize-card">
+                     id="fullsize-card"
+                     selected-hardware=[[selectedHardware]]
+                     on-tile-reset="_onTileReset">
                 </game-fullsize-page-with-card>
            </neon-animated-pages>
 
@@ -65,19 +71,26 @@
             static get is() {
                 return 'game-kaldirir-mi';
             }
-
             /**
              * Object describing property-related metadata used by Polymer features
              */
             static get properties() {
                 return {
-                    gameinfo: {
-                        type: Object,
-                        observers: '_gameinfoChanged'
-                    },
+                    gameinfo: Object,
+                    selectedHardware: Object,
                 };
             }
-            
+
+            /**
+              * Array of strings describing multi-property observer methods and their
+              * dependant properties
+              */
+            static get observers() {
+                return [
+                    '_gameinfoChanged(gameinfo)'
+                ];
+            }
+
             _gameinfoChanged(newVal, oldVal){
                 console.log('_gameinfoChanged', newVal);
 
@@ -114,19 +127,18 @@
                 });
             }
 
+            _onTileReset(event){
+                this.$.pages.selected = event.detail.selected;
+            }
+
             _onTileClick(event){
                 console.log('_onTileClick',event);
                 //this.$['fullsize-card'].hardwaretype = event.detail.data.hardwaretype; <- bu da olur fakat farklı olsun diye dom bind kullanıyorum.
-                this.$['fullsize-card'].data = event.detail.data;
-
+                // this.$['fullsize-card'].data = event.detail.data;
+                this.set('selectedHardware', event.detail.data);
                 //document.getElementById('getgalleryofgame').generateRequest();
                 this.$.pages.selected = 1;
             }
-
-
-
-
-
         }
 
         window.customElements.define(GameKaldirirmi.is, GameKaldirirmi);

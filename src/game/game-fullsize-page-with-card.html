@@ -1,3 +1,17 @@
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/ripple-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/transform-animation.html">
+
+
 <dom-module id="game-fullsize-page-with-card">
     <template>
         <style>
@@ -6,6 +20,10 @@
                 font-family: inherit;
             }
 
+            paper-spinner-lite{
+                --paper-spinner-color: var(--app-theme-color);
+            }            
+            
             .fixed {
                 position: fixed;
                 left: 0;
@@ -363,33 +381,34 @@
                 <div class="card-container-column" style$="background-color:#292929; color:white !important; border-right: 1px solid {{mc}}; border-left: 1px solid {{mc}};">
                     <div tile-container>
                         <div class="tile_container_content">
-                            <paper-card style$="background-color:[[data.color]];">
+                            <paper-card style$="background-color:[[selectedHardware.color]];">
                                 <div class="card-content game-headline">
-                                    <img src="/assets/img/gamepage-icon/[[data.image]]" style$="width: {{_getDataWidth(hardwaretype)}}" />
-                                    <h2>Senin [[data.name]]</h2>
-                                    <p>[[data.userhardware]]</p>
-                                    <iron-icon icon$="[[data.icon]]"></iron-icon>
+                                    <img src="/assets/img/gamepage-icon/[[selectedHardware.image]]" style$="width: {{_getselectedHardwareWidth(hardwaretype)}}"
+                                    />
+                                    <h2>Senin [[selectedHardware.name]]</h2>
+                                    <p>[[selectedHardware.userhardware]]</p>
+                                    <iron-icon icon$="[[selectedHardware.icon]]"></iron-icon>
                                 </div>
                                 <div class="card-actions marketing-actions">
-                                    <span> [[data.message]]</span>
+                                    <span> [[selectedHardware.message]]</span>
                                     <!-- Bu div Hdd Tarama kontrolü ile ilgilidir-->
-                                    <template is="dom-if" if="[[data.isHdd]]">
+                                    <template is="dom-if" if="[[selectedHardware.isHdd]]">
                                         <!-- isHdd sadece hdd partında doğrudur-->
                                         <div class="hdd-control-box">
-                                            <template is="dom-if" if="[[data.upToDate]]">
+                                            <template is="dom-if" if="[[selectedHardware.upToDate]]">
                                                 <!-- sistem son güncellemesi bugün yapılmıssa-->
                                                 <iron-icon class="upToDateIcon" icon="icons:done-all"></iron-icon>
                                                 <p>Son güncelleme bugün içinde yapılmış.</p>
                                             </template>
-                                            <template is="dom-if" if="[[!data.upToDate]]">
+                                            <template is="dom-if" if="[[!selectedHardware.upToDate]]">
                                                 <!-- sistem güncellemesi üzerinden 1den fazla gün geçmiş ise -->
                                                 <iron-icon class="upToDateIcon" icon="icons:update"></iron-icon>
-                                                <p>Son tarama zamanı : [[data.lastScanTime]]</p>
+                                                <p>Son tarama zamanı : [[selectedHardware.lastScanTime]]</p>
 
                                                 <div class="hdd-control-box-nav-buttons">
-                                                    <paper-button style$="color:[[data.color]]; background-color: #292929;" raised onclick="location.href='/sistem-sihirbazi'; ">
+                                                    <paper-button style$="color:[[selectedHardware.color]]; background-color: #292929;" raised onclick="location.href='/sistem-sihirbazi'; ">
                                                         <iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
-                                                    <paper-button style$="color:[[data.color]]; background-color: #292929;" raised onclick="location.href='/uye/sistemini-tanimla';">
+                                                    <paper-button style$="color:[[selectedHardware.color]]; background-color: #292929;" raised onclick="location.href='/uye/sistemini-tanimla';">
                                                         <iron-icon icon="icons:fingerprint"></iron-icon> Sistemini Elle Güncelle</paper-button>
                                                 </div>
                                             </template>
@@ -407,14 +426,15 @@
                         <div class="tile_container_content">
                             <paper-card style="background-color:#008744;">
                                 <div class="card-content game-headline">
-                                    <img src="/assets/img/gamepage-icon/[[data.successImage]]" style$="width: {{_getDataWidth(hardwaretype)}}" />
-                                    <h2>Önerilen [[data.name]]</h2>
-                                    <p>{{_remakeMarketingName(data.name)}} [[suggestedhardware.name]]</p>
+                                    <img src="/assets/img/gamepage-icon/[[selectedHardware.successImage]]" style$="width: {{_getselectedHardwareWidth(hardwaretype)}}"
+                                    />
+                                    <h2>Önerilen [[selectedHardware.name]]</h2>
+                                    <p>{{_remakeMarketingName(selectedHardware.name)}} [[suggestedhardware.name]]</p>
                                 </div>
                                 <div class="card-actions marketing-actions">
                                     <template is="dom-if" if="[[loadingsuggested]]">
                                         <div class="loadingIndicator">
-                                            <paper-spinner-lite active class="orange"></paper-spinner-lite>
+                                            <paper-spinner-lite active></paper-spinner-lite>
                                             <span>Liste Getiriliyor</span>
                                         </div>
                                     </template>
@@ -454,7 +474,7 @@
             }
 
             /**
-             * Object describing property-related metadata used by Polymer features
+             * Object describing property-related metaselectedHardware used by Polymer features
              */
             static get properties() {
                 return {
@@ -463,11 +483,15 @@
                         value: '',
                         notify: true
                     },
+                    selectedHardware: {
+                        type: Object,
+                        notify: true
+                    },
                     hardwaretype: {
                         type: String,
                         observer: '_hardwaretypeChanged'
                     },
-                    data: {
+                    selectedHardware: {
                         type: Object,
                         notify: true
                     },
@@ -526,36 +550,6 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-
-                this.set('sharedElements', {
-                    'hero': this.$.card,
-                    'ripple': this.$.fixed
-                });
-
-                this.set('animationConfig', {
-                    'entry': [{
-                        name: 'ripple-animation',
-                        id: 'ripple',
-                        toPage: this,
-                    }, {
-                        name: 'hero-animation',
-                        id: 'hero',
-                        toPage: this,
-                        timing: {
-                            delay: 150
-                        }
-                    }],
-                    'exit': [{
-                        name: 'fade-out-animation',
-                        node: this.$.fixed
-                    }, {
-                        name: 'transform-animation',
-                        transformFrom: 'none',
-                        transformTo: 'translate(0px,-200vh) scale(0.9,1)',
-                        node: this.$.card
-                    }]
-                });
-
             }
 
             /**
@@ -574,7 +568,34 @@
                 super.ready();
 
                 Polymer.RenderStatus.afterNextRender(this, function () {
+                    this.set('sharedElements', {
+                        'hero': this.$.card,
+                        'ripple': this.$.fixed
+                    });
 
+                    this.set('animationConfig', {
+                        'entry': [{
+                            name: 'ripple-animation',
+                            id: 'ripple',
+                            toPage: this,
+                        }, {
+                            name: 'hero-animation',
+                            id: 'hero',
+                            toPage: this,
+                            timing: {
+                                delay: 150
+                            }
+                        }],
+                        'exit': [{
+                            name: 'fade-out-animation',
+                            node: this.$.fixed
+                        }, {
+                            name: 'transform-animation',
+                            transformFrom: 'none',
+                            transformTo: 'translate(0px,-200vh) scale(0.9,1)',
+                            node: this.$.card
+                        }]
+                    });
                 });
             }
 
@@ -594,7 +615,11 @@
                 return cls;
             }
             _onFullsizeClick() {
-                document.getElementById('pages').selected = 0;
+                this.dispatchEvent(new CustomEvent('tile-reset', {
+                    detail: {
+                        selected: 0
+                    }
+                }));
             }
             dateFormat(date, format) {
                 return 'hakan';
@@ -609,7 +634,7 @@
                 if (name == 'ram') return 'Bellek almak için önerdiğimiz siteler : ';
                 if (name == 'hdd') return 'Hard Disk almak için önerdiğimiz siteler : ';
             }
-            _getDataWidth(name) {
+            _getselectedHardwareWidth(name) {
                 var currentWidth = '';
 
                 if (name == 'cpu') currentWidth = '8%; padding-right:10px';
@@ -653,12 +678,12 @@
                     this.set('googleresults', []);
 
                     this.searchquery = this.suggestedhardware.name;
-                    if (typeof (this.data) !== "undefined") {
+                    if (typeof (this.selectedHardware) !== "undefined") {
                         if (this.suggestedhardware.name == "") {
-                            if (this.data.name == "RAM") {
+                            if (this.selectedHardware.name == "RAM") {
                                 this.searchquery = "16 GB RAM";
 
-                            } else if (this.data.name == "Hard Disk") {
+                            } else if (this.selectedHardware.name == "Hard Disk") {
                                 this.searchquery = "1 TB Hard Disk";
                             }
                         }
@@ -676,8 +701,6 @@
                     this._generateGCS();
                 });
             }
-
-
 
             _generateGCS() {
                 console.log('_generateGCS');
