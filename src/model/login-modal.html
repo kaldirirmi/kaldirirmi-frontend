@@ -246,7 +246,14 @@
                             <div id="loginmessage"></div>
                             <div class="btns">
                                 <paper-ripple></paper-ripple>
-                                <button id="loginbtn" class="theme-color" type="button" on-tap="_loginButton">Giriş Yap</button>
+                                <button id="loginbtn" class="theme-color" type="button" on-tap="_loginButton">
+                                    <div hidden$=[[loadingForm]]>
+                                            Giriş Yap
+                                    </div>
+                                    <div hidden$=[[!loadingForm]]>
+                                            <paper-spinner active></paper-spinner>
+                                    </div>
+                                </button>
                             </div>
                         </form>
                     </iron-form>
@@ -334,6 +341,10 @@
                         type: Boolean,
                         reflectToAttribute: true
                     },
+                    loadingForm: {
+                        type: Boolean,
+                        value: false
+                    }
                 }
             }
 
@@ -389,9 +400,12 @@
             notifyResize() {}
 
             _loginButton() {
-                console.log(this);
+                // console.log(this);
 
                 if (this.$.piloginusername.validate() && this.$.piloginpassword.validate()) {
+                    this.$.loginbtn.setAttribute('disabled', true);
+                    this.set('loadingForm', true);
+
                     this.$.loginform.submit();
                 }
             }
@@ -424,6 +438,7 @@
                     // };
 
                 } else {
+                    this.set('loadingForm', false);
                     this.$.loginform.reset();
                     this.$.loginmessage.innerHTML = a.detail.response.message;
                     this.$.loginmessage.style.color = "#D50000";

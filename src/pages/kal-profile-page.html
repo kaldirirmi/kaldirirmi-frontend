@@ -135,6 +135,34 @@
             #profile-container .side-profile {
                 @apply --layout-flex-3;
             }
+
+
+
+            #unauthenticated .card{
+               background: #222;
+               @apply --shadow-elevation-12dp; 
+               @apply --layout-vertical;
+               align-items: flex-start;
+               border-top: 4px solid var(--app-theme-color);
+            }
+            #unauthenticated .card h2{
+                color: #fff;
+            }
+
+            #unauthenticated .card login-button{
+                --login-button-color: #222;
+                --login-button-background-color: var(--app-theme-color);
+                font-size: 18px;
+                @apply --shadow-transition;
+                transition: ease-in-out .3s;
+                /* transition: cubic-bezier(0.68, -0.55, 0.265, 1.55); */
+            }
+            #unauthenticated .card login-button:hover{
+                transform: scale(1.1);
+            }
+
+
+
         </style>
 
         <app-route route="{{route}}" pattern="/profile/:subpage" data="{{data}}" active="{{selectedPageActive}}"></app-route>
@@ -142,16 +170,16 @@
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
-        <div id="unauthenticated" hidden$="[[!storedUser.loggedin]]">
+        <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
             <div class="card">
-                Önce Giriş Yapmalısın!
+                <h2>Önce Giriş Yapmalısın!</h2>
                 <login-button stored-user={{storedUser}}></login-button>
             </div>
         </div>
-        <div id="authenticated" hidden$="[[storedUser.loggedin]]">
-
-            <iron-ajax auto id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
-            <iron-ajax auto id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
+        <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
+                
+            <iron-ajax id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
+            <iron-ajax id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
 
             <div id="profile-container">
                 <div class="main-profile">
@@ -443,6 +471,12 @@
                 if (!this.route || !this.route.path) {
                     this.set('route.path', '/general/');
                 }
+
+
+                if(this.storedUser.loggedin){
+                    this.$.ironAJaxGetUserInfo.generateRequest();
+                    this.$.userauths.generateRequest();
+                }
                
             }
             _routeSubPageChanged(subpage) {
@@ -486,9 +520,13 @@
             }
 
             _generatorChanged(newVal, oldVal) {
-                //console.log('new =>' + newVal);
+                console.log('new =>' + newVal);
                 //console.log('oldies =>' + oldVal);
-                this.$.ironAJaxGetUserInfo.generateRequest();
+                if(newVal !== undefined && newVal != ''){
+                    console.log('girdi');
+                    this.$.ironAJaxGetUserInfo.generateRequest();
+                }
+
             }
             _pibOpenCloseProCard() {
                 if (this.vcardOpened) {
