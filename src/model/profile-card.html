@@ -2,8 +2,9 @@
     <template>
         <style>
             :host {
-                display: flex;
-                width: 100%;
+                display: block;
+                /* display: flex;
+                width: 100%; */
             }
 
             .center {
@@ -17,7 +18,7 @@
             .card {
                 position: relative;
                 overflow: hidden;
-                margin: 0.4em;
+                /* margin: 0.4em; */
                 background-color: #222;
                 border-radius: 2px;
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -26,14 +27,15 @@
             }
 
             .card-header {
-                background-color: #e64a19;
+                background-color: var(--app-theme-color);
                 color: #fff;
                 /*height: 25px;*/
                 padding-left: 15px;
             }
 
             .card-header paper-button {
-                font-size: calc(0.22em + 1vmin);
+                font-size: calc(0.3em + 1vmin);
+                text-transform: capitalize;
             }
 
             .card-content {
@@ -117,9 +119,9 @@
                 color: #FFF;
                 margin: 0 auto;
                 width: 50%;
-                border: 1px solid #e64a19;
+                border: 1px solid var(--app-theme-color);
                 margin-bottom: 10px;
-                background-color: #e64a19;
+                background-color: var(--app-theme-color);
                 padding-left: 10px;
                 padding-right: 10px;
                 @apply --layout-horizontal;
@@ -132,8 +134,10 @@
             #avatarchanger,
             #coverchanger {
                 position: fixed;
-                top: 0;
-                left: 0;
+                /* top: 0; */
+                top: 192px;
+                left: 200px;
+                /* left: 0; */
                 right: 0;
                 bottom: 0;
                 margin: 0;
@@ -146,7 +150,7 @@
 
             #avatarchanger #closeavatarchanger,
             #coverchanger #closecoverchanger {
-                width: calc(100% - 20px);
+                width: calc(100% - 50px);
                 @apply --layout-horizontal;
                 @apply --layout-end-justified;
                 margin-top: 50px;
@@ -156,6 +160,11 @@
             #coverchanger #closecoverchanger paper-icon-button {
                 --paper-icon-button-ink-color: white;
                 color: white;
+                transition: ease-in-out .3s;
+            }
+            #avatarchanger #closeavatarchanger paper-icon-button:hover,
+            #coverchanger #closecoverchanger paper-icon-button:hover{
+                transform: scale(1.1);
             }
 
             #avatarchanger #avatarform,
@@ -210,7 +219,7 @@
             }
 
             .hakke-flex:hover {
-                box-shadow: inset 0 0 0 5px #e64a19 !important;
+                box-shadow: inset 0 0 0 5px var(--app-theme-color) !important;
             }
 
 
@@ -347,10 +356,10 @@
             }
         </style>
 
-        <iron-ajax auto id="getusersteamlevel" url="/auth/steam/kalapi?fm=get-steam-level" handle-as="json" on-response="_responseSteamLevel"
+        <iron-ajax id="getusersteamlevel" url="/auth/steam/kalapi?fm=get-steam-level" handle-as="json" on-response="_responseSteamLevel"
             debounce-duration="300"></iron-ajax>
 
-        <paper-dialog id="avatarchanger" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+        <paper-dialog id="avatarchanger" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation">
             <div id="closeavatarchanger">
                 <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
             </div>
@@ -365,7 +374,7 @@
                 .jpeg
             </div>
         </paper-dialog>
-        <paper-dialog id="coverchanger" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
+        <paper-dialog id="coverchanger" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation">
             <div id="closecoverchanger">
                 <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
             </div>
@@ -380,9 +389,10 @@
             <div>Arkaplanın maksimum 1920x1080 piksel boyutlarında ve 4MB büyüklüğünde olabilir. Desteklenen türler: .png, .jpg
                 ve .jpeg</div>
         </paper-dialog>
+
         <article class="card shadow">
             <div class="card-header">
-                <paper-button id="pbOpenEditor" on-tap="_btnEditPictures">Resimlerini düzenle</paper-button>
+                <paper-button id="pbOpenEditor" on-tap="_btnEditPictures">Fotoğrafları Düzenle</paper-button>
                 <paper-button id="pbCloseEditor" style="display:none;" on-tap="_btnCloseEditor">İptal</paper-button>
             </div>
             <div class="card-content">
@@ -431,10 +441,7 @@
                 <p class="center">{{_remakeBadge(userinfo.moderator)}}</p>
             </div>
         </article>
-
-
     </template>
-
     <script>
         /**
          * `profile-card` Description
@@ -472,49 +479,70 @@
                      * @attribute name
                      * @type string
                      */
-                    name: '',
+                    name: {
+                        type: String,
+                        value: '',
+                    },
                     /**
                      * The user profile image for the card.
                      *
                      * @attribute image
                      * @type string
                      */
-                    image: '',
+                    image: {
+                        type: String,
+                        value: '',
+                    },
                     /**
                      * The user profession for the card.
                      *
                      * @attribute profession
                      * @type string
                      */
-                    profession: '',
+                    profession: {
+                        type: String,
+                        value: '',
+                    },
                     /**
                      * The user description for the card.
                      *
                      * @attribute description
                      * @type string
                      */
-                    description: '',
+                    description: {
+                        type: String,
+                        value: '',
+                    },
                     /**
                      * The username for twitter, this will be passed without '@'.
                      *
                      * @attribute twitter
                      * @type string
                      */
-                    twitter: '',
+                    twitter: {
+                        type: String,
+                        value: '',
+                    },
                     /**
                      * The user website link for the card, please use this without 'www'.
                      *
                      * @attribute name
                      * @type string
                      */
-                    website: '',
+                    website: {
+                        type: String,
+                        value: '',
+                    },
                     /**
                      * The user location for the card.
                      *
                      * @attribute place
                      * @type string
                      */
-                    place: '',
+                    place: {
+                        type: String,
+                        value: '',
+                    },
                 };
             }
 
@@ -544,12 +572,25 @@
                     !this._isEmpty(this.userinfo.birthday) &&
                     !this._isEmpty(this.userinfo.about)
                 ) {
+
+                    this._generateSteamRequest();
+
                     var d = new window.Date();
                     if ((d.getFullYear() + 100) == this.userinfo.birthday.toString().split('.')[2] || this.userinfo
                         .birthday.toString().split('.')[2] == 1900) {} else {
                         this.$.userInformation.style.display = "block";
                     }
                 }
+            }
+
+            _generateSteamRequest(e){
+                console.log('_generateSteamRequest', e);
+                const element = this.$.getusersteamlevel;
+                
+                if (element.lastRequest)
+                    element.lastRequest.abort();
+                
+                element.generateRequest();
             }
 
             _responseSteamLevel(event) {

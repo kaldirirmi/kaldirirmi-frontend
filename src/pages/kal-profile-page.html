@@ -39,24 +39,29 @@
                 color: #fff !important;
             }
 
+
             :host([is-mobile]) {
                 height: auto !important;
             }
-            
-            :host([is-mobile]) #profile-container{
+
+            :host([is-mobile]) #profile-container {
                 @apply --layout-vertical;
             }
 
-            :host([is-mobile]) #profile-container .main-profile{
+            :host([is-mobile]) #profile-container .main-profile {
                 @apply --layout-flex-12;
             }
 
-            :host([is-mobile]) #profile-container .main-profile .main-content{
+            :host([is-mobile]) #profile-container .main-profile .main-content {
                 /* min-height: 300px; */
-            }    
+            }
 
-            :host([is-mobile]) #profile-container .side-profile{
+            :host([is-mobile]) #profile-container .side-profile {
                 @apply --layout-flex-12;
+            }
+
+            :host([is-mobile]) profile-card {
+                display: none;
             }
 
             :root {
@@ -89,7 +94,7 @@
                 @apply --shadow-elevation-4dp;
             }
 
-            #profile-container .main-profile .main-content{
+            #profile-container .main-profile .main-content {
                 @apply --layout-vertical;
                 /* @apply --shadow-elevation-4dp; */
                 /* background: red; */
@@ -132,24 +137,26 @@
             }
 
             /*Right-side*/
+
             #profile-container .side-profile {
                 @apply --layout-flex-3;
             }
 
 
 
-            #unauthenticated .card{
-               background: #222;
-               @apply --shadow-elevation-12dp; 
-               @apply --layout-vertical;
-               align-items: flex-start;
-               border-top: 4px solid var(--app-theme-color);
+            #unauthenticated .card {
+                background: #222;
+                @apply --shadow-elevation-12dp;
+                @apply --layout-vertical;
+                align-items: flex-start;
+                border-top: 4px solid var(--app-theme-color);
             }
-            #unauthenticated .card h2{
+
+            #unauthenticated .card h2 {
                 color: #fff;
             }
 
-            #unauthenticated .card login-button{
+            #unauthenticated .card login-button {
                 --login-button-color: #222;
                 --login-button-background-color: var(--app-theme-color);
                 font-size: 18px;
@@ -157,11 +164,30 @@
                 transition: ease-in-out .3s;
                 /* transition: cubic-bezier(0.68, -0.55, 0.265, 1.55); */
             }
-            #unauthenticated .card login-button:hover{
+
+            #unauthenticated .card login-button:hover {
                 transform: scale(1.1);
             }
 
 
+            /* mobile profile card toggle button */
+            
+            :host([is-mobile]) #pibMobileOpenProCard{
+                display: block;
+            }
+
+            :host([is-mobile]) #main-navigation{
+                margin-left: 44px;
+            }
+
+            #pibMobileOpenProCard{
+                display: none;
+                position: absolute;
+                height: 44px;
+                padding-top: 4px;
+                color: #222;
+                background: var(--app-theme-darker-color);
+            }
 
         </style>
 
@@ -170,27 +196,23 @@
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
-        <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
+        <div id="unauthenticated" hidden$="[[!storedUser.loggedin]]">
             <div class="card">
                 <h2>Önce Giriş Yapmalısın!</h2>
                 <login-button stored-user={{storedUser}}></login-button>
             </div>
         </div>
-        <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
-                
+        <div id="authenticated" hidden$="[[storedUser.loggedin]]">
+
             <iron-ajax id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
             <iron-ajax id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
 
             <div id="profile-container">
                 <div class="main-profile">
-                    <paper-tabs 
-                        id="main-navigation" 
-                        selected="{{subpage}}"
-                        no-slide
-                        attr-for-selected="name" 
-                        scrollable
-                        role="navigation"
-                        >
+                    <div id="pibMobileOpenProCard">
+                        <paper-icon-button icon="social:mood" hidden$=[[!isMobile]] on-tap="_toggleMobileProCard"></paper-icon-button>
+                    </div>
+                    <paper-tabs id="main-navigation" selected="{{subpage}}" no-slide attr-for-selected="name" scrollable role="navigation">
                         <paper-tab name="general" class="nav-icon">
                             <iron-icon icon="device:data-usage" item-icon></iron-icon>
                             <span class="navigationname ">Genel Bilgiler</span>
@@ -203,10 +225,6 @@
                             <iron-icon icon="device:brightness-high" item-icon></iron-icon>
                             <span class="navigationname ">Sistem</span>
                         </paper-tab>
-                        <!-- <paper-tab name="forum" class="nav-icon">
-                            <iron-icon icon="communication:forum" item-icon></iron-icon>
-                            <span class="navigationname ">Forum</span>
-                        </paper-tab> -->
                         <paper-tab name="friends" class="nav-icon">
                             <iron-icon icon="social:people" item-icon></iron-icon>
                             <span class="navigationname ">Arkadaşlar</span>
@@ -224,16 +242,10 @@
                             <span class="navigationname">Steam</span>
                         </paper-tab>
                     </paper-tabs>
+
                     <div class="main-content">
-                        <neon-animated-pages 
-                            id="profilepages"
-                            entry-animation="slide-from-right-animation" 
-                            exit-animation="slide-left-animation"
-                            selected="[[subpage]]"
-                            attr-for-selected="name"
-                            fallback-selection="view404"
-                            role="main"
-                            >
+                        <neon-animated-pages id="profilepages" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation"
+                            selected="[[subpage]]" attr-for-selected="name" fallback-selection="view404" role="main">
                             <neon-animatable name="general">
                                 <kal-profile-general-page userinfo="[[userinfo]]" generator="{{generator}}" blurred="{{blurred}}"></kal-profile-general-page>
                             </neon-animatable>
@@ -243,9 +255,6 @@
                             <neon-animatable name="system">
                                 <kal-profile-system-page></kal-profile-system-page>
                             </neon-animatable>
-                            <!-- <neon-animatable name="forum">
-                                <kaldirirmi-profile-forum id="ipUserForum"></kaldirirmi-profile-forum>
-                            </neon-animatable> -->
                             <neon-animatable>
                                 <kal-profile-friends-page></kal-profile-friends-page>
                             </neon-animatable>
@@ -253,12 +262,10 @@
                                 <kal-profile-games-page></kal-profile-games-page>
                             </neon-animatable>
                             <neon-animatable name="twitch">
-                                <kal-profile-twitch-page  connected="[[auths.twitch.linked]]"></kal-profile-games-page>
-                                <!-- <kaldirirmi-profile-twitch id="idUserTwitch" connected="[[auths.twitch.linked]]"></kaldirirmi-profile-twitch> -->
+                                <kal-profile-twitch-page connected="[[auths.twitch.linked]]"></kal-profile-games-page>
                             </neon-animatable>
                             <neon-animatable name="steam">
-                                <kal-profile-steam-page  connected="[[auths.twitch.linked]]"></kal-profile-games-page>
-                                <!-- <kaldirirmi-profile-steam id="idUserSteam" connected="[[auths.steam.linked]]"></kaldirirmi-profile-steam> -->
+                                <kal-profile-steam-page connected="[[auths.twitch.linked]]"></kal-profile-games-page>
                             </neon-animatable>
                         </neon-animated-pages>
                     </div>
@@ -385,7 +392,7 @@
                     isMobile: {
                         type: Boolean,
                         reflectToAttribute: true
-                    },  
+                    },
                     route: Object,
                     data: Object,
                     subpage: {
@@ -472,12 +479,11 @@
                     this.set('route.path', '/general/');
                 }
 
-
-                if(this.storedUser.loggedin){
+                if (this.storedUser.loggedin) {
                     this.$.ironAJaxGetUserInfo.generateRequest();
                     this.$.userauths.generateRequest();
                 }
-               
+
             }
             _routeSubPageChanged(subpage) {
                 // console.log('_routeSubPageChanged before subpage: ', subpage);
@@ -491,10 +497,10 @@
 
             _subPageChanged(subpage) {
                 // console.log('_subPageChanged', subpage);
-                
+
                 //Change the route path according to tab selection
                 //but, do not add view404 to the url path
-                if(subpage != 'view404'){
+                if (subpage != 'view404') {
                     this.set('route.path', '/' + subpage + '/');
                 }
 
@@ -522,7 +528,7 @@
             _generatorChanged(newVal, oldVal) {
                 console.log('new =>' + newVal);
                 //console.log('oldies =>' + oldVal);
-                if(newVal !== undefined && newVal != ''){
+                if (newVal !== undefined && newVal != '') {
                     console.log('girdi');
                     this.$.ironAJaxGetUserInfo.generateRequest();
                 }
@@ -616,6 +622,21 @@
                 this.blurred = Math.random().toString();
                 this.$.profilepages.select(0);
                 this.selectedIndex = 0;
+            }
+
+
+            _toggleMobileProCard() {
+
+                console.log('_toggleMobileProCard');
+
+                const profileCard = this.shadowRoot.querySelector('profile-card');
+                const toggleClass = 'toggleMobileCard';
+
+                if (!profileCard.classList.contains(toggleClass)) {
+                    profileCard.classList.add(toggleClass);
+                } else
+                    profileCard.classList.remove(toggleClass);
+
             }
         }
 
