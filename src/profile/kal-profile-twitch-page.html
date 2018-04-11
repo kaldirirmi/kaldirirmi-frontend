@@ -1,4 +1,3 @@
-
 <link rel="import" href="./twitch/twitch-full-page.html">
 
 <dom-module id="kal-profile-twitch-page">
@@ -11,6 +10,12 @@
             #twitchmaterial {
                 width: 100%;
                 margin: 10px;
+            }
+
+            @media screen and (max-width: 768px) {
+                #twitchmaterial {
+                    margin: 0 !important;
+                }
             }
 
             .notconnectedalert {

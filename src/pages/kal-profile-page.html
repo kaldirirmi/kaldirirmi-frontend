@@ -53,15 +53,12 @@
             }
 
             :host([is-mobile]) #profile-container .main-profile .main-content {
-                /* min-height: 300px; */
+                min-height: 100vh;
+                padding: 10px 0px;
             }
 
             :host([is-mobile]) #profile-container .side-profile {
                 @apply --layout-flex-12;
-            }
-
-            :host([is-mobile]) profile-card {
-                display: none;
             }
 
             :root {
@@ -171,24 +168,63 @@
 
 
             /* mobile profile card toggle button */
-            
-            :host([is-mobile]) #pibMobileOpenProCard{
+
+            :host([is-mobile]) #pibMobileOpenProCard {
                 display: block;
             }
 
-            :host([is-mobile]) #main-navigation{
+            :host([is-mobile]) #main-navigation {
                 margin-left: 44px;
             }
 
-            #pibMobileOpenProCard{
+            #pibMobileOpenProCard {
                 display: none;
                 position: absolute;
                 height: 44px;
                 padding-top: 4px;
                 color: #222;
-                background: var(--app-theme-darker-color);
+                background: var(--app-theme-color);
             }
 
+            :host([is-mobile]) .profile-card-container {
+                display: none;
+                position: fixed;
+                top: 150%;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background: #222;
+                /* opacity: 0.9; */
+                -webkit-transition: -webkit-transform .3s;
+                transition: -webkit-transform .3s;
+                transition: transform .3s;
+                transition: transform .3s, -webkit-transform .3s;
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+                z-index: 100;
+            }
+
+            #pibMobileCloseProCard {
+                display: none;
+                z-index: 2222;
+                padding: 0;
+                margin-top: -10px;
+                height: 37px;
+                color: #eee !important;
+                padding: 4px;
+            }
+
+            .toggleMobileButton {
+                display: inline-block !important;
+            }
+
+            .toggleMobileCard {
+                display: block !important;
+                -webkit-transform: translateY(-140%) !important;
+                transform: translateY(-140%) !important;
+                position: absolute !important;
+                z-index: 2001;
+            }
         </style>
 
         <app-route route="{{route}}" pattern="/profile/:subpage" data="{{data}}" active="{{selectedPageActive}}"></app-route>
@@ -209,7 +245,10 @@
 
             <div id="profile-container">
                 <div class="main-profile">
+                    <paper-icon-button id="pibMobileCloseProCard" icon="icons:arrow-back" hidden$=[[!isMobile]] on-tap="_toggleMobileProCard"></paper-icon-button>
+
                     <div id="pibMobileOpenProCard">
+
                         <paper-icon-button icon="social:mood" hidden$=[[!isMobile]] on-tap="_toggleMobileProCard"></paper-icon-button>
                     </div>
                     <paper-tabs id="main-navigation" selected="{{subpage}}" no-slide attr-for-selected="name" scrollable role="navigation">
@@ -271,7 +310,9 @@
                     </div>
                 </div>
                 <div class="side-profile">
-                    <profile-card userinfo="[[userinfo]]" on-tile-click="_onTileClick"></profile-card>
+                    <div class="profile-card-container">
+                        <profile-card userinfo="[[userinfo]]" on-tile-click="_onTileClick"></profile-card>
+                    </div>
                 </div>
             </div>
 
@@ -629,13 +670,19 @@
 
                 console.log('_toggleMobileProCard');
 
-                const profileCard = this.shadowRoot.querySelector('profile-card');
-                const toggleClass = 'toggleMobileCard';
+                const profileCard = this.shadowRoot.querySelector('.profile-card-container');
+                const toggleButton = this.shadowRoot.querySelector('#pibMobileCloseProCard');
 
-                if (!profileCard.classList.contains(toggleClass)) {
-                    profileCard.classList.add(toggleClass);
-                } else
-                    profileCard.classList.remove(toggleClass);
+                const toggleContainerClass = 'toggleMobileCard';
+                const toggleButtonClass = 'toggleMobileButton';
+                if (!profileCard.classList.contains(toggleContainerClass)) {
+                    profileCard.classList.add(toggleContainerClass);
+                    toggleButton.classList.add(toggleButtonClass);
+
+                } else {
+                    profileCard.classList.remove(toggleContainerClass);
+                    toggleButton.classList.remove(toggleButtonClass);
+                }
 
             }
         }
