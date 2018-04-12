@@ -18,9 +18,27 @@
             div[likedgames] {
                 color: white;
                 font-size: calc(0.1em + 1vmin);
-                padding: calc(0.5em + 1vmin);
-                min-height: calc(100vh - 64px);
+                /* padding: calc(0.5em + 1vmin);
+                min-height: calc(100vh - 64px); */
+                height: calc(100vh - 330px) !important;
+                overflow-y: auto !important;
             }
+
+            div[likedgames]::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            div[likedgames]::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            div[likedgames]::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
 
             div[likedgames] .acc {
                 flex-grow: 2;
@@ -36,6 +54,7 @@
                 text-align: center;
                 min-height: 300px !important;
                 color: white;
+                position: relative;
             }
 
             .loadingIndicator p {
@@ -178,7 +197,7 @@
             #addsystemalert {
                 color: #222 !important;
                 background-color: var(--app-theme-color) !important;
-                font-weight: bold;
+                font-weight: bold;  
             }
 
             #likedGameList {
@@ -187,9 +206,9 @@
                 @apply --layout-start-justified;
                 flex-flow: row wrap;
                 -ms-flex-flow: row wrap;
-                width: 100%;
+                /* width: 100%; */
                 height: auto;
-                padding: 10px;
+                /* padding: 10px; */
                 background: #222;
             }
 
@@ -280,7 +299,7 @@
                 @apply --layout-vertical;
                 @apply --shadow-elevation-8dp;
                 margin: 10px !important;
-                width: 45%;
+                width: 47%;
             }
 
             #likedGameList .gamecard .card-header {
@@ -466,8 +485,8 @@
                                     <div class="card-container">
                                         <div class="card-container-picture">
                                             <a href="/game/[[games.url]]">
-                                                <iron-image background src="//cdn.kaldirirmi.com/images/games/[[games.picture]]" sizing="cover" alt="[[games.name]]" preload
-                                                    fade></iron-image>
+                                                <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[games.picture]]" sizing="cover" alt="[[games.name]]"
+                                                    preload fade></iron-image>
                                             </a>
                                         </div>
                                         <div class="card-container-center">
@@ -503,7 +522,6 @@
                     <div class="loadingIndicator" hidden$="[[!loadinglikes]]">
                         <p>Kütüphanen Getiriliyor</p>
                         <loader-pac></loader-pac>
-                        <!--<paper-spinner-lite active$="[[loadinglikes]]"></paper-spinner-lite> Beğenilen Oyunlar Getiriliyor-->
                     </div>
                 </div>
             </div>
@@ -586,34 +604,30 @@
 
             _triggerCancelGameForm(event) {
                 this.gid = event.currentTarget.name;
-                
-                this.$.pbCancelGameLikes.setAttribute('disabled', true);
+                const pbCancelGameLikes = this.shadowRoot.querySelector('#pbCancelGameLikes');
+                pbCancelGameLikes.setAttribute('disabled', true);
                 this.$.cancellikedgamerequestform.submit();
-
-                // document.getElementById('pbCancelGameLikes').disabled = true;
-                // document.getElementById('cancellikedgamerequestform').submit();
             }
 
             _responseLikedGames(event) {
                 this.set('likedGames', []);
                 var response = event.detail.response;
+                // console.log(response);
                 if (response.length > 0) {
                     this.set('likedGames', response);
                     this.set('likedGamesActive', true);
-                    // this.likedGamesActive = true;
                 } else {
-                    
+
                     this.set('likedGamesActive', false);
-                    // this.likedGamesActive = false;
                 }
             }
-            
-            _systemAlert(message){
+
+            _systemAlert(message) {
                 var event = new CustomEvent('toaster', {
                     bubbles: true,
                     composed: true,
                     detail: {
-                    text: message
+                        text: message
                     }
                 });
                 this.dispatchEvent(event);
@@ -621,25 +635,21 @@
 
             _responseOfCancelLikeGameRequest(e) {
                 var message = e.detail.response.message;
-                // var systemAlert = document.getElementById('alert');
-                // systemAlert.setAttribute('text', message);
 
                 if (e.detail.response.success) {
-                    this.$.pbCancelGameLikes.setAttribute('disabled', false);
-                    // document.getElementById('pbCancelGameLikes').disabled = false;
+                    const pbCancelGameLikes = this.shadowRoot.querySelector('#pbCancelGameLikes');
+                    pbCancelGameLikes.setAttribute('disabled', false);
+
                     this.$.ironAjaxGetLikedGames.generateRequest();
+
                 } else {
-                    // unload();
                     this.$.cancellikedgamerequestform.reset();
-                    // document.getElementById('cancellikedgamerequestform').reset();
                 }
-                
+
                 this._systemAlert(message);
-                // systemAlert.open();
             }
 
             _remakeRelease(release) {
-                // console.log(release);
                 return moment(release).format('L');
             }
 

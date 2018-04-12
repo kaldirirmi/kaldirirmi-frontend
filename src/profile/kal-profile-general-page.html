@@ -1,12 +1,13 @@
+
 <dom-module id="kal-profile-general-page">
     <template>
         <style include="shared-styles">
-            :host{
+            :host {
                 @apply --layout-horizontal;
             }
 
-            @media screen and (max-width: 767px){
-                :host{
+            @media screen and (max-width: 767px) {
+                :host {
                     @apply --layout-vertical;
                 }
             }
@@ -26,11 +27,11 @@
             }
 
             paper-material#userinformation,
-            paper-material#changepassword{
+            paper-material#changepassword {
                 @apply --layout-flex-6;
                 margin: 10px;
                 box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
-            } 
+            }
 
 
             /* #userinformation,
@@ -49,7 +50,7 @@
                 border-top: 3px solid #222222;
                 border-bottom: 3px solid #222222;
                 font-size: calc(0.50em + 1vmin);
-                                font-weight: 100;
+                font-weight: 100;
                 color: white !important;
             }
 
@@ -63,7 +64,7 @@
             #passwordform {
                 @apply --layout-vertical;
                 padding: 0px 20px;
-                 padding-bottom: 10px;
+                padding-bottom: 10px;
             }
 
             #profileform .birthday {
@@ -91,12 +92,12 @@
                 background-color: var(--app-theme-color);
                 color: white;
             }
-            
-            #passwordform form{
+
+            #passwordform form {
                 @apply --layout-vertical;
             }
-            
-            #password form paper-input{
+
+            #password form paper-input {
                 @apply --layout-flex-4;
             }
 
@@ -112,6 +113,7 @@
                 font-size: calc(0.5em + 1vmin);
                 min-height: 350px !important;
                 color: var(--app-theme-color);
+                position: relative;
             }
 
             .loadingIndicatorProfile h5 {
@@ -145,14 +147,10 @@
             .blurred {
                 box-shadow: 12px 7px 67px -6px rgba(255, 239, 239, 0.71) !important;
             }
-            
-            
-            
-
         </style>
         <!-- dom elements here-->
         <iron-ajax auto id="userinfo" url="/h/main?fm=user-info" method="get" handle-as="json" last-response="{{userinfo}}" loading="{{loadingProfil}}"></iron-ajax>
-       
+
         <paper-material elevation="0" id="userinformation" role="listbox">
             <paper-item heading>Profil Bilgilerin</paper-item>
             <div info>
@@ -161,47 +159,17 @@
                     <h5>Profil Yükleniyor</h5>
                 </div>
                 <div hidden$=[[loadingProfil]]>
-                    <iron-form on-iron-form-response="_ironFormResponseForProfile">
-                        <form id="profileform" action="/h/main" method="post">
+                    <iron-form id="profileform" on-iron-form-response="_ironFormResponseForProfile">
+                        <form action="/h/main" method="post">
                             <paper-input label="İsim Soyisim" id="namesurname" name="namesurname" value$="[[userinfo.namesurname]]" char-counter maxlength="150"></paper-input>
                             <paper-textarea label="Hakkında" id="about" name="about" value$="[[userinfo.about]]" char-counter maxlength="500"></paper-textarea>
                             <div class="birthday">
-                                <paper-input 
-                                    label="Doğum Gün"
-                                    type="number"
-                                    id="birthday"
-                                    name="birthday"
-                                    value$="[[userinfo.birthday]]"
-                                    max="31"
-                                    min="1"
-                                    minlength="1"
-                                    maxlength="2"
-                                    allowed-pattern="[a-zA-Z]*"
-                                    auto-validate></paper-input>
-                                <paper-input 
-                                    label="Doğum Ay" 
-                                    type="number"
-                                    id="birthmonth"
-                                    name="birthmonth"
-                                    value$="[[userinfo.birthmonth]]"
-                                    max="12"
-                                    min="1"
-                                    minlength="1"
-                                    maxlength="2"
-                                    allowed-pattern="[a-zA-Z]*"
-                                    auto-validate
-                                    ></paper-input>
-                                <paper-input 
-                                    label="Doğum Yıl"
-                                    type="number" 
-                                    id="birthyear"
-                                    name="birthyear"
-                                    value$="[[userinfo.birthyear]]"
-                                    max="[[_currentYear]]"
-                                    maxlength="4"
-                                    minlength="4"
-                                    min="1930"
-                                    auto-validate></paper-input>
+                                <paper-input label="Doğum Gün" type="number" id="birthday" name="birthday" value$="[[userinfo.birthday]]" max="31" min="1"
+                                    minlength="1" maxlength="2" allowed-pattern="[a-zA-Z]*" auto-validate></paper-input>
+                                <paper-input label="Doğum Ay" type="number" id="birthmonth" name="birthmonth" value$="[[userinfo.birthmonth]]" max="12" min="1"
+                                    minlength="1" maxlength="2" allowed-pattern="[a-zA-Z]*" auto-validate></paper-input>
+                                <paper-input label="Doğum Yıl" type="number" id="birthyear" name="birthyear" value$="[[userinfo.birthyear]]" max="[[_currentYear]]"
+                                    maxlength="4" minlength="4" min="1930" auto-validate></paper-input>
                             </div>
                             <div class="buttons">
                                 <input type="hidden" name="fm" value="update-user-profile" />
@@ -220,11 +188,14 @@
                         <paper-input label="Şuanki şifren" id="oldpass" name="oldpass" required auto-validate error-message="bu alanın doldurulması zorunludur"
                             type="password"></paper-input>
                         <paper-input label="Yeni şifren" id="newpass" name="newpass" required char-counter minlength="8" maxlength="12" auto-validate
-                            error-message="minimum 8 karakter olmalıdır" type="password"></paper-input>
+                            error-message="minimum 8 karakter olmalıdır" type="password"  ></paper-input>
                         <paper-input label="Yeni şifreni onayla" id="newpasscon" name="newpasscon" required char-counter minlength="8" maxlength="12"
                             auto-validate error-message="minimum 8 karakter olmalıdır" type="password"></paper-input>
                         <div class="buttons">
                             <input type="hidden" name="fm" value="change-password" />
+                            <!-- <input type="hidden" name="oldpass" value="[[passinfo.oldpass]]" />
+                            <input type="hidden" name="newpass" value="[[passinfo.newpass]]" />
+                            <input type="hidden" name="newpasscon" value="[[passinfo.newpasscon]]" /> -->
                             <paper-icon-button id="passwordsubmit" on-tap="_passwdSubmit" icon="done"></paper-icon-button>
                         </div>
                     </form>
@@ -307,8 +278,7 @@
             ready() {
                 super.ready();
 
-                Polymer.RenderStatus.afterNextRender(this, function () {
-                });
+                Polymer.RenderStatus.afterNextRender(this, function () {});
             }
 
             _passwdSubmit(a) {
@@ -316,9 +286,9 @@
                     if (this.passwordcounter <= 3) {
                         this.$.passwordform.submit();
                         // document.getElementById('passwordform').submit();
-                    }
-                    else {
-                        this.setMessageToToaster('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
+                    } else {
+                        this.setMessageToToaster(
+                            'Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
                     }
                     this.passwordcounter = this.passwordcounter + 1;
 
@@ -326,13 +296,17 @@
             }
 
             _profileFormSubmit(a) {
-                if (this.$.namesurname.validate() && this.$.about.validate() && this.$.birthday.validate() && this.$.birthmonth.validate() && this.$.birthyear.validate()){
+
+                console.log('_profileFormSubmit', this.userinfo);
+
+                if (this.$.namesurname.validate() && this.$.about.validate() && this.$.birthday.validate() &&
+                    this.$.birthmonth.validate() && this.$.birthyear.validate()) {
                     if (this.profilecounter <= 3) {
                         this.$.profileform.submit();
-                        // document.getElementById('profileform').submit();
-                    }
-                    else {
-                        this.setMessageToToaster('Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
+                        // console.log('girdi');
+                    } else {
+                        this.setMessageToToaster(
+                            'Yüksek Sayıda Güncelleme Talebinde Bulundunuz. İşlemininiz İptal Edilmiştir!');
                     }
                     this.profilecounter = this.profilecounter + 1;
                 }
@@ -342,7 +316,9 @@
                 var response = event.detail.response;
                 //console.log(response);
                 if (response.success) {
-                    //console.log('scuess');
+                    console.log('_profileFormSubmit', this.userinfo);
+
+                    console.log('scuess');
                     //if success, trigger userinfo vcard
                     this.generator = Math.random().toString();
                 }
@@ -351,7 +327,7 @@
 
             _ironFormResponseForPassword(event) {
                 var response = event.detail.response;
-                //console.log('ironForm Password => ' + response);
+                console.log('ironForm Password => ' + response);
                 this.setMessageToToaster(response.message);
             }
 
@@ -360,12 +336,12 @@
                     bubbles: true,
                     composed: true,
                     detail: {
-                    text: message
+                        text: message
                     }
                 });
                 this.dispatchEvent(event);
             }
-            
+
             _isBlurredFocus(newVal, oldVal) {
                 //console.log('_isBLurred' + newVal);
                 this.$.userinformation.toggleClass('blurred');

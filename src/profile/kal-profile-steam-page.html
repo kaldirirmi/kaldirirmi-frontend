@@ -5,7 +5,7 @@
                 display: flex;
                 color: white !important;
             }
-            
+
             @media screen and (max-width: 768px) {
                 #steammaterial {
                     margin: 0 !important;
@@ -81,6 +81,24 @@
                 padding: 0px 16px;
                 font-size: calc(0.33em + 1vmin);
                 height: auto !important;
+                height: calc(100vh - 330px) !important;
+                overflow-y: auto !important;
+                background: #222;
+            }
+
+              div[info]::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            div[info]::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            div[info]::-webkit-scrollbar-track {
+                background-color: #000;
             }
 
             .paperSubMaterial {
@@ -237,8 +255,9 @@
                 display: none !important;
             }
 
-            .loadingIndicator{
+            .loadingIndicator {
                 color: var(--app-theme-color);
+                position: relative;
             }
         </style>
 

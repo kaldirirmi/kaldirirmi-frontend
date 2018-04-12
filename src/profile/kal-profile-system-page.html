@@ -35,9 +35,16 @@
             paper-item[info] {
                 @apply --layout-vertical;
                 @apply --layout-center;
+                padding: 6px 0px;
             }
 
-              div[empty-info] {
+            paper-item[info] .detail {
+                font-size: 18px;
+                margin: 5px 0px;
+            }
+
+
+            div[empty-info] {
                 @apply --layout-vertical;
                 @apply --layout-center;
             }
@@ -142,23 +149,23 @@
                 <template is="dom-if" if="[[system.added]]">
                     <paper-item info>
                         <div>İşlemci</div>
-                        <div>[[system.cpu.text]]</div>
+                        <div class="detail">[[system.cpu.text]]</div>
                     </paper-item>
                     <paper-item info>
                         <div>Ekran Kartı</div>
-                        <div>[[system.gpu.text]]</div>
+                        <div class="detail">[[system.gpu.text]]</div>
                     </paper-item>
                     <paper-item info>
                         <div>İşletim Sistemi</div>
-                        <div>[[system.os.text]]</div>
+                        <div class="detail">[[system.os.text]]</div>
                     </paper-item>
                     <paper-item info>
                         <div>RAM</div>
-                        <div>[[system.ram]] GB</div>
+                        <div class="detail">[[system.ram]] GB</div>
                     </paper-item>
                     <paper-item info>
                         <div>Boş Alan</div>
-                        <div>[[system.free_hdd]] GB</div>
+                        <div class="detail">[[system.free_hdd]] GB</div>
                     </paper-item>
                     <div class="button-panel">
                         <paper-button onclick="location.href='/uye/sistemini-tanimla';">Sistemini Elle Güncelle</paper-button>

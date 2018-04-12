@@ -2,6 +2,12 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
@@ -10,9 +16,12 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-from-right-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-left-animation.html">
 
+
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../model/login-button.html">
 <link rel="import" href="../model/profile-card.html">
+<link rel="import" href="../model/loader-pac.html">
+
 
 <!-- Fragments -->
 <link rel="lazy-import" href="../profile/kal-profile-general-page.html">
@@ -35,10 +44,9 @@
             :host {
                 display: block;
                 overflow: hidden !important;
-                /* height: calc(100vh - 192px); */
+                height: calc(100vh - 192px);
                 color: #fff !important;
             }
-
 
             :host([is-mobile]) {
                 height: auto !important;
@@ -53,8 +61,9 @@
             }
 
             :host([is-mobile]) #profile-container .main-profile .main-content {
-                min-height: 100vh;
+                min-height: calc(100vh - 152px);
                 padding: 10px 0px;
+                overflow-y: auto !important;
             }
 
             :host([is-mobile]) #profile-container .side-profile {
@@ -95,9 +104,9 @@
                 @apply --layout-vertical;
                 /* @apply --shadow-elevation-4dp; */
                 /* background: red; */
-                padding: 10px;
+                /* padding: 10px; */
                 /* min-height: 1000px; */
-                min-height: 500px;
+                min-height: 600px;
             }
 
             paper-tabs#main-navigation {
@@ -232,13 +241,13 @@
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
-        <div id="unauthenticated" hidden$="[[!storedUser.loggedin]]">
+        <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
             <div class="card">
                 <h2>Önce Giriş Yapmalısın!</h2>
                 <login-button stored-user={{storedUser}}></login-button>
             </div>
         </div>
-        <div id="authenticated" hidden$="[[storedUser.loggedin]]">
+        <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
 
             <iron-ajax id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
             <iron-ajax id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
@@ -286,7 +295,7 @@
                         <neon-animated-pages id="profilepages" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation"
                             selected="[[subpage]]" attr-for-selected="name" fallback-selection="view404" role="main">
                             <neon-animatable name="general">
-                                <kal-profile-general-page userinfo="[[userinfo]]" generator="{{generator}}" blurred="{{blurred}}"></kal-profile-general-page>
+                                <kal-profile-general-page generator="{{generator}}" blurred="{{blurred}}"></kal-profile-general-page>
                             </neon-animatable>
                             <neon-animatable name="accounts">
                                 <kal-profile-accounts-page auths="[[auths]]"></kal-profile-accounts-page>
@@ -294,7 +303,7 @@
                             <neon-animatable name="system">
                                 <kal-profile-system-page></kal-profile-system-page>
                             </neon-animatable>
-                            <neon-animatable>
+                            <neon-animatable name="friends">
                                 <kal-profile-friends-page></kal-profile-friends-page>
                             </neon-animatable>
                             <neon-animatable name="games">
@@ -515,7 +524,7 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-                console.log(this.route);
+                // console.log(this.route);
                 if (!this.route || !this.route.path) {
                     this.set('route.path', '/general/');
                 }
@@ -559,21 +568,19 @@
             }
 
             _selectedPageChanged(value) {
-                console.log('page changed', value);
+                // console.log('page changed', value);
             }
 
             _selectedPageActiveChanged(value) {
-                console.log('page active changed', value);
+                // console.log('page active changed', value);
             }
 
             _generatorChanged(newVal, oldVal) {
-                console.log('new =>' + newVal);
+                // console.log('new =>' + newVal);
                 //console.log('oldies =>' + oldVal);
                 if (newVal !== undefined && newVal != '') {
-                    console.log('girdi');
-                    this.$.ironAJaxGetUserInfo.generateRequest();
+                    // this.$.ironAJaxGetUserInfo.generateRequest();
                 }
-
             }
             _pibOpenCloseProCard() {
                 if (this.vcardOpened) {
