@@ -32,6 +32,7 @@
 <link rel="lazy-import" href="../profile/kal-profile-friends-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-twitch-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-steam-page.html">
+<link rel="lazy-import" href="../profile/kal-profile-add-system-page.html">
 
 
 <!-- Moment.js Element Import -->
@@ -241,13 +242,13 @@
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
-        <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
+        <div id="unauthenticated" hidden$="[[!storedUser.loggedin]]">
             <div class="card">
                 <h2>Önce Giriş Yapmalısın!</h2>
                 <login-button stored-user={{storedUser}}></login-button>
             </div>
         </div>
-        <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
+        <div id="authenticated" hidden$="[[storedUser.loggedin]]">
 
             <iron-ajax id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
             <iron-ajax id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
@@ -315,6 +316,10 @@
                             <neon-animatable name="steam">
                                 <kal-profile-steam-page connected="[[auths.twitch.linked]]"></kal-profile-games-page>
                             </neon-animatable>
+                            <neon-animatable name="add-system">
+                                <kal-profile-add-system-page></kal-profile-add-system-page>
+                            </neon-animatable>
+                            
                         </neon-animated-pages>
                     </div>
                 </div>
@@ -324,97 +329,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- <div id="profile-page">
-                <div id="profile-content">
-                    <div id="profileTopNav">
-                        <paper-item id="pibMobileOpenProCard" class="nav-icon" on-tap="_pibMobileOpenProCard">
-                            <iron-icon icon="social:mood" item-icon></iron-icon>
-                        </paper-item>
-                        <paper-tabs id="profilenavigations" selected="[[subpage]]" attr-for-selected="name" scrollable>
-                            <paper-tab name="general" class="nav-icon">
-                                <iron-icon icon="device:data-usage" item-icon></iron-icon>
-                                <span class="navigationname ">Genel Bilgiler</span>
-                            </paper-tab>
-                            <paper-tab name="accounts" class="nav-icon">
-                                <iron-icon icon="icons:account-box" item-icon></iron-icon>
-                                <span class="navigationname ">Hesaplar</span>
-                            </paper-tab>
-                            <paper-tab name="system" class="nav-icon">
-                                <iron-icon icon="device:brightness-high" item-icon></iron-icon>
-                                <span class="navigationname ">Sistem</span>
-                            </paper-tab>
-                            <paper-tab name="forum" class="nav-icon">
-                                <iron-icon icon="communication:forum" item-icon></iron-icon>
-                                <span class="navigationname ">Forum</span>
-                            </paper-tab>
-                            <paper-tab name="friends" class="nav-icon">
-                                <iron-icon icon="social:people" item-icon></iron-icon>
-                                <span class="navigationname ">Arkadaşlar</span>
-                            </paper-tab>
-                            <paper-tab name="games" class="nav-icon">
-                                <iron-icon icon="hardware:videogame-asset" item-icon></iron-icon>
-                                <span class="navigationname ">Kütüphane</span>
-                            </paper-tab>
-                            <paper-tab name="twitch" class="nav-icon">
-                                <iron-icon icon="kaldirirmi:twitch" item-icon></iron-icon>
-                                <span class="navigationname ">Twitch</span>
-                            </paper-tab>
-                            <paper-tab name="steam" class="nav-icon">
-                                <iron-icon icon="kaldirirmi:steam" item-icon></iron-icon>
-                                <span class="navigationname">Steam</span>
-                            </paper-tab>
-                        </paper-tabs>
-                        <paper-icon-button id="pibOpenCloseProCard" on-tap="_pibOpenCloseProCard" icon="[[vButtonIcon]]"></paper-icon-button>
-                    </div>
-                    <div profile>
-                        <neon-animated-pages id="profilepages" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation">
-                            <neon-animatable>
-                                <kal-profile-general-page generator="{{generator}}" blurred="{{blurred}}"></kal-profile-general-page>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kal-profile-accounts-page auths="[[auths]]"></kal-profile-accounts-page>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kal-profile-system-page></kal-profile-system-page>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kaldirirmi-profile-forum id="ipUserForum"></kaldirirmi-profile-forum>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kaldirirmi-profile-friends id="ipUserFriends"></kaldirirmi-profile-friends>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kal-profile-games-page></kal-profile-games-page>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kaldirirmi-profile-twitch id="idUserTwitch" connected="[[auths.twitch.linked]]"></kaldirirmi-profile-twitch>
-                            </neon-animatable>
-                            <neon-animatable>
-                                <kaldirirmi-profile-steam id="idUserSteam" connected="[[auths.steam.linked]]"></kaldirirmi-profile-steam>
-                            </neon-animatable>
-                        </neon-animated-pages>
-                    </div>
-                </div>
-                <div id="profile-rightnav">
-
-                    <paper-button raised id="pibMobileCloseProCard" on-tap="_pibMobileCloseProCard">
-                        <iron-icon icon="arrow-back"></iron-icon>
-                        Geri Dön</paper-button>
-                    <template is="dom-if" if="[[!vcardOpened]]">
-                        <div id="smallvcard">
-                            <paper-material elevation="4">
-                                <iron-image class="user-background" src="{{_remakeUserAvatar(userinfo.avatar)}}" sizing="cover" preload fade></iron-image>
-                                <iron-image class="user-image center" src="{{_remakeUserAvatar(userinfo.avatar)}}" sizing="cover" preload fade></iron-image>
-                                <p class="user-name center">[[userinfo.username]]</p>
-                            </paper-material>
-                        </div>
-                    </template>
-                    <template is="dom-if" if="[[vcardOpened]]">
-                        <profile-vcard userinfo="[[userinfo]]" on-tile-click="_onTileClick"></profile-vcard>
-                    </template>
-                </div>
-            </div> -->
         </div>
     </template>
     <script>
@@ -495,6 +409,8 @@
             static get observers() {
                 return [
                     '_routeSubPageChanged(data.subpage)',
+                    // '_selectedDataChanged(data)',
+                    
                 ];
             }
             /**
@@ -516,6 +432,16 @@
 
                 });
             }
+            
+            _selectedDataChanged(data){
+                console.log('_selectedDataChanged',  data);
+                
+                console.log(this.route);
+                
+                if(this.route != null){
+                    
+                }
+            }   
 
             /**
              * Called every time the element is inserted into the DOM. Useful for 
@@ -524,10 +450,16 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-                // console.log(this.route);
+                console.log('connectedCallback', this.route);
+
+
+                console.log('!this.route', !this.route);
+                console.log('!this.route.path', !this.route.path);
+                
                 if (!this.route || !this.route.path) {
                     this.set('route.path', '/general/');
                 }
+                
 
                 if (this.storedUser.loggedin) {
                     this.$.ironAJaxGetUserInfo.generateRequest();
@@ -536,17 +468,22 @@
 
             }
             _routeSubPageChanged(subpage) {
-                // console.log('_routeSubPageChanged before subpage: ', subpage);
+                console.log('_routeSubPageChanged before subpage: ', subpage);
 
                 // If no subpage was found in the route data, subpage will be an empty string.
                 // Default to 'profile/general' in that case.
+                
+                if(this.route.path){
+                    subpage = this.route.path.split('/')[1];
+                }
+
                 this.subpage = subpage || 'general';
 
-                // console.log('_routeSubPageChanged after subpage: ', this.subpage);
+                //  console.log('_routeSubPageChanged after subpage: ', this.subpage);
             }
 
             _subPageChanged(subpage) {
-                // console.log('_subPageChanged', subpage);
+                console.log('_subPageChanged', subpage);
 
                 //Change the route path according to tab selection
                 //but, do not add view404 to the url path
@@ -637,15 +574,7 @@
                             //console.log(tooltip.className);
                         }
                     });
-
-
                 }
-            }
-            _pibMobileOpenProCard() {
-                document.getElementById('profile-rightnav').classList.add('mobileProCardOpened');
-            }
-            _pibMobileCloseProCard() {
-                document.getElementById('profile-rightnav').classList.remove('mobileProCardOpened');
             }
             _remakeUserBackground(background) {
                 var url = '//cdn.kaldirirmi.com/images/user/wallpaper/';

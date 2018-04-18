@@ -1,0 +1,264 @@
+<link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete-suggestions.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="kal-profile-add-system-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block
+            }
+
+            #system {
+                height: 100%;
+            }
+
+            #systemheader {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: var(--app-theme-color);
+                height: 45px;
+                padding: 0 30px;
+                max-width: 470px;
+                height: auto;
+                padding: 15px;
+                margin: auto;
+                box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
+                border-top: 3px solid #222222;
+                border-bottom: 3px solid #222222;
+            }
+
+            #systemheader h1 {
+                color: #fff;
+                pointer-events: none;
+                font-size: 20px;
+                font-weight: normal;
+                flex-grow: 2;
+                margin: 0 !important;
+            }
+
+            #newsystemholder {
+                margin: 20px 0;
+            }
+
+            #newsystemholder #newsystemform {
+                background: #fff;
+                max-width: 470px;
+                height: auto;
+                padding: 15px;
+                margin: auto;
+            }
+
+            #newsystemholder #newsystemform paper-autocomplete {
+                margin-bottom: 10px;
+            }
+
+            #newsystemholder #newsystemform .buttons {
+                margin-top: 20px;
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
+            }
+
+            #newsystemholder #newsystemform .buttons paper-button {
+                background: var(--app-theme-color);
+                color: #fff;
+                --paper-button-ink: white;
+            }
+        </style>
+
+        <div id="system">
+            <iron-ajax auto loading={{loading}} id="getusersysteminfo" url="/h/main?fm=user-system" method="get" handle-as="json" on-response="_responseUserSystem"></iron-ajax>
+            <iron-ajax auto url="/h/main?fm=get-cpus" method="get" handle-as="json" last-response="{{allcpus}}"></iron-ajax>
+            <iron-ajax auto url="/h/main?fm=get-gpus" method="get" handle-as="json" last-response="{{allgpus}}"></iron-ajax>
+            <iron-ajax auto url="/h/main?fm=get-oss" method="get" handle-as="json" last-response="{{alloss}}"></iron-ajax>
+
+            <div id="systemcontent">
+                <div id="systemheader">
+                    <h1 id="systemtitle">Sistemini Tanımla</h1>
+                </div>
+                <paper-material id="newsystemholder" elevation="0">
+                    <iron-form id="newsystemform" is="iron-form" on-iron-form-response="_responseNewSystemForm">
+                        <form action="/h/main" method="post">
+                            <input type="hidden" name="fm" value="new-user-system" />
+                            <input type="hidden" id="cpu" name="cpu" value="" />
+                            <input type="hidden" id="gpu" name="gpu" value="" />
+                            <input type="hidden" id="os" name="os" value="" />
+                            <paper-autocomplete source="[[allcpus]]" id="newsystemcpu" name="cpuname" label="İşlemci" required min-length="2" show-clear="true"
+                                placeholder="lütfen 2 karakter gir" auto-validate="true" error-message="Bu alanın doldurulması zorunludur"
+                                text-property="text" value-property="value" on-autocomplete-selected="_selectedCpu"></paper-autocomplete>
+
+                            <paper-autocomplete source="[[allgpus]]" id="newsystemgpu" name="gpuname" label="Ekran Kartı" required min-length="2" show-clear="true"
+                                placeholder="lütfen 2 karakter gir" auto-validate="true" error-message="Bu alanın doldurulması zorunludur"
+                                text-property="text" value-property="value" on-autocomplete-selected="_selectedGpu"></paper-autocomplete>
+                            <paper-autocomplete on-autocomplete-selected="_selectedOss" source="[[alloss]]" id="newsystemos" name="osname" label="İşletim Sistemi"
+                                required min-length="2" show-clear="true" placeholder="lütfen 2 karakter gir" auto-validate="true"
+                                error-message="Bu alanın doldurulması zorunludur" text-property="text" value-property="value"></paper-autocomplete>
+                            <paper-input id="newsystemram" name="ram" label="Ram" required error-message="Bu alanın doldurulması zorunludur"></paper-input>
+                            <paper-input id="newsystemhdd" name="hdd" label="Boş Alan" required error-message="Bu alanın doldurulması zorunludur"></paper-input>
+                            <div class="buttons">
+                                <paper-button raised id="newsystemsubmit" on-tap="_submitNewSystem">Onayla</paper-button>
+                            </div>
+                        </form>
+                    </iron-form>
+                    <div class="loadingIndicator" hidden$="[[!loading]]">
+                        <paper-spinner-lite active$="[[loading]]"></paper-spinner-lite> Yükleniyor
+                    </div>
+                </paper-material>
+            </div>
+            <!-- <paper-toast id="newsystemalert" duration="10000" class="fit-bottom"></paper-toast> -->
+        </div>
+
+
+    </template>
+
+    <script>
+        /**
+         * `kal-profile-add-system-page` Description
+         *
+         * @summary Sistemi elle güncelleyebilmek adına oluşturulmuş profil alt sayfasi /profile/add-system.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalProfileAddSystemPage extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-profile-add-system-page';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    loading: {
+                        type: Boolean,
+                        notify: true,
+                    }
+
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _responseUserSystem(e) {
+                let response = e.detail.response;
+                if (response != null) {
+                    if (response.length > 0) {
+                        this.set('loading', true);
+
+                        this.$.cpu.setAttribute("value", response.cpu.value);
+                        this.$.gpu.setAttribute("value", response.gpu.value);
+                        this.$.os.setAttribute("value", response.os.value);
+
+                        this.$.newsystemcpu.value = e.detail.response.cpu.value;
+                        this.$.newsystemcpu.$.input.value = e.detail.response.cpu.text;
+                        this.$.newsystemgpu.value = e.detail.response.gpu.value;
+                        this.$.newsystemgpu.$.input.value = e.detail.response.gpu.text;
+                        this.$.newsystemos.value = e.detail.response.os.value;
+                        this.$.newsystemos.$.input.value = e.detail.response.os.text;
+                        this.$.newsystemram.value = e.detail.response.ram;
+                        this.$.newsystemhdd.value = e.detail.response.free_hdd;
+
+                        this.$.newsystemsubmit.innerText = "güncelle";
+
+
+
+                    } else {
+                        this.set('loading', false);
+                    }
+                } else {
+                    this.set('loading', false);
+                }
+
+            }
+
+            _selectedCpu(event) {
+                const text = event.detail.option.text;
+                console.log('selectedCpu', text);
+                this.$.cpu.setAttribute("value", text);
+            }
+
+            _selectedGpu(event) {
+                const text = event.detail.option.text;
+                console.log('selectedGpu', text);
+                this.$.gpu.setAttribute("value", text);
+            }
+
+            _selectedOss(event) {
+                const text = event.detail.option.text;
+                console.log('_selectedOss', text);
+                this.$.os.setAttribute("value", text);
+            }
+
+            _submitNewSystem() {
+
+                if (this.shadowRoot.querySelector('#newsystemcpu paper-input').validate() &&
+                    this.shadowRoot.querySelector('#newsystemgpu paper-input').validate() &&
+                    this.shadowRoot.querySelector('#newsystemos paper-input').validate() &&
+                    this.shadowRoot.querySelector('#newsystemram').validate() &&
+                    this.shadowRoot.querySelector('#newsystemhdd').validate()) {
+                    this.$.newsystemform.submit();
+                }
+
+            }
+
+            _responseNewSystemForm(e) {
+
+                const response = e.detail.response;
+
+                if (response != null) {
+
+                    this._toaster(response.message);
+                    this._resetNewSystemForm();
+                }
+            }
+            _resetNewSystemForm() {
+                this.$.newsystemform.reset();
+                this.$.cpu.removeAttribute("value");
+                this.$.gpu.removeAttribute("value");
+                this.$.os.removeAttribute("value");
+            }
+
+            _toaster(message) {
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: message
+                    }
+                });
+
+                this.dispatchEvent(event);
+
+            }
+
+
+
+        }
+
+        window.customElements.define(KalProfileAddSystemPage.is, KalProfileAddSystemPage);
+    </script>
+</dom-module>

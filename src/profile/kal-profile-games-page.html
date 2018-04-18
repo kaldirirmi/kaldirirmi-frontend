@@ -57,7 +57,7 @@
                 position: relative;
             }
 
-            .loadingIndicator p {
+            .loadingIndicator p, .empty-catalog {
                 font-weight: 500;
                 font-size: 2.5em;
             }
@@ -259,7 +259,7 @@
                     text-align: center;
                 }
 
-                .loadingIndicator p {
+                .loadingIndicator p , .empty-catalog{
                     font-size: 1.5em;
                 }
             }
@@ -516,7 +516,7 @@
                             </template>
                         </template>
                         <template is="dom-if" if="[[!likedGamesActive]]">
-                            <h3>Kütüphanende hiç oyun yok!</h3>
+                            <h3 class="empty-catalog">Kütüphanende hiç oyun yok!</h3>
                         </template>
                     </div>
                     <div class="loadingIndicator" hidden$="[[!loadinglikes]]">
