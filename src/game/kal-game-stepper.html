@@ -1,3 +1,11 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
@@ -19,7 +27,7 @@
             
             .alingcenter {
                 align-items: center;
-                -webkit-align-content: center;
+                /* -webkit-align-content: center; */
             }
             
             .layout.vertical{
@@ -159,6 +167,7 @@
                 color: white;
                 width: 100%;
                 margin: 15px 5px;
+                font-size: 14px;
             }
 
             .sub-container-result .sub-container-result-column {
@@ -199,9 +208,9 @@
                         </div>
                         <img class="sub-container-image" src="/assets/img/feedbacks/gameestimatedprice.svg" />
                         <div class="sub-container-user">
-                            <paper-input class="picuser" id="paperInputEstimatedPrice" bind-value="{{gameestimatedprice}}" label="Sizce Oyunun Gerçek Değeri"
+                            <paper-input class="picuser" id="paperInputEstimatedPrice" value="{{gameestimatedprice}}" label="Sizce Oyunun Gerçek Değeri"
                                 auto-validate pattern="[0-9]*" error-message="Sadece Sayı Giriniz!" type="string" maxlength="4">
-                                <div suffix>TL</div>
+                                <div suffix slot="suffix">TL</div>
                             </paper-input>
                         </div>
                         <div class="sub-container-result">
@@ -334,9 +343,9 @@
                         <img class="sub-container-image" src="/assets/img/feedbacks/averagecompletetime.svg" />
 
                         <div class="sub-container-user">
-                            <paper-input class="picuser" id="paperInputCompleteTime" bind-value="{{averagecompletetime}}" label="Tahmini Tamamlama Süresi"
+                            <paper-input class="picuser" id="paperInputCompleteTime" value="{{averagecompletetime}}" label="Tahmini Tamamlama Süresi"
                                 auto-validate pattern="[0-9]*" error-message="Sadece Sayı Giriniz!" type="string" maxlength="4">
-                                <div suffix>Saat</div>
+                                <div suffix slot="suffix">Saat</div>
                             </paper-input>
                         </div>
                         <div class="sub-container-result">

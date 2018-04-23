@@ -31,13 +31,20 @@ Custom property | Description | Default
 @element paper-star-rating
 @demo demo/index.html
 -->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
 
 <dom-module id="paper-star-rating">
   <template>
     <style>
       :host {
         display: inline-block;
-        --paper-icon-button-ink-color: var(--rating-ink-color, --primary-text-color)
+        --rating-ink-color: var(--google-blue-100);
+        --rating-icon-color: var(--app-theme-color);
+        --paper-icon-button-ink-color: var(--rating-ink-color, var(--primary-text-color))
       }
       :host([hidden]) {
         display: none;
@@ -57,7 +64,7 @@ Custom property | Description | Default
         opacity: 1
       }
       .stars .icon-container {
-        color: var(--rating-icon-color, --primary-text-color);
+        color: var(--rating-icon-color, var(--primary-text-color));
         opacity: var(--rating-unselected-opacity, .4);
         width: calc(var(--rating-icon-size,28px) + var(--rating-icon-padding,2px)*2);
         height: calc(var(--rating-icon-size,28px) + var(--rating-icon-padding,2px)*2);
@@ -91,7 +98,7 @@ Custom property | Description | Default
         pointer-events: none;
       }
       .stars .stars_half iron-icon {
-        color: var(--rating-icon-color, --primary-text-color);
+        color: var(--rating-icon-color, var(--primary-text-color));
         opacity: 1;
         width: var(--rating-icon-size,28px);
         height: var(--rating-icon-size,28px);

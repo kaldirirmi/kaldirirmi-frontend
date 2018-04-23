@@ -1,4 +1,14 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-input/all-imports.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../kal-global-variable.html">
+
+
 <dom-module id="kal-login-page">
     <template>
         <style include="shared-styles">
@@ -360,7 +370,7 @@
         </style>
 
         <app-route route="{{route}}" pattern="/:gameUrl" data="{{data}}" active="{{selectedGameActive}}"></app-route>
-        <hakke-global-variable key="userData" value="{{storedUser}}"></hakke-global-variable>
+        <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
 
         <!-- <iron-ajax id="registerLoginAjax" method="post" content-type="application/json" handle-as="text" on-response="handleUserResponse"
@@ -464,7 +474,7 @@
                 <h2>Hello, [[storedUser.name]]!</h2>
                 <p>You are currently logged in. You can access
                     <a href="[[rootPath]]secret-quotes">Secret Quotes</a>!</p>
-                    <log-out stored-user="{{storedUser}}"></log-out>
+                    <!-- <log-out stored-user="{{storedUser}}"></log-out> -->
             </div>
         </div>
     </template>
@@ -488,6 +498,8 @@
                         type: Boolean,
                         reflectToAttribute: true
                     },
+                    data: Object,
+                    selectedGameActive: Object
                 };
             }
 

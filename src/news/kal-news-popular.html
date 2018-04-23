@@ -1,3 +1,8 @@
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+
 <dom-module id="kal-news-popular">
     <template>
         <style>
@@ -89,7 +94,7 @@
 
             /*shine effect*/
 
-            populernews:hover {}
+          
 
             /* generated element for shine effect.
             * normal state is semi-transparent
@@ -193,9 +198,6 @@
                 }
             }
 
-            .loadingIndicator{
-
-            }
 
         </style>            
             <iron-ajax auto id="getpopulernews" url="/h/main?fm=get-populer-news&a=[[currentnews]]" handle-as="json" on-response="_response"

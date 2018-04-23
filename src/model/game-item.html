@@ -1,3 +1,7 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
 <dom-module id="game-item">
     <template>
         <style>
@@ -140,7 +144,7 @@
 
             /* Smartphones (portrait and landscape) ----------- */
 
-            @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+            @media only screen and (min-width: 320px) and (max-width: 480px) {
                 :host([extended]) .game {
                     min-height: 250px;
                     height: 300px;

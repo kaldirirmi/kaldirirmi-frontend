@@ -1,9 +1,11 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../model/game-item.html">
 <link rel="import" href="../game/kal-selected-game.html">
 <link rel="import" href="../game/kal-all-games.html">
-<link rel="import" href="../thirdparty/moment.html">
+<link rel="import" href="../../bower_components/kal-thirdparty/moment.html">
+
+<link rel="import" href="../kal-global-variable.html"> 
+
 
 
 <dom-module id="kal-game-page">
@@ -28,10 +30,6 @@
 
       :host([is-mobile]) #allgames {
         @apply --layout-vertical;
-      }
-
-      :host([selected-game-active]) {
-        /* background: red; */
       }
 
       #allgames {

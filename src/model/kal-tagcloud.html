@@ -1,6 +1,10 @@
-<link rel="import" href="../thirdparty/jquery.html">
-<link rel="import" href="../thirdparty/tagcloud.html">
+<!-- <link rel="import" href="../thirdparty/jquery.html">
+<link rel="import" href="../thirdparty/tagcloud.html"> -->
+<link rel="import" href="../../bower_components/kal-thirdparty/jquery.html">
+<link rel="import" href="../../bower_components/kal-thirdparty/tagcloud.html">
 
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <dom-module id="kal-tagcloud">
     <template>
         <style>
@@ -139,7 +143,16 @@
                 this.set('contents', []);
                 if (a.detail.response.length > 0) {
                     a.detail.response.forEach(function (content) {
-                        //console.log(content);
+                        // let url = content.url;
+
+                        // if(url.includes("etiket")){
+                        //     var x = url.split("?")[0];
+                        //     x = x.split("/")[3];
+                        //     url = "/tags/" + x;
+                        // }
+                            
+                        content.url = "/";
+
                         this.push('contents', content);
                     }, this);
                 }

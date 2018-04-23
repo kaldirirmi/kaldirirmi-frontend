@@ -1,3 +1,4 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 
 <link rel="import" href="./game-animated-grid.html">
@@ -32,7 +33,6 @@
                 <game-animated-grid
                      gamename ="[[gameinfo.name]]"
                      kaldirir="{{kaldirir}}" 
-                     selectedInstance="{{selectedInstance}}"
                      kalnotes="{{kaldirir.notes}}"
                      hardwaretype="{{hardwaretype}}" 
                      on-tile-click="_onTileClick"  
@@ -45,7 +45,6 @@
                      mc="[[gameinfo.maincolor]]"
                      gamename="[[gameinfo.name]]"
                      hardwaretype="{{hardwaretype}}" 
-                     selectedInstance="{{selectedInstance}}"
                      id="fullsize-card"
                      selected-hardware=[[selectedHardware]]
                      on-tile-reset="_onTileReset">
@@ -78,6 +77,7 @@
                 return {
                     gameinfo: Object,
                     selectedHardware: Object,
+                    auto: Boolean
                 };
             }
 
@@ -92,7 +92,7 @@
             }
 
             _gameinfoChanged(newVal, oldVal){
-                console.log('_gameinfoChanged', newVal);
+                // console.log('_gameinfoChanged', newVal);
 
                 if(newVal !== 'undefined'){
                     this._generateRequest();
@@ -132,7 +132,7 @@
             }
 
             _onTileClick(event){
-                console.log('_onTileClick',event);
+                // console.log('_onTileClick',event);
                 //this.$['fullsize-card'].hardwaretype = event.detail.data.hardwaretype; <- bu da olur fakat farklı olsun diye dom bind kullanıyorum.
                 // this.$['fullsize-card'].data = event.detail.data;
                 this.set('selectedHardware', event.detail.data);

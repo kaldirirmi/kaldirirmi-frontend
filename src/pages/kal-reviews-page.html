@@ -8,6 +8,10 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../kal-global-variable.html">
+
 <link rel="import" href="../shared-styles.html">
 
 <!-- SubElement Imports -->
@@ -33,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <app-route route="{{route}}" pattern="/reviews/:reviewUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
         
-        <hakke-global-variable key="userData" value="{{storedUser}}"></hakke-global-variable>
+        <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
 
 

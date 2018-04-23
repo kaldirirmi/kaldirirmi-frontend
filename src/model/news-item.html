@@ -1,3 +1,6 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
 <dom-module id="news-item">
     <template>
         <style>
@@ -15,7 +18,14 @@
                 background: #fff;
             }
 
-            
+            :host([is-mobile]) figure figcaption,
+            :host([is-mobile]) .item .item-content .primary{
+                font-size: 14px;
+                line-height: 18px;
+            }
+
+
+
             /* BASIC ************/
             iron-image {
                 max-width: 100%;

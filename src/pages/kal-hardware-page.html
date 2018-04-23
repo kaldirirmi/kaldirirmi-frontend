@@ -7,6 +7,9 @@
 <link rel="import" href="../hardware/kal-hardware-list.html">
 <link rel="import" href="../shared-styles.html">
 
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+
 <dom-module id="kal-hardware-page">
   <template>
     <style include="shared-styles">
@@ -79,30 +82,14 @@
         margin-top: 75px;
       } */
 
-      @media only screen and (min-width: 768px) {
-        #hardware-container {
-          /* width: 90% !important; */
-        }
-
-        #hardware-container #navigation-tabs {
-          /* width: 79.5%; */
-        }
-      }
 
       @media only screen and (min-width: 1111px) {
         #hardware-container {
           width: 75% !important;
         }
-        #hardware-container #navigation-tabs {
-          /* width: 75%; */
-        }
+     
       }
 
-      @media only screen and (min-width: 1620px) {
-        #hardware-container #navigation-tabs {
-          /* width: 76.3%; */
-        }
-      }
     </style>
 
     <div id="hardware-container">

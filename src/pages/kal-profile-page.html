@@ -21,6 +21,7 @@
 <link rel="import" href="../model/login-button.html">
 <link rel="import" href="../model/profile-card.html">
 <link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../kal-global-variable.html">
 
 
 <!-- Fragments -->
@@ -34,10 +35,8 @@
 <link rel="lazy-import" href="../profile/kal-profile-steam-page.html">
 <link rel="lazy-import" href="../profile/kal-profile-add-system-page.html">
 
-
 <!-- Moment.js Element Import -->
-<link rel="import" href="../thirdparty/moment.html">
-
+<link rel="import" href="../../bower_components/kal-thirdparty/moment.html">
 
 <dom-module id="kal-profile-page">
     <template>
@@ -242,13 +241,13 @@
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
-        <div id="unauthenticated" hidden$="[[!storedUser.loggedin]]">
+        <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
             <div class="card">
                 <h2>Önce Giriş Yapmalısın!</h2>
                 <login-button stored-user={{storedUser}}></login-button>
             </div>
         </div>
-        <div id="authenticated" hidden$="[[storedUser.loggedin]]">
+        <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
 
             <iron-ajax id="ironAJaxGetUserInfo" url="/h/main?fm=get-userinfoviaid" handle-as="json" last-response="{{userinfo}}"></iron-ajax>
             <iron-ajax id="userauths" url="/h/main?fm=user-auths" method="get" handle-as="json" last-response="{{auths}}"></iron-ajax>
@@ -353,6 +352,7 @@
              */
             static get properties() {
                 return {
+                    selectedPageActive: Boolean,
                     isMobile: {
                         type: Boolean,
                         reflectToAttribute: true
@@ -434,9 +434,9 @@
             }
             
             _selectedDataChanged(data){
-                console.log('_selectedDataChanged',  data);
+                // console.log('_selectedDataChanged',  data);
                 
-                console.log(this.route);
+                // console.log(this.route);
                 
                 if(this.route != null){
                     
@@ -450,11 +450,11 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-                console.log('connectedCallback', this.route);
+                // console.log('connectedCallback', this.route);
 
 
-                console.log('!this.route', !this.route);
-                console.log('!this.route.path', !this.route.path);
+                // console.log('!this.route', !this.route);
+                // console.log('!this.route.path', !this.route.path);
                 
                 if (!this.route || !this.route.path) {
                     this.set('route.path', '/general/');
@@ -468,7 +468,7 @@
 
             }
             _routeSubPageChanged(subpage) {
-                console.log('_routeSubPageChanged before subpage: ', subpage);
+                // console.log('_routeSubPageChanged before subpage: ', subpage);
 
                 // If no subpage was found in the route data, subpage will be an empty string.
                 // Default to 'profile/general' in that case.

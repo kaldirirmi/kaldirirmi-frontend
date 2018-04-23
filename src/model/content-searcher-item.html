@@ -1,6 +1,19 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../model/loader-pac.html">
+
+
 <dom-module id="content-searcher-item">
     <template>
-
         <style>
             :host {
                 display: block;
@@ -292,14 +305,14 @@
                     <input id="newscastSearchInput" type="search" placeholder="Haber Ara" value="{{query::input}}" />
                 </div>
                 <paper-dropdown-menu class="pdmHeader" label="Sıralama">
-                    <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{order}}">
+                    <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{order}}" slot="dropdown-content">
                         <paper-item value="releasedate">Eklenme Tarihi</paper-item>
                         <paper-item value="title">Haber Başlığı</paper-item>
                         <paper-item value="viewcount">Görüntülenme Sayısı</paper-item>
                     </paper-listbox>
                 </paper-dropdown-menu>
                 <paper-dropdown-menu class="pdmHeader" label="Kriter">
-                    <paper-listbox  class="dropdown-content" attr-for-selected="value" selected="{{criter}}">
+                    <paper-listbox  class="dropdown-content" attr-for-selected="value" selected="{{criter}}" slot="dropdown-content">
                         <paper-item value="desc">Azalan</paper-item>
                         <paper-item value="asc">Artan</paper-item>
                     </paper-listbox>
@@ -313,14 +326,14 @@
                     <input id="mobileSearchInput" type="search" placeholder="Haber Ara" value="{{query::input}}" />
                 </div>
                 <paper-dropdown-menu class="pdmHeader" label="Sıralama">
-                    <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{order}}">
+                    <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{order}}" slot="dropdown-content">
                         <paper-item value="releasedate">Eklenme Tarihi</paper-item>
                         <paper-item value="title">Haber Başlığı</paper-item>
                         <paper-item value="viewcount">Görüntülenme Sayısı</paper-item>
                     </paper-listbox>
                 </paper-dropdown-menu>
                 <paper-dropdown-menu class="pdmHeader" label="Kriter">
-                    <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{criter}}">
+                    <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{criter}}" slot="dropdown-content">
                         <paper-item value="desc">Azalan</paper-item>
                         <paper-item value="asc">Artan</paper-item>
                     </paper-listbox>
@@ -346,7 +359,7 @@
                                 </div>
                                 <div class="item-column item-column-invisible">
                                     <div class="item-column-rowler">
-                                        <html-echo html="[[item.details]]"></html-echo>
+                                        <!-- <html-echo html="[[item.details]]"></html-echo> -->
 
                                         <a href="/haber/[[item.url]]" continueurl>
                                             <paper-button continue>
@@ -438,7 +451,8 @@
                         type: Boolean,
                         value: false,
                         notify: true
-                    }
+                    },
+                    empty: Boolean
 
                 };
             }

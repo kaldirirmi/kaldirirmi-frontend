@@ -1,5 +1,13 @@
 
 <link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
 
 <dom-module id="game-animated-grid">
     <template>
@@ -14,7 +22,7 @@
                 width: 100%;
                 position: relative;
                 display: inline-block;
-                float: left;
+                /* float: left; */
                 vertical-align: top;
                 height: calc(100% / 2);
                 transition: .4s all;
@@ -26,6 +34,8 @@
                 background-size: cover;
                 background-position: center;
                 box-shadow: 0 0 5px black inset, 0 0 2px 1px black;
+                float: left;
+
             }
 
             .tile iron-image {
@@ -648,7 +658,7 @@
                             </div>
                         </div>
                         <div class="buttons">
-                            <!--<paper-button raised onclick="location.href='/sistem-sihirbazi'; ">Sistem Sihirbazını Çalıştır</paper-button>-->
+                            <!--<paper-button raised onclick="location.href='/system/wizard'; ">Sistem Sihirbazını Çalıştır</paper-button>-->
                             <paper-button raised onclick="location.href='/profile/add-system';">Sistemini Elle Güncelle</paper-button>
                         </div>
                     </paper-item>
@@ -701,18 +711,18 @@
                             <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
                         </div>
                         <div>
-                            <paper-button onClick="location.href='/sistem-sihirbazi'; ">Sistem Sihirbazını Çalıştır</paper-button>
+                            <paper-button onClick="location.href='/system/wizard'; ">Sistem Sihirbazını Çalıştır</paper-button>
                             <paper-button onclick="location.href='/profile/add-system';">Sistemini Elle Tanımla</paper-button>
                         </div>
                     </paper-item>
                     <div class="systemCreatorButtons">
-                        <paper-button raised onClick="location.href = '/sistem-sihirbazi';">
+                        <paper-button raised onClick="location.href = '/system/wizard';">
                             <iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
                         <paper-button raised onClick="location.href = '/profile/add-system';">Sistemini Elle Tanımla
                             <iron-icon icon="icons:fingerprint"></iron-icon>
                         </paper-button>
                     </div>
-                    <!--<paper-button class="pb_nav_left" onClick="location.href='/sistem-sihirbazi'; "><iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
+                    <!--<paper-button class="pb_nav_left" onClick="location.href='/system/wizard'; "><iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
             <paper-button class="pb_nav_right" onclick="location.href='/profile/add-system';">Sistemini Elle Tanımla <iron-icon icon="icons:fingerprint"></iron-icon></paper-button>-->
 
                 </template>

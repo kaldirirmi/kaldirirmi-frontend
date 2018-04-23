@@ -1,16 +1,18 @@
-﻿<dom-module id="paper-fab-scroll-to-top">
-    <style>
-        .mg-bottomright {
-            position: absolute;
-            right: 20px;
-            bottom: 20px;
-        }
+﻿<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 
-        #fab {
-            background: var(--app-theme-color) !important;
-        }
-    </style>
+<dom-module id="paper-fab-scroll-to-top">
     <template>
+        <style>
+            .mg-bottomright {
+                position: absolute;
+                right: 20px;
+                bottom: 20px;
+            }
+
+            #fab {
+                background: var(--app-theme-color) !important;
+            }
+        </style>
         <paper-fab id="fab" icon="expand-less" title="To top"></paper-fab>
     </template>
     <script>
@@ -188,7 +190,7 @@
 
                     //_scrollElement = this.parentElement.getElementById(scrollElementId);
                     _scrollElement = document.getElementById(scrollElementId);
-                    
+
                     //console.log(this.shadowRoot);
                     //console.log(this.parentElement);
                     //console.log(this.parentElement.shadowRoot)
@@ -235,6 +237,5 @@
         }
 
         window.customElements.define(PaperFabScrollToTop.is, PaperFabScrollToTop);
-        
     </script>
 </dom-module>

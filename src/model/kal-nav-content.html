@@ -1,3 +1,7 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
 <dom-module id="kal-nav-content">
     <template>
         <style>
@@ -50,7 +54,7 @@
                 width: 40px;
                 height: 120px;
                 white-space: nowrap;
-                background-color: rgba(255, 120, 0, 0.6);
+                background-color: var(--app-theme-color-fifty);
                 -webkit-transition: width 0.4s, background-color 0.4s;
                 transition: width 0.4s, background-color 0.4s;
                 -webkit-transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);

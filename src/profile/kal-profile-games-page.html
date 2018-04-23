@@ -1,3 +1,17 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../model/loader-pac.html">
+
+
 <dom-module id="kal-profile-games-page">
     <template>
         <style>
@@ -451,7 +465,6 @@
             }
         </style>
 
-        <paper-toast id="addsystemalert" duration="3000" class="fit-bottom"></paper-toast>
         <iron-form id="cancellikedgamerequestform" on-iron-form-response="_responseOfCancelLikeGameRequest">
             <form action="/h/main" method="post">
                 <input type="hidden" name="fm" value="send-request-like-game" />
@@ -505,7 +518,7 @@
                                                     </template>
                                                 </template>
                                                 <template is="dom-if" if="[[!games.kaldirir.useradded]]">
-                                                    <paper-button onclick="location.href = '/sistem-sihirbazi';" raised navs>Sistemini Sihirbazını Çalıştır</paper-button>
+                                                    <paper-button onclick="location.href = '/system/wizard';" raised navs>Sistemini Sihirbazını Çalıştır</paper-button>
                                                     <paper-button onclick="location.href='/profile/add-system';" raised navs>Sistemini Elle Güncelle</paper-button>
                                                 </template>
 

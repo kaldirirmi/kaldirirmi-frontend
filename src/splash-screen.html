@@ -1,4 +1,10 @@
-﻿<dom-module id="splash-screen">
+﻿
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+
+
+<dom-module id="splash-screen">
     <template>
         <style>
             :host div {
@@ -45,23 +51,23 @@
                 margin: auto;
             }
 
-            @media (min-device-width: 601px) and (orientation: portrait) {
+            @media (min-width: 601px) and (orientation: portrait) {
                 :host paper-ripple {
                     display: none;
                 }
             }
 
-            @media (min-device-width: 961px) and (orientation: landscape) {
+            @media (min-width: 961px) and (orientation: landscape) {
                 :host paper-ripple {
                     display: none;
                 }
             }
         </style>
-        <div style="background-color: {{backColor}};">
-            <paper-ripple center id="ripple" style="display: {{rippleDisplay}};"></paper-ripple>
-            <img src={{imgSrc}} style="max-width: {{iconSize}}px; max-height: {{iconSize}}px;">
+        <div style$="background-color: {{backColor}};">
+            <paper-ripple center id="ripple" style$="display: {{rippleDisplay}};"></paper-ripple>
+            <img src={{imgSrc}} style$="max-width: {{iconSize}}px; max-height: {{iconSize}}px;">
             <paper-spinner active
-                           style="max-width:{{spinnerSize}}px; max-height:{{spinnerSize}}px;">
+                           style$="max-width:{{spinnerSize}}px; max-height:{{spinnerSize}}px;">
             </paper-spinner>
         </div>
     </template>

@@ -1,3 +1,8 @@
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+
 <dom-module id="kal-related-game">
     <template>
         <style>
@@ -212,6 +217,7 @@
                 padding: 5px;
                 font-weight: 100;
                 font-size: calc(0.55em + 1vmin) !important;
+                margin: 0;
             }
 
             .relatednews:hover iron-image[background] {
@@ -271,13 +277,9 @@
                     width: 50%;
                     padding: 8px;
                 }
-                /* ilgili haberler kısmı */
-                #relatednewslist {
-                    /* flex-direction: column !important; */
-                }
+               
 
                 #relatednewslist .relatednews {
-                    /* width: 32%; */
                     height: 140px;
                 }
 
@@ -299,7 +301,7 @@
                 }
 
                 #relatednewslist .relatednews .relatednews-title {
-                    height: 26%;
+                    height: 30%;
                 }
             }
 
@@ -355,6 +357,21 @@
                     height: 26%;
                 }
             }
+
+
+            @media screen and (max-width: 768px){
+                #relatednewslist {
+                    @apply --layout-vertical;
+                    margin: 0 auto;
+                }
+                .relatednews{
+                    @apply --layout-flex-12;
+                    width: 100%;
+                    margin-top: 10px;
+                }
+            }
+
+
         </style>
         <iron-ajax auto id="getrelatedgame" url="/h/main?fm=get-related-game-with-news&a=[[relatedgameid]]" handle-as="json" on-response="_responseGame"></iron-ajax>
         <iron-ajax auto id="getrelatednews" url="/h/main?fm=get-related-news-with-news&a=[[relatedgameid]]&b=[[currentnewsid]]" handle-as="json"
@@ -364,7 +381,7 @@
             <template is="dom-repeat" items="{{relatedgame}}" as="item">
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
-                        <a class="relatedgame" href="/news/[[item.url]]">
+                        <a class="relatedgame" href="/game/[[item.url]]">
                             <iron-image background src="[[item.background]]" sizing="cover" alt="[[item.name]]" preload fade></iron-image>
                             <!--<div class="relatedgame-title"><h4>[[item.name]]</h4></div>-->
                         </a>
@@ -445,7 +462,9 @@
                         type: Boolean,
                         value: false,
                         notify: true
-                    }
+                    },
+                    relatedgameid: Number,
+                    currentnewsid: Number
                 };
             }
 

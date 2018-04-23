@@ -1,4 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+
 
 <dom-module id="kal-search">
     <template>
@@ -50,8 +55,10 @@
             .header-search input {
                 width: 85%;
                 height: 100%;
-                /* background: rgba(255, 120, 0, 0.5) !important; */
-                background: var(--app-theme-color-fifty) !important;
+                /* background-color: var(--app-theme-fifty); */
+                /* background: var(--app-theme-color-fifty) !important; */
+                background:  rgba(211, 47, 47, 0.5) !important;;
+                
                 padding: 12px 0;
                 border-radius: 2px;
                 color: inherit;
@@ -68,7 +75,6 @@
             input[type="search"]::-webkit-search-results-decoration {
                 display: none;
             }
-
 
             .header-search input::-webkit-input-placeholder {
                 color: rgba(255, 255, 255, 0.7);

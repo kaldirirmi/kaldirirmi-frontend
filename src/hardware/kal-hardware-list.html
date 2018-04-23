@@ -1,6 +1,16 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+
 <link rel="import" href="../model/hardware-item.html">
 <link rel="import" href="../kal-scroll-threshold.html">
 <link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <dom-module id="kal-hardware-list">
     <template>
@@ -255,6 +265,7 @@
              */
             static get properties() {
                 return {
+                    empty: Boolean,
                     hardware: {
                         type: String,
                         value: '',
@@ -291,7 +302,7 @@
                         type: String,
                         value: 'all',
                         notify: true,
-                        observer: '_classtypeChanged'
+                        // observer: '_classtypeChanged'
                     },
                     page: {
                         type: Number,

@@ -1,3 +1,11 @@
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../model/loader-pac.html">
+
 <dom-module id="kal-profile-system-page">
     <template>
         <style>
@@ -24,12 +32,6 @@
                 font-size: calc(0.5em + 1vmin);
                 padding: calc(0.5em + 1vmin);
                 /* @apply --shadow-elevation-8dp; */
-            }
-
-            div[empty-info]:hover,
-            div[info]:hover {
-                /* background: #121212; */
-                /* @apply --shadow-elevation-4dp; */
             }
 
             paper-item[info] {
@@ -169,7 +171,7 @@
                     </paper-item>
                     <div class="button-panel">
                         <paper-button onclick="location.href='/profile/add-system';">Sistemini Elle Güncelle</paper-button>
-                        <paper-button onclick="location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
+                        <paper-button onclick="location.href='/system/wizard';">Sistem Sihirbazını Çalıştır</paper-button>
                     </div>
                 </template>
                 <template is="dom-if" if="[[!system.added]]">
@@ -180,7 +182,7 @@
                         </div>
                         <div class="empty-panel">
                             <paper-button onclick="location.href='/profile/add-system';">Sistemini Elle Güncelle</paper-button>
-                            <paper-button onclick="location.href='/sistem-sihirbazi';">Sistem Sihirbazını Çalıştır</paper-button>
+                            <paper-button onclick="location.href='/system/wizard';">Sistem Sihirbazını Çalıştır</paper-button>
                         </div>
                     </div>
                 </template>

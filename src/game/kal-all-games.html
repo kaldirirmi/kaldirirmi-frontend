@@ -1,3 +1,11 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="../kal-scroll-threshold.html">
 
@@ -1255,7 +1263,12 @@
             }
 
             _getyearofrelease(release) {
-                return release.split('/')[2].split(' ')[0];
+
+                //in the local; "12/8/2017 12:00:00 AM"
+                //in the host; "8.12.2017 00:00:00"
+                
+                // return release.split('/')[2].split(' ')[0];
+                return release.split('.')[2].split(' ')[0]
             }
 
             _dodefaultprops() {

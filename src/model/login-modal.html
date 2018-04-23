@@ -1,9 +1,15 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../kal-global-variable.html">
+
+<link rel="import" href="./logout-button.html">
+
 
 <dom-module id="login-modal">
     <template>
@@ -70,7 +76,7 @@
                     -webkit-transform: translate3d(0, 100%, 0);
                     transform: translate3d(0, 100%, 0);
                     top: 0px;
-                    background: rgba(255, 120, 0, 0.6);
+                    background: var(--app-theme-color-fifty);
                 }
 
             }
@@ -227,7 +233,7 @@
         </style>
 
 
-        <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
+        <!-- <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage> -->
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
 
         <div class="modal-container">
@@ -268,12 +274,12 @@
                 <div hidden="[[!storedUser.loggedin]]">
                     <div class="profile-group">
                         <div class="profile-child-group">
-                            <a class="child-detail" href="/uye/profil">
+                            <a class="child-detail" href="/profile/">
                                 <paper-ripple></paper-ripple>
                                 <paper-fab class="main-color" icon="icons:accessibility" title="Profil"></paper-fab>
                                 <div class="card-content" style="text-align:center">Profil</div>
                             </a>
-                            <a href="/uye/profil#tFwitch" class="child-detail">
+                            <a href="/profile/twitch" class="child-detail">
                                 <paper-ripple></paper-ripple>
                                 <paper-fab class="main-color" title="Twitch" icon="kaldirirmi:twitch"></paper-fab>
                                 <div class="card-content" style="text-align:center;">Twitch</div>
@@ -281,31 +287,30 @@
 
                         </div>
                         <div class="profile-child-group">
-                            <a href="/uye/profil#system" class="child-detail">
+                            <a href="/profile/system" class="child-detail">
                                 <paper-ripple></paper-ripple>
                                 <paper-fab class="main-color" icon="icons:system-update-alt" title="Sistem"></paper-fab>
                                 <div class="card-content" style="text-align:center">Sistem</div>
                             </a>
-                            <a href="/uye/profil#games" class="child-detail">
+                            <a href="/profile/games" class="child-detail">
                                 <paper-ripple></paper-ripple>
                                 <paper-fab class="main-color" icon="hardware:videogame-asset" title="Oyunlar"></paper-fab>
-                                <div class="card-content" style="text-align:center">Oyunlar</div>
+                                <div class="card-content" style="text-align:center">Kütüphane</div>
                             </a>
 
                         </div>
                         <div class="profile-child-group">
-                            <a href="/uye/profil#forum" class="child-detail">
+                            <a href="/profile/steam" class="child-detail">
                                 <paper-ripple></paper-ripple>
-                                <paper-fab class="main-color" icon="communication:forum" title="Forum"></paper-fab>
-                                <div class="card-content" style="text-align:center">Forum</div>
+                                <paper-fab class="main-color" icon="kaldirirmi:steam" title="Forum"></paper-fab>
+                                <div class="card-content" style="text-align:center">Steam</div>
                             </a>
-
-                            <a href="/uye/cikis" class="child-detail">
+                            <a class="child-detail">
                                 <paper-ripple></paper-ripple>
-                                <paper-fab class="main-color" icon="icons:exit-to-app" title="Çıkış"></paper-fab>
+                                <logout-button stored-user=[[storedUser]]></logout-button>
+                                <!-- <paper-fab class="main-color" icon="icons:exit-to-app" title="Çıkış"></paper-fab> -->
                                 <div class="card-content" style="text-align:center">Çıkış</div>
                             </a>
-
                         </div>
                     </div>
                 </div>
@@ -346,6 +351,18 @@
                         value: false
                     }
                 }
+            }
+
+            /**
+              * Called every time the element is inserted into the DOM. Useful for 
+              * running setup code, such as fetching resources or rendering.
+              * Generally, you should try to delay work until this time.
+              */
+            connectedCallback() {
+                super.connectedCallback();
+            
+                console.log('storedUser', this.storedUser);
+            
             }
 
             ready() {

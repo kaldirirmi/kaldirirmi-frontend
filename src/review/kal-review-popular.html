@@ -1,3 +1,10 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+
 <dom-module id="kal-review-popular">
     <template>
         <style>
@@ -83,8 +90,6 @@
             }
 
             /*shine effect*/
-
-            populerreview:hover {}
 
             /* generated element for shine effect.
             * normal state is semi-transparent
@@ -195,7 +200,7 @@
 
         <div itemscope itemtype="http://schema.org/Game" id="populerreviewlist">
             <template is="dom-repeat" items="{{reviewcast}}" as="item">
-                <a itemprop="url" class="populerreview" href="/inceleme/[[item.url]]">
+                <a itemprop="url" class="populerreview" href="/reviews/[[item.url]]">
                     <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.title]]" preload fade></iron-image>
                     <div itemprop="interactionCount" class="populerreview-viewcount">
                         <iron-icon icon="image:remove-red-eye"></iron-icon>[[item.viewcount]]</div>

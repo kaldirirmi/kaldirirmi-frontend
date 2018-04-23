@@ -19,7 +19,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- Custom Imports -->
 <link rel="import" href="../bower_components/animated-content-placeholder/animated-content-placeholder.html">
 
-<link rel="import" href="./thirdparty/jquery.html">
+<link rel="import" href="../bower_components/kal-thirdparty/jquery.html">
+
 <link rel="import" href="./splash-screen.html">
 <link rel="import" href="./kal-global-variable.html">
 <link rel="import" href="./kal-icons.html">
@@ -61,11 +62,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     /* --app-theme-color-fifty: rgba(255, 120, 0, 0.5) !important; */
                     /* --app-theme-darker-color: #e65100; */
                     --app-theme-color: #d32f2f;
-                    --app-theme-color-fifty: rgb(211, 47, 47, 0.5) !important;
+                    --app-theme-color-fifty: rgba(211, 47, 47, 0.5) !important;
                     --app-theme-darker-color: #b71c1c;
 
                     --app-drawer-width: 200px;
-                    display: block;
+                    /* display: block;
+                    height: 100vh;
+                    overflow: hidden !important; */
                 }
 
                 a {
@@ -92,14 +95,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 /****************************** APP DRAWER ****************************************/
 
-                app-drawer {
+                app-drawer section {
                     box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
-                    display: -ms-flexbox;
+                    /* display: -ms-flexbox;
                     display: -webkit-flex;
                     display: flex;
                     -ms-flex-direction: column;
                     -webkit-flex-direction: column;
-                    flex-direction: column;
+                    flex-direction: column; */
+                    height: 100%;
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
                 }
 
                 app-drawer div[main-logo] {
@@ -234,10 +240,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     justify-content: center;
                     perspective: 2px;
                 }
+
+                .ironImageMobileLogo {
+                    width: 30px;
+                    height: 42px;
+                    opacity: 0.9;
+                    transition: all ease-in-out .3s;
+                    margin: 0px 15px 0px 5px;
+                }
             </style>
         </custom-style>
 
-        <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="500" icon-size="200"
+        <splash-screen img-src="./frontend/images/kaldirirmi_logo_white_1.png" back-color="black" anim-delay="1500" icon-size="200"
             spinner-sub="-5"></splash-screen>
 
         <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -256,52 +270,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-                <div main-logo>
-                    <div main-image>
-                        <a href="[[rootPath]]">
-                            <iron-image sizing="cover" preload fade src="./frontend/images/kallogowhite.png">
-                            </iron-image>
-                        </a>
+                <section>
+                    <div main-logo>
+                        <div main-image>
+                            <a href="[[rootPath]]">
+                                <iron-image sizing="cover" preload fade src="./frontend/images/kallogowhite.png">
+                                </iron-image>
+                            </a>
+                        </div>
+                        <login-button stored-user={{storedUser}}></login-button>
                     </div>
-                    <login-button stored-user={{storedUser}}></login-button>
-                </div>
 
-                <!-- <div main-title>Logo</div> -->
-                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                    <kal-drawer-item name="home" href="[[rootPath]]home" icon="icons:home" title="Anasayfa"></kal-drawer-item>
-                    <kal-drawer-item name="playground" href="[[rootPath]]playground" icon="places:casino" title="KalPlay"></kal-drawer-item>
-                    <kal-drawer-item name="game" href="[[rootPath]]game" icon="hardware:videogame-asset" title="Oyun"></kal-drawer-item>
-                    <kal-drawer-item name="news" href="[[rootPath]]news" icon="image:collections-bookmark" title="Haber"></kal-drawer-item>
-                    <kal-drawer-item name="reviews" href="[[rootPath]]reviews" icon="image:collections-bookmark" title="İnceleme"></kal-drawer-item>
-                    <kal-drawer-item name="gallery" href="[[rootPath]]gallery" icon="icons:perm-media" title="Galeri"></kal-drawer-item>
-                    <kal-drawer-item name="hardware" href="[[rootPath]]hardware" icon="hardware:memory" title="Donanım"></kal-drawer-item>
-                    <kal-drawer-item name="challenge" href="[[rootPath]]challenge" icon="places:all-inclusive" title="Challenge"></kal-drawer-item>
-                    <kal-drawer-item name="twitch" href="[[rootPath]]twitch" icon="kaldirirmi:twitch" title="Twitch"></kal-drawer-item>
-                    <kal-drawer-item name="profile" href="[[rootPath]]profile" icon="icons:account-box" title="Profile"></kal-drawer-item>
-                </iron-selector>
+                    <!-- <div main-title>Logo</div> -->
+                    <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                        <kal-drawer-item name="home" href="[[rootPath]]home" icon="icons:home" title="Anasayfa"></kal-drawer-item>
+                        <kal-drawer-item name="playground" href="[[rootPath]]playground" icon="places:casino" title="KalPlay"></kal-drawer-item>
+                        <kal-drawer-item name="game" href="[[rootPath]]game" icon="hardware:videogame-asset" title="Oyun"></kal-drawer-item>
+                        <kal-drawer-item name="news" href="[[rootPath]]news" icon="image:collections-bookmark" title="Haber"></kal-drawer-item>
+                        <kal-drawer-item name="reviews" href="[[rootPath]]reviews" icon="image:collections-bookmark" title="İnceleme"></kal-drawer-item>
+                        <kal-drawer-item name="gallery" href="[[rootPath]]gallery" icon="icons:perm-media" title="Galeri"></kal-drawer-item>
+                        <kal-drawer-item name="hardware" href="[[rootPath]]hardware" icon="hardware:memory" title="Donanım"></kal-drawer-item>
+                        <kal-drawer-item name="challenge" href="[[rootPath]]challenge" icon="places:all-inclusive" title="Challenge"></kal-drawer-item>
+                        <kal-drawer-item name="twitch" href="[[rootPath]]twitch" icon="kaldirirmi:twitch" title="Twitch"></kal-drawer-item>
+                        <kal-drawer-item name="profile" href="[[rootPath]]profile" icon="icons:account-box" title="Profile"></kal-drawer-item>
+                    </iron-selector>
+                </section>
+
             </app-drawer>
 
             <!-- Main content -->
-            <kal-header-layout has-scrolling-region>
-                <app-header slot="header" condenses fixed effects="waterfall blend-background parallax-background">
-                    <template is="dom-if" if="[[isDesktop]]">
+            <kal-header-layout>
+                <app-header slot="header" condenses fixed effects="waterfall fade-background parallax-background">
+                    <template is="dom-if" if="{{isDesktop}}">
                         <app-toolbar></app-toolbar>
                         <app-toolbar></app-toolbar>
                     </template>
+
                     <app-toolbar>
                         <div header-content>
+
+                            <template is="dom-if" if={{!isDesktop}}>
+                                <a href="[[rootPath]]">
+                                    <iron-image sizing="cover" preload fade src="./frontend/images/kallogowhite.png" class="ironImageMobileLogo">
+                                    </iron-image>
+                                </a>
+                            </template>
+
+
                             <kal-search></kal-search>
-                            <a name="login" href="[[rootPath]]login" hidden$="[[storedUser.loggedin]]">
+                            <!-- <a name="login" href="[[rootPath]]login" hidden$="[[storedUser.loggedin]]">
                                 <paper-button raised>Giriş Yap</paper-button>
                             </a>
                             <div hidden$="[[!storedUser.loggedin]]">
-                                <!--<span class="greeting">Hi [[storedUser.name]]!</span>-->
                                 <logout-button stored-user=[[storedUser]]></logout-button>
-                            </div>
+                            </div> -->
                             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         </div>
                     </app-toolbar>
                 </app-header>
+
 
                 <iron-pages id="ironpages" selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <kal-home-page name="home" is-mobile=[[isMobile]]></kal-home-page>
@@ -342,6 +369,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-dialog id="gamevideoholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
             <game-video-holder detail=[[videodialogdetail]]></game-video-holder>
         </paper-dialog>
+
         <paper-dialog id="gameembedholder" entry-animation="slide-from-bottom-animation" exit-animation="slide-down-animation" modal>
             <game-embed-holder detail=[[embeddialogdetail]]></game-embed-holder>
         </paper-dialog>
@@ -491,6 +519,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _showPage404() {
                 this.page = 'view404';
             }
+
             _uidChanged(uid, oldVal) {
                 // console.log('uidChanged: ', uid, oldVal);
                 var user = null;
@@ -564,6 +593,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.set('embeddialogdetail', e.detail);
                 this.$.gameembedholder.open();
             }
+
+
         }
 
         window.customElements.define(KalApp.is, KalApp);

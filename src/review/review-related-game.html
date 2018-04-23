@@ -1,3 +1,9 @@
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
 <dom-module id="review-related-game">
     <template>
         <style>
@@ -334,7 +340,7 @@
                 <span itemprop="name" hidden>[[item.name]]</span>
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
-                        <a itemprop="url" class="relatedgame" href="/oyun/[[item.url]]">
+                        <a itemprop="url" class="relatedgame" href="/game/[[item.url]]">
                             <iron-image itemprop="thumbnailUrl" background src="[[item.picture]]" sizing="cover" alt="[[item.name]]" preload fade></iron-image>
                         </a>
                     </div>
@@ -342,7 +348,7 @@
                         <h3 class="card-content-category" itemprop="publisher">[[item.publisher]]</h3>
                         <h2 class="card-content-title" itemprop="genre">[[item.genres]]</h2>
                         <paper-button id="pbGoGame" raised>
-                            <a itemprop="isBasedOnUrl" href="/oyun/[[item.url]]">[[item.name]] oyununa git</a>
+                            <a itemprop="isBasedOnUrl" href="/game/[[item.url]]">[[item.name]] oyununa git</a>
                         </paper-button>
                     </div>
                     <div class="card-footer">

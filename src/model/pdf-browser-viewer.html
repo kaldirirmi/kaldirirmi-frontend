@@ -32,6 +32,9 @@ Card example:
     </pdf-browser-viewer>
 ```
 -->
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
 <dom-module id="pdf-browser-viewer">
     <template>
         <style>
@@ -94,6 +97,7 @@ Card example:
              */
             static get properties() {
                 return {
+                    heading: String,
                     /**
                      * The location of the PDF file.
                      *
