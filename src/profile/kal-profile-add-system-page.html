@@ -57,6 +57,25 @@
             #newsystemholder #newsystemform paper-autocomplete {
                 margin-bottom: 10px;
             }
+            paper-input{
+                --paper-input-container-label: {
+                color: var(--app-theme-color);
+                }
+            }
+             paper-autocomplete {
+                --paper-input-container-label: {
+                color: var(--app-theme-color);
+                }
+                --paper-input-container-color: #222222;
+                --paper-input-container-focus-color: var(--app-theme-color);
+                --paper-input-container-invalid-color: var(--app-theme-color);
+                --paper-input-container-input-color: #000000;
+
+                --paper-autocomplete-suggestions-wrapper: {
+                    background-color: var(--app-theme-color);
+                    color: #fff;
+                }
+            }
 
             #newsystemholder #newsystemform .buttons {
                 margin-top: 20px;
@@ -88,18 +107,26 @@
                             <input type="hidden" id="cpu" name="cpu" value="" />
                             <input type="hidden" id="gpu" name="gpu" value="" />
                             <input type="hidden" id="os" name="os" value="" />
-                            <paper-autocomplete source="[[allcpus]]" id="newsystemcpu" name="cpuname" label="İşlemci" required min-length="2" show-clear="true"
-                                placeholder="lütfen 2 karakter gir" auto-validate="true" error-message="Bu alanın doldurulması zorunludur"
-                                text-property="text" value-property="value" on-autocomplete-selected="_selectedCpu"></paper-autocomplete>
+                            <input type="hidden" id="cpuname" name="cpuname" value="" />
+                            <input type="hidden" id="gpuname" name="gpuname" value="" />
+                            <input type="hidden" id="osname" name="osname" value="" />
 
-                            <paper-autocomplete source="[[allgpus]]" id="newsystemgpu" name="gpuname" label="Ekran Kartı" required min-length="2" show-clear="true"
-                                placeholder="lütfen 2 karakter gir" auto-validate="true" error-message="Bu alanın doldurulması zorunludur"
-                                text-property="text" value-property="value" on-autocomplete-selected="_selectedGpu"></paper-autocomplete>
-                            <paper-autocomplete on-autocomplete-selected="_selectedOss" source="[[alloss]]" id="newsystemos" name="osname" label="İşletim Sistemi"
+                            <paper-autocomplete source="[[allcpus]]" id="newsystemcpu" label="İşlemci" required min-length="2" show-clear="true"
+                                placeholder="lütfen 2 karakter gir (Intel - AMD)" auto-validate="true" error-message="Bu alanın doldurulması zorunludur"
+                                text-property="text" value-property="value" on-autocomplete-selected="_selectedCpu"
+                                ></paper-autocomplete>
+
+                            <paper-autocomplete source="[[allgpus]]" id="newsystemgpu" label="Ekran Kartı" required min-length="2" show-clear="true"
+                                placeholder="lütfen 2 karakter gir (GeForce - Radeon)" auto-validate="true" error-message="Bu alanın doldurulması zorunludur"
+                                text-property="text" value-property="value" on-autocomplete-selected="_selectedGpu"
+                                ></paper-autocomplete>
+                                
+                            <paper-autocomplete on-autocomplete-selected="_selectedOss" source="[[alloss]]" id="newsystemos" label="İşletim Sistemi"
                                 required min-length="2" show-clear="true" placeholder="lütfen 2 karakter gir" auto-validate="true"
                                 error-message="Bu alanın doldurulması zorunludur" text-property="text" value-property="value"></paper-autocomplete>
-                            <paper-input id="newsystemram" name="ram" label="Ram" required error-message="Bu alanın doldurulması zorunludur"></paper-input>
-                            <paper-input id="newsystemhdd" name="hdd" label="Boş Alan" required error-message="Bu alanın doldurulması zorunludur"></paper-input>
+
+                            <paper-input value="[[response.ram]]" id="newsystemram" name="ram" label="Ram" required error-message="Bu alanın doldurulması zorunludur"></paper-input>
+                            <paper-input value="[[response.free_hdd]]" id="newsystemhdd" name="hdd" label="Boş Alan" required error-message="Bu alanın doldurulması zorunludur"></paper-input>
                             <div class="buttons">
                                 <paper-button raised id="newsystemsubmit" on-tap="_submitNewSystem">Onayla</paper-button>
                             </div>
@@ -141,7 +168,8 @@
                     loading: {
                         type: Boolean,
                         notify: true,
-                    }
+                    },
+                    response: Object
 
                 };
             }
@@ -167,23 +195,32 @@
             }
 
             _responseUserSystem(e) {
+                console.log(e.detail.response);
+
                 let response = e.detail.response;
                 if (response != null) {
-                    if (response.length > 0) {
-                        this.set('loading', true);
+                    if (response.added) {
+                        this.set('loading', false);
+                        
+                        this.set('response', response);
 
-                        this.$.cpu.setAttribute("value", response.cpu.value);
-                        this.$.gpu.setAttribute("value", response.gpu.value);
-                        this.$.os.setAttribute("value", response.os.value);
+                        console.log('this.response', this.response);
+                        
+                         this.$.cpu.setAttribute("value", response.cpu.value);
+                         this.$.gpu.setAttribute("value", response.gpu.value);
+                         this.$.os.setAttribute("value", response.os.value);
+                         this.$.cpuname.setAttribute("value", response.cpu.text);
+                         this.$.gpuname.setAttribute("value", response.gpu.text);
+                         this.$.osname.setAttribute("value", response.os.text);
+                         
+                         this.$.newsystemcpu.value = e.detail.response.cpu.value;
+                         this.$.newsystemcpu.shadowRoot.querySelector('paper-input').value = e.detail.response.cpu.text;
 
-                        this.$.newsystemcpu.value = e.detail.response.cpu.value;
-                        this.$.newsystemcpu.$.input.value = e.detail.response.cpu.text;
-                        this.$.newsystemgpu.value = e.detail.response.gpu.value;
-                        this.$.newsystemgpu.$.input.value = e.detail.response.gpu.text;
-                        this.$.newsystemos.value = e.detail.response.os.value;
-                        this.$.newsystemos.$.input.value = e.detail.response.os.text;
-                        this.$.newsystemram.value = e.detail.response.ram;
-                        this.$.newsystemhdd.value = e.detail.response.free_hdd;
+                         this.$.newsystemgpu.value = e.detail.response.gpu.value;
+                         this.$.newsystemgpu.shadowRoot.querySelector('paper-input').value = e.detail.response.gpu.text;
+
+                         this.$.newsystemos.value = e.detail.response.os.value;
+                         this.$.newsystemos.shadowRoot.querySelector('paper-input').value = e.detail.response.os.text;
 
                         this.$.newsystemsubmit.innerText = "güncelle";
 
@@ -199,28 +236,35 @@
             }
 
             _selectedCpu(event) {
-                const text = event.detail.option.text;
-                console.log('selectedCpu', text);
-                this.$.cpu.setAttribute("value", text);
+                // console.log(event.detail.option);
+                // const text = event.detail.option.text;
+                // console.log('selectedCpu', text);
+                this.$.cpu.setAttribute("value", event.detail.option.value);
+                this.$.cpuname.setAttribute("value", event.detail.option.text);
+                
             }
 
             _selectedGpu(event) {
-                const text = event.detail.option.text;
-                console.log('selectedGpu', text);
-                this.$.gpu.setAttribute("value", text);
+                // const text = event.detail.option.text;
+                // console.log('selectedGpu', text);
+                this.$.gpu.setAttribute("value", event.detail.option.value);
+                this.$.gpuname.setAttribute("value", event.detail.option.text);
+
             }
 
             _selectedOss(event) {
-                const text = event.detail.option.text;
-                console.log('_selectedOss', text);
-                this.$.os.setAttribute("value", text);
+                // const text = event.detail.option.text;
+                // console.log('_selectedOss', text);
+                this.$.os.setAttribute("value", event.detail.option.value);
+                this.$.osname.setAttribute("value", event.detail.option.text);
+
             }
 
             _submitNewSystem() {
 
-                if (this.shadowRoot.querySelector('#newsystemcpu paper-input').validate() &&
-                    this.shadowRoot.querySelector('#newsystemgpu paper-input').validate() &&
-                    this.shadowRoot.querySelector('#newsystemos paper-input').validate() &&
+                if (this.$.newsystemcpu.shadowRoot.querySelector('paper-input').validate() &&
+                    this.$.newsystemgpu.shadowRoot.querySelector('paper-input').validate() &&
+                    this.$.newsystemos.shadowRoot.querySelector('paper-input').validate() &&
                     this.shadowRoot.querySelector('#newsystemram').validate() &&
                     this.shadowRoot.querySelector('#newsystemhdd').validate()) {
                     this.$.newsystemform.submit();
@@ -239,10 +283,10 @@
                 }
             }
             _resetNewSystemForm() {
-                this.$.newsystemform.reset();
-                this.$.cpu.removeAttribute("value");
-                this.$.gpu.removeAttribute("value");
-                this.$.os.removeAttribute("value");
+                // // this.$.newsystemform.reset();
+                // this.$.cpu.removeAttribute("value");
+                // this.$.gpu.removeAttribute("value");
+                // this.$.os.removeAttribute("value");
             }
 
             _toaster(message) {

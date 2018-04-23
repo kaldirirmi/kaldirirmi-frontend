@@ -24,21 +24,21 @@
 
                 --paper-fab-background: var(--app-theme-color);
             }
-            
+
             .alingcenter {
                 align-items: center;
                 /* -webkit-align-content: center; */
             }
-            
-            .layout.vertical{
+
+            .layout.vertical {
                 @apply --layout-vertical;
             }
 
-            .layout.horizontal{
+            .layout.horizontal {
                 @apply --layout-horizontal;
             }
-            
-            .center-justified{
+
+            .center-justified {
                 @apply --layout-center-center;
             }
 
@@ -81,6 +81,8 @@
 
             .sub-container {
                 @apply --shadow-elevation-4dp;
+                @apply --layout-flex-6;
+
                 background-color: #222;
                 background-color: #222;
                 width: 25%;
@@ -186,8 +188,19 @@
             .sub-container-user paper-radio-group>* {
                 padding: 8px !important;
             }
+            .spaceBetween{
+                justify-content: space-between;
+                padding: 0px 10px;
+                margin-top: 7px;
 
-            
+            }
+
+            @media screen and (min-width: 768px) {
+                .sub-container{
+                    margin: 0px 80px;
+                }
+
+            }
         </style>
 
         <iron-ajax id="getfeedbackofuser" debounce-duration="300" url='/h/main?fm=get-feedbacks-of-user&a=[[gameid]]' handle-as="json"
@@ -199,7 +212,7 @@
 
         <neon-animated-pages id="feedbackpages" entry-animation="slide-from-left-animation" exit-animation="fade-out-animation" selected="[[selected]]">
             <neon-animatable>
-                <div class="layout horizontal center-justified alingcenter">
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
                     <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
                     <!-- gameestimatedprice -->
                     <div class="layout vertical sub-container">
@@ -222,6 +235,84 @@
                             </template>
                         </div>
                     </div>
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+                    <!-- gamedifficulty -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Oyunun Zorluğu</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/gamedifficulty.svg" />
+                        <div class="sub-container-user">
+                            <div style="font-style: italic; font-size: 12px;">
+                                <b>1</b> = En Kolay /
+                                <b>10</b> = En Zor</div>
+                            <paper-slider id="ratings" pin snaps max="10" max-markers="10" step="1" value="{{gamedifficulty}}"></paper-slider>
+                            <div>Seçimin
+                                <span class="maincolor">
+                                    <b>{{gamedifficulty}}</b>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showdifficulty]]">
+                                İlk Değerlendiren Sen Ol!
+                            </template>
+                            <template is="dom-if" if="[[showdifficulty]]">
+                                <span>Zorluk Derecesi
+                                    <b>[[avgfeedbacks.difficulty]]</b>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                  
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+
+                    <!--issurroundgame-->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Surround Ses İyi Mi?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/issurroundgame.svg" />
+
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{issurroundgame}}">
+                                <paper-radio-button name="yes" class="green">Evet</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Hayır</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showsurround]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showsurround]]">
+                                <div class="sub-container-result-column" style="background-color: var(--app-theme-color); color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:arrow-upward"></iron-icon> ([[avgfeedbacks.surroundyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:var(--app-theme-color); border-top: 4px solid var(--app-theme-color);">
+                                    <iron-icon icon="icons:arrow-downward"></iron-icon> ([[avgfeedbacks.surroundno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                 
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+                  
                     <!-- isworthgettinggame -->
                     <div class="layout vertical sub-container">
                         <div class="sub-container-header">
@@ -249,6 +340,85 @@
                             </template>
                         </div>
                     </div>
+                  
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+                   
+                    <!-- havingbugs -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>Oyunda Bug Var mı?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/havingbugs.svg" />
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{havingbugs}}">
+                                <paper-radio-button name="yes" class="green">Oyun Alınmaya Hazır</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Eksikleri Var, Acele Etme</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showbugs]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showbugs]]">
+                                <div class="sub-container-result-column" style="background-color: var(--app-theme-color); color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="icons:check-circle"></iron-icon> ([[avgfeedbacks.bugsyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:var(--app-theme-color); border-top: 4px solid var(--app-theme-color);">
+                                    <iron-icon icon="icons:report"></iron-icon> ([[avgfeedbacks.bugsno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                  
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+
+                   
+                    <!-- bestcontroldevice -->
+                    <div class="layout vertical sub-container">
+                        <div class="sub-container-header">
+                            <span>En iyi Kontrol Cihazı?</span>
+                        </div>
+                        <img class="sub-container-image" src="/assets/img/feedbacks/bestcontroldevice.svg" />
+
+                        <div class="sub-container-user">
+                            <paper-radio-group selected="{{bestcontroldevice}}">
+                                <paper-radio-button name="yes" class="green">Oyun Kolu</paper-radio-button>
+                                <paper-radio-button name="no" class="red">Mouse</paper-radio-button>
+                            </paper-radio-group>
+                        </div>
+                        <div class="sub-container-result">
+                            <template is="dom-if" if="[[!showdevice]]">
+                                İlk Değendiren sen ol!
+                            </template>
+                            <template is="dom-if" if="[[showdevice]]">
+                                <div class="sub-container-result-column" style="background-color: var(--app-theme-color); color:#222; border-top: 4px solid #222;">
+                                    <iron-icon icon="hardware:gamepad"></iron-icon> ([[avgfeedbacks.deviceyes]]%)
+                                </div>
+                                <div class="sub-container-result-column" style="background-color: #222; color:var(--app-theme-color); border-top: 4px solid var(--app-theme-color);">
+                                    <iron-icon icon="hardware:mouse"></iron-icon> ([[avgfeedbacks.deviceno]]%)
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                   
+                    <paper-fab icon="icons:arrow-forward" on-tap="_goRight"></paper-fab>
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
+                    <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
+                   
                     <!-- shoudupgradepc-->
                     <div class="layout vertical sub-container">
                         <div class="sub-container-header">
@@ -279,62 +449,9 @@
                 </div>
             </neon-animatable>
             <neon-animatable>
-                <div class="layout horizontal center-justified alingcenter">
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
                     <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
-                    <!-- gamedifficulty -->
-                    <div class="layout vertical sub-container">
-                        <div class="sub-container-header">
-                            <span>Oyunun Zorluğu</span>
-                        </div>
-                        <img class="sub-container-image" src="/assets/img/feedbacks/gamedifficulty.svg" />
-                        <div class="sub-container-user">
-                            <div style="font-style: italic; font-size: 12px;">
-                                <b>1</b> = En Kolay /
-                                <b>10</b> = En Zor</div>
-                            <paper-slider id="ratings" pin snaps max="10" max-markers="10" step="1" value="{{gamedifficulty}}"></paper-slider>
-                            <div>Seçimin
-                                <span class="maincolor">
-                                    <b>{{gamedifficulty}}</b>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="sub-container-result">
-                            <template is="dom-if" if="[[!showdifficulty]]">
-                                İlk Değerlendiren Sen Ol!
-                            </template>
-                            <template is="dom-if" if="[[showdifficulty]]">
-                                <span>Zorluk Derecesi
-                                    <b>[[avgfeedbacks.difficulty]]</b>
-                                </span>
-                            </template>
-                        </div>
-                    </div>
-                    <!-- havingbugs -->
-                    <div class="layout vertical sub-container">
-                        <div class="sub-container-header">
-                            <span>Oyunda Bug Var mı?</span>
-                        </div>
-                        <img class="sub-container-image" src="/assets/img/feedbacks/havingbugs.svg" />
-                        <div class="sub-container-user">
-                            <paper-radio-group selected="{{havingbugs}}">
-                                <paper-radio-button name="yes" class="green">Oyun Alınmaya Hazır</paper-radio-button>
-                                <paper-radio-button name="no" class="red">Eksikleri Var, Acele Etme</paper-radio-button>
-                            </paper-radio-group>
-                        </div>
-                        <div class="sub-container-result">
-                            <template is="dom-if" if="[[!showbugs]]">
-                                İlk Değendiren sen ol!
-                            </template>
-                            <template is="dom-if" if="[[showbugs]]">
-                                <div class="sub-container-result-column" style="background-color: var(--app-theme-color); color:#222; border-top: 4px solid #222;">
-                                    <iron-icon icon="icons:check-circle"></iron-icon> ([[avgfeedbacks.bugsyes]]%)
-                                </div>
-                                <div class="sub-container-result-column" style="background-color: #222; color:var(--app-theme-color); border-top: 4px solid var(--app-theme-color);">
-                                    <iron-icon icon="icons:report"></iron-icon> ([[avgfeedbacks.bugsno]]%)
-                                </div>
-                            </template>
-                        </div>
-                    </div>
+                  
                     <!-- averagecompletetime -->
                     <div class="layout vertical sub-container">
                         <div class="sub-container-header">
@@ -362,63 +479,9 @@
                 </div>
             </neon-animatable>
             <neon-animatable>
-                <div class="layout horizontal center-justified alingcenter">
+                <div class="layout horizontal center-justified alingcenter spaceBetween">
                     <paper-fab icon="icons:arrow-back" on-tap="_goLeft"></paper-fab>
 
-                    <!--issurroundgame-->
-                    <div class="layout vertical sub-container">
-                        <div class="sub-container-header">
-                            <span>Surround Ses İyi Mi?</span>
-                        </div>
-                        <img class="sub-container-image" src="/assets/img/feedbacks/issurroundgame.svg" />
-
-                        <div class="sub-container-user">
-                            <paper-radio-group selected="{{issurroundgame}}">
-                                <paper-radio-button name="yes" class="green">Evet</paper-radio-button>
-                                <paper-radio-button name="no" class="red">Hayır</paper-radio-button>
-                            </paper-radio-group>
-                        </div>
-                        <div class="sub-container-result">
-                            <template is="dom-if" if="[[!showsurround]]">
-                                İlk Değendiren sen ol!
-                            </template>
-                            <template is="dom-if" if="[[showsurround]]">
-                                <div class="sub-container-result-column" style="background-color: var(--app-theme-color); color:#222; border-top: 4px solid #222;">
-                                    <iron-icon icon="icons:arrow-upward"></iron-icon> ([[avgfeedbacks.surroundyes]]%)
-                                </div>
-                                <div class="sub-container-result-column" style="background-color: #222; color:var(--app-theme-color); border-top: 4px solid var(--app-theme-color);">
-                                    <iron-icon icon="icons:arrow-downward"></iron-icon> ([[avgfeedbacks.surroundno]]%)
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    <!-- bestcontroldevice -->
-                    <div class="layout vertical sub-container">
-                        <div class="sub-container-header">
-                            <span>En iyi Kontrol Cihazı?</span>
-                        </div>
-                        <img class="sub-container-image" src="/assets/img/feedbacks/bestcontroldevice.svg" />
-
-                        <div class="sub-container-user">
-                            <paper-radio-group selected="{{bestcontroldevice}}">
-                                <paper-radio-button name="yes" class="green">Oyun Kolu</paper-radio-button>
-                                <paper-radio-button name="no" class="red">Mouse</paper-radio-button>
-                            </paper-radio-group>
-                        </div>
-                        <div class="sub-container-result">
-                            <template is="dom-if" if="[[!showdevice]]">
-                                İlk Değendiren sen ol!
-                            </template>
-                            <template is="dom-if" if="[[showdevice]]">
-                                <div class="sub-container-result-column" style="background-color: var(--app-theme-color); color:#222; border-top: 4px solid #222;">
-                                    <iron-icon icon="hardware:gamepad"></iron-icon> ([[avgfeedbacks.deviceyes]]%)
-                                </div>
-                                <div class="sub-container-result-column" style="background-color: #222; color:var(--app-theme-color); border-top: 4px solid var(--app-theme-color);">
-                                    <iron-icon icon="hardware:mouse"></iron-icon> ([[avgfeedbacks.deviceno]]%)
-                                </div>
-                            </template>
-                        </div>
-                    </div>
                     <!-- isgoodinlowgraphics-->
                     <div class="layout vertical sub-container">
                         <div class="sub-container-header">
@@ -647,7 +710,7 @@
                     }
 
                 } else {
-                        
+
                     this._toaster('Feedback Eklemek İçin Giriş Yapmalısınız!');
                     this._openLoginModal();
                 }
@@ -663,8 +726,8 @@
                 });
                 this.dispatchEvent(event);
             }
-            
-            _openLoginModal(){
+
+            _openLoginModal() {
                 var event = new CustomEvent('loginmodaler', {
                     bubbles: true,
                     composed: true,

@@ -70,9 +70,9 @@
             </form>
         </iron-form>
 
-        <div class="loadingIndicator" hidden$="[[!loadingcheck]]">
+        <!-- <div class="loadingIndicator" hidden$="[[!loadingcheck]]">
             <paper-spinner-lite active$="[[loadingcheck]]"></paper-spinner-lite>
-        </div>
+        </div> -->
         <div hidden$=[[loadingcheck]] class="like-container">
             <paper-icon-button icon="[[icon]]" id="pibInteractionButton" on-tap="_clickInteractionButton"></paper-icon-button>
             <paper-tooltip class="custom-tooltip" for="pibInteractionButton" position="bottom">[[likedstatus]]</paper-tooltip>

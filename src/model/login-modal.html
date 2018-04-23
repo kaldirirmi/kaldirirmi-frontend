@@ -100,7 +100,7 @@
             #loginmessage {
                 font-weight: 700;
                 margin-top: 10px;
-                font-size: calc(0.4em + 1vmin) !important;
+                font-size: calc(0.6em + 1vmin) !important;
             }
 
             .modal-container {
@@ -361,7 +361,7 @@
             connectedCallback() {
                 super.connectedCallback();
             
-                console.log('storedUser', this.storedUser);
+                // console.log('storedUser', this.storedUser);
             
             }
 
@@ -428,8 +428,8 @@
             }
 
             _loginFormResponse(a) {
-                console.log('loginform response');
-                console.log(a.detail.response);
+                // console.log('loginform response');
+                // console.log(a.detail.response);
                 if (a.detail.response.success) {
                     this.$.loginmessage.innerHTML = a.detail.response.message;
                     this.$.loginmessage.style.color = "green";
@@ -437,7 +437,7 @@
                     //id: hakan pwd: hakan123
 
                     // location.reload();
-                    console.log(a.detail.response);
+                    // console.log(a.detail.response);
                     // this.storedUser = {
                     //     loggedin: true
                     // }

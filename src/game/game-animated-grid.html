@@ -515,6 +515,11 @@
                 min-width: 250px;
                 z-index: 100;
             }
+            
+            #usersysteminfo paper-item[heading] .buttons a{
+              text-decoration: none;
+              color: inherit;
+            }
 
             #usersysteminfo paper-item[heading] .buttons paper-button {
                 width: 100%;
@@ -658,8 +663,9 @@
                             </div>
                         </div>
                         <div class="buttons">
-                            <!--<paper-button raised onclick="location.href='/system/wizard'; ">Sistem Sihirbazını Çalıştır</paper-button>-->
-                            <paper-button raised onclick="location.href='/profile/add-system';">Sistemini Elle Güncelle</paper-button>
+                            <a href="/profile/add-system">
+                                <paper-button raised>Sistemini Elle Güncelle</paper-button>
+                            </a>
                         </div>
                     </paper-item>
                     <!-- Dom repeat -->
