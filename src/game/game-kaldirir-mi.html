@@ -9,49 +9,113 @@
 
 <dom-module id="game-kaldirir-mi">
     <template>
-        <style>
+        <style include="shared-styles">
             :host {
                 display: block
             }
-               #usersystem {
-                  margin-bottom: 0px !important;
-              }
-              
-              neon-animated-pages {
+
+            :host([is-mobile]) {
+                /* height: 960px; */
+            }
+
+            #usersystem {
+                margin-bottom: 0px !important;
+            }
+
+            neon-animated-pages {
                 height: 400px;
+            }
+
+
+            .loadingIndicator {
+                min-height: 0px !important;
+                font-size: 15px;
+            }
+
+
+            div[empty-content] {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+            }
+
+            div[empty-content] .systemCreatorTitle {
+                padding: 0em 2em;
+                border-bottom: 2px solid;
+            }
+
+            div[empty-content] .systemCreatorTitle h3 {
+                font-weight: 100;
+                margin: 10px;
+                color: inherit;
+            }
+
+            div[empty-content] .systemCreatorButtons {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+
+            div[empty-content] .systemCreatorButtons paper-button {
+                transition: ease-in-out .3s;
+                margin: 5px 15px;
+                color: inherit;
+
+            }
+
+             div[empty-content] .systemCreatorButtons paper-button:hover {
+                 transform: scale(1.1);
             }
         </style>
 
-        <iron-ajax id="iaKaldirirMi" auto="[[auto]]" 
-             url="/h/main?fm=kaldirir-mi&a=[[gameinfo.url]]"
-             method="get"
-             handle-as="json" 
-             last-response="{{kaldirir}}"
-             ></iron-ajax>
+        <iron-ajax id="iaKaldirirMi" auto="[[auto]]" url="/h/main?fm=kaldirir-mi&a=[[gameinfo.url]]" method="get" handle-as="json"
+            last-response="{{kaldirir}}" loading={{loading}}></iron-ajax>
 
-             <neon-animated-pages id="pages" selected="0">
-                <game-animated-grid
-                     gamename ="[[gameinfo.name]]"
-                     kaldirir="{{kaldirir}}" 
-                     kalnotes="{{kaldirir.notes}}"
-                     hardwaretype="{{hardwaretype}}" 
-                     on-tile-click="_onTileClick"  
-                     bc="[[gameinfo.backcoloropacity]]"
-                     mc="[[gameinfo.maincolor]]"
-                      ></game-animated-grid>
-                      
-                <game-fullsize-page-with-card
-                     bc="[[gameinfo.backcolor]]"
-                     mc="[[gameinfo.maincolor]]"
-                     gamename="[[gameinfo.name]]"
-                     hardwaretype="{{hardwaretype}}" 
-                     id="fullsize-card"
-                     selected-hardware=[[selectedHardware]]
-                     on-tile-reset="_onTileReset">
-                </game-fullsize-page-with-card>
-           </neon-animated-pages>
 
-         
+        <div hidden$=[[!loading]]>
+            <div class="loadingIndicator">
+                <paper-spinner-lite active></paper-spinner-lite>
+                <span>Kaldırır mı?</span>
+            </div>
+        </div>
+        <div hidden$=[[loading]]>
+            <div hidden$=[[kaldirir.useradded]]>
+                <neon-animated-pages id="pages" selected="0">
+                    <game-animated-grid gamename="[[gameinfo.name]]" kaldirir="{{kaldirir}}" kalnotes="{{kaldirir.notes}}" hardwaretype="{{hardwaretype}}"
+                        on-tile-click="_onTileClick" bc="[[gameinfo.backcoloropacity]]" mc="[[gameinfo.maincolor]]"></game-animated-grid>
+
+                    <game-fullsize-page-with-card bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" gamename="[[gameinfo.name]]" hardwaretype="{{hardwaretype}}"
+                        id="fullsize-card" selected-hardware=[[selectedHardware]] on-tile-reset="_onTileReset">
+                    </game-fullsize-page-with-card>
+                </neon-animated-pages>
+            </div>
+            <div hidden$=[[!kaldirir.useradded]]>
+                <!-- eğer üye olunmuş fakat sistem tanımlanmamışsa burası çıkar -->
+                <paper-item heading style$="background-color: [[gameinfo.backcoloropacity]]; color: [[gameinfo.maincolor]]">
+                    <div style="flex-grow: 2;">
+                        <h3>Sistemin {{gameinfo.name}} oyununu kaldırır mı?</h3>
+                    </div>
+
+                </paper-item>
+                <div empty-content style$="color: [[gameinfo.maincolor]];">
+                    <div class="systemCreatorTitle">
+                        <h3>Sistemini Hemen Tanımlayabilirsin</h3>
+                    </div>
+                    <div class="systemCreatorButtons">
+                        <paper-button raised onClick="location.href = '/system/wizard';">
+                            <iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
+                        <paper-button raised onClick="location.href = '/profile/add-system';">Sistemini Elle Tanımla
+                            <iron-icon icon="icons:fingerprint"></iron-icon>
+                        </paper-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
     </template>
 
     <script>
@@ -77,33 +141,38 @@
                 return {
                     gameinfo: Object,
                     selectedHardware: Object,
-                    auto: Boolean
+                    auto: Boolean,
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    loading: Boolean
                 };
             }
 
             /**
-              * Array of strings describing multi-property observer methods and their
-              * dependant properties
-              */
+             * Array of strings describing multi-property observer methods and their
+             * dependant properties
+             */
             static get observers() {
                 return [
                     '_gameinfoChanged(gameinfo)'
                 ];
             }
 
-            _gameinfoChanged(newVal, oldVal){
+            _gameinfoChanged(newVal, oldVal) {
                 // console.log('_gameinfoChanged', newVal);
 
-                if(newVal !== 'undefined'){
+                if (newVal !== 'undefined') {
                     this._generateRequest();
                 }
             }
 
-            _generateRequest(){
-                if(this.$.iaKaldirirMi.lastRequest){
+            _generateRequest() {
+                if (this.$.iaKaldirirMi.lastRequest) {
                     this.$.iaKaldirirMi.lastRequest.abort();
                 }
-                
+
                 this.$.iaKaldirirMi.generateRequest();
             }
 
@@ -122,16 +191,16 @@
             ready() {
                 super.ready();
 
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
                 });
             }
 
-            _onTileReset(event){
+            _onTileReset(event) {
                 this.$.pages.selected = event.detail.selected;
             }
 
-            _onTileClick(event){
+            _onTileClick(event) {
                 // console.log('_onTileClick',event);
                 //this.$['fullsize-card'].hardwaretype = event.detail.data.hardwaretype; <- bu da olur fakat farklı olsun diye dom bind kullanıyorum.
                 // this.$['fullsize-card'].data = event.detail.data;

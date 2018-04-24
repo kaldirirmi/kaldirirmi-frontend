@@ -520,7 +520,8 @@
 
             #usersystem {
                 margin-top: 25px;
-                margin-bottom: 560px;
+                /* margin-bottom: 560px; */
+                margin-bottom: 10px;
                 margin-top: 20px;
             }
 
@@ -835,7 +836,7 @@
                 }
 
                 #usersystem {
-                    margin-bottom: 90px !important;
+                    /* margin-bottom: 90px !important; */
                 }
 
                 #gamecontent section[requirements] {
@@ -1275,7 +1276,7 @@
                         <!-- panel -->
                         <section id="usersystem">
                             <template is="dom-if" if={{storedUser.loggedin}}>
-                                <game-kaldirir-mi gameinfo=[[gameinfo]]></game-kaldirir-mi>
+                                <game-kaldirir-mi gameinfo=[[gameinfo]] is-mobile=[[isMobile]]></game-kaldirir-mi>
                             </template>
                             <template is="dom-if" if={{!storedUser.loggedin}}>
                                 <paper-material elevation="0" id="usersysteminfo" role="listbox">
@@ -1532,8 +1533,8 @@
                 var response = event.detail.response;
 
                 //  console.log('kal-selected-game response: ', response);
-
-                if (response.id != 0) {
+                if(response != null){
+                // if (response.id != 0) {
                     this.set('isGame', true);
                     response.background = 'https:' + response.background;
                     response.picture = 'https:' + response.picture;
@@ -1706,8 +1707,8 @@
                         "galleryurl": ""
                     };
 
-                    // this.set('gameinfo', trail);
-                    this.set('isGame', false);
+                    this.set('gameinfo', trail);
+                    this.set('isGame', true);
                 }
 
             }

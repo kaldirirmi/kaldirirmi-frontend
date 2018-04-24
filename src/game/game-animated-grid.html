@@ -638,7 +638,7 @@
                 text-transform: capitalize;
                 margin: 12px;
                 transition: all ease-in-out 0.3s;
-            }aa
+            }
 
             .systemCreatorButtons paper-button:hover {
                 transform: scale(1.1);
@@ -647,7 +647,7 @@
         <!-- Local Dom here.. -->
         <template is="dom-if" if="[[kaldirir.gameadded]]">
             <paper-material elevation="0" id="usersysteminfo" role="listbox">
-                <template is="dom-if" if="[[kaldirir.useradded]]">
+                <template is="dom-if" if="[[!kaldirir.useradded]]">
                     <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
                         <div class="piheader" style="flex-grow: 2;">
                             <div>
@@ -711,7 +711,7 @@
 
                 </template>
                 <!-- eğer üye olunmuş fakat sistem tanımlanmamışsa burası çıkar -->
-                <template is="dom-if" if="[[!kaldirir.useradded]]">
+                <!-- <template is="dom-if" if="[[kaldirir.useradded]]">
                     <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
                         <div style="flex-grow: 2;">
                             <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
@@ -727,7 +727,7 @@
                         <paper-button raised onClick="location.href = '/profile/add-system';">Sistemini Elle Tanımla
                             <iron-icon icon="icons:fingerprint"></iron-icon>
                         </paper-button>
-                    </div>
+                    </div> -->
                     <!--<paper-button class="pb_nav_left" onClick="location.href='/system/wizard'; "><iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
             <paper-button class="pb_nav_right" onclick="location.href='/profile/add-system';">Sistemini Elle Tanımla <iron-icon icon="icons:fingerprint"></iron-icon></paper-button>-->
 

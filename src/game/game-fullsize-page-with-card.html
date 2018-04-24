@@ -538,6 +538,7 @@
             }
 
             _hardwaretypeChanged(newVal, oldVal) {
+                // console.log('_hardwaretypeChanged', newVal);
                 if (newVal !== undefined) {
                     if (this.$.iaGetHardwareBacklinks.lastRequest) {
                         this.$.iaGetHardwareBacklinks.lastRequest.abort();
@@ -668,7 +669,7 @@
             }
             _onResponseGetHardwareBacklink(event) {
                 var response = event.detail.response;
-                //console.log(response);
+                console.log(response);
                 var ind = 0;
                 response.forEach(function (hardware) {
                     if (ind == 0) {
