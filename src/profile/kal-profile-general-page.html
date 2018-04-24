@@ -328,9 +328,9 @@
                 var response = event.detail.response;
                 //console.log(response);
                 if (response.success) {
-                    console.log('_profileFormSubmit', this.userinfo);
+                    // console.log('_profileFormSubmit', this.userinfo);
 
-                    console.log('scuess');
+                    // console.log('scuess');
                     //if success, trigger userinfo vcard
                     this.generator = Math.random().toString();
                 }
@@ -339,7 +339,7 @@
 
             _ironFormResponseForPassword(event) {
                 var response = event.detail.response;
-                console.log('ironForm Password => ' + response);
+                // console.log('ironForm Password => ' + response);
                 this.setMessageToToaster(response.message);
             }
 

@@ -252,7 +252,7 @@
                             <div id="loginmessage"></div>
                             <div class="btns">
                                 <paper-ripple></paper-ripple>
-                                <button id="loginbtn" class="theme-color" type="button" on-tap="_loginButton">
+                                <button id="loginbtn" class="theme-color" type="button" on-tap="_loginButton" tabindex="1">
                                     <div hidden$=[[loadingForm]]>
                                             Giriş Yap
                                     </div>
@@ -265,9 +265,9 @@
                     </iron-form>
                     <div class="divider">ya da</div>
                     <div class="button-group">
-                        <paper-button raised style="background:#3B5998;" class="facebook" onclick="location.href='/auth/facebook/login';">Facebook İle Giriş Yap / Kayıt Ol</paper-button>
-                        <paper-button raised style="background:#D73D32;" class="google" onclick="location.href='/auth/google/login';">Google İle Giriş Yap / Kayıt Ol</paper-button>
-                        <paper-button raised style="background:#6441a4;" class="twitch" onclick="location.href='/auth/twitch/login';">Twitch İle Giriş Yap / Kayıt Ol</paper-button>
+                        <paper-button tabindex="2" raised style="background:#3B5998;" class="facebook" onclick="location.href='/auth/facebook/login';">Facebook İle Giriş Yap / Kayıt Ol</paper-button>
+                        <paper-button tabindex="3" raised style="background:#D73D32;" class="google" onclick="location.href='/auth/google/login';">Google İle Giriş Yap / Kayıt Ol</paper-button>
+                        <paper-button tabindex="4" raised style="background:#6441a4;" class="twitch" onclick="location.href='/auth/twitch/login';">Twitch İle Giriş Yap / Kayıt Ol</paper-button>
                     </div>
                 </div>
 

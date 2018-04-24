@@ -61,14 +61,41 @@
 
             }
 
-             div[empty-content] .systemCreatorButtons paper-button:hover {
-                 transform: scale(1.1);
+            div[empty-content] .systemCreatorButtons paper-button:hover {
+                transform: scale(1.1);
+            }
+
+
+            @media screen and (max-width: 767px) {
+                neon-animated-pages#pages {
+                    height: 940px !important;
+                }
+
+                div[empty-content] {
+                    margin: 15px 0px;
+                }
+
+                .systemCreatorTitle h3 {
+                    font-size: 18px;
+                }
+                .systemCreatorButtons {
+                    flex-direction: column !important;
+                }
+
+                .systemCreatorButtons a {
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .systemCreatorButtons paper-button {
+                    font-size: 15px;
+                    margin: 8px 15px;
+                }
             }
         </style>
 
         <iron-ajax id="iaKaldirirMi" auto="[[auto]]" url="/h/main?fm=kaldirir-mi&a=[[gameinfo.url]]" method="get" handle-as="json"
             last-response="{{kaldirir}}" loading={{loading}}></iron-ajax>
-
 
         <div hidden$=[[!loading]]>
             <div class="loadingIndicator">
@@ -77,17 +104,16 @@
             </div>
         </div>
         <div hidden$=[[loading]]>
-            <div hidden$=[[kaldirir.useradded]]>
+            <div hidden$=[[!kaldirir.useradded]]>
                 <neon-animated-pages id="pages" selected="0">
                     <game-animated-grid gamename="[[gameinfo.name]]" kaldirir="{{kaldirir}}" kalnotes="{{kaldirir.notes}}" hardwaretype="{{hardwaretype}}"
                         on-tile-click="_onTileClick" bc="[[gameinfo.backcoloropacity]]" mc="[[gameinfo.maincolor]]"></game-animated-grid>
-
                     <game-fullsize-page-with-card bc="[[gameinfo.backcolor]]" mc="[[gameinfo.maincolor]]" gamename="[[gameinfo.name]]" hardwaretype="{{hardwaretype}}"
                         id="fullsize-card" selected-hardware=[[selectedHardware]] on-tile-reset="_onTileReset">
                     </game-fullsize-page-with-card>
                 </neon-animated-pages>
             </div>
-            <div hidden$=[[!kaldirir.useradded]]>
+            <div hidden$=[[kaldirir.useradded]]>
                 <!-- eğer üye olunmuş fakat sistem tanımlanmamışsa burası çıkar -->
                 <paper-item heading style$="background-color: [[gameinfo.backcoloropacity]]; color: [[gameinfo.maincolor]]">
                     <div style="flex-grow: 2;">
@@ -102,9 +128,11 @@
                     <div class="systemCreatorButtons">
                         <paper-button raised onClick="location.href = '/system/wizard';">
                             <iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
-                        <paper-button raised onClick="location.href = '/profile/add-system';">Sistemini Elle Tanımla
-                            <iron-icon icon="icons:fingerprint"></iron-icon>
-                        </paper-button>
+                        <a href="/profile/add-system">
+                            <paper-button raised>Sistemini Elle Tanımla
+                                <iron-icon icon="icons:fingerprint"></iron-icon>
+                            </paper-button>
+                        </a>
                     </div>
                 </div>
             </div>

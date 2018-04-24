@@ -213,10 +213,10 @@
             <ul id="searchresults">
             </ul>
             <div id="defaultsearch">
-                <a id="defaultsearchlink">
+                <!-- <a id="defaultsearchlink">
                     <iron-icon icon="search"></iron-icon>
                     <div class="title" id="defaultsearchtext"></div>
-                </a>
+                </a> -->
                 <paper-spinner-lite id="searching"></paper-spinner-lite>
             </div>
         </div>
@@ -289,8 +289,8 @@
             _OnResponse(e) {
 
                 let searchresults = this.$.searchresults;
-                let defaultsearchlink = this.$.defaultsearchlink;
-                let defaultsearchtext = this.$.defaultsearchtext;
+                // let defaultsearchlink = this.$.defaultsearchlink;
+                // let defaultsearchtext = this.$.defaultsearchtext;
                 let searching = this.$.searching;
 
                 if (e.detail.response.length > 0) {
@@ -309,8 +309,8 @@
                     searchresults.setAttribute('hidden', '');
                 }
 
-                this.$.defaultsearchlink.setAttribute('href', '/ara?query=' + this.$.searchgame.value);
-                this.$.defaultsearchtext.innerText = this.$.searchgame.value + ' ile tüm ilgili sonuçları gör';
+                // this.$.defaultsearchlink.setAttribute('href', '/ara?query=' + this.$.searchgame.value);
+                // this.$.defaultsearchtext.innerText = this.$.searchgame.value + ' ile tüm ilgili sonuçları gör';
                 this.$.searching.removeAttribute('active');
 
                 this._NavigateSearchGame();

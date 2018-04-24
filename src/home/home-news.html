@@ -134,18 +134,17 @@
             <paper-material elevation="4" class="main-catalog">
                 <div class="news-catalog">
                     <div class="big-news-catalog">
-                        <animated-content-placeholder class="image-placeholder big-news">
-                            <!-- <div class="background-masker figure-top"></div>
+                        <!-- <animated-content-placeholder class="image-placeholder big-news">
+                            <div class="background-masker figure-top"></div>
                             <div class="background-masker figure-left"></div>
                             <div class="background-masker figure-right"></div>
                             <div class="background-masker figure-bottom"></div>
-                            <div class="background-masker figcaption-bottom"></div> -->
-                            <loader-pac></loader-pac>
-                        </animated-content-placeholder>
+                            <div class="background-masker figcaption-bottom"></div>
+                        </animated-content-placeholder> -->
                         <news-item item="[[news.first]]" basic type="nondeclared" is-mobile=[[isMobile]]></news-item>
                     </div>
                     <div class="small-news-catalog">
-                        <animated-content-placeholder class="image-placeholder small-news">
+                        <!-- <animated-content-placeholder class="image-placeholder small-news">
                             <div class="background-masker figure-top"></div>
                             <div class="background-masker figure-left"></div>
                             <div class="background-masker figure-right"></div>
@@ -158,7 +157,7 @@
                             <div class="background-masker figure-right"></div>
                             <div class="background-masker figure-bottom"></div>
                             <div class="background-masker figcaption-bottom"></div>
-                        </animated-content-placeholder>
+                        </animated-content-placeholder> -->
                         <template is="dom-repeat" items={{news.center}} as=item>
                             <news-item item="[[item]]" basic is-mobile=[[isMobile]]></news-item>
                         </template>
@@ -167,7 +166,7 @@
                 <div class="advert-catalog"></div>
             </paper-material>
             <paper-material elevation="1" class="side-catalog">
-                <animated-content-placeholder class="image-placeholder small-news">
+                <!-- <animated-content-placeholder class="image-placeholder small-news">
                     <div class="background-masker figure-top"></div>
                     <div class="background-masker figure-left"></div>
                     <div class="background-masker figure-right"></div>
@@ -187,7 +186,7 @@
                     <div class="background-masker figure-right"></div>
                     <div class="background-masker figure-bottom"></div>
                     <div class="background-masker figcaption-bottom"></div>
-                </animated-content-placeholder>
+                </animated-content-placeholder> -->
 
                 <div id="items">
                     <template is="dom-repeat" items={{news.right}} as=item>
@@ -289,7 +288,7 @@
             _onResponse(a) {
                 let index = 0;
                 this.shadowRoot.querySelectorAll('.image-placeholder').forEach(function(placeholder){
-                    placeholder.remove();
+                    // placeholder.remove();
                 });
 
                 //console.log(a.detail.response);

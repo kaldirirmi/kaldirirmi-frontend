@@ -308,15 +308,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     <app-toolbar>
                         <div header-content>
-
                             <template is="dom-if" if={{!isDesktop}}>
                                 <a href="[[rootPath]]">
                                     <iron-image sizing="cover" preload fade src="./frontend/images/kallogowhite.png" class="ironImageMobileLogo">
                                     </iron-image>
                                 </a>
                             </template>
-
-
                             <kal-search></kal-search>
                             <!-- <a name="login" href="[[rootPath]]login" hidden$="[[storedUser.loggedin]]">
                                 <paper-button raised>Giriş Yap</paper-button>
@@ -473,7 +470,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         }
                     } else {
                         user = {
-                            loggedin: true,
+                            loggedin: false,
                             uid: 0,
                             uname: ""
                         }

@@ -8,13 +8,18 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 
-
 <dom-module id="game-animated-grid">
     <template>
         <style>
             :host {
                 display: block;
                 background-color: #222;
+            }
+
+            @media screen and (max-width: 767px){
+                .tile {
+                    height: 200px !important;
+                }
             }
 
             .tile {
@@ -35,6 +40,7 @@
                 background-position: center;
                 box-shadow: 0 0 5px black inset, 0 0 2px 1px black;
                 float: left;
+                height: 170px;
 
             }
 
@@ -644,101 +650,72 @@
                 transform: scale(1.1);
             }
         </style>
-        <!-- Local Dom here.. -->
-        <template is="dom-if" if="[[kaldirir.gameadded]]">
-            <paper-material elevation="0" id="usersysteminfo" role="listbox">
-                <template is="dom-if" if="[[!kaldirir.useradded]]">
-                    <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
-                        <div class="piheader" style="flex-grow: 2;">
-                            <div>
-                                <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
-                            </div>
-                            <div class="ksuccess" hidden$="[[!kaldirir.kaldirirmi]]">
-                                <paper-icon-button id="kaldiririnfo" icon="check-circle"></paper-icon-button>
-                                <paper-tooltip position="top" animation-delay="150" offset="2" for="kaldiririnfo">Kaldırır</paper-tooltip>
-                            </div>
-                            <div class="kfail" hidden$="[[kaldirir.kaldirirmi]]">
-                                <paper-icon-button id="kaldirmazinfo" icon="cancel"></paper-icon-button>
-                                <paper-tooltip position="top" animation-delay="150" offset="2" for="kaldirmazinfo">Kaldırmaz</paper-tooltip>
-                            </div>
-                        </div>
-                        <div class="buttons">
-                            <a href="/profile/add-system">
-                                <paper-button raised>Sistemini Elle Güncelle</paper-button>
-                            </a>
-                        </div>
-                    </paper-item>
-                    <!-- Dom repeat -->
-                    <template is="dom-repeat" items="{{kalnotes}}" as="item">
-                        <div class="tile" id="part{{index}}" on-tap="_onClick">
-                            <iron-icon icon="open-with" class="iiExpand"></iron-icon>
-                            <div tile-flex>
-                                <div class="tile-flex-colon">
-                                    <div class="colon-header">
-                                        <h2>[[item.name]]</h2>
-                                        <p>[[item.userhardware]]</p>
-                                        <iron-icon style$="color: [[item.color]]" icon$="[[item.icon]]"></iron-icon>
-                                    </div>
+
+        <div hidden$=[[!kaldirir.gameadded]]>
+                <paper-material elevation="0" id="usersysteminfo" role="listbox">
+                        <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
+                            <div class="piheader" style="flex-grow: 2;">
+                                <div>
+                                    <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
                                 </div>
-                                <div class="tile-flex-colon">
-                                    <div class="colon-image">
-                                        <img src="/assets/img/gamepage-icon/[[item.image]]" />
-                                    </div>
-                                    <div class="colon-title">
-                                        <span> [[item.message]]</span>
-                                    </div>
-                                    <!-- Bu div Hdd Tarama kontrolü ile ilgilidir-->
-                                    <template is="dom-if" if="[[item.isHdd]]">
-                                        <!-- isHdd sadece hdd partında doğrudur-->
-                                        <div class="hdd-control-box">
-                                            <template is="dom-if" if="[[item.upToDate]]">
-                                                <!-- sistem son güncellemesi bugün yapılmıssa-->
-                                                <p style$="color:[[item.color]]">Son güncelleme bugün içinde yapılmış.</p>
-                                            </template>
-                                            <template is="dom-if" if="[[!item.upToDate]]">
-                                                <!-- sistem güncellemesi üzerinden 1den fazla gün geçmiş ise -->
-                                                <p style$="color:[[item.color]]">Son tarama zamanı : [[item.lastScanTime]]</p>
-                                            </template>
+                                <div class="ksuccess" hidden$="[[!kaldirir.kaldirirmi]]">
+                                    <paper-icon-button id="kaldiririnfo" icon="check-circle"></paper-icon-button>
+                                    <paper-tooltip position="top" animation-delay="150" offset="2" for="kaldiririnfo">Kaldırır</paper-tooltip>
+                                </div>
+                                <div class="kfail" hidden$="[[kaldirir.kaldirirmi]]">
+                                    <paper-icon-button id="kaldirmazinfo" icon="cancel"></paper-icon-button>
+                                    <paper-tooltip position="top" animation-delay="150" offset="2" for="kaldirmazinfo">Kaldırmaz</paper-tooltip>
+                                </div>
+                            </div>
+                            <div class="buttons">
+                                <a href="/profile/add-system">
+                                    <paper-button raised>Sistemini Elle Güncelle</paper-button>
+                                </a>
+                            </div>
+                        </paper-item>
+                        <template is="dom-repeat" items="{{kalnotes}}" as="item">
+                            <div class="tile" id="part{{index}}" on-tap="_onClick">
+                                <iron-icon icon="open-with" class="iiExpand"></iron-icon>
+                                <div tile-flex>
+                                    <div class="tile-flex-colon">
+                                        <div class="colon-header">
+                                            <h2>[[item.name]]</h2>
+                                            <p>[[item.userhardware]]</p>
+                                            <iron-icon style$="color: [[item.color]]" icon$="[[item.icon]]"></iron-icon>
                                         </div>
-                                    </template>
+                                    </div>
+                                    <div class="tile-flex-colon">
+                                        <div class="colon-image">
+                                            <img src="/assets/img/gamepage-icon/[[item.image]]" />
+                                        </div>
+                                        <div class="colon-title">
+                                            <span> [[item.message]]</span>
+                                        </div>
+                                        <!-- Bu div Hdd Tarama kontrolü ile ilgilidir-->
+                                        <template is="dom-if" if="[[item.isHdd]]">
+                                            <!-- isHdd sadece hdd partında doğrudur-->
+                                            <div class="hdd-control-box">
+                                                <template is="dom-if" if="[[item.upToDate]]">
+                                                    <!-- sistem son güncellemesi bugün yapılmıssa-->
+                                                    <p style$="color:[[item.color]]">Son güncelleme bugün içinde yapılmış.</p>
+                                                </template>
+                                                <template is="dom-if" if="[[!item.upToDate]]">
+                                                    <!-- sistem güncellemesi üzerinden 1den fazla gün geçmiş ise -->
+                                                    <p style$="color:[[item.color]]">Son tarama zamanı : [[item.lastScanTime]]</p>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
                                 </div>
-
                             </div>
-
-                        </div>
-                        <!-- tile -->
-                    </template>
-
-                </template>
-                <!-- eğer üye olunmuş fakat sistem tanımlanmamışsa burası çıkar -->
-                <!-- <template is="dom-if" if="[[kaldirir.useradded]]">
-                    <paper-item heading style$="background-color: [[bc]]; color: [[mc]]">
-                        <div style="flex-grow: 2;">
-                            <h2>Sistemin {{gamename}} oyununu kaldırır mı?</h2>
-                        </div>
-                        <div>
-                            <paper-button onClick="location.href='/system/wizard'; ">Sistem Sihirbazını Çalıştır</paper-button>
-                            <paper-button onclick="location.href='/profile/add-system';">Sistemini Elle Tanımla</paper-button>
-                        </div>
-                    </paper-item>
-                    <div class="systemCreatorButtons">
-                        <paper-button raised onClick="location.href = '/system/wizard';">
-                            <iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
-                        <paper-button raised onClick="location.href = '/profile/add-system';">Sistemini Elle Tanımla
-                            <iron-icon icon="icons:fingerprint"></iron-icon>
-                        </paper-button>
-                    </div> -->
-                    <!--<paper-button class="pb_nav_left" onClick="location.href='/system/wizard'; "><iron-icon icon="image:wb-incandescent"></iron-icon> Sistem Sihirbazını Çalıştır</paper-button>
-            <paper-button class="pb_nav_right" onclick="location.href='/profile/add-system';">Sistemini Elle Tanımla <iron-icon icon="icons:fingerprint"></iron-icon></paper-button>-->
-
-                </template>
-                <!-- end üye fakat sistem tanımlı değil -->
-            </paper-material>
-        </template>
-
-
+                            <!-- tile -->
+                        </template>
+                </paper-material>
+        </div>
+        <div hidden$=[[kaldirir.gameadded]]>
+            <span>Oyun Bilgileri Eklenmemiş! Sonra Tekrar Denemelisin!</span>
+        </div>
     </template>
-
     <script>
         /**
          * `game-animated-grid` Description
@@ -765,12 +742,12 @@
                     kalnotes: {
                         type: Object,
                         value: [],
-                        notify: true
+                        notify: true,
                     },
                     kaldirir: {
                         type: Object,
                         value: [],
-                        notify: true
+                        notify: true,
                     },
                     page: {
                         type: Number,
