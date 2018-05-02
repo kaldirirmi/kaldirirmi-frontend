@@ -18,16 +18,20 @@
     <template>
         <style>
             :host {
-                display: block
-            }
-        </style>
-
-        <style>
-            /* local DOM styles go here */
-
-            :host {
+                display: block;
                 width: 100%;
                 color: white;
+            }
+
+            @media only screen and (max-width: 767px) {
+                #dlcdialog {
+                    width: 80% !important;
+                    margin: 0 !important;
+                }
+
+                #dlc-container .dlc-details .dlc-title {
+                    white-space: normal !important;
+                }
             }
 
             #gamedlclist {
@@ -301,6 +305,7 @@
                 display: flex;
                 font-size: 18px;
                 padding: 0px 5px;
+                color: #ffffff;
             }
 
             #dlcdialog paper-dropdown-menu.pdm {
@@ -335,6 +340,7 @@
                 position: absolute;
                 top: 10px;
                 right: 10px;
+                color: #ffffff;
             }
 
             #dlcopen {
@@ -386,6 +392,7 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                justify-content: center;
             }
 
 
@@ -402,6 +409,9 @@
 
             #dlcdialog paper-dialog-scrollable {
                 margin: 0;
+                --paper-dialog-scrollable: {
+                    padding: 0;
+                }
             }
 
             #dlcdialog paper-dialog-scrollable>* {
@@ -433,12 +443,12 @@
             </template>
         </paper-material>
 
-        <paper-dialog id="dlcdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+        <paper-dialog id="dlcdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
             <paper-dialog-scrollable>
                 <app-toolbar>
-                    <div class="dlctoolbar">
+                    <!-- <div class="dlctoolbar">
                         <span>Oyun DLC</span>
-                    </div>
+                    </div> -->
                     <div class="flex">
                         <paper-dropdown-menu label="DLC Seçiniz" class="pdm">
                             <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{selectedid}}" slot="dropdown-content">
@@ -467,6 +477,11 @@
                             </div>
                             <div class="dlc-content">
                                 <!-- <html-echo html="[[item.content]]"></html-echo> -->
+                                <p>
+                                    <i>
+                                        DLC Detayları Çok Yakında!
+                                    </i>
+                                </p>
                             </div>
                         </div>
                     </paper-material>
@@ -529,11 +544,11 @@
                     }
                 };
             }
-            
-            _gameidChanged(newVal, oldVal){
-                if(newVal !== undefined){
 
-                    if(this.$.getgamedlc.lastRequest){
+            _gameidChanged(newVal, oldVal) {
+                if (newVal !== undefined) {
+
+                    if (this.$.getgamedlc.lastRequest) {
                         this.$.getgamedlc.lastRequest.abort();
                     }
                     this.$.getgamedlc.generateRequest();
@@ -562,7 +577,7 @@
 
             _response(a) {
                 this.set('gamedlcs', []);
-                
+
                 let response = a.detail.response;
                 if (response != null) {
                     if (response.length > 0) {
@@ -607,11 +622,9 @@
 
             _remakeContent(content) {
                 //console.log(content);
-                if (content.includes('<p><br></p>')|| content == '<br>' || content == '<br/>') {
+                if (content.includes('<p><br></p>') || content == '<br>' || content == '<br/>') {
                     return 'This content will fill in the future.';
-                }
-                else
-                {
+                } else {
                     return content;
                 }
             }
