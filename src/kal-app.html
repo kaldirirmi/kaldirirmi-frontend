@@ -50,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="./pages/kal-twitch-page.html">
 <link rel="lazy-import" href="./pages/kal-view404-page.html">
 <link rel="lazy-import" href="./pages/kal-profile-page.html">
+<link rel="lazy-import" href="./pages/kal-userpublic-page.html">
 
 <dom-module id="kal-app">
     <template>
@@ -338,6 +339,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <kal-challenge-page name="challenge" is-mobile=[[isMobile]] route="{{route}}"></kal-challenge-page>
                     <kal-twitch-page name="twitch" is-mobile=[[isMobile]] route="{{route}}"></kal-twitch-page>
                     <kal-profile-page name="profile" is-mobile=[[isMobile]] route="{{subroute}}"></kal-profile-page>
+                    <kal-userpublic-page name="userpublic" is-mobile=[[isMobile]] route="{{subroute}}" main-route="{{route}}"></kal-userpublic-page>
                     <kal-view404-page name="view404"></kal-view404-page>
                 </iron-pages>
             </kal-header-layout>

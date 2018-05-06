@@ -1,0 +1,224 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/kal-thirdparty/moment.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../kal-global-variable.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../model/login-button.html">
+<link rel="import" href="../userpublic/selected-user-public.html">
+
+<dom-module id="kal-userpublic-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                /* @apply --layout-vertical;
+                      width: 100%;
+                      height: 100%; */
+                display: block;
+                /* padding: 10px; */
+                font-size: calc(0.6em + (1.3125 - 1) * ((100vw - 20em) / (80 - 20)));
+                line-height: calc(1em + (1.8 - 1.4) * ((100vw - 20em) / (80 - 20)));
+
+                overflow: hidden !important;
+                height: calc(100vh - 192px);
+            }
+
+            :host([is-mobile]) {
+                height: auto !important;
+            }
+
+            #unauthenticated .card {
+                background: #222;
+                @apply --shadow-elevation-12dp;
+                @apply --layout-vertical;
+                align-items: flex-start;
+                border-top: 4px solid var(--app-theme-color);
+            }
+
+            #unauthenticated .card h2 {
+                color: #fff;
+            }
+
+            #unauthenticated .card login-button {
+                --login-button-color: #222;
+                --login-button-background-color: var(--app-theme-color);
+                font-size: 18px;
+                @apply --shadow-transition;
+                transition: ease-in-out .3s;
+                /* transition: cubic-bezier(0.68, -0.55, 0.265, 1.55); */
+            }
+
+            #unauthenticated .card login-button:hover {
+                transform: scale(1.1);
+            }
+        </style>
+
+        <app-route route="{{route}}" pattern="/:userUrl" data="{{data}}" active="{{selectedUserActive}}"></app-route>
+        <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
+        <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
+
+        <div id="unauthenticated" hidden$="[[storedUser.loggedin]]">
+            <div class="card">
+                <h2>Önce Giriş Yapmalısın!</h2>
+                <login-button stored-user={{storedUser}}></login-button>
+            </div>
+        </div>
+        <div id="authenticated" hidden$="[[!storedUser.loggedin]]">
+            <iron-ajax id="getselecteduser" url="/h/main?fm=get-userpublic-info&a=[[userUrl]]" handle-as="json" on-response="_onResponse"
+                loading="{{loading}}"></iron-ajax>
+            <template is="dom-if" if={{selectedUserActive}}>
+                <template is="dom-if" if={{isUser}}>
+                    <selected-user-public user=[[response]] is-mobile=[[isMobile]]></selected-user-public>
+                </template>
+                <template is="dom-if" if={{!isUser}}>
+                    <div id="unauthenticated">
+                        <div class="card">
+                            <h2>Böyle Bir Kullanıcı Bulunmamaktadır!</h2>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-user-page` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalUserPublicPage extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-userpublic-page';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    gamelist: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    route: {
+                        type: Object,
+                    },
+                    mainRoute: Object,
+                    data: {
+                        type: Object,
+                        observer: '_selectedUserChanged'
+                    },
+                    selectedUserActive: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        observer: '_selectedUserActiveChanged'
+                    },
+                    userUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    isUser: Boolean,
+                    response: Object
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+            }
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+
+            _selectedUserActiveChanged(selectedUserActive, previousValue) {}
+
+            _selectedUserChanged(data, previousValue) {
+
+                if (Object.keys(data).length !== 0) {
+
+                    if (data.userUrl.length != 0) {
+                        this.set('userUrl', data.userUrl);
+
+                        if (this.storedUser.loggedin)
+                            this._generateMainRequest();
+                    } else {
+                        this.set('mainRoute.path', '/home');
+                    }
+                } else {
+                    this.set('mainRoute.path', '/home');
+                }
+            }
+
+            _generateMainRequest() {
+
+                let ajx = this.$.getselecteduser;
+
+                if (ajx.lastRequest) {
+                    ajx.lastRequest.abort();
+                }
+
+                ajx.generateRequest();
+            }
+
+            _onResponse(event) {
+                let response = event.detail.response;
+
+                if (response == null)
+                    this.set('isUser', false);
+
+                else {
+                    this.set('isUser', true);
+                    this.set('response', response);
+                }
+
+
+
+
+            }
+
+        }
+
+        window.customElements.define(KalUserPublicPage.is, KalUserPublicPage);
+    </script>
+</dom-module>

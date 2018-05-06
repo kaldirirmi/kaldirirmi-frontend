@@ -1,0 +1,1029 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../kal-copyright.html">
+
+<dom-module id="selected-user-public">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                margin-bottom: 30px;
+            }
+
+            div[main-content] {
+                height: calc(100vh - 192px);
+                overflow-y: scroll;
+            }
+
+            #profilecover {
+                width: 100%;
+                height: 30vh;
+            }
+
+            #profilecover iron-image {
+                width: 100%;
+                min-height: 100%;
+                background-color: #222;
+            }
+
+            div[main-content]::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            div[main-content]::-webkit-scrollbar-thumb {
+                background-color: #222;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            div[main-content]::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+
+            #profile-container {
+                min-height: 500px;
+                box-sizing: border-box;
+                position: relative;
+            }
+
+            #profile {
+                height: 100%;
+                background: #222;
+            }
+
+            #profilecover iron-image {
+                background-color: #222;
+                transition: all ease-in .2s;
+                width: 100%;
+                height: 100%;
+            }
+
+            #profileheader {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                background: #ff7800;
+                height: calc(4.5em + 1vmin);
+                padding: 0 20px;
+                transition: all ease-in .2s;
+                position: relative;
+            }
+
+            #profilepicture {
+                @apply --layout-flex-none;
+                @apply --layout-self-end;
+                margin-left: 10px;
+                margin-right: 10px;
+                border: 16px solid #ff7800;
+                width: calc(8em + 1vmin);
+                height: calc(8em + 1vmin);
+                border-radius: 50%;
+                position: relative;
+                background-color: #ff7800;
+                overflow: hidden;
+                transition: all ease-in .2s;
+            }
+
+            #profilepicture iron-image {
+                width: 100%;
+                height: 100%;
+                background-color: #ff7800;
+                border-radius: 50%;
+                transition: all ease-in .2s;
+                overflow: hidden;
+                z-index: 0;
+            }
+
+            #profileusername {
+                color: white;
+                flex-grow: 2;
+                pointer-events: none;
+            }
+
+            #profileusername h1 {
+                margin: 0;
+                font-weight: normal;
+                font-size: calc(1.1em + 1vmin);
+            }
+
+            #profileusername h4 {
+                margin: 0;
+                font-size: calc(0.33em + 1vmin);
+                font-weight: 100;
+                margin-top: 5px;
+            }
+
+            @media (max-width:600px) and (min-width:431px) {
+                #profileheader {
+                    height: 90px;
+                }
+
+                #profilepicture {
+                    width: 150px;
+                    height: 150px;
+                    border: 12px solid #ff7800;
+                }
+            }
+
+            @media (max-width: 430px) {
+                #profileheader {
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    height: 140px;
+                }
+
+                #profilepicture {
+                    margin: auto;
+                    margin-top: -75px;
+                    width: 120px;
+                    height: 120px;
+                    border: 8px solid #ff7800;
+                }
+
+                #profileusername {
+                    text-align: center;
+                }
+            }
+
+            #userinteractions {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            #userinteractions .emptysession {
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            #userinteractions .emptysession h4 {
+                font-weight: 100;
+                margin: 3px;
+                font-size: calc(0.5em + 1vmin);
+            }
+
+            #userinteractions .emptysession paper-button {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                font-weight: bold;
+                background-color: #222;
+                color: #ff7800;
+                width: 100%;
+                justify-content: center;
+                font-size: calc(0.39em + 1vmin);
+                padding: 0 10px;
+            }
+
+            #userinteractions .friendstatusbutton {
+                color: #ff7800;
+                background-color: #222;
+                font-weight: bold;
+                min-width: 260px;
+                font-size: calc(0.4em + 1vmin);
+            }
+
+
+            /* Button 5b */
+
+            .btn-5 {
+                font-weight: bold;
+                background: #222;
+                color: #ff7800;
+                width: calc(10em + 1vmin);
+                line-height: 24px;
+                font-size: calc(0.4em + 1vmin) !important;
+                overflow: hidden;
+                -webkit-backface-visibility: hidden;
+                -moz-backface-visibility: hidden;
+                backface-visibility: hidden;
+                text-align: center;
+            }
+
+            .btn-5:active {
+                /*background: #9053a9;*/
+                top: 2px;
+            }
+
+            .btn-5 span {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                -webkit-transition: all 0.3s;
+                -webkit-backface-visibility: hidden;
+                -moz-transition: all 0.3s;
+                -moz-backface-visibility: hidden;
+                transition: all 0.3s;
+                backface-visibility: hidden;
+            }
+
+            .btn-5:before {
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                line-height: 3;
+                -webkit-transition: all 0.3s;
+                -moz-transition: all 0.3s;
+                transition: all 0.3s;
+            }
+
+            .btn-5:active:before {
+                color: #703b87;
+            }
+
+            .btn-5b:hover span {
+                -webkit-transform: translateX(200%);
+                -moz-transform: translateX(200%);
+                -ms-transform: translateX(200%);
+                transform: translateX(200%);
+            }
+
+            .btn-5b:before {
+                left: -100%;
+                top: 0;
+            }
+
+            .btn-5b:hover:before {
+                left: 0;
+            }
+
+            .icon-remove:before {
+                content: attr(data-hover);
+            }
+
+            #addsystemalert {
+                color: #222 !important;
+                background-color: #ff7800 !important;
+                font-weight: bold;
+            }
+
+            #non-friend {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                height: 300px;
+                justify-content: center;
+            }
+
+            #non-friend paper-material {
+                padding: 25px;
+                color: white;
+                font-size: calc(0.4em + 1vmin);
+            }
+
+            #non-friend paper-material h2 {
+                font-weight: 100;
+            }
+
+            #profile-content {
+                @apply --layout-horizontal;
+            }
+
+            #profile-content .profile-content-left {
+                width: 33.33333333%;
+                justify-content: center;
+                padding-top: 10px;
+                display: flex;
+                height: 300px;
+            }
+
+            #profile-content .profile-content-left paper-material {
+                width: 90%;
+                background-color: #222;
+                @apply --layout-vertical;
+                @apply --layout-center;
+            }
+
+            #profile-content .profile-content-right {
+                width: 66.66666667%;
+                height: 100%;
+                justify-content: center;
+                padding-top: 10px;
+                display: flex;
+                color: white !important;
+            }
+
+            #profile-content .profile-content-right paper-material {
+                width: 95%;
+                background-color: #222;
+            }
+
+            .profile-content-left paper-material .content-title {
+                width: 100%;
+                border-bottom: 2px solid white;
+            }
+
+            .profile-content-left paper-material .content-title h3 {
+                color: white;
+                margin-left: 10px;
+                font-size: calc(0.46em + 1vmin);
+            }
+
+            .profile-content-left paper-material .content-detail {
+                width: 100%;
+                height: 100%;
+                color: white;
+            }
+
+            .profile-content-left paper-material .content-detail h4 {
+                font-size: calc(0.33em + 1vmin);
+                color: white;
+            }
+
+            .card-place {
+                color: #FFF;
+                margin: 0 auto;
+                width: 100%;
+                border: 1px solid #e64a19;
+                font-size: calc(0.38em + 1vmin);
+                background-color: #e64a19;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                position: absolute;
+                bottom: 0;
+                justify-content: center;
+            }
+
+            .content-detail table tr td {
+                padding: 15px;
+                font-size: calc(0.33em + 1vmin);
+                font-weight: 100;
+            }
+
+            .table-boldie {
+                font-size: calc(0.37em + 1vmin) !important;
+                font-weight: bold !important;
+            }
+
+            .content-detail table {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .acceptdeclinebuttons {
+                width: 100%;
+                @apply --layout-center-justified;
+                margin: 25px;
+                @apply --layout-horizontal;
+            }
+
+            .colorGreen {
+                background: #008744;
+                margin: 5px;
+                padding: 6px;
+                opacity: 0.8;
+                border: 1px solid #fff;
+                color: white;
+            }
+
+            .colorRed {
+                background: #d62d20;
+                margin: 5px;
+                padding: 6px;
+                opacity: 0.8;
+                color: white;
+                border: 1px solid white;
+            }
+
+            .acceptdeclinebuttons paper-button:hover {
+                opacity: 1;
+            }
+
+            .paperMaterialRightSide {
+                padding: 0px 20px;
+            }
+
+            .paperMaterialUserLikedGames {
+                height: auto !important;
+                width: 100%;
+            }
+
+            .paperMaterialUserLikedGames .content-title {
+                display: flex;
+                width: 100%;
+                border-bottom: 2px solid white;
+            }
+
+            .paperMaterialUserLikedGames .content-title h3 {
+                color: white;
+                margin-left: 10px;
+                font-size: calc(0.46em + 1vmin);
+            }
+
+            .paperMaterialUserLikedGames .content-detail {
+                width: 100%;
+                height: 100%;
+                color: white;
+            }
+
+            .loadingIndicator {
+                text-align: center;
+                height: 40px;
+                color: white;
+            }
+
+            .loadingIndicator paper-spinner-lite {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                --paper-spinner-color: #ff7800;
+            }
+
+            #gamelist {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                @apply --layout-start-justified;
+                flex-flow: row wrap;
+                -ms-flex-flow: row wrap;
+                width: 100%;
+                height: auto;
+                padding: 10px;
+                background: #222;
+            }
+
+            .game {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                margin: 5px;
+                background-color: #222;
+                transition: all ease .2s;
+                cursor: pointer;
+                width: calc(7em + 1vmin);
+                height: calc(10em + 1vmin);
+                position: relative;
+                text-decoration: none;
+                box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+            }
+
+            .game iron-image {
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+            }
+
+            .game .game-title {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white;
+                height: calc(1.45em + 1vmin);
+                /*background: #ff7800;*/
+                width: 100%;
+                border-top: 2px solid #ff7800;
+            }
+
+            .game .game-title span {
+                width: 100%;
+                @apply --paper-font-common-nowrap;
+                text-align: center;
+            }
+
+            .game:hover iron-image[background] {
+                opacity: 1;
+            }
+
+            #sitecopyright {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                color: white;
+                line-height: 24px;
+                padding: 5px;
+                font-size: 13px;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            #sitecopyright a {
+                color: white;
+                text-decoration: none;
+            }
+
+            #sitecopyright a:not(:first-child):before {
+                content: '/';
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        </style>
+
+        <iron-ajax id="ironAjaxCheckFriendship" debounce="3000" url="/h/main?fm=check-friendship&target=[[user.username]]" handle-as="json"
+            on-response="_responseCheckFriendship"></iron-ajax>
+        <iron-ajax auto="{{likedGo}}" loading="{{loadinglikes}}" id="ironAjaxGetLikedGames" debounce="3000" url="/h/main?fm=get-liked-games-of-user&a=[[uid]]"
+            handle-as="json" on-response="_responseLikedGames"></iron-ajax>
+
+        <iron-form id="sendfriendrequestform" on-iron-form-response="_responseOfSendFriendRequest">
+            <form action="/h/main" method="post">
+                <input type="hidden" name="fm" value="send-friend-request" />
+                <input type="hidden" id="receiverId" name="receiverId" value=[[uid]] />
+            </form>
+        </iron-form>
+
+        <iron-form id="cancelfriendrequestform" on-iron-form-response="_responseOfCancelFriendRequest">
+            <form action="/h/main" method="post">
+                <input type="hidden" name="fm" value="cancel-active-friendship" />
+                <input type="hidden" id="receiverId" name="receiverId" value=[[uid]] />
+            </form>
+        </iron-form>
+
+        <iron-form id="formAcceptRequest" on-iron-form-response="_onFormAcceptResponse">
+            <form method="post" action="/h/main">
+                <input type="hidden" name="fm" value="accept-friend-request" />
+                <input type="hidden" id="senderId" name="senderId" value=[[uid]] />
+            </form>
+        </iron-form>
+
+        <iron-form id="formDeclineRequest" on-iron-form-response="_onFormDeclineResponse">
+            <form method="post" action="/h/main">
+                <input type="hidden" name="fm" value="decline-friend-request" />
+                <input type="hidden" id="senderId" name="senderId" value="[[uid]]" />
+            </form>
+        </iron-form>
+
+
+        <div main-content>
+            <div id="profilecover" depth="-0.5" class="fullbleed">
+                <iron-image promocover src="{{_remakeBackground(user.background)}}" sizing="cover" preload fade></iron-image>
+            </div>
+            <div id="profile-container">
+                <div id="profile">
+                    <div id="profileheader">
+                        <div id="profilepicture">
+                            <iron-image promocover src="{{_remakeAvatar(user.avatar)}}" sizing="cover" preload fade></iron-image>
+                        </div>
+                        <div id="profileusername">
+                            <h1>[[user.username]]</h1>
+                            <h4>{{_remakeRegisterDate(user.registerdate)}}</h4>
+                        </div>
+                        <div id="userinteractions">
+                            <template is="dom-if" if="[[!sessionstatus]]">
+                                <div class="emptysession">
+                                    <h4>Profile detayları için giriş yapmalısın.</h4>
+                                    <paper-button class="pb_heading md-trigger md-setperspective" data-modal="modal-19" raised>
+                                        <p>Giriş Yap</p>
+                                        <iron-icon class="ic_heading" icon="icons:open-with"></iron-icon>
+                                    </paper-button>
+                                </div>
+                            </template>
+                            <template is="dom-if" if="[[sessionstatus]]">
+                                <!-- not friend yet. Sending request or cancel request-->
+                                <template is="dom-if" if="[[!beingFriend]]">
+                                    <div class="acceptdeclinebuttons">
+                                        <template is="dom-if" if="[[!isTarget]]">
+                                            <paper-button raised class="friendstatusbutton" id="pbSendingFriendship" on-tap="_triggerSendingFriendForm">[[sendingButtonText]]</paper-button>
+                                        </template>
+                                        <template is="dom-if" if="[[isTarget]]">
+                                            <paper-button class="colorGreen" on-tap="_acceptPendingRequest">
+                                                <iron-icon icon="done"></iron-icon>
+                                                <span>Onayla</span>
+                                            </paper-button>
+                                            <paper-button class="colorRed" on-tap="_declinePendingRequest">
+                                                <iron-icon icon="close"></iron-icon>
+                                                <span>Reddet</span>
+                                            </paper-button>
+                                        </template>
+
+                                    </div>
+
+                                </template>
+                                <!-- being friend.. show cancel friendships-->
+                                <template is="dom-if" if="[[beingFriend]]">
+                                    <paper-button raised data-hover="Arkadaşlıktan Çık" class="btn-5 btn-5b icon-remove" id="pbCancelFriendship" on-tap="_triggerCancelFriendForm">
+                                        <span>Arkadaşsınız</span>
+                                    </paper-button>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <template is="dom-if" if="[[!beingFriend]]">
+                    <div id="non-friend">
+                        <paper-material elevation="4">
+                            <h2>Profil detaylarını görmek için
+                                <b>arkadaş</b> olmanız gerekmektedir.</h2>
+                        </paper-material>
+                    </div>
+                </template>
+                <template is="dom-if" if="[[beingFriend]]">
+                    <div id="profile-content" elevation="5">
+                        <div class="profile-content-left">
+                            <paper-material elevation="3">
+                                <div class="content-title">
+                                    <h3>Profil</h3>
+                                </div>
+                                <div class="content-detail">
+                                    <table>
+                                        <tr>
+                                            <td class="table-boldie">Ad Soyad</td>
+                                            <td>{{_remakeUsername(user.namesurname)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-boldie">Doğum Tarihi</td>
+                                            <td>{{_remakeBirthday(user.birthday)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-boldie">Hakkında</td>
+                                            <td>{{_remakeAbout(user.about)}}</td>
+                                        </tr>
+                                    </table>
+                                    <div class="card-place">
+                                        <iron-icon style="padding-right:10px;" icon="{{_remakeIcon(umod)}}"></iron-icon>
+                                        <p class="center">{{_remakeBadge(user.moderator)}}</p>
+                                    </div>
+                                </div>
+                            </paper-material>
+                        </div>
+                        <div class="profile-content-right">
+                            <paper-material elevation="5" class="paperMaterialRightSide">
+                                <paper-material class="paperMaterialUserLikedGames" elevation="3">
+                                    <div class="content-title">
+                                        <h3>Beğenilen Oyunlar</h3>
+                                    </div>
+                                    <div class="content-detail">
+                                        <div id="gamelist">
+                                            <template is="dom-if" if="[[likedGamesActive]]">
+                                                <template is="dom-repeat" items="{{likedGames}}" as="item">
+                                                    <a class="game" href="/oyun/[[item.url]]" onclick="load();">
+                                                        <iron-image background src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" sizing="cover" alt="[[item.name]]"
+                                                            preload fade></iron-image>
+                                                        <div class="game-title">
+                                                            <span>[[item.name]]</span>
+                                                        </div>
+                                                    </a>
+                                                </template>
+                                            </template>
+                                            <template is="dom-if" if="[[!likedGamesActive]]">
+                                                <h3>Hiç oyun beğenilmemiş!</h3>
+                                            </template>
+                                        </div>
+                                        <div class="loadingIndicator" hidden$="[[!loadinglikes]]">
+                                            <paper-spinner-lite active$="[[loadinglikes]]"></paper-spinner-lite> Beğenilen Oyunlar Getiriliyor
+                                        </div>
+                                    </div>
+                                </paper-material>
+                            </paper-material>
+                        </div>
+                    </div>
+                </template>
+                <div id="sitecopyright">
+                    <kal-copyright></kal-copyright>
+                </div>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `selected-user-public` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class SelectedUserPublic extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'selected-user-public';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    uid: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    user: {
+                        type: Object,
+                        observer: '_userChanged',
+                        notify: true
+                    },
+                    isMobile: {
+                        type: Boolean,
+                        reflectToAttribute: true
+                    },
+                    sessionstatus: {
+                        type: Boolean,
+                        notify: true
+                    },
+                    checkresponse: {
+                        type: Object,
+                        notify: true
+                    },
+                    sendingButtonText: {
+                        type: String,
+                        value: 'Arkadaşlık isteği gönder',
+                        notify: true
+                    },
+                    beingFriend: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    counter: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    isTarget: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    likedGames: {
+                        type: Object,
+                        notify: true
+                    },
+                    likedGamesActive: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    loadinglikes: {
+                        type: Boolean,
+                        value: true
+                    },
+                    likedGo: {
+                        type: Boolean,
+                        value: false,
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                this.sessionstatus = true;
+                if (this.$.ironAjaxCheckFriendship.lastRequest) {
+                    this.$.ironAjaxCheckFriendship.lastRequest.abort();
+                }
+                this.$.ironAjaxCheckFriendship.generateRequest();
+
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _userChanged(newVal, oldVal) {
+
+                if (Object.keys(newVal).length !== 0) {
+                    // console.log(newVal);
+
+                    this.$.ironAjaxGetLikedGames.generateRequest();
+                }
+            }
+
+            _triggerSendingFriendForm(event) {
+                this.shadowRoot.querySelector('#pbSendingFriendship').disabled = true;
+                if (this.sendingButtonText == 'Arkadaşlık isteği gönder') {
+                    this.sendingButtonText = 'İsteği Geri Çek';
+                } else {
+                    this.sendingButtonText = 'Arkadaşlık isteği gönder';
+                }
+
+                this.counter++;
+                if (this.counter >= 5) {
+                    this.sendingButtonText = 'Al Kırdın Kırdın!';
+                    this.shadowRoot.querySelector('#pbSendingFriendship').disabled = true;
+                    this.shadowRoot.querySelector('#pbSendingFriendship').style.opacity = "0.7";
+
+                } else {
+                    this.$.sendfriendrequestform.submit();
+                }
+
+            }
+            _triggerCancelFriendForm(event) {
+                this.shadowRoot.querySelector('#pbCancelFriendship').disabled = true;
+                this.$.cancelfriendrequestform.submit();
+            }
+            _remakeBackground(background) {
+                if (background) {
+                    return 'https://cdn.kaldirirmi.com/images/user/wallpaper/' + background;
+                } else {
+                    return 'https://cdn.kaldirirmi.com/images/user/wallpaper/' + 'kaldirirmi-header-2.png';
+                }
+            }
+            _remakeAvatar(avatar) {
+                if (avatar) {
+                    return 'https://cdn.kaldirirmi.com/images/user/avatar/' + avatar;
+                } else {
+                    return 'https://cdn.kaldirirmi.com/images/user/avatar/' + 'default-user-avatar3.png';
+                }
+            }
+            _remakeRegisterDate(registerdate) {
+
+                registerdate = moment(registerdate).format('DD/MM/YYYY');
+
+                return registerdate + ' tarihinde kayıt oldu.';
+            }
+            _responseCheckFriendship(event) {
+                // console.log('_responseCheckFriendship');
+                //Message 0 -> pending
+                //Message 1 -> accepted
+                //Message 2 -> declined
+
+                var response = event.detail.response;
+                var message = response.message;
+                this.uid = message.split(' ')[0];
+
+                // this.async(function () {
+                //     this.likedGo = true;
+                // }, 2000);
+
+                this.set('likedGo', true);
+                //console.log('messagea => ' + response.message.split(' ')[2] + 'this. uid ' + response.message.split(' ')[0]);
+
+                var code = message.split(' ')[2];
+
+                var targetAction = message.split(' ')[4];
+                if (targetAction === 'True') {
+                    this.isTarget = true;
+                } else if (targetAction === 'False') {
+                    this.isTarget = false;
+                }
+
+                // console.log('if targetAction is => ' + this.isTarget);
+
+                //Message 100 -> (no interaction happened) first time
+                if (code == 100) {
+                    this.beingFriend = false;
+                    this.sendingButtonText = 'Arkadaşlık isteği gönder';
+                } else if (code == 0) {
+                    this.beingFriend = false;
+                    this.sendingButtonText = 'İsteği Geri Çek';
+                } else if (code == 1) {
+                    this.beingFriend = true;
+                }
+
+                //if (event.detail.response.length > 0) {
+                //    a.detail.response.forEach(function (game) {
+                //        this.push('games', game);
+                //    }, this);
+                //    this.$.threshold.clearTriggers();
+                //}
+            }
+            _responseOfSendFriendRequest(e) {
+                // console.log('_responseOfSendFriendRequest');
+                var message = e.detail.response.message;
+                // console.log('message =>' + message);
+                this._toaster(message);
+
+                if (e.detail.response.success) {
+                    this.shadowRoot.querySelector('#pbSendingFriendship').disabled =false;
+
+                } else {
+                    
+                    this.$.sendfriendrequestform.reset();
+                }
+            }
+            _responseOfCancelFriendRequest(e) {
+                // console.log('_responseOfCancelFriendRequest');
+                var message = e.detail.response.message;
+                //console.log('message =>' + message);
+                this._toaster(message);
+
+                if (e.detail.response.success) {
+                    this.shadowRoot.querySelector('#pbCancelFriendship').disabled =false;
+
+                    //friendship is over! show request panel
+                    this.beingFriend = false;
+                    this.sendingButtonText = 'Arkadaşlık isteği gönder';
+                } else {
+                    
+                    this.$.cancelfriendrequestform.reset();
+                }
+            }
+            _isEmpty(str) {
+                return (!str || 0 === str.length);
+            }
+            _remakeUsername(namesurname) {
+                if (!this._isEmpty(namesurname)) {
+                    return namesurname;
+                } else {
+                    return 'Ad soyad eklenmemiş!';
+                }
+            }
+            _remakeBirthday(birthday) {
+                if (!this._isEmpty(birthday)) {
+                    return birthday;
+                } else {
+                    return 'Doğum tarihi eklenmemiş!';
+                }
+
+            }
+            _remakeAbout(about) {
+                if (!this._isEmpty(about)) {
+                    return about;
+                } else {
+                    return 'Hakkında eklenmemiş!';
+                }
+            }
+            _remakeBadge(mod) {
+                if (mod == 1) {
+                    return 'Kal_Mod';
+                } else if (mod == 0) {
+                    return 'Kal_Kid';
+                }
+            }
+            _remakeIcon(mod) {
+                if (mod == 1) {
+                    return 'icons:gavel';
+                } else if (mod == 0) {
+                    return 'places:child-care';
+                }
+            }
+            _acceptPendingRequest(event) {
+                // console.log('_acceptPendingRequest');
+                this.$.formAcceptRequest.submit();
+            }
+            _declinePendingRequest(event) {
+                // console.log('_declinePendingRequest');
+                this.$.formDeclineRequest.submit();
+            }
+            _onFormAcceptResponse(event) {
+                // console.log('__onFormAcceptResponse');
+                // var message = event.detail.response.message;
+                // console.log('message =>' + message);
+                this._toaster(message);
+
+
+                if (event.detail.response.success) {
+                    this.$.ironAjaxCheckFriendship.generateRequest();
+                } else {
+                    
+                    this.$.formAcceptRequest.reset();
+                }
+                
+            }
+            _onFormDeclineResponse(event) {
+                // console.log('__onFormDeclineResponse');
+                var message = event.detail.response.message;
+                // console.log('message =>' + message);
+                this._toaster(message);
+
+                if (event.detail.response.success) {
+                    this.$.ironAjaxCheckFriendship.generateRequest();
+                } else {
+                    
+                    this.$.formDeclineRequest.reset();
+                }
+                
+            }
+            _responseLikedGames(event) {
+                var response = event.detail.response;
+                if (response.length > 0) {
+                    this.set('likedGames', response);
+                    this.likedGamesActive = true;
+                } else {
+                    this.likedGamesActive = false;
+                }
+            }
+
+            _toaster(message) {
+                var event = new CustomEvent('toaster', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: message
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
+        }
+
+        window.customElements.define(SelectedUserPublic.is, SelectedUserPublic);
+    </script>
+</dom-module>

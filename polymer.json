@@ -12,7 +12,8 @@
     "src/pages/kal-twitch-page.html",
     "src/pages/kal-hardware-page.html",
     "src/pages/kal-profile-page.html",
-    "src/pages/kal-view404-page.html"
+    "src/pages/kal-view404-page.html",
+    "src/pages/kal-userpublic-page.html"
   ],
   "sources": [
     "images/**/*",
