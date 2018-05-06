@@ -4,10 +4,14 @@
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/textfit-div/textfit-div.html">
 <link rel="import" href="../../../bower_components/streaming-list/flag-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../../../bower_components/streaming-list/card-style.html">
+
 
 <dom-module id="channel-card">
   <template>
-    <style>
+    <style include="card-style">
       :host {
         display: block;
         margin: 5px !important;
@@ -86,14 +90,8 @@
             type: Number,
             value: null
           },
-          animationConfig: {
-            value: function () {
-              return {
-                name: 'fade-in-animation',
-                node: this.$.card
-              }
-            }
-          }
+          animationConfig: Object,
+
         };
       }
 
@@ -114,7 +112,10 @@
         super.ready();
 
         Polymer.RenderStatus.afterNextRender(this, function () {
-
+          this.set('animationConfig', {
+            name: 'fade-in-animation',
+            node: this.$.card
+          });
         });
       }
       /**
@@ -129,8 +130,7 @@
       }
 
       _formatViewers(views) {
-        numeral.locale('tr');
-        return numeral(views).format('0a') + ' görüntülenme';
+        return numeral(views).format('0 a') + ' görüntülenme';
       }
 
       _formatStatus(status) {

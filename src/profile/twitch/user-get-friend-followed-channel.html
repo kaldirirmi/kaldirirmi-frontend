@@ -18,13 +18,20 @@
                 user-select: none;
                 width: 100%;
             }
+            
+            @media only screen and (max-width: 767px) {
+                #streams {
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                }
+            }
+
 
             #streams {
                 @apply --layout-wrap;
             }
 
-            twitchtv-card,
-            youtube-card {
+            user-card {
                 margin: 10px;
             }
 
@@ -35,45 +42,6 @@
             #errorMessage {
                 @apply --layout-horizontal;
                 @apply --layout-center;
-            }
-
-
-            /* Desktops and laptops ----------- */
-
-            @media only screen and (min-width: 1024px) {
-                /* zoom %175 */
-                #streams {
-                    margin-left: 105px;
-                }
-            }
-
-            @media only screen and (min-width: 1224px) {
-                /* zoom %150 */
-                #streams {
-                    margin-left: 30px;
-                }
-            }
-
-            @media only screen and (min-width: 1440px) {
-                /* zoom % 125*/
-                #streams {
-                    margin-left: 130px;
-                }
-            }
-
-            @media only screen and (min-width: 1640px) {
-                /* zoom %110*/
-                #streams {
-                    margin-left: 60px;
-                }
-            }
-
-            /* Large screens ----------- */
-
-            @media only screen and (min-width: 1824px) {
-                #streams {
-                    margin-left: 105px;
-                }
             }
 
             #errorMessage {
@@ -92,12 +60,7 @@
             #errorMessage iron-icon {
                 color: #6441a5;
             }
-
-            #streams {
-                width: 100%;
-                text-align: left;
-            }
-            .indicator{
+            .indicator {
                 color: var(--app-theme-color);
             }
         </style>
@@ -108,31 +71,27 @@
         <div class="indicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
-        <!--<paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>-->
         <div id="streams">
             <template is="dom-if" if="[[firstTime]]">
-                <!-- if first time, also called have not selected channel yet-->
-                <!-- show channel choose message -->
+
                 <div id="errorMessage">
                     <h3>[[errorMessage]]</h3>
                     <iron-icon icon="[[errorIcon]]"></iron-icon>
                 </div>
             </template>
             <template is="dom-if" if="[[!firstTime]]">
-                <!-- channel is selected, if channel followers not in kaldirirmi. -> say not mutual friend yet -->
                 <template is="dom-if" if="[[noFriendsFind]]">
                     <div id="errorMessage">
                         <h3>[[errorMessage]]</h3>
                         <iron-icon icon="[[errorIcon]]"></iron-icon>
                     </div>
                 </template>
+
                 <template is="dom-repeat" items="[[response]]">
                     <user-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></user-card>
                 </template>
             </template>
         </div>
-        <event-infinite-scroll id="scroll" scrollOffset="60" on-reach-bottom="_loadMore">
-        </event-infinite-scroll>
 
     </template>
 

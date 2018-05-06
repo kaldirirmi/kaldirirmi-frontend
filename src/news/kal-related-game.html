@@ -277,7 +277,7 @@
                     width: 50%;
                     padding: 8px;
                 }
-               
+
 
                 #relatednewslist .relatednews {
                     height: 140px;
@@ -359,19 +359,25 @@
             }
 
 
-            @media screen and (max-width: 768px){
+            @media screen and (max-width: 768px) {
                 #relatednewslist {
                     @apply --layout-vertical;
                     margin: 0 auto;
                 }
-                .relatednews{
+                .relatednews {
                     @apply --layout-flex-12;
                     width: 100%;
                     margin-top: 10px;
                 }
             }
 
-
+            #relatednewslist .relatednews .relatednews-title h6 {
+                width: 170px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding: 0px 5px;
+            }
         </style>
         <iron-ajax auto id="getrelatedgame" url="/h/main?fm=get-related-game-with-news&a=[[relatedgameid]]" handle-as="json" on-response="_responseGame"></iron-ajax>
         <iron-ajax auto id="getrelatednews" url="/h/main?fm=get-related-news-with-news&a=[[relatedgameid]]&b=[[currentnewsid]]" handle-as="json"

@@ -1,14 +1,12 @@
 ﻿<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-
-<link rel="import" href="../../../bower_components/event-infinite-scroll/event-infinite-scroll.html">
 <link rel="import" href="../../model/loader-pac.html">
 <link rel="import" href="./channel-card.html">
 
 <dom-module id="user-following-channel-list">
     <template>
-        <style>
+        <style include="shared-styles">
             :host {
                 display: block;
                 box-sizing: border-box;
@@ -36,6 +34,14 @@
             #errorMessage {
                 @apply --layout-horizontal;
                 @apply --layout-center;
+            }
+            
+            @media only screen and (max-width: 767px){
+                #streams {
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                }
+                
             }
 
 
@@ -93,14 +99,21 @@
             #errorMessage iron-icon {
                 color: #6441a5;
             }
-            .loadingindicator{
+
+            .loadingindicator {
                 color: var(--app-theme-color);
+            }
+
+            kal-scroll-threshold {
+                height: calc(100vh - 256px);
+                /* box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4); */
+                padding: 15px;
             }
         </style>
 
         <iron-ajax auto id="ajaxUserFollowingChannels" debounce-duration="30" url="/auth/twitch/kalapi?fm=get-user-following-channels&a=[[limit]]&b=[[offset]]"
             handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
-        <div class="loadingindicator"hidden$="[[!loading]]">
+        <div class="loadingindicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
         <div id="streams">
@@ -110,15 +123,13 @@
                     <iron-icon icon="error"></iron-icon>
                 </div>
             </template>
-            <template is="dom-repeat" items="[[response.follows]]">
-                <channel-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></channel-card>
-            </template>
+
+            <div id="streams">
+                <template is="dom-repeat" items="[[response.follows]]">
+                    <channel-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></channel-card>
+                </template>
+            </div>
         </div>
-        <event-infinite-scroll id="scroll" scrollOffset="60" on-reach-bottom="_loadMore">
-        </event-infinite-scroll>
-
-
-
     </template>
 
     <script>
@@ -233,7 +244,16 @@
                         this.errorMessage = 'Takip ettiğin bir kanal bulunamadı!';
                 }
                 this.loading = false;
+
+                console.log(this.response);
             }
+
+            _loadMore(event) {
+
+                this._setCurrentPage(this.currentPage + 1);
+                this.generateRequest();
+            }
+
             _cardLoaded(event) {
                 this.doneCards = this.doneCards || [];
                 this.doneCards.push(event.detail);

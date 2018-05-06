@@ -90,27 +90,27 @@ The following custom properties and mixins are available for styling:
 				height: auto;
 			}
 
-			::content paper-button {
+			::slotted(paper-button) {
 				/*background-color: var(--card-button-background-color, #fff);*/
 				color: var(--card-color, #000);
 			}
 
-			::content paper-card {
+			::slotted(paper-card) {
 				flex-grow: 1;
 				display: flex;
 				flex-direction: column;
 				background-color: var(--card-background-color, #fff);
 			}
 
-			::content paper-card .header {
+			::slotted(.header) {
 				color: var(--card-color, #000);
 			}
 
-			::content paper-card .card-content {
+			::slotted(.card-content) {
 				flex-grow: 1;
 			}
 
-			::content paper-card .card-actions {
+			::slotted(.card-actions) {
 				text-align: right;
 			}
 
@@ -140,7 +140,7 @@ The following custom properties and mixins are available for styling:
 				text-decoration: none;
 			}
 
-			::content .container {
+			::slotted(.container) {
 				font-size: 16px;
 				position: relative;
 				z-index: 2;
@@ -148,18 +148,18 @@ The following custom properties and mixins are available for styling:
 				height: 100%;
 			}
 
-			::content #retracted {
+			::slotted(#retracted) {
 				opacity: 1;
 				display: flex;
 			}
 
-			::content #expanded {
+			::slotted(#expanded) {
 				opacity: 0;
 				display: none;
 				flex-direction: column;
 			}
 
-			::content #placeholder {
+			::slotted(#placeholder) {
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -168,16 +168,19 @@ The following custom properties and mixins are available for styling:
 				display: flex;
 			}
 
-			::content #placeholderHeader {
+			::slotted(#placeholderHeader) {
 				position: absolute;
 				width: 100%;
 			}
-
-			::content #placeholder paper-card {
+			paper-card {
 				will-change: transform;
 			}
 
-			::content .container-header {
+			/* ::slotted(#placeholder paper-card {
+				will-change: transform;
+			} */
+
+			::slotted(.container-header) {
 				display: flex;
 				color: var(--card-header-color, #fff);
 				/*background-color: var(--card-header-background-color, #6441a5);*/
@@ -185,31 +188,29 @@ The following custom properties and mixins are available for styling:
 				align-items: center;
 			}
 
-			::content .container-header-side {
+			::slotted(.container-header-side) {
 				width: 70px;
 			}
 
-			::content .zef-side {
+			::slotted(.zef-side) {
 				display: flex;
 				flex-direction: column;
 				width: 100% !important;
 				justify-content: flex-end;
 			}
 
-			::content #expandedContent {
+			::slotted(#expandedContent) {
 				@apply --layout-vertical;
 				@apply --layout-center;
 				background-color: var(--card-background-color, #fff);
 			}
 
-
-
 			@media only screen and (min-width: 768px) {
-				::content .zef-side {
+				::slotted(.zef-side) {
 					width: 50% !important;
 					flex-direction: row;
 				}
-				::content .container-header-side {
+				::slotted(.container-header-side) {
 					width: 40px;
 				}
 			}
@@ -227,7 +228,7 @@ The following custom properties and mixins are available for styling:
 
 			@media only screen and (min-width: 1224px) {
 				/* zoom %150 */
-				::content .zef-side {
+				::slotted(.zef-side) {
 					width: 30% !important;
 				}
 			}

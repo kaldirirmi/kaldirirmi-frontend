@@ -7,7 +7,7 @@
 <link rel="import" href="../../../bower_components/streaming-list/flag-behavior.html">
 <dom-module id="user-card">
     <template>
-        <style>
+        <style include="card-style">
             :host {
                 border: 1px solid white;
             }
@@ -71,14 +71,7 @@
                         type: Number,
                         value: null
                     },
-                    animationConfig: {
-                        value: function () {
-                            return {
-                                name: 'fade-in-animation',
-                                node: this.$.card
-                            }
-                        }
-                    }
+                    animationConfig: Object
                 };
             }
 
@@ -99,7 +92,10 @@
                 super.ready();
 
                 Polymer.RenderStatus.afterNextRender(this, function () {
-
+                    this.set('animationConfig', {
+                        name: 'fade-in-animation',
+                        node: this.$.card
+                    });
                 });
             }
 
@@ -116,8 +112,7 @@
 
 
             _formatViewers(views) {
-                numeral.locale('tr');
-                return numeral(views).format('0a') + ' izleyici';
+                return numeral(views).format('0 a') + ' izleyici';
                 //return numeral(views).format('0a') + ' viewers';
             }
 
@@ -138,7 +133,7 @@
             }
 
             _onTap(event) {
-                window.open('u/' + this.data.url, '_blank');
+                window.open('user/' + this.data.url, '_blank');
             }
             _onImageLoaded(event) {
                 //this.$.status.doFitMe();

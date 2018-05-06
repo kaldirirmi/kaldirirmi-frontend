@@ -1,9 +1,15 @@
-<link rel="import" href="./twitch/twitch-full-page.html">
-
+<!-- <link rel="import" href="./twitch/twitch-full-page.html"> -->
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/kal-thirdparty/numeral.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+
+
+<link rel="import" href="./twitch/twitch2-animated-grid.html">
+<link rel="import" href="./twitch/twitch-fullsize-page-with-card.html">
+
 
 <dom-module id="kal-profile-twitch-page">
     <template>
@@ -42,7 +48,6 @@
                 background-color: #6441a5;
                 border-top: 3px solid #222222;
                 border-bottom: 3px solid #222222;
-                font-size: calc(0.15em + 1vmin);
                 font-weight: 100;
             }
 
@@ -215,6 +220,80 @@
                     height: 580px !important;
                 }
             }
+
+
+            neon-animated-pages {
+                height: 80%;
+                width: 100%;
+            }
+
+
+            .loadingIndicator {
+                min-height: 0px !important;
+                font-size: 15px;
+            }
+
+
+            div[empty-content] {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+            }
+
+            div[empty-content] .systemCreatorTitle {
+                padding: 0em 2em;
+                border-bottom: 2px solid;
+            }
+
+            div[empty-content] .systemCreatorTitle h3 {
+                font-weight: 100;
+                margin: 10px;
+                color: inherit;
+            }
+
+            div[empty-content] .systemCreatorButtons {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+
+            div[empty-content] .systemCreatorButtons paper-button {
+                transition: ease-in-out .3s;
+                margin: 5px 15px;
+                color: inherit;
+
+            }
+
+            div[empty-content] .systemCreatorButtons paper-button:hover {
+                transform: scale(1.1);
+            }
+
+
+            @media screen and (max-width: 767px) {
+                neon-animated-pages#pages {
+                    height: 940px !important;
+                }
+
+                div[empty-content] {
+                    margin: 15px 0px;
+                }
+
+                .systemCreatorTitle h3 {
+                    font-size: 18px;
+                }
+                .systemCreatorButtons {
+                    flex-direction: column !important;
+                }
+
+                .systemCreatorButtons a {
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .systemCreatorButtons paper-button {
+                    font-size: 15px;
+                    margin: 8px 15px;
+                }
+            }
+
         </style>
 
         <!-- dom elements here-->
@@ -232,11 +311,16 @@
             <div hidden$=[[!connected]]>
                 <paper-item heading>Twitch Dünyan</paper-item>
                 <div info>
-                    <twitch-full-page id="twitchfullpage"></twitch-full-page>
+                    <neon-animated-pages id="pages" selected="0">
+                        <twitch2-animated-grid on-tile-click="_onTileClick">
+                        </twitch2-animated-grid>
+                        <twitch-fullsize-page-with-card id="fullsize-card" selected-tile=[[selectedTile]] on-tile-reset="_onTileReset">
+                        </twitch-fullsize-page-with-card>
+                    </neon-animated-pages>
+                    <!-- <twitch-full-page id="twitchfullpage"></twitch-full-page> -->
                 </div>
             </div>
         </paper-material>
-        <!-- <paper-toast id="passwordalert" duration="10000"  class="fit-bottom"></paper-toast> -->
 
     </template>
 
@@ -267,7 +351,7 @@
                         value: false,
                         notify: true
                     },
-
+                    selectedTile: String,
                     channelListIcon: {
                         type: String,
                         value: 'add-circle-outline'
@@ -291,9 +375,20 @@
                 super.ready();
 
                 Polymer.RenderStatus.afterNextRender(this, function () {
-
-                    this.$.twitchfullpage.show();
                 });
+            }
+
+            _onTileReset(event) {
+                this.$.pages.selected = event.detail.selected;
+            }
+
+            _onTileClick(event) {
+                // console.log('_onTileClick',event);
+                //this.$['fullsize-card'].hardwaretype = event.detail.data.hardwaretype; <- bu da olur fakat farklı olsun diye dom bind kullanıyorum.
+                // this.$['fullsize-card'].data = event.detail.data;
+                this.set('selectedTile', event.detail.data);
+                //document.getElementById('getgalleryofgame').generateRequest();
+                this.$.pages.selected = 1;
             }
 
         }

@@ -1,0 +1,763 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/ripple-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/transform-animation.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="./user-following-channel-list.html">
+<link rel="import" href="./user-get-followed-streams.html">
+<link rel="import" href="./user-get-followed-videos.html">
+<link rel="import" href="./user-get-friend-followed-channel.html">
+<link rel="import" href="./user-get-top-clips.html">
+
+
+<dom-module id="twitch-fullsize-page-with-card">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: inherit;
+            }
+
+            paper-spinner-lite {
+                --paper-spinner-color: var(--app-theme-color);
+            }
+
+            .fixed {
+                position: fixed;
+                left: 0;
+                height: 100vh;
+                width: 100vw;
+                z-index: 55;
+            }
+
+
+            paper-dropdown-menu {
+                line-height: 0 !important;
+                --paper-input-container-label: {
+                    color: white;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: calc(0.45em + 1vmin);
+                }
+
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                    font-size: calc(0.55em + 1vmin);
+
+                }
+
+                --paper-input-container-focus-color: white;
+                --paper-input-container-underline: {
+                    display: none;
+                }
+            }
+
+            .zef-side {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #card {
+                padding-bottom: 30px;
+                z-index: 56;
+                position: relative;
+                height: auto;
+                border-radius: 5px;
+            }
+
+            div[card-divider] {
+                height: 50px;
+                border-bottom: 2px solid;
+                margin: 0 auto;
+                margin-right: 10px;
+            }
+
+            .kal-success {
+                color: green;
+            }
+
+            .kal-warning {
+                color: red;
+            }
+
+            #card-container {
+                width: 100%;
+                @apply --layout-vertical;
+            }
+
+            #card-container .card-container-column {
+                width: 100%;
+                height: auto;
+            }
+
+            /* LEFT SIDE STYLE */
+
+            div[tile-container] {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                width: 100%;
+                white-space: normal !important;
+                margin-top: 2%;
+                margin-left: 3%;
+            }
+
+            div[tile-container] .game-headline {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white !important;
+                font-weight: 100;
+            }
+
+            div[tile-container] .game-headline h2 {
+                font-size: calc(0.85em + 1vmin);
+
+            }
+
+            div[tile-container] .game-headline p {
+                font-size: calc(0.60em + 1vmin);
+                font-style: italic;
+                padding-left: 8px;
+            }
+
+            div[tile-container] iron-icon {
+                padding-left: 5px;
+                width: calc(2.2em + 1vmin);
+                color: white;
+                height: calc(2.2em + 1vmin);
+            }
+
+            .marketing-actions span {
+                font-size: calc(0.7em + 1vmin);
+            }
+
+            div[tile-container] .tile_container_image {
+                width: 30%;
+            }
+
+            div[tile-container] .tile_container_content {
+                @apply --layout-vertical;
+                width: 100%;
+            }
+
+            paper-card {
+                box-sizing: border-box;
+                max-width: 90%;
+                margin: 4px;
+                flex: 0 0 auto;
+                --paper-card-header-color: white;
+                border-radius: 8px;
+            }
+
+            paper-card .card-content {
+                padding: 8px !important;
+                min-height: 50px;
+            }
+
+            paper-card .card-actions {
+                padding: 5px 10px !important;
+                @apply --layout-horizontal;
+                min-height: 50px;
+            }
+
+            paper-card .card-actions a {
+                text-decoration: none;
+                color: white !important;
+            }
+
+            @media only screen and (min-width: 1024px) {
+                #card-container {
+                    -webkit-flex-direction: row !important;
+                    flex-direction: row !important;
+                }
+                #card-container .card-container-column {
+                    width: 50%;
+                }
+                div[tile-container] .game-headline h2 {
+                    font-size: calc(0.55em + 1vmin);
+
+                }
+                div[tile-container] .game-headline p {
+                    font-style: italic;
+                    padding-left: 8px;
+                }
+                div[tile-container] iron-icon {
+                    padding-left: 5px;
+                    width: calc(1.2em + 1vmin);
+                    color: white;
+                    height: calc(1.2em + 1vmin);
+                }
+            }
+
+            paper-tooltip {
+                --paper-tooltip-background: #222;
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+
+            .loadingIndicator {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                min-height: 40px;
+            }
+
+
+            /* NEW STYLE */
+
+            .card-header {
+                @apply --layout-horizontal;
+                align-items: center;
+                border-bottom: 1px solid #fff;
+                color: #fff;
+            }
+
+            .card-header .main-title {
+                margin: 0;
+            }
+
+            .card-header .zef-side {
+                @apply --layout-flex;
+            }
+
+            .card-content {
+                height: 400px;
+                overflow-y: scroll;
+            }
+
+            .card-content::-webkit-scrollbar {
+                width: 10px !important;
+            }
+
+            .card-content::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+                border: 2px solid #000;
+                min-height: 50px;
+            }
+
+            .card-content::-webkit-scrollbar-track {
+                background-color: #000;
+            }
+        </style>
+
+        <iron-ajax auto id="followingChannels" url="/auth/twitch/kalapi?fm=get-user-following-channels&a=100&b=0" handle-as="json"
+            on-response="_onResponseForChannelId"></iron-ajax>
+
+        <div id="fixed"></div>
+        <div id="card">
+            <template is="dom-if" if={{isPart0}}>
+                <div class="card-header">
+                    <h3 class="main-title">[[maintitle]]</h3>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Sayfa">
+                            <paper-listbox style="background-color:#6441a5; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{offset}}">
+                                <paper-item value="0">1</paper-item>
+                                <paper-item value="12">2</paper-item>
+                                <paper-item value="24">3</paper-item>
+                                <paper-item value="36">4</paper-item>
+                                <paper-item value="48">5</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                    <paper-icon-button id="pibCloseFrame" icon="close" on-click="_onFullsizeClick"></paper-icon-button>
+                    <paper-tooltip for="pibCloseFrame" position="left" animation-delay="0">Kapat</paper-tooltip>
+                </div>
+                <div class="card-content">
+                    <user-following-channel-list limit=12 offset="{{offset}}" width="{{size}}"></user-following-channel-list>
+                </div>
+            </template>
+            <template is="dom-if" if={{isPart1}}>
+                <div class="card-header">
+                    <h3 class="main-title">[[maintitle]]</h3>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Kanal Seçiniz">
+                            <paper-listbox style="background-color:#421C52; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{fvi}}">
+                                <template is="dom-repeat" items="[[res.follows]]" as="item">
+                                    <paper-item value$="[[item.channel._id]]">[[item.channel.display_name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="Yayın Türü">
+                            <paper-listbox style="background-color:#421C52; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{fvt}}">
+                                <paper-item value="archive">Arşiv</paper-item>
+                                <paper-item value="highlight">Vurgulananlar</paper-item>
+                                <paper-item value="upload">Yüklemeler</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="Sayfa">
+                            <paper-listbox style="background-color:#421C52; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{fvo}}">
+                                <paper-item value="0">1</paper-item>
+                                <paper-item value="12">2</paper-item>
+                                <paper-item value="24">3</paper-item>
+                                <paper-item value="36">4</paper-item>
+                                <paper-item value="48">5</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                    <paper-icon-button id="pibCloseFrame" icon="close" on-click="_onFullsizeClick"></paper-icon-button>
+                    <paper-tooltip for="pibCloseFrame" position="left" animation-delay="0">Kapat</paper-tooltip>
+                </div>
+                <div class="card-content">
+                    <user-get-followed-videos limit={{fvi}} videoId=44322889 streamtype="{{fvt}}" offset="{{fvo}}" width="{{size}}"></user-get-followed-videos>
+                </div>
+            </template>
+            <template is="dom-if" if={{isPart2}}>
+                <div class="card-header">
+                    <h3 class="main-title">[[maintitle]]</h3>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Kanal Seçiniz">
+                            <paper-listbox style="background-color:#732C7B; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{scfu}}">
+                                <template is="dom-repeat" items="[[res.follows]]" as="item">
+                                    <paper-item value$="[[item.channel._id]]">[[item.channel.display_name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                    <paper-icon-button id="pibCloseFrame" icon="close" on-click="_onFullsizeClick"></paper-icon-button>
+                    <paper-tooltip for="pibCloseFrame" position="left" animation-delay="0">Kapat</paper-tooltip>
+                </div>
+                <div class="card-content">
+                    <user-get-friend-followed-channel channel="{{scfu}}" width="150"></user-get-friend-followed-channel>
+                </div>
+            </template>
+            <template is="dom-if" if={{isPart3}}>
+                <div class="card-header">
+                    <h3 class="main-title">[[maintitle]]</h3>
+                    <div class="zef-side">
+                        <paper-dropdown-menu class="pdmHeader" label="Kanal Seçiniz">
+                            <paper-listbox style="background-color:mediumslateblue; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{getclipschannel}}">
+                                <template is="dom-repeat" items="[[res.follows]]" as="item">
+                                    <paper-item value$="[[item.channel.display_name]]">[[item.channel.display_name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="En İyi">
+                            <paper-listbox style="background-color:mediumslateblue; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{getclipsperiod}}">
+                                <paper-item value="day">Son 24 Saatte</paper-item>
+                                <paper-item value="week">Son 1 Haftada</paper-item>
+                                <paper-item value="month">Son 1 Ayda</paper-item>
+                                <paper-item value="all">Tümü</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="pdmHeader" label="Trend">
+                            <paper-listbox style="background-color:mediumslateblue; color:white" slot="dropdown-content" class="dropdown-content" attr-for-selected="value"
+                                selected="{{getclipstrending}}">
+                                <paper-item value="false">Hayır</paper-item>
+                                <paper-item value="true">Evet</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </div>
+                    <paper-icon-button id="pibCloseFrame" icon="close" on-click="_onFullsizeClick"></paper-icon-button>
+                    <paper-tooltip for="pibCloseFrame" position="left" animation-delay="0">Kapat</paper-tooltip>
+                </div>
+                <div class="card-content">
+                    <user-get-top-clips channel="{{getclipschannel}}" period="{{getclipsperiod}}" trending="{{getclipstrending}}" width="250"></user-get-top-clips>
+                </div>
+            </template>
+
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `game-fullsize-page-with-card` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class TwitchFullsizePageWithCard extends Polymer.mixinBehaviors([Polymer.NeonSharedElementAnimatableBehavior],
+            Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'twitch-fullsize-page-with-card';
+            }
+
+            /**
+             * Object describing property-related metaselectedHardware used by Polymer features
+             */
+            static get properties() {
+                return {
+                    maintitle: {
+                        type: String,
+                        notify: true
+                    },
+                    selectedTile: {
+                        type: Object,
+                        notify: true,
+                        observer: '_selectedTileChanged'
+                    },
+                    sharedElements: {
+                        type: Object,
+                    },
+                    animationConfig: {
+                        type: Object,
+                    },
+                    loadingsuggested: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    isPart1: {
+                        type: Boolean,
+                        value: false
+                    },
+                    isPart2: {
+                        type: Boolean,
+                        value: false
+                    },
+                    isPart3: {
+                        type: Boolean,
+                        value: false
+                    },
+                    isPart0: {
+                        type: Boolean,
+                        value: false
+                    },
+                    offset: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    followedStreamOffset: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    followedStreamType: {
+                        type: String,
+                        value: 'live',
+                        notify: true
+                    },
+                    fvo: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    fvi: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    getclipschannel: {
+                        type: String,
+                        value: "",
+                        notify: true
+                    },
+                    fvt: {
+                        type: String,
+                        value: 'archive',
+                        notify: true
+                    },
+                    getclipsperiod: {
+                        type: String,
+                        value: 'day',
+                        notify: true
+                    },
+                    getclipstrending: {
+                        type: String,
+                        value: 'false',
+                        notify: true
+                    },
+                    followedVideoChannelId: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    size: {
+                        type: Number,
+                        value: 250
+                    },
+                    res: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                follows: []
+                            };
+                        },
+                        notify: true
+                    },
+                    scfu: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+                    spfu: {
+                        type: Number,
+                        value: 0,
+                        notify: true
+                    },
+
+                    hovered: {
+                        type: String,
+                        value: 'display:none',
+                        notify: true
+                    },
+                };
+            }
+
+            _clearParts() {
+                this.set('isPart0', false);
+                this.set('isPart1', false);
+                this.set('isPart2', false);
+                this.set('isPart3', false);
+            }
+
+            _selectedTileChanged(newVal, oldVal) {
+                // console.log('_selectedTileChanged', newVal);
+                this._clearParts();
+
+                if (newVal !== undefined) {
+                    let title = "";
+                    if (newVal == "part0") {
+                        title = "Takip Ettiğin Kanallar";
+                        this.set('isPart0', true);
+                    } else if (newVal == "part1") {
+                        title = "Takip Ettiğin Kanallardaki Videolar";
+                        this.set('isPart1', true);
+
+                    } else if (newVal == "part2") {
+                        title = "Takip Ettiğin Kanallardaki Diğer Takipçiler";
+                        this.set('isPart2', true);
+
+                    } else if (newVal == "part3") {
+                        title = "Takip Ettiğin Kanallardaki Klipler";
+                        this.set('isPart3', true);
+
+                    }
+                    this.set('maintitle', title);
+                }
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    this.set('sharedElements', {
+                        'hero': this.$.card,
+                        'ripple': this.$.fixed
+                    });
+
+                    this.set('animationConfig', {
+                        'entry': [{
+                            name: 'ripple-animation',
+                            id: 'ripple',
+                            toPage: this,
+                        }, {
+                            name: 'hero-animation',
+                            id: 'hero',
+                            toPage: this,
+                            timing: {
+                                delay: 150
+                            }
+                        }],
+                        'exit': [{
+                            name: 'fade-out-animation',
+                            node: this.$.fixed
+                        }, {
+                            name: 'transform-animation',
+                            transformFrom: 'none',
+                            transformTo: 'translate(0px,-200vh) scale(0.9,1)',
+                            node: this.$.card
+                        }]
+                    });
+                });
+            }
+
+
+            _computeCardClass(color) {
+                var cls = 'card';
+                if (color) {
+                    cls += ' ' + color + '-300';
+                }
+                return cls;
+            }
+            _computeFixedBackgroundClass(color) {
+                var cls = 'fixed';
+                if (color) {
+                    cls += ' ' + color + '-100';
+                }
+                return cls;
+            }
+            _onFullsizeClick() {
+                this.dispatchEvent(new CustomEvent('tile-reset', {
+                    detail: {
+                        selected: 0
+                    }
+                }));
+            }
+            dateFormat(date, format) {
+                return 'hakan';
+            }
+            _getNameOfLink(name) {
+                //console.log('yo! + ' + name);
+                return name.split('.')[1];
+            }
+            _getTrHardware(name) {
+                if (name == 'cpu') return 'Önerilen İşlemci : ';
+                if (name == 'gpu') return 'Önerilen Ekran Kartı : ';
+                if (name == 'ram') return 'Bellek almak için önerdiğimiz siteler : ';
+                if (name == 'hdd') return 'Hard Disk almak için önerdiğimiz siteler : ';
+            }
+            _getselectedHardwareWidth(name) {
+                var currentWidth = '';
+
+                if (name == 'cpu') currentWidth = '8%; padding-right:10px';
+                if (name == 'gpu') currentWidth = '10%; padding-right:10px;';
+                if (name == 'ram') currentWidth = '10%; margin-left:10px;padding-right:10px';
+                if (name == 'hdd') currentWidth =
+                    '6%; transform: rotateZ(90deg); margin-left:3%; margin-right:10px';
+
+                return currentWidth;
+
+            }
+            _remakeMarketingName(name) {
+                if (name === 'Ekran Kartı' || name === 'İşlemci') {
+                    return '';
+                } else if (name === 'RAM') return '16 GB';
+                else if (name === 'Hard Disk') return '1 TB';
+            }
+            _remakeGoogleSearchQuery(type, marketing) {
+                var query = 'http://www.google.com/search?q=';
+                var _end = ' satın al';
+
+                if (type === 'Ekran Kartı' || type === 'İşlemci') {
+                    query += marketing + _end;
+                } else if (type === 'RAM') query += '16 GB RAM' + _end;
+                else if (type === 'Hard Disk') query += '1 TB Hard disk' + _end;
+
+                return query;
+            }
+            _onResponseGetHardwareBacklink(event) {
+                var response = event.detail.response;
+                // console.log(response);
+                var ind = 0;
+                response.forEach(function (hardware) {
+                    if (ind == 0) {
+                        this.set('suggestedhardware', hardware);
+                        ind++;
+                    }
+                }, this);
+
+                if (this.suggestedhardware != null) {
+                    this.set('googleresults', []);
+
+                    this.searchquery = this.suggestedhardware.name;
+                    if (typeof (this.selectedHardware) !== "undefined") {
+                        if (this.suggestedhardware.name == "") {
+                            if (this.selectedHardware.name == "RAM") {
+                                this.searchquery = "16 GB RAM";
+
+                            } else if (this.selectedHardware.name == "Hard Disk") {
+                                this.searchquery = "1 TB Hard Disk";
+                            }
+                        }
+                        // console.log(this.searchquery);
+
+                        this._debounceGCS();
+                        // this.debounce('_triggerCustomGoogleSearch', this._generateGCS, 500);
+                    }
+                }
+
+            }
+
+            _debounceGCS() {
+                this._debounceJob = Polymer.Debouncer.debounce(this._debounceJob, Polymer.Async.microTask, () => {
+                    this._generateGCS();
+                });
+            }
+
+            _generateGCS() {
+                // console.log('_generateGCS');
+                if (this.$.iagetsuggestedhardware.lastRequest) {
+                    this.$.iagetsuggestedhardware.lastRequest.abort();
+                }
+                this.$.iagetsuggestedhardware.generateRequest();
+            }
+            _responseGoogleSearchList(event) {
+                // console.log('_responseGoogleSearchList');
+                var response = event.detail.response;
+                // console.log(response);
+                if (response != null) {
+                    var ind = 0;
+                    response.items.forEach(function (curr) {
+                        if (ind < 4) {
+                            this.push('googleresults', curr);
+                            ind++;
+                        }
+                    }, this);
+                    this.loadingsuggested = false;
+                }
+            }
+            _remakeDisplay(name) {
+                return name + ' sitesine git';
+            }
+
+            _onResponseForChannelId(event) {
+
+                if (event.detail.response.success == false) {
+                    console.warn('Event Error', event);
+                } else {
+                    var len = event.detail.response.follows.length;
+                    this.set('res.follows', []);
+                    if (len > 0) {
+                        var response = event.detail.response;
+                        this.set('res.follows', response.follows);
+                    }
+                }
+            }
+
+        }
+
+        window.customElements.define(TwitchFullsizePageWithCard.is, TwitchFullsizePageWithCard);
+    </script>
+</dom-module>

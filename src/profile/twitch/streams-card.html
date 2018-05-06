@@ -103,14 +103,7 @@
           /**
            * `animationConfig` Animation configuration (See Polymer docs for details)
            */
-          animationConfig: {
-            value: function () {
-              return {
-                name: 'fade-in-animation',
-                node: this.$.card
-              }
-            }
-          }
+          animationConfig: Object
         };
       }
 
@@ -131,7 +124,10 @@
         super.ready();
 
         Polymer.RenderStatus.afterNextRender(this, function () {
-
+          this.set('animationConfig', {
+            name: 'fade-in-animation',
+            node: this.$.card
+          });
         });
       }
 
@@ -147,8 +143,7 @@
       }
 
       _formatViewers(views) {
-        numeral.locale('tr');
-        return numeral(views).format('0a') + ' izleyici';
+        return numeral(views).format('0 a') + ' izleyici';
         //return numeral(views).format('0a') + ' viewers';
       }
 

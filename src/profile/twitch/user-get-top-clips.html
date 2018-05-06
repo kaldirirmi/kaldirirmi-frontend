@@ -1,7 +1,6 @@
 ﻿<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../model/loader-pac.html">
-
 <link rel="import" href="./clip-card.html">
 
 <dom-module id="user-get-top-clips">
@@ -36,45 +35,6 @@
                 @apply --layout-center;
             }
 
-
-            /* Desktops and laptops ----------- */
-
-            @media only screen and (min-width: 1024px) {
-                /* zoom %175 */
-                #streams {
-                    margin-left: 105px;
-                }
-            }
-
-            @media only screen and (min-width: 1224px) {
-                /* zoom %150 */
-                #streams {
-                    margin-left: 30px;
-                }
-            }
-
-            @media only screen and (min-width: 1440px) {
-                /* zoom % 125*/
-                #streams {
-                    margin-left: 130px;
-                }
-            }
-
-            @media only screen and (min-width: 1640px) {
-                /* zoom %110*/
-                #streams {
-                    margin-left: 60px;
-                }
-            }
-
-            /* Large screens ----------- */
-
-            @media only screen and (min-width: 1824px) {
-                #streams {
-                    margin-left: 105px;
-                }
-            }
-
             .noResultTitle {
                 font-size: calc(0.7em + 1vmin);
                 color: #757575;
@@ -86,20 +46,13 @@
                 font-weight: 100;
             }
 
-             .indicator{
+            .indicator {
                 color: var(--app-theme-color);
             }
         </style>
 
         <iron-ajax auto id="ajaxGetTopClips" url="/auth/twitch/kalapi?fm=get-top-clips&a=[[game]]&b=[[channel]]&c=[[period]]&d=[[trending]]&e=[[limit]]"
             handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
-
-        <!--  a = context.Request.QueryString["game"],
-                         b = context.Request.QueryString["channel"],
-                         c = context.Request.QueryString["period"],
-                         d = context.Request.QueryString["trending"],
-                         e = context.Request.QueryString["limit"];-->
-
         <div class="indicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>
         </div>
@@ -113,16 +66,10 @@
             <template is="dom-if" if="[[go]]">
                 <template is="dom-if" if="[[!resultStatus]]">
                     <div id="errorMessage">
-                        <h3 class="noResultTitle">Bu kanalda "[[streamtype]]" olarak video bulunamadı.</h3>
+                        <h3 class="noResultTitle">Aradığınız Kriterlerde Sonuç Bulunamadı</h3>
                     </div>
                 </template>
                 <template is="dom-repeat" items="[[response.clips]]">
-                    <!--<iframe src="https://clips.twitch.tv/embed?clip=[[item.id]]&autoplay=false"
-                                    height="270"
-                                    width="480"
-                                    frameborder="0"
-                                    scrolling="no"
-                                    allowfullscreen="true"></iframe>-->
                     <clip-card class="twitch-tv-class" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></clip-card>
                 </template>
             </template>
@@ -248,6 +195,7 @@
                 } else {
                     this.resultStatus = false;
                 }
+
             }
 
             _cardLoaded(event) {

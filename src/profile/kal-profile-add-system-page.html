@@ -195,7 +195,7 @@
             }
 
             _responseUserSystem(e) {
-                console.log(e.detail.response);
+                // console.log(e.detail.response);
 
                 let response = e.detail.response;
                 if (response != null) {
@@ -204,7 +204,7 @@
                         
                         this.set('response', response);
 
-                        console.log('this.response', this.response);
+                        // console.log('this.response', this.response);
                         
                          this.$.cpu.setAttribute("value", response.cpu.value);
                          this.$.gpu.setAttribute("value", response.gpu.value);

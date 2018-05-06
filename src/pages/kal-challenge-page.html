@@ -841,9 +841,8 @@
       }
 
       _responseGetAllChallengeAverage(event) {
-        console.log('responseGetAllChallengeAverage');
+        // console.log('responseGetAllChallengeAverage');
         var response = event.detail.response;
-        console.log(response);
 
         this.challengelist.forEach(function (listitem) {
           var locked = true;
@@ -876,7 +875,7 @@
           }
         }, this);
 
-        console.log(this.response.averagevotes);
+        // console.log(this.response.averagevotes);
 
 
       }
@@ -884,9 +883,9 @@
         return (side * 100) / total;
       }
       _responseGetUserChallengeResult(event) {
-        console.log('responseGetUserChallengeResult');
+        // console.log('responseGetUserChallengeResult');
         var response = event.detail.response;
-        console.log(response);
+        // console.log(response);
         if (response.length != 0) {
           this.userisvoted = true;
           this.set('response.uservotes', response);
@@ -925,7 +924,7 @@
         //console.log('renderPages');
         window.addEventListener('resize', (event) => {
 
-          console.log('resize', event);
+          // console.log('resize', event);
 
           windowSize = window.innerWidth;
 
@@ -988,7 +987,7 @@
       }
 
       _debounceGCA() {
-        console.log('debounceGCA');
+        // console.log('debounceGCA');
         this._debounceJobGCA = Polymer.Debouncer.debounce(this._debounceJob, Polymer.Async.microTask, () => {
           this._generateChallengeAverage();
         });
@@ -1002,7 +1001,7 @@
       }
 
       _generateChallengeAverage() {
-        console.log('debounceGCA');
+        // console.log('debounceGCA');
 
         if (this.$.getallchallengeaverage.lastRequest) {
           this.$.getallchallengeaverage.lastRequest.abort();

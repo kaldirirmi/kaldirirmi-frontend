@@ -1,0 +1,864 @@
+<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+
+<dom-module id="twitch2-animated-grid">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background-color: #222;
+            }
+
+            @media screen and (max-width: 767px) {
+                .tile {
+                    height: 200px !important;
+                }
+            }
+
+            .tile {
+                cursor: copy;
+                width: 100%;
+                position: relative;
+                display: inline-block;
+                /* float: left; */
+                vertical-align: top;
+                height: calc(100% / 2);
+                transition: .4s all;
+                color: #ffffff;
+                @apply --paper-font-title;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                box-shadow: 0 0 5px black inset, 0 0 2px 1px black;
+                float: left;
+                /* height: 170px; */
+                height: calc(100% / 2) !important;
+            }
+
+            .tile paper-card {
+                @apply --layout-vertical;
+                @apply --layout-center;
+                pointer-events: none;
+                transition: all ease-in .2s;
+                opacity: .7;
+                background-color: #222;
+                width: 100%;
+                height: 100%;
+                --paper-card-header-image: {
+                    width: 170px;
+                    height: 150px;
+                };
+               
+            }
+
+            .tile .game-title {
+                width: 100%;
+                color: white;
+                font-weight: 100;
+                text-align: center;
+                font-size: calc(0.45em + 1vmin) !important;
+                line-height: calc(1.2em + 1vmin) !important;
+                opacity: 0.8;
+                white-space: normal !important;
+            }
+
+            /* tile container costum design*/
+
+            div[tile-container] {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                width: 80%;
+                white-space: normal !important;
+            }
+
+            div[tile-container] .game-headline {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                position: absolute;
+                top: 0;
+                color: white !important;
+                font-weight: 100;
+            }
+
+            div[tile-container] .game-headline h2 {
+                font-size: calc(0.6em + 1vmin);
+            }
+
+            div[tile-container] .game-headline p {
+                font-size: calc(0.15em + 1vmin);
+                font-style: italic;
+                padding-left: 8px;
+            }
+
+
+            div[tile-container] .game-headline iron-icon {
+                width: calc(1.2em + 1vmin);
+                color: white;
+                height: calc(1.2em + 1vmin);
+                padding-left: 5px;
+            }
+
+            div[tile-container] iron-icon {
+                position: absolute;
+                top: calc(0.2em + 1vmin);
+                right: calc(3em + 1vmin);
+                width: calc(1.2em + 1vmin);
+                color: white;
+                height: calc(1.2em + 1vmin);
+            }
+
+
+            div[tile-container] .tile_container_image {
+                width: 40%;
+            }
+
+            div[tile-container] .tile_container_content {
+                width: 60%;
+            }
+
+
+            .tile:nth-of-type(1) .tile_container_image img {
+                width: 70%;
+            }
+
+            .tile:nth-of-type(4) .tile_container_image img {
+                MARGIN-LEFT: 15%;
+                width: 60%;
+                transform: rotateZ(90deg);
+            }
+
+            .tile:nth-of-type(2) .tile_container_image img,
+            .tile:nth-of-type(3) .tile_container_image img {
+                width: 90%;
+            }
+
+            #kal-man {
+                border-radius: 50%;
+                position: absolute;
+                --paper-fab-background: var(--paper-grey-300);
+                --paper-fab-keyboard-focus-background: var(--paper-grey-500);
+            }
+
+            #kal-man[icon="favorite"] {
+                color: var(--paper-blue-grey-700);
+            }
+
+
+            /* PAPER ITEM STYLE */
+
+            #usersysteminfo {
+                display: inline !important;
+                /*padding: 10px 10px 0 10px;*/
+            }
+
+            paper-item[heading] h2 {
+                font-weight: 100;
+                font-size: 20px;
+            }
+
+            paper-item[heading] paper-button {
+                font-size: 14px;
+            }
+
+            paper-item[empty-info],
+            paper-item[info] {
+                background-color: #c0c0c0;
+                font-size: 16px;
+            }
+
+            paper-item[info] {
+                @apply --layout-horizontal;
+            }
+
+            paper-item[info] div {
+                width: calc(100% - 40px);
+                @apply --layout-horizontal;
+                @apply --layout-start-justified;
+            }
+
+            paper-item[info] div.success:before {
+                content: '+';
+                padding-right: 10px;
+                color: green;
+            }
+
+            paper-item[info] div.warning:before {
+                content: '!';
+                padding-right: 10px;
+                color: yellow;
+            }
+
+            paper-item[info] div.fail:before {
+                content: 'x';
+                padding-right: 10px;
+                color: red;
+            }
+
+            paper-item[info] div.native:before {
+                content: '*';
+                padding-right: 10px;
+            }
+
+            .ksuccess paper-icon-button {
+                color: #008744;
+            }
+
+            .kfail paper-icon-button {
+                color: #DB3236;
+            }
+
+
+
+
+            .pb_nav_left {
+                margin: 20px 0px 10px 0px;
+            }
+
+            .pb_nav_right {
+                margin: 0px 0px;
+            }
+
+            .pb_nav_left,
+            .pb_nav_right {
+                background-color: #E0e0e0;
+                transition: all ease-in-out .3s;
+                display: inline-table;
+                position: relative;
+                width: 100%;
+                font-size: calc(1em + 1vmin);
+                top: 0 !important;
+                left: 0 !important;
+            }
+
+            .pb_nav_left:hover,
+            .pb_nav_right:hover {
+                transform: scale(1.1);
+            }
+
+            paper-tooltip {
+                --paper-tooltip-background: #222;
+                --paper-tooltip-text-color: #fff;
+                width: 160px;
+                --paper-tooltip: {
+                    font-size: 16px;
+                }
+            }
+
+            @media only screen and (min-width: 320px) {}
+
+            @media only screen and (min-width: 360px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 300px;
+                }
+            }
+
+            @media only screen and (min-width: 412px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 350px;
+                }
+            }
+
+            @media only screen and (min-width: 480px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 400px;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 180px;
+                    left: 173px;
+                }
+
+                .pb_nav_left {
+                    top: 180px;
+                    left: 470px;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 768px) {
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 400px;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 180px;
+                    left: 173px;
+                }
+
+                .pb_nav_left {
+                    top: 180px;
+                    left: 470px;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1024px) {
+                /* zoom %175 */
+                #usersysteminfo paper-item[heading] .buttons {
+                    min-width: 150px !important;
+                }
+
+                #usersysteminfo paper-item[heading] {
+                    flex-direction: row !important;
+                    -webkit-flex-direction: row !important;
+                }
+
+                #usersysteminfo paper-item[heading] .piheader {
+                    align-self: flex-start !important;
+                }
+
+                #kal-man {
+                    width: 13%;
+                    height: 22%;
+                    top: 53%;
+                    left: 43.5%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 147px !important;
+                    left: 113px !important;
+                }
+
+                .pb_nav_left {
+                    top: 147px !important;
+                    left: 370px !important;
+                    margin: 0px 0px !important;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    position: absolute !important;
+                    width: 30% !important;
+                    min-width: 250px !important;
+                    font-size: calc(0.15em + 1vmin) !important;
+                }
+
+
+                /* tile */
+                .tile {
+                    width: calc(100% / 2) !important;
+                }
+
+                .colon-image img {
+                    width: calc(5em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-title {
+                    font-size: calc(0.25em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon {
+                    -webkit-flex-direction: row !important;
+                    flex-direction: row !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-header p {
+                    font-size: calc(0.15em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-header h2 {
+                    font-size: calc(0.6em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .hdd-control-box {
+                    bottom: 0 !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .hdd-control-box p {
+                    font-size: calc(0.14em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1224px) {
+                /* zoom %150 */
+                div[tile-container] .game-headline {
+                    left: 33%;
+                }
+
+                #kal-man {
+                    width: 10%;
+                    height: 22%;
+                    top: 53%;
+                    left: 45%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 180px !important;
+                    left: 173px !important;
+                }
+
+                .pb_nav_left {
+                    top: 180px !important;
+                    left: 470px !important;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.3em + 1vmin) !important;
+                }
+
+                /* tile */
+                .colon-image img {
+                    width: calc(8em + 1vmin) !important;
+                }
+
+                div[tile-flex] .tile-flex-colon .colon-title {
+                    font-size: calc(0.45em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1440px) {
+                /* zoom % 125*/
+                div[tile-container] .game-headline {
+                    left: 37%;
+                }
+
+                #kal-man {
+                    width: 10%;
+                    height: 26%;
+                    top: 50%;
+                    left: 45%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 175px !important;
+                    left: 188px !important;
+                }
+
+                .pb_nav_left {
+                    top: 175px !important;
+                    left: 532px !important;
+                }
+
+                .pb_nav_left,
+                .pb_nav_right {
+                    font-size: calc(0.5em + 1vmin) !important;
+                }
+            }
+
+            @media only screen and (min-width: 1640px) {
+                /* zoom %110*/
+                div[tile-container] .game-headline {
+                    left: 39%;
+                }
+
+                #kal-man {
+                    width: 9%;
+                    height: 26%;
+                    top: 50%;
+                    left: 45.5%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 181px !important;
+                    left: 260px !important;
+                }
+
+                .pb_nav_left {
+                    top: 181px !important;
+                    left: 630px !important;
+                }
+            }
+
+            @media only screen and (min-width: 1824px) {
+                div[tile-container] .game-headline {
+                    left: 40%;
+                }
+
+                #kal-man {
+                    width: 9%;
+                    height: 28%;
+                    top: 50%;
+                    left: 45.5%;
+                }
+
+                /*if user not set his system <- nav buttons */
+                .pb_nav_right {
+                    top: 181px !important;
+                    left: 272px !important;
+                }
+
+                .pb_nav_left {
+                    top: 181px !important;
+                    left: 693px !important;
+                }
+            }
+
+
+            /* paper - item heading  */
+
+            #usersysteminfo paper-item[heading] {
+                @apply --layout-vertical;
+            }
+
+            #usersysteminfo paper-item[heading] .piheader {
+                display: flex;
+                flex-grow: 2;
+                align-self: center;
+                /* +1024 =>  flex-start */
+                align-items: center;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                min-width: 250px;
+                z-index: 100;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            #usersysteminfo paper-item[heading] .buttons paper-button {
+                width: 100%;
+            }
+
+
+            div[tile-flex] {
+                @apply --layout-vertical;
+            }
+
+            div[tile-flex] .tile-flex-colon {
+                @apply --layout-vertical;
+                justify-content: center;
+                height: 100%;
+                /*margin: 0px calc(1em + 1vmin) -5px calc(1.5em + 1vmin);*/
+                margin: -5px 20px;
+                padding-right: 25px;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                color: white !important;
+                font-weight: 100;
+                justify-content: center;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header h2 {
+                font-size: calc(0.9em + 1vmin);
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header p {
+                font-size: calc(0.45em + 1vmin);
+                font-style: italic;
+                padding-left: 8px;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-header iron-icon {
+                width: calc(1.2em + 1vmin);
+                color: white;
+                height: calc(1.2em + 1vmin);
+                padding-left: 5px;
+            }
+
+            div[tile-flex] .tile-flex-colon .colon-image {
+                align-self: center;
+                flex-grow: 1;
+            }
+
+
+            div[tile-flex] .tile-flex-colon .hdd-control-box {
+                @apply --layout-vertical;
+                position: absolute;
+                right: 10px;
+                color: white;
+                bottom: 18px;
+            }
+
+            div[tile-flex] .tile-flex-colon .hdd-control-box p {
+                font-style: oblique;
+                font-weight: 500;
+                /*font-size: calc(0.14em + 1vmin);*/
+                font-size: calc(0.4em + 1vmin);
+            }
+
+            .colon-image img {
+                width: calc(8em + 1vmin);
+                height: calc(4.5em + 1vmin);
+            }
+
+
+            div[tile-flex] .tile-flex-colon .colon-title {
+                min-width: 200px;
+                flex-grow: 2;
+                width: 100%;
+                color: white;
+                font-weight: 100;
+                text-align: center;
+                font-size: calc(0.45em + 1vmin);
+                line-height: calc(1.2em + 1vmin) !important;
+                opacity: 0.8;
+                white-space: normal !important;
+            }
+
+            div.tile .iiExpand {
+                position: absolute;
+                right: 5%;
+                top: 5%;
+                color: #fff !important;
+                width: 25px;
+                height: 25px;
+                transition: all ease-in-out .3s;
+            }
+
+            div.tile .iiExpand:hover {
+                width: 33px;
+                height: 33px;
+            }
+
+            .systemCreatorButtons {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                background-image: url(/assets/img/kaldirirmi-header-2.png);
+                background-color: white;
+                height: 100%;
+                background-repeat: no-repeat;
+                background-size: cover;
+                color: white !important;
+            }
+
+            .systemCreatorButtons paper-button {
+                font-size: calc(.75em + 1vmin);
+                font-weight: bold;
+                background: var(--app-theme-color);
+                color: black;
+                text-transform: capitalize;
+                margin: 12px;
+                transition: all ease-in-out 0.3s;
+            }
+
+            .systemCreatorButtons paper-button:hover {
+                transform: scale(1.1);
+            }
+
+            .card-content .twitch-manset h3 {
+                font-size: 14px;
+            }
+
+        </style>
+
+        <paper-material elevation="0" id="usersysteminfo" role="listbox">
+            <div class="tile" id="part0" on-tap="_onClick">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color: #6441a5" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallar</h3>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div class="tile" id="part1" on-tap="_onClick">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color:#421C52" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallardaki Videolar</h3>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div class="tile" id="part2" on-tap="_onClick">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color:#732C7B" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallardaki Diğer Takipçileri Bul</h3>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+            <div class="tile" id="part3" on-tap="_onClick">
+                <paper-card image="assets/img/logo_white_twitch_effects.png" style="background-color:mediumslateblue" elevation="3" mainimage>
+                    <div class="card-content">
+                        <div class="twitch-manset">
+                            <h3>Takip Ettiğin Kanallardaki Klipler</h3>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+
+        </paper-material>
+
+    </template>
+    <script>
+        /**
+         * `game-animated-grid` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class Twitch2AnimatedGrid extends Polymer.mixinBehaviors([Polymer.NeonSharedElementAnimatableBehavior], Polymer
+            .Element) {
+
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'twitch2-animated-grid';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    kalnotes: {
+                        type: Object,
+                        value: [],
+                        notify: true,
+                    },
+                    kaldirir: {
+                        type: Object,
+                        value: [],
+                        notify: true,
+                    },
+                    page: {
+                        type: Number,
+                        value: 0
+                    },
+                    hardwaretype: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    query: {
+                        type: String,
+                        value: ''
+                    },
+                    gamename: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    loadinggames: {
+                        type: Boolean,
+                        value: false
+                    },
+                    games: {
+                        type: Array,
+                        value: []
+                    },
+                    bc: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    mc: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    config: {
+                        type: Array,
+                    },
+
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'exit': [{
+                                    name: 'ripple-animation',
+                                    id: 'ripple',
+                                    fromPage: this
+                                }, {
+                                    name: 'hero-animation',
+                                    id: 'hero',
+                                    fromPage: this
+                                }]
+                            }
+                        }
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                // this.addEventListener('click', (e) => this._onClick(e));
+
+                super.ready();
+
+                // window.addEventListener('some-event', () => this.someFunction());
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _computeTileClass(color) {
+                return 'tile ' + color + '-300';
+            }
+            _onClick(event) {
+                // console.log(event);
+                    var model = event.model;
+                    var target = event.target;
+
+                    // configure the page animation
+                    this.sharedElements = {
+                        'hero': target,
+                        'ripple': target
+                    };
+                    this.animationConfig['exit'][0].gesture = {
+                        x: event.x || event.pageX,
+                        y: event.y || event.pageY
+                    };
+
+                    var detail = {
+                        tile: target,
+                        data: target.id
+                    }
+
+                    this.fireEvent('tile-click', detail, false, false);
+               
+            }
+
+            fireEvent(eventName, detailObject, bubblesBoolean, composedBoolean) {
+                var event = new CustomEvent(eventName, {
+                    bubbles: bubblesBoolean,
+                    composed: composedBoolean,
+                    detail: detailObject
+                });
+                this.dispatchEvent(event);
+            }
+
+        }
+
+        window.customElements.define(Twitch2AnimatedGrid.is, Twitch2AnimatedGrid);
+    </script>
+</dom-module>

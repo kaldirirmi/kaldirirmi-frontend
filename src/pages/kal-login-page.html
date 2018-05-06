@@ -510,8 +510,8 @@
             }
 
             _loginFormResponse(a) {
-                console.log('loginform response');
-                console.log(a.detail.response);
+                // console.log('loginform response');
+                // console.log(a.detail.response);
                 if (a.detail.response.success) {
                     this.$.loginmessage.innerHTML = a.detail.response.message;
                     this.$.loginmessage.style.color = "green";
@@ -519,7 +519,7 @@
                     //id: hakan pwd: hakan123
                     
                     // location.reload();
-                    console.log(a.detail.response);
+                    // console.log(a.detail.response);
                     this.storedUser = {
                         loggedin: true
                     }

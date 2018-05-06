@@ -35,25 +35,25 @@
 
             constructor() {
                 super();
-                console.log('cuson');
+                // console.log('cuson');
             }
 
             connectedCallback() {
                 super.connectedCallback();
                 var self = this;
 
-                console.log('connectedCallback');
+                // console.log('connectedCallback');
 
                 // When the user scrolls down 20px from the top of the document, show the button
                 window.onscroll = function () {
-                    console.log('aga bee');
+                    // console.log('aga bee');
                     self.scrollFunction();
                 };
             }
 
             scrollFunction() {
-                console.log('yoooo');   
-                console.log(this.enabled);
+                // console.log('yoooo');   
+                // console.log(this.enabled);
                 if (this.enabled == "true") {
                     if (document.body.scrollTop > this.activatewhen || document.documentElement.scrollTop > this.activatewhen) {
                         this.$.toastButton.open();
