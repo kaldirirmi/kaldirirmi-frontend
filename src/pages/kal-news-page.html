@@ -100,9 +100,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
            
             _selectedActiveChanged(selectedActive, previousValue) {
-                //  console.log('selectedActive: ', selectedActive);
+                //   console.log('selectedActive: ', selectedActive);
                 // console.log('previousValue: ', previousValue);
+
+
+                if(!selectedActive)
+                {
+                    this._setMetadataMain();
+                }
             }
+
+            _setMetadataMain() {
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title: 'Haberler | Kaldirirmi.com',
+                        description: 'kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.',
+                        keywords: 'bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com',
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
+            
 
             _selectedNewsChanged(selectedNews, previousValue) {
                 if (Object.keys(selectedNews).length !== 0) {

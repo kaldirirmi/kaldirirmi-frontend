@@ -1,4 +1,3 @@
-
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
@@ -27,10 +26,10 @@
             }
 
             :host([is-mobile]) #news-page-container #kalparallax {
-               height: 210px;
+                height: 210px;
             }
 
-            :host([is-mobile]) #news-page{
+            :host([is-mobile]) #news-page {
                 height: auto !important;
             }
 
@@ -49,7 +48,7 @@
                 background-color: #000;
             }
 
-            
+
             app-header {
                 --app-header-background-front-layer: {
                     background-image: var(--header-image);
@@ -74,12 +73,12 @@
             }
 
 
-            .loader-pac-content{
+            .loader-pac-content {
                 position: relative;
                 min-height: 300px;
             }
 
-            .loader-pac-content span{
+            .loader-pac-content span {
                 font-size: 19px;
                 font-weight: 300;
                 letter-spacing: 1.3px;
@@ -562,7 +561,6 @@
             .rightside-populer-news {
                 box-shadow: 0 12px 16px 1px rgba(0, 0, 0, 0.14), 0 4px 22px 3px rgba(0, 0, 0, 0.12), 0 6px 7px -4px rgba(0, 0, 0, 0.4);
             }
-
         </style>
 
         <iron-form id="fromkleine">
@@ -576,19 +574,19 @@
         <iron-ajax id="getselectednews" url="/h/main?fm=get-news-info&a=[[url]]" handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
 
         <app-toolbar class="selected-page-toolbar">
-                <div class="navigation">
-                    <a id="back" href="/news">
-                        <paper-icon-button icon="icons:arrow-back"></paper-icon-button>
-                        <span>Tüm Haberler</span>
-                    </a>
-                </div>
-            </app-toolbar>
+            <div class="navigation">
+                <a id="back" href="/news">
+                    <paper-icon-button icon="icons:arrow-back"></paper-icon-button>
+                    <span>Tüm Haberler</span>
+                </a>
+            </div>
+        </app-toolbar>
 
         <div hidden$=[[!loading]] class="loader-pac-content">
             <loader-pac></loader-pac>
             <span>
                 Haber Getiriyor..
-            </span> 
+            </span>
         </div>
         <div hidden$="[[loading]]">
             <template is="dom-if" if={{isNews}}>
@@ -620,14 +618,14 @@
                                         <h3>
                                             [[newsinfo.releasedate]]
                                         </h3>
-    
+
                                         <time hidden datetime="[[newsinfo.releasedate]]" itemprop="dateCreated">
                                             [[newsinfo.releasedate]]
                                         </time>
                                         <time hidden datetime="[[newsinfo.releasedate]]" itemprop="datePublished">
                                             [[newsinfo.releasedate]]
                                         </time>
-    
+
                                     </div>
                                 </div>
                                 <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
@@ -655,10 +653,10 @@
                                                     [[newsinfo.viewcount]]
                                                 </h3>
                                             </div>
-    
+
                                         </div>
                                         <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
-    
+
                                         <div id="disqus_thread"></div>
                                         <script>
                                             var disqus_config = function () {
@@ -807,12 +805,15 @@
             _onResponse(event) {
                 var response = event.detail.response;
                 //  console.log('kal-selected-news response: ', response);
-                
+
                 if (response.id != 0) {
                     this.set('isNews', true);
                     response.details =
                         "Lorem Ipsum Nedir?Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır. Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur.Neden Kullanırız?Yinelenen bir sayfa içeriğinin okuyucunun dikkatini dağıttığı bilinen bir gerçektir. Lorem Ipsum kullanmanın amacı, sürekli 'buraya metin gelecek, buraya metin gelecek' yazmaya kıyasla daha dengeli bir harf dağılımı sağlayarak okunurluğu artırmasıdır. Şu anda birçok masaüstü yayıncılık paketi ve web sayfa düzenleyicisi, varsayılan mıgır metinler olarak Lorem Ipsum kullanmaktadır. Ayrıca arama motorlarında 'lorem ipsum' anahtar sözcükleri ile arama yapıldığında henüz tasarım aşamasında olan çok sayıda site listelenir. Yıllar içinde, bazen kazara, bazen bilinçli olarak (örneğin mizah katılarak), çeşitli sürümleri geliştirilmiştir.";
                     this.set('newsinfo', response);
+                    
+                    this._setMetadata();
+
 
                     // var headerimage = 'url(' + response.picture + ')';
                     //update parallax app header background image
@@ -826,6 +827,8 @@
 
                     //increase view count
                     // this.$.formkleine.submit();
+
+
 
                 } else {
                     var myobj = {
@@ -845,7 +848,23 @@
                     this.set('isNews', false);
                     //we will set true for testing
                 }
+            }
 
+            _setMetadata() {
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title:  this.newsinfo.title + ' - kaldirirmi.com',
+                        description: 'Kaldirirmi.com - ' + this.newsinfo.title + ' - ' + this.newsinfo.subtitle,
+                        keywords: this.newsinfo.searchkeywords,
+                        name: this.newsinfo.title,
+                        url: 'https://kaldirirmi.com/news/' + this.url,
+                        image: this.newsinfo.picture,
+                        author: this.newsinfo.publisher
+                    }
+                });
+                this.dispatchEvent(event);
             }
 
             _debounceWork() {
@@ -873,7 +892,7 @@
             _getRelatedGame(newsinfo) {
                 var res = "";
                 // console.log(newsinfo);
-                if(newsinfo.id != 0){
+                if (newsinfo.id != 0) {
                     res = newsinfo.relatedgames.split(',')[0];
                 }
                 return res;

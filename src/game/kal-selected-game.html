@@ -835,10 +835,6 @@
                     min-width: 115px;
                 }
 
-                #usersystem {
-                    /* margin-bottom: 90px !important; */
-                }
-
                 #gamecontent section[requirements] {
                     flex-flow: row;
                 }
@@ -1531,18 +1527,13 @@
                 var response = event.detail.response;
 
                 //  console.log('kal-selected-game response: ', response);
-                if(response != null){
-                // if (response.id != 0) {
+                if (response != null) {
+                    // if (response.id != 0) {
                     this.set('isGame', true);
                     response.background = 'https:' + response.background;
                     response.picture = 'https:' + response.picture;
-
-                    // var gameinfo = { ...response,
-                    //     background: 'https:' + response.background,
-                    //     picture: 'https:' + response.picture
-                    // };
-
                     this.set('gameinfo', response);
+                    this._setMetadata();
 
                 } else {
                     //isGame false
@@ -1709,6 +1700,19 @@
                     this.set('isGame', true);
                 }
 
+            }
+
+            _setMetadata() {
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title: 'Bilgisayarım ' + this.gameinfo.name + ' oyununu kaldırır mı? - kaldirirmi.com',
+                        description: 'Bilgisayarım ' + this.gameinfo.name + ' oyununu kaldırır mı? ' + this.gameinfo.name + ' oyununu oynayabilir miyim?',
+                        keywords: this.gameinfo.name + ',oyun,kaldırır mı,bilgisayarım kaldırır mı,bilgisayarım açar mı,kaldirirmi.com',
+                    }
+                });
+                this.dispatchEvent(event);
             }
 
             _debounceWork() {

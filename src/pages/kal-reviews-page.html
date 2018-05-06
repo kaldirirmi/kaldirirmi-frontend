@@ -31,12 +31,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             :host([is-mobile]) {
                 height: auto !important;
             }
-
-            
         </style>
 
         <app-route route="{{route}}" pattern="/reviews/:reviewUrl" data="{{data}}" active="{{selectedActive}}"></app-route>
-        
+
         <kal-global-variable key="userData" value="{{storedUser}}"></kal-global-variable>
         <iron-localstorage name="user-storage" value="{{storedUser}}"></iron-localstorage>
 
@@ -81,6 +79,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _selectedActiveChanged(selectedActive, previousValue) {
                 // console.log('selectedActive: ', selectedActive);
                 // console.log('previousValue: ', previousValue);
+                if (!selectedActive) {
+                    this._setMetadataMain();
+                }
+            }
+
+            _setMetadataMain() {
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title: 'İncelemeler | Kaldirirmi.com',
+                        description: 'kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.',
+                        keywords: 'bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com',
+                    }
+                });
+                this.dispatchEvent(event);
             }
 
             _selectedReviewsChanged(selectedReviews, previousValue) {

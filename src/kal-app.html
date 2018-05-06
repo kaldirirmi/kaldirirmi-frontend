@@ -36,6 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./model/game-guides-dialog.html">
 <link rel="import" href="./model/game-video-holder.html">
 <link rel="import" href="./model/game-embed-holder.html">
+<link rel="import" href="./model/app-metadata.html">
 
 
 <!-- Fragments -->
@@ -433,6 +434,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             /**
+              * Instance of the element is created/upgraded. Useful for initializing
+              * state, set up event listeners, create shadow dom.
+              * @constructor
+              */
+            constructor() {
+                super();
+                AppMetadata.requestAvailability();
+                this._setMetadata();
+            }
+
+             _setMetadata() {
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title: 'Kaldirirmi.com - Modern Bilgisayar Oyunlarının Sistem Gereksinimlerini Sağlamak İçin Oluşturulmuş Bir Web Platformudur.',
+                        description: 'kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.',
+                        keywords: 'bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com',
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
+             
+
+            /**
              * Called every time the element is inserted into the DOM. Useful for
              * running setup code, such as fetching resources or rendering.
              * Generally, you should try to delay work until this time.
@@ -440,7 +467,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             connectedCallback() {
                 super.connectedCallback();
                 // console.log('connectedCallback kal-app');
-
             }
 
             /**
@@ -513,7 +539,74 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     null,
                     this._showPage404.bind(this),
                     true);
+
+
+                this._setPagesMetadata(page);
             }
+
+            
+            _setPagesMetadata(page) {
+                let currentTitle = '';
+                switch(page) {
+                    case 'home':
+                        currentTitle = 'Anasayfa';
+                        break;
+                    case 'playground': 
+                        currentTitle = 'Oyun Dünyası';
+                        break;
+
+                    case 'game': 
+                        currentTitle = 'Oyunlar';
+                        break;
+
+                    case 'news': 
+                        currentTitle = 'Haberler';
+                        break;
+
+                    case 'reviews': 
+                        currentTitle = 'İncelemeler';
+                        break;
+
+                    case 'gallery': 
+                        currentTitle = 'Galeriler';
+                        break;
+
+                    case 'hardware': 
+                        currentTitle = 'Donanım';
+                        break;
+
+                    case 'challenge': 
+                        currentTitle = 'Challenge';
+                        break;
+
+                    case 'twitch': 
+                        currentTitle = 'Twitch';
+                        break;
+
+                    case 'profile': 
+                        currentTitle = 'Profil';
+                        break;
+
+                    case 'userpublic':
+                        currentTitle = 'Kullanıcı';
+                        break;
+
+                    default: 
+                        currentTitle = 'Hatalı Sayfa';
+                }
+
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title:  currentTitle + ' | Kaldirirmi.com',
+                        description: 'kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.',
+                        keywords: 'bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com',
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
 
             _showPage404() {
                 this.page = 'view404';

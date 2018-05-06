@@ -53,7 +53,8 @@
     "paper-progress": "PolymerElements/paper-progress#^2.1.0",
     "iron-range-behavior": "PolymerElements/iron-range-behavior#^2.1.0",
     "paper-toolbar": "PolymerElements/paper-toolbar#^2.1.0",
-    "numeral": "^2.0.6"
+    "numeral": "^2.0.6",
+    "app-metadata": "CaptainCodeman/app-metadata#^0.0.6"
   },
   "resolutions": {
     "polymer": "^2.0.0"

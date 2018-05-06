@@ -1,8 +1,7 @@
-
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../gallery/kal-selected-gallery.html">
 <link rel="import" href="../gallery/kal-all-galleries.html">
-<link rel="import" href="../kal-global-variable.html"> 
+<link rel="import" href="../kal-global-variable.html">
 
 <dom-module id="kal-gallery-page">
   <template>
@@ -74,7 +73,25 @@
 
       }
 
-      _selectedGalleryActiveChanged(selectedGalleryActive, previousValue) {}
+      _selectedGalleryActiveChanged(selectedGalleryActive, previousValue) {
+
+        if (!selectedGalleryActive) {
+          this._setMetadataMain();
+        }
+      }
+
+      _setMetadataMain() {
+        var event = new CustomEvent('app-metadata', {
+          bubbles: true,
+          composed: true,
+          detail: {
+            title: 'Galeriler | Kaldirirmi.com',
+            description: 'kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.',
+            keywords: 'bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com',
+          }
+        });
+        this.dispatchEvent(event);
+      }
 
       _selectedGalleryChanged(selectedGallery, previousValue) {
         if (Object.keys(selectedGallery).length !== 0) {

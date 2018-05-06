@@ -3,7 +3,7 @@
 <link rel="import" href="../game/kal-selected-game.html">
 <link rel="import" href="../game/kal-all-games.html">
 <link rel="import" href="../../bower_components/kal-thirdparty/moment.html">
-<link rel="import" href="../kal-global-variable.html"> 
+<link rel="import" href="../kal-global-variable.html">
 
 
 
@@ -23,7 +23,7 @@
         height: calc(100vh - 192px);
       }
 
-      :host([is-mobile]){
+      :host([is-mobile]) {
         height: auto !important;
       }
 
@@ -323,7 +323,22 @@
       _selectedGameActiveChanged(selectedGameActive, previousValue) {
         // console.log('selectedGameActive: ', selectedGameActive);
         // console.log('previousValue: ', previousValue);
+        if (!selectedGameActive) {
+          this._setMetadataMain();
+        }
+      }
 
+      _setMetadataMain() {
+        var event = new CustomEvent('app-metadata', {
+          bubbles: true,
+          composed: true,
+          detail: {
+            title: 'Oyunlar | Kaldirirmi.com',
+            description: 'kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.',
+            keywords: 'bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com',
+          }
+        });
+        this.dispatchEvent(event);
       }
 
       _selectedGameChanged(selectedGame, previousValue) {

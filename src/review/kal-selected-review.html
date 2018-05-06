@@ -1012,7 +1012,7 @@
                     this.set('isReview', true);
                     // console.log(response);
                     this.set('reviewinfo', response);
-
+                    this._setMetadata();
                     //generate this for retrieving kp infos
                     this.$.getgamekpinfo.generateRequest();
                 } else {
@@ -1035,6 +1035,25 @@
                 }
 
             }
+            
+            
+            _setMetadata() {
+                var event = new CustomEvent('app-metadata', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        title:  this.reviewinfo.title + ' - kaldirirmi.com',
+                        description: 'Kaldirirmi.com - ' + this.reviewinfo.title + ' - ' + this.reviewinfo.subtitle,
+                        keywords: this.reviewinfo.searchkeywords,
+                        name: this.reviewinfo.title,
+                        url: 'https://kaldirirmi.com/reviews/' + this.url,
+                        image: this.reviewinfo.picture,
+                        author: this.reviewinfo.publisher
+                    }
+                });
+                this.dispatchEvent(event);
+            }
+
 
             _onResponseKpInfo(event) {
                 var response = event.detail.response;
