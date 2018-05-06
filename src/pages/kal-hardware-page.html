@@ -4,7 +4,9 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-from-right-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 
-<link rel="import" href="../hardware/kal-hardware-list.html">
+<link rel="import" href="../hardware/kal-cpu-list.html">
+<link rel="import" href="../hardware/kal-gpu-list.html">
+
 <link rel="import" href="../shared-styles.html">
 
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
@@ -102,10 +104,10 @@
 
       <neon-animated-pages id="hardwarepages" entry-animation="slide-from-right-animation" exit-animation="fade-out-animation">
         <neon-animatable>
-          <kal-hardware-list hardware="cpu"></kal-hardware-list>
+          <kal-cpu-list></kal-cpu-list>
         </neon-animatable>
         <neon-animatable>
-          <kal-hardware-list hardware="gpu"></kal-hardware-list>
+          <kal-gpu-list></kal-gpu-list>
         </neon-animatable>
       </neon-animated-pages>
     </div>
@@ -148,7 +150,6 @@
           //        Polymer.Base.importHref('assets/components/kaldirirmi/hardware/kaldirirmi-gpus.html');
           //    }
           //}
-
           this.$.hardwarepages.select(selected);
         }
 

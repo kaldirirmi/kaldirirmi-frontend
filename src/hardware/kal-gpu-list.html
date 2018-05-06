@@ -1,0 +1,462 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+
+<link rel="import" href="../model/gpu-item.html">
+<link rel="import" href="../kal-scroll-threshold.html">
+<link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="kal-gpu-list">
+    <template>
+        <style>
+            :host {
+                display: block;
+                @apply --paper-font-common-base;
+            }
+
+            app-toolbar {
+                background-color: var(--app-theme-darker-color);
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+            }
+
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+
+
+            @media (max-width: 460px) {
+                paper-toolbar .bottom.title {
+                    font-size: 14px;
+                }
+            }
+
+            .loadingIndicator {
+                left: 0;
+                right: 0;
+                position: relative;
+                top: 6em;
+                color: var(--app-theme-color);
+            }
+
+            #hardware-list-container {
+                min-height: 400px;
+                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+                padding: 15px;
+            }
+
+            paper-dropdown-menu {
+                line-height: 0 !important;
+                --paper-input-container-label: {
+                    color: white;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: calc(0.45em + 1vmin);
+                }
+
+
+                --paper-input-container-input: {
+                    color: white;
+                    text-align: center;
+                    text-transform: uppercase;
+                    font-size: calc(0.45em + 1vmin);
+
+                }
+
+
+                --paper-input-container-focus-color: white;
+                --paper-input-container-underline: {
+                    display: none;
+                }
+
+
+
+            }
+
+            .searchInput {
+                @apply --layout-flex;
+                font-size: 18px;
+                padding: 10px 20px;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                -webkit-appearance: none;
+                border-radius: 0px;
+            }
+
+            .searchInput::-webkit-input-placeholder {
+                color: white;
+            }
+
+            .searchInput:-moz-placeholder {
+                /* Firefox 18- */
+                color: white;
+            }
+
+            .searchInput::-moz-placeholder {
+                /* Firefox 19+ */
+                color: white;
+            }
+
+            .searchInput:-ms-input-placeholder {
+                color: white;
+            }
+
+            .searchInput:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+            .searchInput:focus {
+                background-color: white;
+                outline: none;
+                color: black;
+            }
+
+            .empty-message {
+                color: var(--app-theme-color);
+                text-align: center;
+                font-size: 1.2em;
+            }
+
+
+            .searchInput,
+            #mobileSearchInput {
+                outline: none !important;
+                display: none;
+            }
+
+            #mobileSearchInput {
+                z-index: 111;
+                width: 80%;
+                -ms-flex: 1 1 0.000000001px;
+                -webkit-flex: 1;
+                flex: 1;
+                -webkit-flex-basis: 0.000000001px;
+                flex-basis: 0.000000001px;
+                font-size: 18px;
+                padding: 10px 20px;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                -webkit-appearance: none;
+                border-radius: 0px;
+                position: absolute;
+                top: 10px;
+                background: var(--app-theme-darker-color);
+                left: 60px;
+            }
+
+            #mobileSearchIcon {
+                margin-right: 15px;
+            }
+
+            @media only screen and (min-width: 768px) {
+                .searchInput {
+                    display: block;
+                }
+                #mobileSearchIcon {
+                    display: none;
+                }
+            }
+
+            .inputOpened {
+                display: block !important;
+            }
+
+            /* It's so important for threshold works */
+
+            kal-scroll-threshold {
+                height: calc(100vh - 300px);
+                box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+                padding: 15px;
+            }
+
+            paper-listbox {
+                --paper-listbox-background-color: var(--app-theme-darker-color);
+                --paper-listbox-color: #fff;
+            }
+        </style>
+
+        <iron-ajax id="gethardwarelist" debounce-duration="300" url="/h/main?fm=get-hardware-list&a=[[hardware]]&b=[[query]]&c=[[order]]&d=[[itemperpage]]&e=[[page]]&f=[[criter]]"
+            handle-as="json" on-response="_response"></iron-ajax>
+
+        <app-toolbar>
+            <input class="searchInput" type="search" placeholder="[[title]] Ara" value="{{query::input}}">
+            <div class="mobileSearchHardware" id="cpuMobileSearch">
+                <paper-icon-button id="mobileSearchIcon" on-tap="_mobileSearchIcon" icon="[[mobileSearchIcon]]"></paper-icon-button>
+                <input id="mobileSearchInput" type="search" placeholder="[[title]] Ara" value="{{query::input}}" />
+            </div>
+            <paper-dropdown-menu class="pdmHeader" label="Sıralama">
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{order}}">
+                    <paper-item value="benchmarkscore">Benchmark Score</paper-item>
+                    <paper-item value="name">Ürün Adı</paper-item>
+                    <paper-item value="memorySize">Hafıza Boyutu</paper-item>
+                    <paper-item value="directxvalue">DirectX</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu class="pdmHeader" label="Kriter">
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{criter}}">
+                    <paper-item value="desc">Azalan</paper-item>
+                    <paper-item value="asc">Artan</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+        </app-toolbar>
+
+        <!-- IRON SCROLL THRESHOLD -->
+        <kal-scroll-threshold on-lower-threshold="_loadMoreHardware" id="threshold">
+            <iron-list scroll-target="threshold" items="[[response]]" selection-enabled multi-selection>
+                <template>
+                    <div class="list-item">
+                        <gpu-item item="[[item]]" is-mobile=[[isMobile]] selected=[[selected]]></gpu-item>
+                    </div>
+                </template>
+            </iron-list>
+            <div class="loadingIndicator" hidden$="[[!loading]]">
+                <loader-pac></loader-pac>
+            </div>
+            <div class="empty-message" hidden$="[[!empty]]">
+                Aradığınız kriterlerde sonuç bulunamadı.
+            </div>
+        </kal-scroll-threshold>
+
+    </template>
+
+    <script>
+        /**
+         * `kal-hardware-list` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class KalGpuList extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'kal-gpu-list';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    empty: Boolean,
+                    hardware: {
+                        type: String,
+                        value: 'gpu',
+                    },
+                    go: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+                    query: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    order: {
+                        type: String,
+                        value: 'benchmarkscore',
+                        notify: true,
+                        observer: '_orderChanged'
+                    },
+                    criter: {
+                        type: String,
+                        value: 'desc',
+                        notify: true,
+                        observer: '_criterChanged'
+                    },
+                    page: {
+                        type: Number,
+                        value: 0,
+                    },
+                    itemperpage: {
+                        type: Number,
+                        value: 20
+                    },
+                    response: {
+                        type: Array,
+                        value: []
+                    },
+                    timeout: {
+                        type: Number,
+                        value: 1111,
+                        notify: true
+                    },
+
+                    mobileSearchIcon: {
+                        type: String,
+                        value: 'search'
+                    },
+
+                    title: {
+                        type: String,
+                        value: 'Ekran Kartı'
+                    },
+                    isCpu: Boolean
+                };
+            }
+
+            /**
+             * Array of strings describing multi-property observer methods and their
+             * dependant properties
+             */
+            static get observers() {
+                return [
+                    '_resetListForQuery(query)'
+                ];
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+
+            _loadMoreHardware() {
+                this.loading = true;
+
+                if (this.$.gethardwarelist.lastRequest) {
+                    this.$.gethardwarelist.lastRequest.abort();
+                }
+                this.page++;
+
+                Polymer.Async.microTask.run(() => this._generateRequest());
+
+                // this.async(function () {
+                //     this.$.gethardwarelist.generaterequest();
+                // }, this.timeout);
+                // this.timeout = 1111;
+
+            }
+            _response(event) {
+                //console.log('_response query => ' + this.query + ', order => '+ this.order + ', criter => ' + this.criter + ' , page => ' + this.page );
+                var response = event.detail.response;
+
+                if (response == null) {
+                    this.empty = true;
+                } else {
+                    if (response.gpus.length > 0) {
+                        this.isCpu = false;
+                        response.gpus.forEach(function (item) {
+                            // this.push('response.gpus', item);
+                            this.push('response', item);
+                        }, this);
+                        this.$.threshold.clearTriggers();
+                    } else if (response.cpus.length > 0) {
+                        this.isCpu = true;
+                        response.cpus.forEach(function (item) {
+                            this.push('response', item);
+                        }, this);
+                        this.$.threshold.clearTriggers();
+                    } else {
+                        this.empty = true;
+                    }
+                }
+
+
+                this.loading = false;
+            }
+            _orderChanged(newVal, oldVal) {
+                this._clearState();
+                this._debounceWork();
+                // this.debounce('_generateNewDataRequest', this._generateRequest, 400);
+            }
+            _resetListForQuery(query) {
+                if (query.trim().length >= 2 || query.trim() === '') {
+                    this._clearState();
+                    this._debounceWork();
+                    // this.debounce('_generateNewDataRequest', this._generateRequest, 400);
+                }
+
+            }
+            _criterChanged(newVal, oldVal) {
+                this._clearState();
+                this._debounceWork();
+                // this.debounce('_generateNewDataRequest', this._generateRequest, 400);
+            }
+            _clearState() {
+                this.page = 0;
+                this.empty = false;
+                this.loading = true;
+                // this.set('response.cpus', []);
+                // this.set('response.gpus', []);
+                this.set('response', []);
+            }
+
+            _debounceWork() {
+                //Polymer.Async.timeOut.after(400)
+                this._debounceJob = Polymer.Debouncer.debounce(
+                    this._debounceJob,
+                    Polymer.Async.microTask,
+                    () => {
+                        this._generateRequest();
+                    });
+            }
+
+            _generateRequest() {
+                if (this.$.gethardwarelist.lastRequest) {
+                    this.$.gethardwarelist.lastRequest.abort();
+                }
+                this.page = 1;
+                this.$.gethardwarelist.generateRequest();
+
+
+            }
+            _remakeLoaderTitle(title) {
+                if (title == 'gpu') return 'Ekran Kartları Yükleniyor..';
+                else if (title == 'cpu') return 'İşlemciler Yükleniyor..';
+            }
+            _mobileSearchIcon(event) {
+                $('#gpuMobileSearch #mobileSearchInput').toggleClass('inputOpened');
+                if (this.mobileSearchIcon == 'search') this.mobileSearchIcon = 'close';
+                else if (this.mobileSearchIcon == 'close') this.mobileSearchIcon = 'search';
+            }
+        }
+
+        window.customElements.define(KalGpuList.is, KalGpuList);
+    </script>
+</dom-module>

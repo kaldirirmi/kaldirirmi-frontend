@@ -1,9 +1,8 @@
-
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 
-<dom-module id="hardware-item">
+<dom-module id="cpu-item">
     <template>
         <style>
             :host {
@@ -79,86 +78,50 @@
                 @apply --layout-flex;
             }
         </style>
+        <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
 
-
-        <template is="dom-if" if={{isCpu}}>
-            <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
-                    <div class="item-column">
-                        <iron-image itemprop="image" class="avatar" sizing="contain" src="{{_remakeBrandImage(item.brand)}}"></iron-image>
-                        <div class="pad">
-                            <div class="primary" itemprop="name">[[item.name]]</div>
-                            <div class="shortText">İşlemci Sınıfı:
-                                <b>[[item.cpuClass]]</b>
-                            </div>
-                            <meta itemprop="position" content="[[index]]" />
-                            <meta itemprop="url" content="http://www.google.com/search?q= [[item.name]]" />
+            <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
+                <div class="item-column">
+                    <iron-image itemprop="image" class="avatar" sizing="contain" src="{{_remakeBrandImage(item.brand)}}"></iron-image>
+                    <div class="pad">
+                        <div class="primary" itemprop="name">[[item.name]] [[selected]]</div>
+                        <div class="shortText">İşlemci Sınıfı:
+                            <b>[[item.cpuClass]]</b>
                         </div>
-                        <div class="benchmark" itemprop="description">[[item.benchmarkscore]]</div>
-                        <iron-icon icon$="[[getIconForItem(selected)]]"></iron-icon>
+                        <meta itemprop="position" content="[[index]]" />
+                        <meta itemprop="url" content="http://www.google.com/search?q= [[item.name]]" />
                     </div>
-                    <div class="item-column item-column-invisible">
-                        <div class="item-column-rowler">
-                            <p>Core: [[item.cores]] Çekirdekli</p>
-                            <p>Socket: [[item.socket]]</p>
-                            <p>Clock Speed: [[item.clockSpeed]]</p>
-                            <p>Maximum TDP: [[item.maxTDP]]</p>
-                        </div>
+                    <div class="benchmark" itemprop="description">[[item.benchmarkscore]]</div>
+                    <iron-icon icon$="[[getIconForItem(selected)]]"></iron-icon>
+                </div>
+                <div class="item-column item-column-invisible">
+                    <div class="item-column-rowler">
+                        <p>Core: [[item.cores]] Çekirdekli</p>
+                        <p>Socket: [[item.socket]]</p>
+                        <p>Clock Speed: [[item.clockSpeed]]</p>
+                        <p>Maximum TDP: [[item.maxTDP]]</p>
                     </div>
                 </div>
             </div>
-        </template>
-
-
-        <template is="dom-if" if={{!isCpu}}>
-            <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
-                    <div class="item-column">
-                        <iron-image itemprop="image" class="avatar" sizing="contain" src="{{_remakeGraphicCardBrand(item.name)}}"></iron-image>
-                        <div class="pad">
-                            <div class="primary" itemprop="name">[[item.name]]</div>
-                            <div class="shortText">Ekran Kartı Sınıfı:
-                                <b>[[item.gpuClass]]</b>
-                            </div>
-                            <meta itemprop="position" content="[[index]]" />
-                            <meta itemprop="url" content="http://www.google.com/search?q= [[item.name]]" />
-                        </div>
-                        <div class="benchmark" itemprop="description">[[item.benchmarkscore]]</div>
-                        <iron-icon icon$="[[getIconForItem(selected)]]"></iron-icon>
-                    </div>
-                    <div class="item-column item-column-invisible">
-                        <div class="item-column-rowler">
-                            <p>Memory Size: [[item.memorySize]] MB</p>
-                            <p>DirectX: [[item.directx]]</p>
-                            <p>OpenGL: [[item.openGL]]</p>
-                            <p>Core Clock: [[item.coreClock]]</p>
-                            <p>Memory Clock: [[item.memoryClock]]</p>
-                            <p>Bus Interface: [[item.busInterface]]</p>
-                            <p>Maximum TDP: [[item.maxTDP]]</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-
+        </div>
 
     </template>
 
     <script>
         /**
-         * `hardware-item` Description
+         * `cpu-item` Description
          *
          * @summary ShortDescription.
          * @customElement
          * @polymer
          * @extends {Polymer.Element}
          */
-        class HardwareItem extends Polymer.Element {
+        class CpuItem extends Polymer.Element {
             /**
              * String providing the tag name to register the element under.
              */
             static get is() {
-                return 'hardware-item';
+                return 'cpu-item';
             }
 
             /**
@@ -166,14 +129,15 @@
              */
             static get properties() {
                 return {
-                    hardware: String,
-                    isCpu: Boolean,
                     isMobile: {
                         type: Boolean,
                         reflectToAttribute: true
                     },
                     item: Object,
-                    selected: Boolean,
+                    selected: {
+                        type: Boolean,
+                        notify: true
+                    },
                     index: Number
                 };
             }
@@ -185,10 +149,6 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-
-                if (this.hardware == "cpu") this.isCpu = true;
-                else this.isCpu = false;
-
             }
             /**
              * Instance of the element is created/upgraded. Use: initializing state,
@@ -226,6 +186,11 @@
                     return '/assets/img/nvidia-icon.png';
                 }
             }
+
+            _onTap(e) {
+                console.log(e);
+            }
+
             getClassForItem(item, selected) {
                 return selected ? 'item expanded' : 'item';
             }
@@ -235,6 +200,6 @@
 
         }
 
-        window.customElements.define(HardwareItem.is, HardwareItem);
+        window.customElements.define(CpuItem.is, CpuItem);
     </script>
 </dom-module>
