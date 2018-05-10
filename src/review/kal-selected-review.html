@@ -7,6 +7,7 @@
 <link rel="import" href="../model/kal-nav-content.html">
 <link rel="import" href="../model/kal-tagcloud.html">
 <link rel="import" href="../model/ability-chart.html">
+<link rel="import" href="../model/addthis-element.html">
 
 <link rel="import" href="./review-related-game.html">
 <link rel="import" href="./review-user-vote.html">
@@ -776,7 +777,7 @@
                         <div id="reviewcontent" itemscope itemtype="http://schema.org/Review">
                             <div id="panel">
                                 <div id="options">
-                                    <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+                                    <addthis-element></addthis-element>
                                 </div>
                                 <div id="panel-contents">
                                     <h2 itemprop="headline" style="padding-left: 15px; font-weight: 100;">[[reviewinfo.title]]</h2>
@@ -959,7 +960,6 @@
                 // work until after first paint.
                 Polymer.RenderStatus.afterNextRender(this, function () {
                     // console.log('ready', this.url)
-                    this.$.formkleine.submit();
                 });
 
             }
@@ -1013,6 +1013,8 @@
                     // console.log(response);
                     this.set('reviewinfo', response);
                     this._setMetadata();
+                    this._increasePageView();
+
                     //generate this for retrieving kp infos
                     this.$.getgamekpinfo.generateRequest();
                 } else {
@@ -1053,7 +1055,10 @@
                 });
                 this.dispatchEvent(event);
             }
-
+            
+            _increasePageView( ){
+                this.$.formkleine.submit();
+            }
 
             _onResponseKpInfo(event) {
                 var response = event.detail.response;

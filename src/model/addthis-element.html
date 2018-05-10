@@ -1,0 +1,67 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="addthis-element">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+        <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+
+    </template>
+
+    <script>
+        /**
+         * `addthis-element` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class AddthisElement extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'addthis-element';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+        }
+
+
+        window.customElements.define(AddthisElement.is, AddthisElement);
+    </script>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-582d7c59c6ee88ec"></script>
+</dom-module>

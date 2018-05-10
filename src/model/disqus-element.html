@@ -1,0 +1,114 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<script id="dsq-count-scr" src="//kaldirirmi-com.disqus.com/count.js" async></script>
+
+<dom-module id="disqus-element">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+        <div id="disqus_thread"></div>
+    </template>
+
+    <script>
+        /**
+         * `disqus-element` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class DisqusElement extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'disqus-element';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    pageUrl: {
+                        type: String,
+                        value: ''
+                    },
+                    pageIdentifier: {
+                        type: String,
+                        value: ''
+                    },
+                    /*
+                        disqusSubName: kaldirirmi-com
+                    */
+                    disqusSubname: {
+                        type: String,
+                        value: ''
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
+            connectedCallback() {
+                super.connectedCallback();
+
+                this.pageUrl = window.location.href;
+
+                if (this._isPropsNotEmpty()) {
+
+                    var that = this;
+
+                    var disqus_config = function () {
+                        this.page.url = that.pageUrl;
+                        this.page.identifier = that.pageIdentifier;
+                    };
+
+                    var d = document,
+                        s = d.createElement('script');
+                    s.src = '//' + that.disqusSubName + '.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+
+                }
+                else {
+                    console.warn("You should fill the properties!")
+                }
+
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function () {
+
+                });
+            }
+
+            _isPropsNotEmpty() {
+                return this.pageIdentifier != '' && this.pageUrl != '' && this.disqusSubName != ''
+            }
+
+        }
+
+        window.customElements.define(DisqusElement.is, DisqusElement);
+    </script>
+</dom-module>

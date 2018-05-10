@@ -10,6 +10,8 @@
 <link rel="import" href="../model/kal-tagcloud.html">
 <link rel="import" href="../model/kal-nav-content.html">
 <link rel="import" href="../model/loader-pac.html">
+<link rel="import" href="../model/disqus-element.html">
+<link rel="import" href="../model/addthis-element.html">
 
 <link rel="import" href="./kal-related-game.html">
 <link rel="import" href="./kal-news-popular.html">
@@ -563,7 +565,7 @@
             }
         </style>
 
-        <iron-form id="fromkleine">
+        <iron-form id="formkleine">
             <form action="/h/main" method="post">
                 <input type="hidden" name="fm" value="post-kleine-container-news" />
                 <input type="hidden" id="container" name="container" value="[[newsinfo.id]]" />
@@ -599,7 +601,7 @@
                         <div id="newscontent">
                             <div id="panel">
                                 <div id="options">
-                                    <div id="options_share_buttons" class="addthis_inline_share_toolbox"></div>
+                                    <addthis-element></addthis-element>
                                 </div>
                                 <div id="panel-contents">
                                     <h2 itemprop="headline">
@@ -657,21 +659,8 @@
                                         </div>
                                         <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
 
-                                        <div id="disqus_thread"></div>
-                                        <script>
-                                            var disqus_config = function () {
-                                                this.page.url = 'https://kaldirirmi.com/haber/' +
-                                                    '[[newsinfo.url]]';
-                                                this.page.identifier = '[[newsinfo.url]]';
-                                            };
-                                            (function () { // DON'T EDIT BELOW THIS LINE
-                                                var d = document,
-                                                    s = d.createElement('script');
-                                                s.src = '//kaldirirmi-com.disqus.com/embed.js';
-                                                s.setAttribute('data-timestamp', +new Date());
-                                                (d.head || d.body).appendChild(s);
-                                            })();
-                                        </script>
+                                        <disqus-element page-identifier=[[newsinfo.url]] disqus-subname="kaldirirmi-com"></disqus-element>
+                                        
                                     </div>
                                     <div class="news-popular-news">
                                         <div class="rightside-tagcloud">
@@ -685,12 +674,10 @@
                                 </div>
                             </div>
                             <kal-copyright></kal-copyright>
-                            <!-- <kaldirirmi-sitecopyright></kaldirirmi-sitecopyright> -->
                         </div>
                     </div>
                     <script id="dsq-count-scr" src="https://kaldirirmi-com.disqus.com/count.js" async></script>
                 </div>
-                <!-- <app-header style="height: 300px;" effects="parallax-background"></app-header> -->
             </template>
             <div hidden$=[[isNews]]>
                 <span class="item-is-not-exist">Böyle bir haber bulunmamaktadır!</span>
@@ -778,10 +765,7 @@
              */
             connectedCallback() {
                 super.connectedCallback();
-
                 // console.log('connectedCallback', this.url)
-
-
             }
 
             /**
@@ -813,8 +797,7 @@
                     this.set('newsinfo', response);
                     
                     this._setMetadata();
-
-
+                    this._increasePageView();
                     // var headerimage = 'url(' + response.picture + ')';
                     //update parallax app header background image
                     // this.updateStyles({'--app-header-background-front-layer': headerimage.replace('\\', '') });
@@ -896,6 +879,10 @@
                     res = newsinfo.relatedgames.split(',')[0];
                 }
                 return res;
+            }
+
+            _increasePageView( ){
+                this.$.formkleine.submit();
             }
         }
 
