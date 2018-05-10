@@ -194,7 +194,7 @@
         -->
 
         <template is="dom-if" if=[[extended]]>
-            <a class="game"  itemprop="url" href="[[item.href]]">
+            <a class="game" itemprop="url" href="[[item.href]]">
                 <iron-image 
                     sizing="cover"
                     preload
@@ -207,15 +207,15 @@
                     <div class="game-detail-header">
                         <div class="game-detail-header-left">
                             <span class="game-title">[[item.title]]</span>
-                            <span class="game-releasedate">2018</span>
+                            <span class="game-releasedate">[[item.year]]</span>
                         </div>
                         <div class="game-detail-header-right">
-                            <div raised class="game-score">8.7</div>
+                            <div raised class="game-score">[[item.score]]</div>
                         </div>
                     </div>
                     <div class="game-detail-header-body">
                         <p>
-                            Yaygın inancın tersine, Lorem Ipsum rastgele sözcüklerden oluşmaz.
+                            [[item.details]]
                         </p>
                     </div>
                 </div>
@@ -225,7 +225,7 @@
 
         <template is="dom-if" if=[[basic]]>
             <a class="game" href="[[item.href]]">
-                <iron-image sizing="cover" preload fade src="[[item.src]]" placeholder="[[placeholder]]">></iron-image>
+                <iron-image sizing="cover" preload fade src="[[item.src]]" placeholder="[[placeholder]]"></iron-image>
                 <div class="game-title">
                     <span>[[item.title]]</span>
                 </div>
