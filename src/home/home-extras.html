@@ -29,7 +29,7 @@
             #extras-container #google-ads {
                 @apply --layout-flex-2;
                 background: var(--app-theme-color);
-                 opacity: 0.3;
+                opacity: 0.3;
             }
 
             #extras-container #wizard-catalog {
@@ -73,19 +73,25 @@
                 cursor: pointer
             }
 
+            a {
+                text-decoration: none;
+                color: #ffffff;
+            }
+
             .mag-body .mag-game iron-image {
                 width: 100%;
                 height: 100%;
             }
 
             .mag-body .mag-game .mag-game-detail {
-                position: absolute;
-                /* height: 30px; */
-                margin-top: -40px;
-                /* margin-left: 10px; */
                 @apply --layout-horizontal;
                 @apply --layout-center;
                 width: 100%;
+                color: #fff;
+                background: rgba(0, 0, 0, 0.6);
+                position: relative;
+                bottom: 30px;
+                height: 30px;
             }
 
             .mag-body .mag-game .mag-game-detail .game-title {
@@ -132,6 +138,7 @@
             #wizard-catalog .wizard-card {
                 @apply --layout-vertical;
                 @apply --shadow-elevation-4dp;
+                @apply --layout-flex;
             }
 
             .wizard-card .wizard-card-header {
@@ -170,7 +177,7 @@
             .wizard-card .wizard-card-body {
                 @apply --layout-horizontal;
                 padding: 10px;
-                max-height: 135px;
+                height: 100%;
             }
 
             .wizard-card .wizard-card-body .game-picture {
@@ -187,7 +194,13 @@
             .wizard-card .wizard-card-body .game-detail {
                 @apply --layout-flex-9;
                 padding-left: 10px;
+                @apply --layout-vertical;
             }
+
+            .wizard-card .wizard-card-body .game-detail p {
+                @apply --layout-flex;
+            }
+
 
 
             /**************** RELEASE CATALOG **************************/
@@ -199,7 +212,7 @@
             #release-catalog .google-adv {
                 @apply --layout-flex-6;
                 background: var(--app-theme-color);
-                 opacity: 0.3;
+                opacity: 0.3;
             }
 
             #release-catalog .release-card {
@@ -246,14 +259,14 @@
             }
 
             /* MOBILE LAYOUT */
-            #extras-container[mobile-layout]{
+
+            #extras-container[mobile-layout] {
                 @apply --layout-vertical;
             }
 
-            .mag-body .mag-game[mobile-layout]{
+            .mag-body .mag-game[mobile-layout] {
                 height: 200px;
             }
-
         </style>
 
         <!-- EXTRAS -->
@@ -265,100 +278,54 @@
                     </h4>
                 </div>
                 <div class="mag-body">
-                    <template is="dom-repeat" items={{gamelist}} 
-                        as=item>
-
-                        <div class="mag-game" mobile-layout$="[[isMobile]]">
+                    <template is="dom-repeat" items={{magnificentgamelist}} as=item>
+                        <a href="[[item.href]]">
+                            <div class="mag-game" mobile-layout$="[[isMobile]]">
                                 <iron-image src="[[item.src]]" preload sizing="cover"></iron-image>
                                 <div class="mag-game-detail">
                                     <span class="game-title">
                                         [[item.title]]
                                     </span>
-                                    <div class="game-score">
-                                        9.9
-                                    </div>
                                 </div>
                                 <paper-ripple></paper-ripple>
                             </div>
+                        </a>
                     </template>
                 </div>
-                <div class="mag-footer">
+                <a class="mag-footer" href="/game">
                     <paper-button raised class="more-button">Daha Fazlası</paper-button>
-                </div>
+                </a>
             </div>
             <div id="google-ads">
 
             </div>
             <div id="wizard-catalog">
-                <div class="wizard-card">
-                    <div class="wizard-card-header">
-                        <div class="header-title">
-                            <span class="game-title">Project Cars 2 /</span>
-                            <span class="game-category">Sports</span>
-                        </div>
-                        <div class="header-icons">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/cpu-green.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/gpu-yellow.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/ram-green.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/hd-yellow.svg">
-                        </div>
-                    </div>
-                    <div class="wizard-card-body">
-                        <div class="game-picture">
-                            <iron-image src="https://cdn.kaldirirmi.com/images/games/just-cause-3-logo.jpg" preload sizing="cover"></iron-image>
-                        </div>
-                        <div class="game-detail">
-                            <p>Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir.</p>
-                            <paper-button raised>Sistem Sihirbazını Çalıştır</paper-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="wizard-card">
-                    <div class="wizard-card-header">
-                        <div class="header-title">
-                            <span class="game-title">Project Cars 2 /</span>
-                            <span class="game-category">Sports</span>
-                        </div>
-                        <div class="header-icons">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/cpu-green.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/gpu-yellow.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/ram-green.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/hd-yellow.svg">
+                <template is="dom-repeat" items={{cardgamelist}} as=item>
+                    <div class="wizard-card">
+                        <a href="/game/[[item.url]]">
+                            <div class="wizard-card-header">
+                                <div class="header-title">
+                                    <span class="game-title">[[item.name]] /</span>
+                                    <span class="game-category">[[item.genres]]</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div class="wizard-card-body">
+                            <div class="game-picture">
+                                <iron-image src="https://cdn.kaldirirmi.com/images/games/[[item.picture]]" preload sizing="cover"></iron-image>
+                            </div>
+                            <div class="game-detail">
+                                <p>[[item.detail]]</p>
+                                <a href="/system/wizard">
+                                    <paper-button raised>Sistem Sihirbazını Çalıştır</paper-button>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="wizard-card-body">
-                        <div class="game-picture">
-                            <iron-image src="https://cdn.kaldirirmi.com/images/games/just-cause-3-logo.jpg" preload sizing="cover"></iron-image>
-                        </div>
-                        <div class="game-detail">
-                            <p>Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir.</p>
-                            <paper-button raised>Sistem Sihirbazını Çalıştır</paper-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="wizard-card">
-                    <div class="wizard-card-header">
-                        <div class="header-title">
-                            <span class="game-title">Project Cars 2 /</span>
-                            <span class="game-category">Sports</span>
-                        </div>
-                        <div class="header-icons">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/cpu-green.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/gpu-yellow.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/ram-green.svg">
-                            <img class="systemcheck-images" src="https://kaldirirmi.com/assets/img/gamepage-icon/colorful/hd-yellow.svg">
-                        </div>
-                    </div>
-                    <div class="wizard-card-body">
-                        <div class="game-picture">
-                            <iron-image src="https://cdn.kaldirirmi.com/images/games/just-cause-3-logo.jpg" preload sizing="cover"></iron-image>
-                        </div>
-                        <div class="game-detail">
-                            <p>Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir.</p>
-                            <paper-button raised>Sistem Sihirbazını Çalıştır</paper-button>
-                        </div>
-                    </div>
-                </div>
+
+
+                </template>
             </div>
             <div id="release-catalog">
                 <div class="google-adv"></div>
@@ -367,71 +334,17 @@
                         <h5>OYUN ÇIKIŞ TARİHLERİ</h5>
                     </div>
                     <div class="release-card-body">
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
-                        <div class="game">
-                            <div class="game-title">
-                                <span>Metal Gear Survive</span>
-                            </div>
-                            <div class="game-release">
-                                <span>Feb-13-2018</span>
-                            </div>
-                        </div>
 
+                        <template is="dom-repeat" items={{releaselist}} as=item>
+                            <div class="game">
+                                <div class="game-title">
+                                    <span>[[item.name]]</span>
+                                </div>
+                                <div class="game-release">
+                                    <span>[[item.release]]</span>
+                                </div>
+                            </div>
+                        </template>
                     </div>
                 </div>
 
@@ -453,19 +366,29 @@
                         notify: true,
                         reflectToAttribute: true
                     },
-                    gamelist: {
+                    magnificentgamelist: {
                         type: Array,
                         value: [],
                         notify: true
-                    }
+                    },
+                    cardgamelist: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    releaselist: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+
                 };
             }
 
             connectedCallback() {
                 super.connectedCallback();
-                
-                const games = [
-                    {
+
+                const magnificentGames = [{
                         "name": "Tannenberg",
                         "picture": "tannenberg-logo.jpg",
                         "url": "tannenberg",
@@ -517,14 +440,81 @@
                     }
                 ];
 
-                games.forEach((game) => {
+                magnificentGames.forEach((game) => {
                     let current = {
                         "title": game.name,
                         "href": "game/" + game.url,
                         "src": "https://cdn.kaldirirmi.com/images/games/" + game.picture
                     };
-                    this.push('gamelist', current);
+                    this.push('magnificentgamelist', current);
                 });
+
+
+                const cardGames = [{
+                        "name": "Tannenberg",
+                        "picture": "tannenberg-logo.jpg",
+                        "url": "tannenberg",
+                        "genres": "Action",
+                        "detail": "Oyun fena dostum!"
+                    },
+                    {
+                        "name": "Crackdown 3",
+                        "picture": "crackdown-3-logo.jpg",
+                        "url": "crackdown-3",
+                        "genres": "Action",
+                        "detail": "Çare Sarıgül!"
+                    },
+                    {
+                        "name": "Call of Duty: WWII",
+                        "picture": "call-of-duty-WWII-logo.jpg",
+                        "url": "call-of-duty--wwii",
+                        "genres": "Action",
+                        "detail": "T A M A M"
+                    }
+                ];
+
+                this.set('cardgamelist', cardGames);
+
+
+                const gameReleaseList = [{
+                        "name": "Vampyr (DONTNOD)",
+                        "release": "05/06/2018"
+                    },
+                    {
+                        "name": "Warhammer 40,000: Inquisitor",
+                        "release": "06/06/2018"
+                    },
+                    {
+                        "name": "Jurassic World Evolution",
+                        "release": "12/06/2018"
+                    },
+
+                    {
+                        "name": "World of Warcraft",
+                        "release": "14/08/2018"
+                    },
+                    {
+                        "name": "Metro Exodus",
+                        "release": "21/08/2018"
+                    },
+                    {
+                        "name": "Dragon Quest XI:",
+                        "release": "04/09/2018"
+                    },
+                    {
+                        "name": "Shadow of the Tomb Raider",
+                        "release": "14/09/2018"
+                    },
+
+                    {
+                        "name": "Mech Warrior 5",
+                        "release": "15/12/2018"
+                    }
+                ];
+
+                this.set('releaselist', gameReleaseList);
+
+
             }
         }
 
