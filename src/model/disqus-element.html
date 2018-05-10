@@ -42,7 +42,7 @@
                         value: ''
                     },
                     /*
-                        disqusSubName: kaldirirmi-com
+                        disqusSubname: kaldirirmi-com
                     */
                     disqusSubname: {
                         type: String,
@@ -79,14 +79,15 @@
                         this.page.identifier = that.pageIdentifier;
                     };
 
-                    var d = document,
-                        s = d.createElement('script');
-                    s.src = '//' + that.disqusSubName + '.disqus.com/embed.js';
-                    s.setAttribute('data-timestamp', +new Date());
-                    (d.head || d.body).appendChild(s);
+                    (function () { 
+                        var d = document,
+                            s = d.createElement('script');
+                        s.src = 'https://'+that.disqusSubname+'.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                    })();
 
-                }
-                else {
+                } else {
                     console.warn("You should fill the properties!")
                 }
 
@@ -104,7 +105,7 @@
             }
 
             _isPropsNotEmpty() {
-                return this.pageIdentifier != '' && this.pageUrl != '' && this.disqusSubName != ''
+                return this.pageIdentifier != '' && this.pageUrl != '' && this.disqusSubname != ''
             }
 
         }
