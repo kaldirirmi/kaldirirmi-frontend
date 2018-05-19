@@ -8,6 +8,7 @@
 <link rel="import" href="../model/kal-tagcloud.html">
 <link rel="import" href="../model/ability-chart.html">
 <link rel="import" href="../model/addthis-element.html">
+<link rel="import" href="../model/html-echo.html">
 
 <link rel="import" href="./review-related-game.html">
 <link rel="import" href="./review-user-vote.html">
@@ -20,7 +21,6 @@
         <style include="shared-styles">
             :host {
                 display: block;
-                /* --header-image: url('/frontend/images/nouseradded.jpg'); */
             }
 
             :host([is-mobile]) #review-page-container #kalparallax {
@@ -860,7 +860,7 @@
                                 <div class="review-description">
                                     <div itemprop="reviewBody" class="review-details">
                                         <p>
-                                            [[reviewinfo.details]]
+                                            <html-echo html=[[reviewinfo.details]]></html-echo>
                                         </p>
                                         <hr themed-reverse="" class="style-scope package-tile kaldirirmi-profile-forum">
                                         <div id="review-details-publisher">
@@ -1037,15 +1037,16 @@
                 }
 
             }
-            
-            
+
+
             _setMetadata() {
                 var event = new CustomEvent('app-metadata', {
                     bubbles: true,
                     composed: true,
                     detail: {
-                        title:  this.reviewinfo.title + ' - kaldirirmi.com',
-                        description: 'Kaldirirmi.com - ' + this.reviewinfo.title + ' - ' + this.reviewinfo.subtitle,
+                        title: this.reviewinfo.title + ' - kaldirirmi.com',
+                        description: 'Kaldirirmi.com - ' + this.reviewinfo.title + ' - ' + this.reviewinfo
+                            .subtitle,
                         keywords: this.reviewinfo.searchkeywords,
                         name: this.reviewinfo.title,
                         url: 'https://kaldirirmi.com/reviews/' + this.url,
@@ -1055,8 +1056,8 @@
                 });
                 this.dispatchEvent(event);
             }
-            
-            _increasePageView( ){
+
+            _increasePageView() {
                 this.$.formkleine.submit();
             }
 

@@ -1,0 +1,75 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="html-echo">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+        
+
+    </template>
+
+    <script>
+        /**
+         * `html-echo` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class HtmlEcho extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'html-echo';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    html: {
+                        type: String,
+                        value: '',
+                        observer: '_renderHTML'
+                    }
+                };
+            }
+
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    this._renderHTML();
+                });
+            }
+
+
+
+            _renderHTML() {
+                this.shadowRoot.innerHTML = this.html;
+            }
+        }
+
+        window.customElements.define(HtmlEcho.is, HtmlEcho);
+    </script>
+</dom-module>

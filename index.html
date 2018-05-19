@@ -1,36 +1,24 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <!doctype html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Polymer Starter Kit">
+  <meta name="generator" content="kaldirirmi.com">
   <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
   <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="1mQFvubWqL13NGxJXDl9p2G-9h4Q2Wg1YjYB5JL1PaQ" />
+  <meta name="robots" content="index, follow" />
+  <link rel="shortcut icon" type="image/ico" href="images/kal_fav.ico" />
+  <link rel="apple-touch-icon" sizes="36x36" href="images/kal_fav.ico" />
 
   <title>Kaldirirmi.com - Modern Bilgisayar Oyunlarının Sistem Gereksinimlerini Sağlamak İçin Oluşturulmuş Bir Web Platformudur.</title>
   <meta name="description" content="kaldirirmi.com modern bilgisayar oyunlarının sistem gereksinimlerini sağlamak için oluşturulmuş bir web platformudur.">
+  <meta name="keywords" content="bilgisayar,oyun,kaldırır mı,kaldirir mi,oyunu kaldirir mi,bilgisayar oyunu, kaldırırmı.com, kaldirirmi.com"
+  />
 
-  <!--
-      The `<base>` tag below is present to support two advanced deployment options:
-      1) Differential serving. 2) Serving from a non-root path.
+  <base href="/">
 
-      Instead of manually editing the `<base>` tag yourself, you should generally either:
-      a) Add a `basePath` property to the build configuration in your `polymer.json`.
-      b) Use the `--base-path` command-line option for `polymer build`.
-
-      Note: If you intend to serve from a non-root path, see [polymer-root-path] below.
-    -->
-  <base href="https://www.kaldirirmi.com">
+  <link rel="icon" href="images/manifest/favicon.ico">
 
   <!-- See https://goo.gl/OOhYW5 -->
   <link rel="manifest" href="manifest.json">
@@ -132,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
   <!-- Load your application shell -->
-  <link rel="import" href="./src/kal-app.html">
+  <link rel="import" href="src/kal-app.html">
 
   <!-- Add any global styles for body, document, etc. -->
   <style>
@@ -143,16 +131,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       min-height: 100vh;
       background-color: #222222;
     }
+
+    body::-webkit-scrollbar {
+      width: 10px !important;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background-color: #333;
+      border-radius: 5px;
+      border: 2px solid #000;
+      min-height: 50px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background-color: #000;
+    }
+
+    /* styling for render while resources are loading */
+
+    kal-app[unresolved] {
+      display: block;
+      min-height: 101vh;
+      line-height: 68px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      color: #202020;
+      padding: 0 16px;
+      overflow: visible;
+    }
   </style>
 </head>
 
 <body>
-  <kal-app uid="99999"></kal-app>
+  <kal-app uid="<%=uid %>" uname="<%= uname %>"></kal-app>
   <noscript>
     Please enable JavaScript to view this website.
   </noscript>
-  <!-- Built with love using Polymer Starter Kit -->
   <script id="dsq-count-scr" src="https://kaldirirmi-com.disqus.com/count.js" async></script>
+  <!-- Built with love using Polymer Starter Kit -->
 </body>
 
 </html>
