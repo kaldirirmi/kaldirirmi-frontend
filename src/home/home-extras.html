@@ -29,7 +29,7 @@
             #extras-container #google-ads {
                 @apply --layout-flex-2;
                 background: var(--app-theme-color);
-                opacity: 0.3;
+                opacity: 0.7;
             }
 
             #extras-container #wizard-catalog {
@@ -212,7 +212,7 @@
             #release-catalog .google-adv {
                 @apply --layout-flex-6;
                 background: var(--app-theme-color);
-                opacity: 0.3;
+                opacity: 0.7;
             }
 
             #release-catalog .release-card {
@@ -267,6 +267,16 @@
             .mag-body .mag-game[mobile-layout] {
                 height: 200px;
             }
+
+
+            /* REKLAMLAR */
+
+            .google-adv iron-image , #google-ads iron-image {
+                width: 100%;
+                height: 100%;
+            }
+
+
         </style>
 
         <!-- EXTRAS -->
@@ -297,7 +307,7 @@
                 </a>
             </div>
             <div id="google-ads">
-
+                    <iron-image src="./frontend/images/challengelogin.jpg" preload sizing="cover"></iron-image>
             </div>
             <div id="wizard-catalog">
                 <template is="dom-repeat" items={{cardgamelist}} as=item>
@@ -328,7 +338,9 @@
                 </template>
             </div>
             <div id="release-catalog">
-                <div class="google-adv"></div>
+                <div class="google-adv">
+                    <iron-image src="./frontend/images/atari.gif" preload sizing="cover"></iron-image>
+                </div>
                 <div class="release-card">
                     <div class="release-card-header">
                         <h5>OYUN ÇIKIŞ TARİHLERİ</h5>
@@ -462,7 +474,7 @@
                         "picture": "crackdown-3-logo.jpg",
                         "url": "crackdown-3",
                         "genres": "Action",
-                        "detail": "Çare Sarıgül!"
+                        "detail": "What kind of holding abi ya!?"
                     },
                     {
                         "name": "Call of Duty: WWII",
