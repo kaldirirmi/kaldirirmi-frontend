@@ -90,7 +90,7 @@
                 color: var(--app-theme-color);
             }
         </style>
-        <iron-ajax auto id="ajaxGetFollowedStreams" url="/auth/twitch/kalapi?fm=get-followed-streams&a=[[streamtype]]&b=[[limit]]&c=[[offset]]"
+        <iron-ajax auto id="ajaxGetFollowedStreams" url="/auth/twitch/kalapi.ashx?fm=get-followed-streams&a=[[streamtype]]&b=[[limit]]&c=[[offset]]"
             handle-as="json" on-response="_onResponse" on-request="_onRequest"></iron-ajax>
         <div class="indicator"hidden$="[[!loading]]">
             <loader-pac></loader-pac>

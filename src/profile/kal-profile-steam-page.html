@@ -272,13 +272,13 @@
             }
         </style>
 
-        <iron-ajax id="getfriendlist" url="/auth/steam/kalapi?fm=get-friendlist-list-remade" handle-as="json" on-response="_responseFriendList"
+        <iron-ajax id="getfriendlist" url="/auth/steam/kalapi.ashx?fm=get-friendlist-list-remade" handle-as="json" on-response="_responseFriendList"
             loading={{loadingFriendList}} debounce-duration="300"></iron-ajax>
 
-        <iron-ajax id="getrecentlyplayedgames" url="/auth/steam/kalapi?fm=get-recently-played-games" handle-as="json" on-response="_responseRecentlyPlayedGames"
+        <iron-ajax id="getrecentlyplayedgames" url="/auth/steam/kalapi.ashx?fm=get-recently-played-games" handle-as="json" on-response="_responseRecentlyPlayedGames"
             loading={{loadingRecently}} debounce-duration="300"></iron-ajax>
 
-        <iron-ajax id="getownedgames" url="/auth/steam/kalapi?fm=get-owned-games-remade" handle-as="json" on-response="_responseOwnedGames"
+        <iron-ajax id="getownedgames" url="/auth/steam/kalapi.ashx?fm=get-owned-games-remade" handle-as="json" on-response="_responseOwnedGames"
             loading={{loadingOwned}} debounce-duration="300"></iron-ajax>
 
         <!-- dom elements here-->
@@ -287,7 +287,7 @@
             <div hidden$="[[connected]]">
                 <div id="notconnecteddiv" style="background-image:url('/assets/img/steambackground.jpg')">
                     <p>Buradaki içeriklere erişebilmek için steam hesabının bağlı olması gerekmektedir</p>
-                    <paper-button id="steamhauthbtn" onclick="location.href='/auth/steam/login';" raised>Bağlan
+                    <paper-button id="steamhauthbtn" onclick="location.href='/auth/steam/login.ashx';" raised>Bağlan
                         <iron-icon icon="av:loop"></iron-icon>
                     </paper-button>
                 </div>

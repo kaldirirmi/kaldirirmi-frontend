@@ -51,7 +51,7 @@
             }
         </style>
 
-        <iron-ajax auto id="ajaxGetTopClips" url="/auth/twitch/kalapi?fm=get-top-clips&a=[[game]]&b=[[channel]]&c=[[period]]&d=[[trending]]&e=[[limit]]"
+        <iron-ajax auto id="ajaxGetTopClips" url="/auth/twitch/kalapi.ashx?fm=get-top-clips&a=[[game]]&b=[[channel]]&c=[[period]]&d=[[trending]]&e=[[limit]]"
             handle-as="json" on-response="_onResponse" loading="{{loading}}"></iron-ajax>
         <div class="indicator" hidden$="[[!loading]]">
             <loader-pac></loader-pac>

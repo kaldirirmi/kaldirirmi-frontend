@@ -304,7 +304,7 @@
 
 
         <!-- Get Channel Videos Via <channel ID> -->
-        <iron-ajax auto id="followingChannels" url="/auth/twitch/kalapi?fm=get-user-following-channels&a=100&b=0" handle-as="json"
+        <iron-ajax auto id="followingChannels" url="/auth/twitch/kalapi.ashx?fm=get-user-following-channels&a=100&b=0" handle-as="json"
             on-response="_onResponseForChannelId"></iron-ajax>
         <twitch-expandable-card>
             <div id="retracted" class="container">
