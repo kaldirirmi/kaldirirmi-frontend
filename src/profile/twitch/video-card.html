@@ -237,11 +237,11 @@
             }
 
             _onTap(event) {
-                if (Polymer.dom(event).localTarget === this.$.game) {
-                    window.open(this.data.url, '_blank');
-                    //window.open(this._gameUrl(this.data.channel.game), '_blank');
-                    return;
-                }
+                // if (Polymer.dom(event).localTarget === this.$.game) {
+                //     window.open(this.data.url, '_blank');
+                //     //window.open(this._gameUrl(this.data.channel.game), '_blank');
+                //     return;
+                // }
 
                 window.open(this.data.url, '_blank');
             }

@@ -169,10 +169,10 @@
       }
 
       _onTap(event) {
-        if (Polymer.dom(event).localTarget === this.$.game) {
-          window.open(this._gameUrl(this.data.channel.game), '_blank');
-          return;
-        }
+        // if (Polymer.dom(event).localTarget === this.$.game) {
+        //   window.open(this._gameUrl(this.data.channel.game), '_blank');
+        //   return;
+        // }
 
         window.open(this.data.channel.url, '_blank');
       }
