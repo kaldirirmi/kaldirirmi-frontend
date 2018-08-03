@@ -1,10 +1,8 @@
-[Kaldirirmi.com](https://www.kaldirirmi.com) is on the air. Visit the website!
+# [Kaldirirmi.com](https://www.kaldirirmi.com) is on the air. Visit the website!
 
-# Kaldirirmi.com Polymer 2 Web App Front End
+## Kaldirirmi.com Polymer 2 Web App Front End
 
-## Setup
-
-### Prerequisites
+### Setup/Prerequisites
 
 First, install [Polymer CLI](https://github.com/Polymer/polymer-cli) using
 [npm](https://www.npmjs.com) (we assume you have pre-installed [node.js](https://nodejs.org)).
