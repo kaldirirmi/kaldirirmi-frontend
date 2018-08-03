@@ -117,8 +117,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-flex-4;
       }
 
+
+      .advert-catalog {
+        -ms-flex: var(--layout-flex-3_-_-ms-flex);
+        -webkit-flex: var(--layout-flex-3_-_-webkit-flex);
+        flex: var(--layout-flex-3_-_flex);
+        background: var(--app-theme-color);
+        opacity: 0.3;
+        padding: 10px;
+        height: 150px;
+      }
+
+      .advert-catalog iron-image {
+        height: 100%;
+      }
     </style>
     <home-news is-mobile=[[isMobile]]></home-news>
+     <div class="advert-catalog">
+      <iron-image src="./images/press-start.gif" preload sizing="cover"></iron-image>
+    </div>
     <home-gpm-slider></home-gpm-slider>
     <home-games is-mobile=[[isMobile]]></home-games>
     <home-extras is-mobile=[[isMobile]]></home-extras>

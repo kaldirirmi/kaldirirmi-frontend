@@ -12,8 +12,6 @@
                 
             }
 
-          
-
             :host([score="0"]) #front {
                 width: 0;
             }
@@ -144,7 +142,15 @@
             }
 
             @media only screen  and (min-width : 1620px) {
-                
+                .item-image {
+                    height: 125px;
+                }
+                figure .item-content {
+                    min-height: 70px;
+                }
+                figure .item-content .primary {
+                    line-height: 33px;
+                }
             }
 
             :host([is-mobile]) figure a iron-image{
