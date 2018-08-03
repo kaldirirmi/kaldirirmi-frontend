@@ -5,7 +5,6 @@
 
 <link rel="import" href="../model/news-item.html">
 <link rel="import" href="../../bower_components/animated-content-placeholder/animated-content-placeholder.html">
-
 <dom-module id="home-news">
     <template>
         <style include="shared-styles">
@@ -57,7 +56,8 @@
             .main-catalog .news-catalog {
                 @apply --layout-flex-8;
                 @apply --layout-horizontal;
-                padding: 10px;
+                padding: 5px 10px;
+                
             }
 
                 .main-catalog .news-catalog .big-news-catalog {
@@ -139,63 +139,27 @@
         <div id="news-container">
             <paper-material elevation="4" class="main-catalog">
                 <div class="news-catalog">
-                    <div class="big-news-catalog">
-                        <!-- <animated-content-placeholder class="image-placeholder big-news">
-                            <div class="background-masker figure-top"></div>
-                            <div class="background-masker figure-left"></div>
-                            <div class="background-masker figure-right"></div>
-                            <div class="background-masker figure-bottom"></div>
-                            <div class="background-masker figcaption-bottom"></div>
-                        </animated-content-placeholder> -->
-                        <news-item item="[[news.first]]" basic type="nondeclared" is-mobile=[[isMobile]]></news-item>
+                        <div class="big-news-catalog">
+                                <news-item item="[[news.first]]" basic type="nondeclared" is-mobile=[[isMobile]]></news-item>
+                            </div>
+                </div>
+                <div class="news-catalog">
+                    <div class="small-news-catalog">
+                        <template is="dom-repeat" items={{news.centerleft}} as=item>
+                            <news-item item="[[item]]" basic is-mobile=[[isMobile]]></news-item>
+                        </template>
                     </div>
                     <div class="small-news-catalog">
-                        <!-- <animated-content-placeholder class="image-placeholder small-news">
-                            <div class="background-masker figure-top"></div>
-                            <div class="background-masker figure-left"></div>
-                            <div class="background-masker figure-right"></div>
-                            <div class="background-masker figure-bottom"></div>
-                            <div class="background-masker figcaption-bottom"></div>
-                        </animated-content-placeholder>
-                        <animated-content-placeholder class="image-placeholder small-news">
-                            <div class="background-masker figure-top"></div>
-                            <div class="background-masker figure-left"></div>
-                            <div class="background-masker figure-right"></div>
-                            <div class="background-masker figure-bottom"></div>
-                            <div class="background-masker figcaption-bottom"></div>
-                        </animated-content-placeholder> -->
-                        <template is="dom-repeat" items={{news.center}} as=item>
+                        <template is="dom-repeat" items={{news.centerright}} as=item>
                             <news-item item="[[item]]" basic is-mobile=[[isMobile]]></news-item>
                         </template>
                     </div>
                 </div>
-                <div class="advert-catalog">
+                <!-- <div class="advert-catalog">
                     <iron-image src="./images/press-start.gif" preload sizing="cover"></iron-image>
-                </div>
+                </div> -->
             </paper-material>
             <paper-material elevation="1" class="side-catalog">
-                <!-- <animated-content-placeholder class="image-placeholder small-news">
-                    <div class="background-masker figure-top"></div>
-                    <div class="background-masker figure-left"></div>
-                    <div class="background-masker figure-right"></div>
-                    <div class="background-masker figure-bottom"></div>
-                    <div class="background-masker figcaption-bottom"></div>
-                </animated-content-placeholder>
-                <animated-content-placeholder class="image-placeholder small-news">
-                    <div class="background-masker figure-top"></div>
-                    <div class="background-masker figure-left"></div>
-                    <div class="background-masker figure-right"></div>
-                    <div class="background-masker figure-bottom"></div>
-                    <div class="background-masker figcaption-bottom"></div>
-                </animated-content-placeholder>
-                <animated-content-placeholder class="image-placeholder extended-news">
-                    <div class="background-masker figure-top"></div>
-                    <div class="background-masker figure-left"></div>
-                    <div class="background-masker figure-right"></div>
-                    <div class="background-masker figure-bottom"></div>
-                    <div class="background-masker figcaption-bottom"></div>
-                </animated-content-placeholder> -->
-
                 <div id="items">
                     <template is="dom-repeat" items={{news.right}} as=item>
                         <news-item item="[[item]]" extended is-mobile=[[isMobile]]></news-item>
@@ -255,7 +219,8 @@
                                 first: null,
                                 second: null,
                                 third: null,
-                                center: [],
+                                centerleft: [],
+                                centerright: [],
                                 right: []
                             }
                         }
@@ -306,19 +271,12 @@
                 }
                 else {
                     //console.log(a.detail.response);
-
                     if (a.detail.response.length > 0) {
                         a.detail.response.forEach(function (element) {
                             //console.log(element);
                             if (index == 0) {
                                 this.set('news.first', element);
                             }
-                                //else if (index == 1) {
-                                //    this.set('news.second', element);
-                                //}
-                                //else if (index == 2) {
-                                //    this.set('news.third', element);
-                                //}
                             else if (index >= 1 && index <= 2) {
                                 this.push('news.center', element);
                             }
@@ -455,8 +413,51 @@
                        "searchkeywords": null,
                        "publisheravatar": null,
                        "relatedgames": null
-                   }
-
+                   }, {
+                    "id": 1000042,
+                    "title": "Mass Effect Andromeda Korsana Yenik Düştü",
+                    "url": "mass-effect-andromeda-korsana-yenik-dustu",
+                    "picture": "masseffectandromeda.jpg",
+                    "details": "\u003cp style=\"background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;\"\u003eElectronic\r\nArts\u0026nbsp;ve\u0026nbsp;Bioware\u0026nbsp;işbirliği ile geliştirilen\u0026nbsp;Mass Effect\r\nAndromeda\u0026nbsp;yaklaşık 2 hafta önce, PC, Playstation 4 ve Xbox One’da eş\r\nzamanlı olarak satışa sunuldu. Hikaye tabanlı bir oyun olan Mass Efffect\r\nAndromeda, maalesef PC platformunda pek de parlak bir grafik çizemedi. PC\r\noyuncularının genel itibariyle, hikaye tabanlı oyunları korsan olarak oynamayı\r\ntercih etmesi, en büyük neden olarak gösterilebilir.Bioware,\u0026nbsp;Mass Effect\r\nAndromeda’da\u0026nbsp;Denuvo\u0026nbsp;isimli DRM koruma sistemini kullanıyordu. Bu\r\nsistem Resident Evil 7’de de kullanılmış ve onda da oyuncular 1 haftadan kısa\r\nbir sürede kırmayı becermişlerdi. Kendilerinin başına da aynı şeyin gelmesinden\r\nkorkan geliştiriciler pek de haksız çıkmadı.Mass Effect Andromeda\u0026nbsp;da bu\r\nduruma yalnızca 13 gün dayanabildi. Yapımcı, Denuvo kalkanlarının devre dışı\r\nbırakıldığını ve Mass Effect Andromeda’nın “crack” dosyasının büyük bir\r\nbölümünün tamamlandığını açıkladı.İşin aslına bakarsak, korsanları etkisiz\r\nbırakmanın yolu, oyunu kıran topluluklara bir nevi rüşvet vermekten geçiyor. Bu\r\nyolun yadsınamaz bir gerçek olduğunu kabul eden EA daha önceleri FIFA serisinde\r\nkorsanlarla anlaşmış ve oyunun kırılmasını uzun zaman boyunca engellemişti.\r\nBunu söylemek her ne kadar üzücü olsa da, maalesef bu tip korsan gruplara\r\nharaçlarını vermeden, oyunları koruma altına almak mümkün değil.\u003cfont face=\"Arial, sans-serif\"\u003e\u003cspan style=\"background-color: rgb(34, 34, 34);\"\u003e\u003co:p\u003e\u003c/o:p\u003e\u003c/span\u003e\u003c/font\u003e\u003c/p\u003e",
+                    "category": null,
+                    "publisher": null,
+                    "releasedate": null,
+                    "viewcount": 116,
+                    "subtitle": "Korsanlar karşısında yapımcıların eli kolu bağlı!",
+                    "searchkeywords": null,
+                    "publisheravatar": null,
+                    "relatedgames": null
+                },
+                {
+                    "id": 1000040,
+                    "title": "Saran Medya ve Riot Games Türkiye\u0027den Dev İşbirliği",
+                    "url": "saran-medya-ve-riot-games-turkiye-den-dev-isbirligi",
+                    "picture": "league-of-legends.jpg",
+                    "details": "\u003cp\u003eRiot Games Türkiye ile spor yayıncılığı pazarlamasında dünya şirketleri sıralamasında 5. olan ve yeni spor kanalı \"S Sport\" ile yayın hayatına da merhaba diyen \u0026nbsp;Saran Medya, League of Legends Türkiye Şampiyonluk Ligi’nin televizyon yayınları ile ilgili bir anlaşma imzaladılar.Yapılan anlaşmayla, Türkiye\u0027nin Premier spor kanalı S Sport, Türkiye’nin ilk profesyonel Espor Ligi League of Legends Türkiye Şampiyonluk Ligi’nin yayın haklarını satın aldı. S Sport\u0027un ayrıca 2017 yılı içinde Çin\u0027de düzenlenecek League of Legends Dünya Şampiyonası\u0027nın da \u0026nbsp;Espor tutkunlarıyla buluşturulacağı bildirildi.Saran Medya ve Riot Games Türkiye arasında yapılan iş birliği \u0026nbsp;sadece maçların yayınlanmasıyla sınırlı kalmayacak, ayrıca \u0026nbsp;haftalık karşılaşmalarda yaşanan en önemli anlar ve özetler de S Sport ekranlarında hayranlarıyla buluşacak. Bunların yanında League of Legends tüm lig karşılaşmalarıyla ilgili yorumların yapılacağı, izleyicilerin en güncel gelişmeleri takip edilebileceği özel stüdyo programları da yayınlanacak.\u003c/p\u003e\u003cp\u003e",
+                    "category": null,
+                    "publisher": null,
+                    "releasedate": null,
+                    "viewcount": 109,
+                    "subtitle": "League of Legends artık Televizyonda",
+                    "searchkeywords": null,
+                    "publisheravatar": null,
+                    "relatedgames": null
+                },
+                {
+                    "id": 1000040,
+                    "title": "Saran Medya ve Riot Games Türkiye\u0027den Dev İşbirliği",
+                    "url": "saran-medya-ve-riot-games-turkiye-den-dev-isbirligi",
+                    "picture": "league-of-legends.jpg",
+                    "details": "\u003cp\u003eRiot Games Türkiye ile spor yayıncılığı pazarlamasında dünya şirketleri sıralamasında 5. olan ve yeni spor kanalı \"S Sport\" ile yayın hayatına da merhaba diyen \u0026nbsp;Saran Medya, League of Legends Türkiye Şampiyonluk Ligi’nin televizyon yayınları ile ilgili bir anlaşma imzaladılar.Yapılan anlaşmayla, Türkiye\u0027nin Premier spor kanalı S Sport, Türkiye’nin ilk profesyonel Espor Ligi League of Legends Türkiye Şampiyonluk Ligi’nin yayın haklarını satın aldı. S Sport\u0027un ayrıca 2017 yılı içinde Çin\u0027de düzenlenecek League of Legends Dünya Şampiyonası\u0027nın da \u0026nbsp;Espor tutkunlarıyla buluşturulacağı bildirildi.Saran Medya ve Riot Games Türkiye arasında yapılan iş birliği \u0026nbsp;sadece maçların yayınlanmasıyla sınırlı kalmayacak, ayrıca \u0026nbsp;haftalık karşılaşmalarda yaşanan en önemli anlar ve özetler de S Sport ekranlarında hayranlarıyla buluşacak. Bunların yanında League of Legends tüm lig karşılaşmalarıyla ilgili yorumların yapılacağı, izleyicilerin en güncel gelişmeleri takip edilebileceği özel stüdyo programları da yayınlanacak.\u003c/p\u003e\u003cp\u003e",
+                    "category": null,
+                    "publisher": null,
+                    "releasedate": null,
+                    "viewcount": 109,
+                    "subtitle": "League of Legends artık Televizyonda",
+                    "searchkeywords": null,
+                    "publisheravatar": null,
+                    "relatedgames": null
+                }
                 ];
 
                 let index = 0;
@@ -467,11 +468,15 @@
                         this.set('news.first', element);
                     }
                     else if (index >= 1 && index <= 2) {
-                        this.push('news.center', element);
+                        this.push('news.centerleft', element);
+                    }
+                    else if ( index >= 3 && index <= 4) {
+                        this.push('news.centerright', element)
                     }
                     else {
                         this.push('news.right', element);
                     }
+                    
                     index++;
                 });
             }

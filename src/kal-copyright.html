@@ -4,9 +4,10 @@
     <template>
         <style>
             :host {
-                display: block
+                display: block;
+                margin-top: 15px;
             }
-       
+
             #sitecopyright {
                 margin-bottom: 20px !important;
                 display: flex;
@@ -48,6 +49,199 @@
                 font-weight: 500;
                 color: var(--app-theme-color);
             }
+
+            /* footer */
+
+            
+            .column {
+                padding: 15px;
+            }
+            .column-3 {
+                @apply --layout-flex-3;
+            }
+
+            .no-select {
+                -webkit-touch-callout: none;
+                /* iOS Safari */
+                -webkit-user-select: none;
+                /* Safari */
+                -khtml-user-select: none;
+                /* Konqueror HTML */
+                -moz-user-select: none;
+                /* Firefox */
+                -ms-user-select: none;
+                /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently
+                                                supported by Chrome and Opera */
+            }
+
+            footer {
+                background: #020202;
+                @apply --layout-vertical;
+                background: #000;
+                clear: both;
+                color: #fff;
+                line-height: 1.3;
+                margin: 0;
+                padding: 0;
+                @apply --shadow-elevation-2dp;
+            }
+
+            footer .top { 
+                @apply --layout-horizontal;
+                padding: 40px 0;
+            }
+
+            footer .bottom {
+                @apply --layout-horizontal;
+                padding: 15px 0;
+                background: var(--app-theme-color);
+            }
+
+            footer .top h1, footer .top h2, footer .top h3, footer .top h4, footer .top h5, footer .top h6, footer .top legend {
+                font-weight: 700;
+                line-height: 1.1;
+                margin: 0 0 .25em;
+                letter-spacing: 0.1rem;
+            }
+
+            ul, ol {
+                list-style: none;
+                margin-bottom: 1.25em;
+            }
+            
+            a:hover, a:focus {
+                color: #fff;
+                text-decoration: underline !important;
+            }
+           
+            .flex-1 {
+                @apply --layout-flex;
+            }
+            
+            .flex-vertical {
+                @apply --layout-vertical;
+            }
+
+            footer .top .left {
+                @apply --layout-flex-2;
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+            }
+            footer .top .left .logo-container {
+                @apply --layout-vertical;
+                @apply --layout-center-center;
+            }
+            footer .top .left .logo {
+                width: 90px;
+                height: 80px;
+            }
+
+            footer .top .left .logo img {
+                width: 100%;
+                height: 100%;
+            }
+
+            footer .top .left .legal a{
+                padding: 5px;
+            }
+
+            .top .center h2 {
+                font-size: 1.5rem;
+                margin: 0.5rem 0;
+            }
+            .top .center h3 {
+                font-size: 1rem;
+                margin: 1rem 0;
+                font-weight: 100;
+                line-height: 22px;
+
+            }
+
+            footer .top .sitemap {
+                @apply --layout-horizontal
+            }
+
+            footer .top .sitemap section {
+                @apply --layout-flex-6;
+                @apply --layout-vertical;
+            }
+
+            a:link, a:visited {
+                color: #fff;
+                font-weight: 400;
+                text-decoration: none;
+                font-variant: normal!important;
+            }
+            .sitemap section h5 a:visited {
+                font-weight: 700
+            }
+
+            .sitemap section h5 {
+                font-weight: bold;
+                font-size: 1rem;
+                margin: 1rem 0;
+            }
+            .sitemap section h5 a {
+                font-weight: bold !important;
+            }
+            .sitemap section ul li {
+                font-weight: 700;
+                line-height: 1.1;
+                margin: 0 0 .25em;
+                letter-spacing: 0.1rem;
+            }
+
+            .sitemap section ul {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .sitemap section ul li {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+                margin: 0 0 .8em;
+            }
+
+            footer .bottom {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+
+            footer .bottom h4 {
+                margin: 0;
+                font-size: 15px;
+                font-weight: 400;
+                letter-spacing: .1rem;
+                padding: 0 1rem;
+            }
+
+
+            @media only screen and (max-width: 767px) {
+                footer .top {
+                    @apply --layout-vertical;
+                }
+                footer .top .left {
+                    height: 100px;
+                    align-items: flex-start;
+                    padding: 0 1rem;
+                    margin: 0px;
+                }
+                footer .top .left .logo-container {
+                    margin-bottom: 20px;
+                }
+                footer .top .left .legal {
+                    font-size: 0.7rem;
+                }
+                footer .top .left .legal a {
+                    padding: 5px;
+                    letter-spacing: 1px;
+                }
+
+            }
+
         </style>
 
         <div hidden$=[[!gameinfo.isExist]]>
@@ -66,7 +260,76 @@
             </div>
         </div>
         <div hidden$=[[gameinfo.isExist]]>
-            <div id="sitecopyright" data-step="3" data-intro="^-^">
+            <footer>
+                <div class="top">
+                    <div class="column column-3 left">
+                        <div class="logo-container flex-1">
+                                <a href="https://oktosoft.com" class="logo">
+                                    <img src="./images/oktosoft-logo.png" alt="Oktosoft Logo">
+                                </a>
+                        </div>
+                        <div class="legal">
+                                <a href="/legal/kaldirirmi.com-uyelik-sozlesmesi.pdf" target="_blank">Üyelik Sözleşmesi</a>
+                                <a href="/legal/kaldirirmi.com-cerez-politikasi.pdf" target="_blank">Çerez Politikası</a>
+                        </div>
+                    </div>
+                    <div class="column column-3 center flex-vertical">
+                        <h2 class="no-select">Kaldirirmi.com</h2>
+                        <h3 class="no-select flex-1">Modern Bilgisayar Oyunlarının Sistem Gereksinimlerini Sağlamak İçin Oluşturulmuş Bir Web Platformudur.</h3>
+                        <h4 class="no-select">
+                            <span class="no-select">[[_getCurrentYear()]] © | </span>
+                            <span>
+                                <a href="https://oktosoft.com" target="_blank">Oktosoft&trade;</a>
+                            </span>
+                        </h4>
+                    </div>
+                    <div class="column column-3 sitemap">
+                        <section class="kaldirirmi">
+                            <h5><a href="/">Kaldırırmı</a></h5>
+                            <ul class="kaldirirmi-links">
+                                <li>
+                                    <a href="/game">Oyunlar</a>
+                                </li>
+                                <li>
+                                    <a href="/news">Haberler</a>
+                                </li>
+                                <li>
+                                    <a href="/reviews">İncelemeler</a>
+                                </li>
+                                <li>
+                                    <a href="/gallery">Galeri</a>
+                                </li>
+                                <li>
+                                    <a href="/hardware">Donanım</a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="oktosoft">
+                            <h5><a href="http://www.oktosoft.com">Oktosoft</a></h5>
+                            <ul class="oktosoft-links">
+                                <li><a href="http://www.oktosoft.com/about">Hakkımızda</a></li>
+                                <li><a href="http://www.oktosoft.com/#features">Projeler</a></li>
+                                <li><a href="http://www.oktosoft.com/contact">İletişim</a></li>
+                                <li><a href="http://www.oktosoft.com/contact">Kariyer</a></li>
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+               
+                <div class="bottom">
+                    <h4>
+                        Kullanılan diğer tüm markalar gerçek sahiplerine aittir.
+                    </h4>
+                </div>
+
+
+
+
+
+
+            </footer>
+
+            <!-- <div id="sitecopyright" data-step="3" data-intro="^-^">
                 <div>
                     [[_getCurrentYear()]]&nbsp;
                     <a href="https://oktosoft.com" target="_blank">Oktosoft&trade;</a>
@@ -76,7 +339,7 @@
                 <div>
                     Kullanılan diğer tüm markalar gerçek sahiplerine aittir.
                 </div>
-            </div>
+            </div> -->
         </div>
     </template>
     <script>
@@ -103,8 +366,8 @@
                 return {
                     gameinfo: {
                         type: Object,
-                        value: function(){
-                            return{
+                        value: function () {
+                            return {
                                 isExist: false,
                                 publisher: null,
                                 name: null,
@@ -115,18 +378,17 @@
                 };
             }
             /**
-              * Array of strings describing multi-property observer methods and their
-              * dependant properties
-              */
+             * Array of strings describing multi-property observer methods and their
+             * dependant properties
+             */
             static get observers() {
                 return [
                     '_gameInfoChanged(gameinfo)'
                 ];
             }
-            
-            _gameInfoChanged(newVal, oldVal){
-                if(newVal !== undefined){
-                }
+
+            _gameInfoChanged(newVal, oldVal) {
+                if (newVal !== undefined) {}
             }
 
             /**
@@ -150,19 +412,19 @@
             }
 
             /**
-              * Called every time the element is inserted into the DOM. Useful for 
-              * running setup code, such as fetching resources or rendering.
-              * Generally, you should try to delay work until this time.
-              */
+             * Called every time the element is inserted into the DOM. Useful for 
+             * running setup code, such as fetching resources or rendering.
+             * Generally, you should try to delay work until this time.
+             */
             connectedCallback() {
                 super.connectedCallback();
-            
+
                 if (this.gamename !== '' && this.gamedeveloper) {
                     this.isgamepage = true;
                 }
             }
 
-             _getCurrentYear() {
+            _getCurrentYear() {
                 return new Date().getFullYear();
             }
 
