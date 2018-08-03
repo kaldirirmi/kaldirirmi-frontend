@@ -32,6 +32,12 @@
                 height: 50px;
             }
 
+            figure .item-content .primary {
+                padding: 0;
+                padding-bottom: 3px;
+                line-height: 15px;
+            }
+
 
             /* BASIC ************/
             iron-image {
@@ -160,10 +166,12 @@
                 </a>
                 <div class="item-content">
                     <div class="primary">
-                        <textfit-div class="fullHeight flex" min-font-size="10" max-font-size="12" text=[[item.title]]></textfit-div>
+                        [[item.title]]
+                        <!-- <textfit-div class="fullHeight flex" min-font-size="10" max-font-size="12" text=[[item.title]]></textfit-div> -->
                     </div>
                     <div class="shortText">
-                         <textfit-div class="fullHeight flex"  min-font-size="8" max-font-size="12" text=[[item.subtitle]]></textfit-div>
+                        [[item.subtitle]]
+                         <!-- <textfit-div class="fullHeight flex"  min-font-size="8" max-font-size="12" text=[[item.subtitle]]></textfit-div> -->
                     </div>
                 </div>
             </figure>
