@@ -37,6 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./model/game-video-holder.html">
 <link rel="import" href="./model/game-embed-holder.html">
 <link rel="import" href="./model/app-metadata.html">
+<link rel="import" href="./model/cookie-toast.html">
 
 
 <!-- Fragments -->
@@ -376,6 +377,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
+
         class KalApp extends Polymer.Element {
             static get is() {
                 return 'kal-app';
@@ -504,6 +506,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         }
                     }
                     this.storedUser = user;
+
+                    this._toggleCookieToast();
                 });
             }
 
@@ -543,7 +547,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 this._setPagesMetadata(page);
             }
-
             
             _setPagesMetadata(page) {
                 let currentTitle = '';
@@ -607,7 +610,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.dispatchEvent(event);
             }
 
-
             _showPage404() {
                 this.page = 'view404';
             }
@@ -656,6 +658,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
 
+            _toggleCookieToast(e){
+                const COOKIE_TOAST = "cookieToast";
+                let cookieToast = this.getCookie(COOKIE_TOAST);
+                if ( cookieToast != "" ) {
+                } else {
+                    if(!this._cookieToast) {
+                        this._cookieToast = document.createElement('cookie-toast');
+                        this.root.appendChild(this._cookieToast);
+                    }
+                    this._cookieToast.open(); 
+                    this.setCookie(COOKIE_TOAST,COOKIE_TOAST,365);
+                }
+            }
             //triggered by 'loginmodaler' customEvent
             _toggleLoginDialog(e) {
                 if (!this._loginModal) {
@@ -684,6 +699,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.set('embeddialogdetail', null);
                 this.set('embeddialogdetail', e.detail);
                 this.$.gameembedholder.open();
+            }
+
+            setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                var expires = "expires="+d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+            
+            getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
             }
 
 

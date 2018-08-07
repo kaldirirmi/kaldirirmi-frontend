@@ -1,0 +1,141 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
+
+<dom-module id="cookie-toast">
+    <template>
+        <style>
+                :host {
+                    display: flex;
+                    position: fixed;
+                    z-index: -1;
+                    width: 100%;
+                    visibility: hidden;
+                    will-change: transform;
+                    -webkit-transform: translate3d(calc(100%), 0, 0);
+                    transform: translate3d(calc(100%), 0, 0); 
+                    transition-property: visibility, -webkit-transform;
+                    transition-property: visibility, transform;
+                    transition-duration: 1s;
+                    transition-delay: 1s;
+                    background-color: var(--app-theme-color);
+                    color: #fff;
+                    bottom: 0;
+                    height: 50px;
+                    @apply --shadow-elevation-3dp;
+                    padding: 0px 20px;
+                    align-items: center;
+
+                }
+                :host(.opened) {
+                    visibility: visible;
+                    -webkit-transform: translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
+                    z-index: 3;
+
+                }
+
+                .toast-container {
+                    @apply --layout-flex;
+                    align-items: center;
+                }
+                .toast-container .flex {
+                    @apply --layout-flex;
+                    font-weight: 300;
+                }
+
+                a {
+                    color: #fff;
+                    text-decoration: none;
+                    font-weight: bold;
+                }
+                a:hover {
+                    text-decoration: underline;
+                }
+                
+                a:active {
+                    text-decoration: underline;
+                }
+                paper-icon-button{
+                    margin-right: 50px;
+                }
+
+        </style>
+       
+            <div class="toast-container">Sitemizden en iyi şekilde faydalanabilmeniz için çerezler kullanılmaktadır. 
+                Bu siteye giriş yaparak çerez kullanımını kabul etmiş sayılıyorsunuz.
+                <a href="/legal/kaldirirmi.com-cerez-politikasi.pdf" target="_blank"> Daha fazla bilgi için</a> 
+        </div>
+        <paper-icon-button icon="close" raised on-tap="_closeToast"></paper-icon-button>
+
+
+    </template>
+
+    <script>
+        /**
+         * `cookie-toast` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class CookieToast extends Polymer.mixinBehaviors([Polymer.IronOverlayBehaviorImpl], Polymer.Element )  {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'cookie-toast';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+            _renderOpened() {
+                this.restoreFocusOnClose = true;
+                //this.backdropElement.style.display = 'none';
+                this.classList.add('opened');
+            }
+
+            _renderClosed() {
+                this.classList.remove('opened');
+            }
+
+            refit() {}
+            notifyResize() {}
+            
+            _closeToast() {
+                this.close();
+            }
+        }
+
+        window.customElements.define(CookieToast.is, CookieToast);
+    </script>
+</dom-module>
